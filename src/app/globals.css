@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Auth form input focus styles */
+@layer components {
+  .auth-input {
+    @apply w-full py-3.5 rounded-xl text-sm outline-none;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .auth-input:focus {
+    border-color: var(--color-accent-primary);
+    box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1);
+  }
+
+  .auth-input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .glass-card {
+    background: var(--color-bg-glass);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--color-glass-border);
+  }
+
+  .glass-card-strong {
+    background: var(--color-bg-glass-strong);
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid var(--color-glass-border);
+  }
+
+  .gradient-btn {
+    background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-warm));
+    color: var(--color-bg-primary);
+    box-shadow: 0 4px 20px rgba(201, 168, 76, 0.25);
+    transition: all 0.3s ease;
+  }
+
+  .gradient-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(201, 168, 76, 0.35);
+  }
+
+  .gradient-btn:active {
+    transform: translateY(0);
+  }
+
+  .gradient-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
