@@ -79,7 +79,6 @@ export default function ProtectedLayout({
           // If admin is on /dashboard, redirect to /admin
           if (profileData.role === 'admin' && pathname?.startsWith('/dashboard')) {
             router.push('/admin');
-            return;
           }
         } else {
           // Fallback: use auth user metadata when profile query fails (e.g. RLS recursion)
@@ -104,7 +103,6 @@ export default function ProtectedLayout({
 
           if (fallbackRole === 'admin' && pathname?.startsWith('/dashboard')) {
             router.push('/admin');
-            return;
           }
         }
 
