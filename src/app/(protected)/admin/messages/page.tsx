@@ -10,7 +10,7 @@ export default async function AdminMessagesPage() {
       {/* Sidebar for Conversations */}
       <div className="w-full md:w-80 border-b md:border-b-0 md:border-r border-[var(--color-glass-border)] bg-[var(--color-bg-glass)] flex flex-col h-full shrink-0">
         <div className="p-4 border-b border-[var(--color-glass-border)]">
-          <h2 className="font-display font-bold text-white">Conversations</h2>
+          <h2 className="font-display font-bold text-[var(--color-text-primary)]">Conversations</h2>
         </div>
         <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
           {/* This will be populated with actual client conversations in Phase 6 */}

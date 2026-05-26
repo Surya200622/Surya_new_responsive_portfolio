@@ -28,7 +28,7 @@ export default async function AdminProjectsPage() {
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-display font-bold text-white mb-1">All Projects</h1>
+          <h1 className="text-2xl font-display font-bold text-[var(--color-text-primary)] mb-1">All Projects</h1>
           <p className="text-sm text-[var(--color-text-muted)]">Overview of all client projects.</p>
         </div>
         
@@ -70,7 +70,7 @@ export default async function AdminProjectsPage() {
                         <Folder className="w-5 h-5 text-[var(--color-accent-primary)]" />
                       </div>
                       <div>
-                        <p className="font-semibold text-white truncate max-w-[200px]">{project.project_name}</p>
+                        <p className="font-semibold text-[var(--color-text-primary)] truncate max-w-[200px]">{project.project_name}</p>
                         <p className="text-xs text-[var(--color-text-muted)] mt-0.5">Created {new Date(project.created_at).toLocaleDateString()}</p>
                       </div>
                     </div>

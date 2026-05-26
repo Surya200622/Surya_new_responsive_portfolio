@@ -32,7 +32,7 @@ export default function RegisterPage() {
     try {
       const validData = registerSchema.parse(formData);
 
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: validData.email,
         password: validData.password,
         options: {
@@ -46,6 +46,12 @@ export default function RegisterPage() {
       });
 
       if (error) throw error;
+
+      // If the user was auto-confirmed (Supabase setting), sign them in directly
+      if (data.user && data.session) {
+        window.location.href = '/dashboard';
+        return;
+      }
       
       setIsSuccess(true);
     } catch (error) {

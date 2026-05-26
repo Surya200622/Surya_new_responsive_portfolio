@@ -26,7 +26,7 @@ export default async function ClientProjectsPage() {
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-display font-bold text-white mb-1">Your Projects</h1>
+          <h1 className="text-2xl font-display font-bold text-[var(--color-text-primary)] mb-1">Your Projects</h1>
           <p className="text-sm text-[var(--color-text-muted)]">Track the status and details of your requested projects.</p>
         </div>
         <Link href="/dashboard/messages" className="btn btn--primary text-sm py-2">
@@ -47,7 +47,7 @@ export default async function ClientProjectsPage() {
                 </span>
               </div>
               
-              <h3 className="text-lg font-display font-bold text-white mb-2">{project.project_name}</h3>
+              <h3 className="text-lg font-display font-bold text-[var(--color-text-primary)] mb-2">{project.project_name}</h3>
               <p className="text-sm text-[var(--color-text-secondary)] line-clamp-2 mb-6 flex-1">
                 {project.description || "No description provided."}
               </p>
@@ -71,7 +71,7 @@ export default async function ClientProjectsPage() {
             <div className="w-16 h-16 rounded-full bg-[var(--color-bg-tertiary)] flex items-center justify-center mx-auto mb-4">
               <Briefcase className="w-8 h-8 text-[var(--color-text-muted)]" />
             </div>
-            <h3 className="text-xl font-display font-bold text-white mb-2">No projects yet</h3>
+            <h3 className="text-xl font-display font-bold text-[var(--color-text-primary)] mb-2">No projects yet</h3>
             <p className="text-[var(--color-text-secondary)] mb-6 max-w-md mx-auto">
               You don't have any active projects right now. Send me a message to get started on your next big idea!
             </p>

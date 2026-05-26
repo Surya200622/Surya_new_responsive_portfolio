@@ -18,7 +18,7 @@ export default async function AdminClientsPage() {
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-display font-bold text-white mb-1">Clients</h1>
+          <h1 className="text-2xl font-display font-bold text-[var(--color-text-primary)] mb-1">Clients</h1>
           <p className="text-sm text-[var(--color-text-muted)]">Manage all your freelance clients.</p>
         </div>
         
@@ -45,11 +45,11 @@ export default async function AdminClientsPage() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-lg font-display font-bold text-white">{client.full_name}</h3>
+                  <h3 className="text-lg font-display font-bold text-[var(--color-text-primary)]">{client.full_name}</h3>
                   <p className="text-xs text-[var(--color-text-muted)]">{client.company_name || 'Individual'}</p>
                 </div>
               </div>
-              <button className="text-[var(--color-text-muted)] hover:text-white transition-colors">
+              <button className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors">
                 <MoreVertical className="w-5 h-5" />
               </button>
             </div>
@@ -57,19 +57,19 @@ export default async function AdminClientsPage() {
             <div className="space-y-2 mb-6">
               <div className="flex items-center gap-3 text-sm text-[var(--color-text-secondary)]">
                 <Mail className="w-4 h-4 text-[var(--color-text-muted)]" />
-                <a href={`mailto:${client.email}`} className="hover:text-white transition-colors truncate">{client.email}</a>
+                <a href={`mailto:${client.email}`} className="hover:text-[var(--color-text-primary)] transition-colors truncate">{client.email}</a>
               </div>
               {client.phone && (
                 <div className="flex items-center gap-3 text-sm text-[var(--color-text-secondary)]">
                   <Phone className="w-4 h-4 text-[var(--color-text-muted)]" />
-                  <a href={`tel:${client.phone}`} className="hover:text-white transition-colors">{client.phone}</a>
+                  <a href={`tel:${client.phone}`} className="hover:text-[var(--color-text-primary)] transition-colors">{client.phone}</a>
                 </div>
               )}
             </div>
 
             <div className="flex items-center justify-between pt-4 border-t border-[var(--color-glass-border)]">
               <div className="text-xs text-[var(--color-text-muted)]">
-                <span className="font-semibold text-white">{client.projects?.[0]?.count || 0}</span> Projects
+                <span className="font-semibold text-[var(--color-text-primary)]">{client.projects?.[0]?.count || 0}</span> Projects
               </div>
               <Link href={`/admin/clients/${client.id}`} className="text-xs font-semibold text-[var(--color-accent-primary)] hover:text-[var(--color-accent-warm)] transition-colors">
                 View Details

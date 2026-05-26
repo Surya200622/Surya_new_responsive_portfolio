@@ -18,7 +18,7 @@ export default async function ClientMessagesPage() {
           </div>
         </div>
         <div>
-          <h2 className="text-lg font-display font-semibold text-white">Surya CS</h2>
+          <h2 className="text-lg font-display font-semibold text-[var(--color-text-primary)]">Surya CS</h2>
           <p className="text-xs text-[var(--color-text-secondary)] flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-green-500"></span> Online
           </p>
