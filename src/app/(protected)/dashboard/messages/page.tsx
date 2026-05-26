@@ -1,12 +1,19 @@
 import { createClient } from '@/lib/supabase/server';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import ChatWindow from '@/components/chat/ChatWindow';
 
 export default async function ClientMessagesPage() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  // Create an admin client to bypass RLS for fetching the admin profile
+  const supabaseAdmin = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
   // Fetch the admin user ID so messages go to the right person
-  const { data: adminProfile } = await supabase
+  const { data: adminProfile } = await supabaseAdmin
     .from('profiles')
     .select('id, full_name, avatar_url')
     .eq('role', 'admin')
