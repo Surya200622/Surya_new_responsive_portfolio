@@ -21,7 +21,7 @@ export default async function ClientMessagesPage() {
       <div className="p-4 border-b border-[var(--color-glass-border)] bg-[var(--color-bg-glass)] flex items-center gap-4">
         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] p-[1px]">
           <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center">
-            <img src="/images/surya-portrait.jpg" alt="Surya" className="w-full h-full rounded-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+            <img src="/images/surya-portrait.jpg" alt="Surya" className="w-full h-full rounded-full object-cover" />
           </div>
         </div>
         <div>
