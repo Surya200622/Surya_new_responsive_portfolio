@@ -54,45 +54,80 @@ export default function ProtectedLayout({
 
   useEffect(() => {
     async function loadProfile() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        router.push('/login');
-        return;
-      }
-
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-
-      if (profileData) {
-        setProfile(profileData);
-        setIsAdmin(profileData.role === 'admin');
-        setSettingsForm({
-          full_name: profileData.full_name || '',
-          company_name: profileData.company_name || '',
-          phone: profileData.phone || '',
-        });
-
-        // If admin is on /dashboard, redirect to /admin
-        if (profileData.role === 'admin' && pathname?.startsWith('/dashboard')) {
-          router.push('/admin');
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          router.push('/login');
           return;
         }
-      }
 
-      // Fetch notifications
-      const { data: notifs } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(10);
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
 
-      if (notifs) {
-        setNotifications(notifs);
-        setUnreadCount(notifs.filter(n => !n.is_read).length);
+        if (profileData) {
+          setProfile(profileData);
+          setIsAdmin(profileData.role === 'admin');
+          setSettingsForm({
+            full_name: profileData.full_name || '',
+            company_name: profileData.company_name || '',
+            phone: profileData.phone || '',
+          });
+
+          // If admin is on /dashboard, redirect to /admin
+          if (profileData.role === 'admin' && pathname?.startsWith('/dashboard')) {
+            router.push('/admin');
+            return;
+          }
+        } else {
+          // Fallback: use auth user metadata when profile query fails (e.g. RLS recursion)
+          console.warn('Profile fetch failed:', profileError?.message);
+          const meta = user.user_metadata;
+          const fallbackRole = meta?.role || 'client';
+          const fallbackProfile: Profile = {
+            id: user.id,
+            full_name: meta?.full_name || user.email?.split('@')[0] || 'User',
+            email: user.email || '',
+            company_name: meta?.company_name || '',
+            phone: meta?.phone || '',
+            role: fallbackRole,
+          };
+          setProfile(fallbackProfile);
+          setIsAdmin(fallbackRole === 'admin');
+          setSettingsForm({
+            full_name: fallbackProfile.full_name,
+            company_name: fallbackProfile.company_name || '',
+            phone: fallbackProfile.phone || '',
+          });
+
+          if (fallbackRole === 'admin' && pathname?.startsWith('/dashboard')) {
+            router.push('/admin');
+            return;
+          }
+        }
+
+        // Fetch notifications (silently fail if table has issues)
+        try {
+          const { data: notifs } = await supabase
+            .from('notifications')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false })
+            .limit(10);
+
+          if (notifs) {
+            setNotifications(notifs);
+            setUnreadCount(notifs.filter(n => !n.is_read).length);
+          }
+        } catch (e) {
+          console.warn('Notifications fetch failed:', e);
+        }
+      } catch (e) {
+        console.error('Layout load error:', e);
+        router.push('/login');
+        return;
       }
 
       setLoading(false);

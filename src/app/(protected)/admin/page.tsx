@@ -27,21 +27,25 @@ export default function AdminOverviewPage() {
 
   useEffect(() => {
     async function loadData() {
-      const { count: cc } = await supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'client');
-      const { count: pc } = await supabase.from('projects').select('*', { count: 'exact', head: true }).neq('status', 'completed').neq('status', 'cancelled');
-      const { count: uc } = await supabase.from('messages').select('*', { count: 'exact', head: true }).eq('is_read', false);
+      try {
+        const { count: cc } = await supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'client');
+        const { count: pc } = await supabase.from('projects').select('*', { count: 'exact', head: true }).neq('status', 'completed').neq('status', 'cancelled');
+        const { count: uc } = await supabase.from('messages').select('*', { count: 'exact', head: true }).eq('is_read', false);
 
-      const { data: clients } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('role', 'client')
-        .order('created_at', { ascending: false })
-        .limit(5);
+        const { data: clients } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('role', 'client')
+          .order('created_at', { ascending: false })
+          .limit(5);
 
-      setClientCount(cc || 0);
-      setProjectCount(pc || 0);
-      setUnreadCount(uc || 0);
-      if (clients) setRecentClients(clients);
+        setClientCount(cc || 0);
+        setProjectCount(pc || 0);
+        setUnreadCount(uc || 0);
+        if (clients) setRecentClients(clients);
+      } catch (e) {
+        console.warn('Admin data load error:', e);
+      }
       setLoading(false);
     }
     loadData();
