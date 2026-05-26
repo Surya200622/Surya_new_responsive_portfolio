@@ -63,6 +63,25 @@ export default function CalculatorSection() {
     window.open(`mailto:cssurya2006@gmail.com?subject=${subject}&body=${body}`, '_blank');
   };
 
+  const handleGetQuote = () => {
+    // Save to localStorage
+    const quoteData = {
+      projectType,
+      pages,
+      uiComplexity,
+      animationLevel,
+      deliverySpeed,
+      selectedPackage,
+      features,
+      pricing,
+      timestamp: new Date().toISOString()
+    };
+    localStorage.setItem('pendingQuote', JSON.stringify(quoteData));
+    
+    // Redirect to dashboard (will redirect to login if not authenticated)
+    window.location.href = '/dashboard/quotations';
+  };
+
   const scrollToContact = () => {
     document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -338,7 +357,7 @@ export default function CalculatorSection() {
             </div>
 
             <div className="calc__total-actions">
-              <button className="btn btn--primary" onClick={scrollToContact}>
+              <button className="btn btn--primary" onClick={handleGetQuote}>
                 Get Quote <ArrowRight size={14} />
               </button>
               <button className="btn btn--glass" onClick={handleWhatsApp}>

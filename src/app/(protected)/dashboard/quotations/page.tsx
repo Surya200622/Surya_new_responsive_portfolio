@@ -1,6 +1,27 @@
-import { FileText, Download } from 'lucide-react';
+import { FileText, Download, CheckCircle, Clock } from 'lucide-react';
+import { createClient } from '@/lib/supabase/server';
+import PendingQuotationHandler from './PendingQuotationHandler';
 
-export default function ClientQuotationsPage() {
+export default async function ClientQuotationsPage() {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  // Fetch quotations and their linked project names
+  const { data: quotations } = await supabase
+    .from('quotations')
+    .select('*, projects(project_name)')
+    .eq('client_id', user?.id)
+    .order('created_at', { ascending: false });
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'accepted': return 'bg-green-500/10 border-green-500/20 text-green-400';
+      case 'sent': return 'bg-blue-500/10 border-blue-500/20 text-blue-400';
+      case 'rejected': return 'bg-red-500/10 border-red-500/20 text-red-400';
+      default: return 'bg-orange-500/10 border-orange-500/20 text-orange-400';
+    }
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div>
@@ -8,15 +29,64 @@ export default function ClientQuotationsPage() {
         <p className="text-sm text-[var(--color-text-muted)]">Review and accept project proposals.</p>
       </div>
 
-      <div className="glass-card-strong p-12 rounded-2xl border border-[var(--color-glass-border)] text-center mt-6">
-        <div className="w-16 h-16 rounded-full bg-[var(--color-bg-tertiary)] flex items-center justify-center mx-auto mb-4">
-          <FileText className="w-8 h-8 text-[var(--color-text-muted)]" />
+      <PendingQuotationHandler />
+
+      {quotations && quotations.length > 0 ? (
+        <div className="grid gap-4">
+          {quotations.map((quote) => (
+            <div key={quote.id} className="glass-card-strong p-6 rounded-2xl border border-[var(--color-glass-border)] flex flex-col md:flex-row md:items-center justify-between gap-4 group hover:border-[var(--color-accent-primary)]/50 transition-colors">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-[var(--color-bg-tertiary)] flex items-center justify-center shrink-0">
+                  <FileText className="w-6 h-6 text-[var(--color-accent-primary)]" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-3 mb-1">
+                    <h3 className="font-display font-bold text-[var(--color-text-primary)]">
+                      {quote.projects?.project_name || 'Project Quotation'}
+                    </h3>
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-medium border ${getStatusColor(quote.status)} uppercase tracking-wider`}>
+                      {quote.status}
+                    </span>
+                  </div>
+                  <p className="text-sm text-[var(--color-text-secondary)] flex items-center gap-2">
+                    <Clock className="w-3.5 h-3.5" />
+                    Generated on {new Date(quote.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between md:justify-end gap-6 w-full md:w-auto mt-2 md:mt-0 pt-4 md:pt-0 border-t md:border-t-0 border-[var(--color-glass-border)]">
+                <div className="text-right">
+                  <p className="text-xs text-[var(--color-text-muted)] uppercase tracking-wider mb-0.5">Total Amount</p>
+                  <p className="font-display font-bold text-lg text-[var(--color-text-primary)]">
+                    ₹{(quote.total || 0).toLocaleString('en-IN')}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <button className="btn btn--glass px-3 py-2" title="Download PDF (Coming Soon)">
+                    <Download size={16} />
+                  </button>
+                  {quote.status !== 'accepted' && (
+                    <button className="btn btn--primary px-4 py-2 flex items-center gap-2">
+                      <CheckCircle size={16} /> Accept
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-        <h3 className="text-xl font-display font-bold text-[var(--color-text-primary)] mb-2">No quotations yet</h3>
-        <p className="text-[var(--color-text-secondary)] max-w-md mx-auto">
-          When we discuss a project, official quotations and proposals will appear here for your review and approval.
-        </p>
-      </div>
+      ) : (
+        <div className="glass-card-strong p-12 rounded-2xl border border-[var(--color-glass-border)] text-center mt-6">
+          <div className="w-16 h-16 rounded-full bg-[var(--color-bg-tertiary)] flex items-center justify-center mx-auto mb-4">
+            <FileText className="w-8 h-8 text-[var(--color-text-muted)]" />
+          </div>
+          <h3 className="text-xl font-display font-bold text-[var(--color-text-primary)] mb-2">No quotations yet</h3>
+          <p className="text-[var(--color-text-secondary)] max-w-md mx-auto">
+            When we discuss a project or you use the pricing calculator, official quotations will appear here.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
