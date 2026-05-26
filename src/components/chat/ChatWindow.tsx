@@ -34,7 +34,7 @@ export default function ChatWindow({ currentUserId, otherUserId }: ChatWindowPro
         ) : messages.length === 0 ? (
           <div className="h-full flex items-center justify-center text-center">
             <div>
-              <p className="text-white font-medium mb-1">No messages yet</p>
+              <p className="text-[var(--color-text-primary)] font-medium mb-1">No messages yet</p>
               <p className="text-[var(--color-text-muted)] text-sm">Send a message to start the conversation.</p>
             </div>
           </div>

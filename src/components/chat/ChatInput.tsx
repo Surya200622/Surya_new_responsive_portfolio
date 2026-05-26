@@ -57,11 +57,11 @@ export default function ChatInput({ onSendMessage, onTyping }: ChatInputProps) {
       {file && (
         <div className="absolute bottom-full left-4 mb-2 p-2 bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg flex items-center gap-3">
           <Paperclip className="w-4 h-4 text-[var(--color-text-secondary)]" />
-          <span className="text-sm text-white max-w-[150px] truncate">{file.name}</span>
+          <span className="text-sm text-[var(--color-text-primary)] max-w-[150px] truncate">{file.name}</span>
           <button 
             type="button" 
             onClick={() => setFile(null)}
-            className="text-[var(--color-text-muted)] hover:text-white"
+            className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
           >
             <X className="w-4 h-4" />
           </button>
@@ -72,7 +72,7 @@ export default function ChatInput({ onSendMessage, onTyping }: ChatInputProps) {
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="p-3 text-[var(--color-text-secondary)] hover:text-white hover:bg-[var(--color-bg-tertiary)] rounded-xl transition-colors shrink-0"
+          className="p-3 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] rounded-xl transition-colors shrink-0"
         >
           <Paperclip className="w-5 h-5" />
         </button>
@@ -89,7 +89,7 @@ export default function ChatInput({ onSendMessage, onTyping }: ChatInputProps) {
             onChange={(e) => setContent(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
-            className="w-full bg-transparent text-sm text-white px-4 py-3 max-h-32 min-h-[44px] outline-none resize-none custom-scrollbar"
+            className="w-full bg-transparent text-sm text-[var(--color-text-primary)] px-4 py-3 max-h-32 min-h-[44px] outline-none resize-none custom-scrollbar"
             rows={1}
             disabled={isSending}
           />

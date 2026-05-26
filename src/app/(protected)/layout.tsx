@@ -256,7 +256,7 @@ export default function ProtectedLayout({
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Top Header */}
-        <header className="h-16 glass-card border-b border-[var(--color-glass-border)] flex items-center justify-between px-6 shrink-0">
+        <header className="h-16 border-b border-[var(--color-glass-border)] flex items-center justify-between px-6 shrink-0" style={{ background: 'var(--color-bg-glass)', backdropFilter: 'blur(24px) saturate(180%)', WebkitBackdropFilter: 'blur(24px) saturate(180%)' }}>
           <div className="md:hidden">
             <Link href="/" className="text-xl font-display font-bold text-[var(--color-text-primary)] tracking-wide">
               Surya CS<span className="text-[var(--color-accent-primary)]">.</span>

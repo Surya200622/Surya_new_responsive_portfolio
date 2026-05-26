@@ -69,7 +69,7 @@ export default async function AdminClientsPage() {
 
             <div className="flex items-center justify-between pt-4 border-t border-[var(--color-glass-border)]">
               <div className="text-xs text-[var(--color-text-muted)]">
-                <span className="font-semibold text-[var(--color-text-primary)]">{client.projects?.[0]?.count || 0}</span> Projects
+                <span className="font-semibold text-[var(--color-text-primary)]">{client.projects?.length || 0}</span> Projects
               </div>
               <Link href={`/admin/clients/${client.id}`} className="text-xs font-semibold text-[var(--color-accent-primary)] hover:text-[var(--color-accent-warm)] transition-colors">
                 View Details
