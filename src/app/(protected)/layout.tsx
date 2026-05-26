@@ -344,15 +344,13 @@ export default function ProtectedLayout({
                       {profile?.role}
                     </span>
                   </div>
-                  {!isAdmin && (
-                    <button
-                      onClick={() => { setShowSettingsModal(true); setShowProfileMenu(false); }}
-                      className="w-full flex items-center gap-3 px-4 py-3 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-glass)] transition-colors"
-                    >
-                      <Settings className="w-4 h-4" />
-                      Account Settings
-                    </button>
-                  )}
+                  <button
+                    onClick={() => { setShowSettingsModal(true); setShowProfileMenu(false); }}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-glass)] transition-colors"
+                  >
+                    <Settings className="w-4 h-4" />
+                    Account Settings
+                  </button>
                   <button
                     onClick={handleSignOut}
                     className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors border-t border-[var(--color-glass-border)]"

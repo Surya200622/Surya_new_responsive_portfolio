@@ -147,7 +147,7 @@ export default function DashboardOverview() {
                       project.status === 'in_progress' ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' :
                       'bg-orange-500/10 border-orange-500/20 text-orange-400'
                     }`}>
-                      {project.status.replace('_', ' ').toUpperCase()}
+                      {project.status?.replace('_', ' ')?.toUpperCase() || 'UNKNOWN'}
                     </span>
                   </Link>
                 ))}

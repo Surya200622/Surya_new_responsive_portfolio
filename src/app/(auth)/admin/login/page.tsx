@@ -11,8 +11,8 @@ import { loginSchema, type LoginInput } from '@/lib/validations/auth';
 export default function AdminLoginPage() {
   const router = useRouter();
   const [formData, setFormData] = useState<LoginInput>({ 
-    email: 'cssurya2006@gmail.com', 
-    password: 'SURYA_ADMIN_SECURE' 
+    email: '', 
+    password: '' 
   });
   const [errors, setErrors] = useState<Partial<Record<keyof LoginInput, string>>>({});
   const [isLoading, setIsLoading] = useState(false);
