@@ -125,10 +125,10 @@ export default function AdminOverviewPage() {
                   <td className="px-6 py-4 font-medium text-[var(--color-text-primary)] flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] p-0.5">
                       <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center text-xs text-[var(--color-text-primary)]">
-                        {client.full_name.charAt(0)}
+                        {client.full_name?.charAt(0)?.toUpperCase() || 'C'}
                       </div>
                     </div>
-                    {client.full_name}
+                    {client.full_name || 'Unnamed Client'}
                   </td>
                   <td className="px-6 py-4 text-[var(--color-text-secondary)]">{client.company_name || '-'}</td>
                   <td className="px-6 py-4 text-[var(--color-text-secondary)]">{new Date(client.created_at).toLocaleDateString()}</td>

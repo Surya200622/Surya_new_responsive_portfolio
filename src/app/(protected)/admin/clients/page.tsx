@@ -40,8 +40,8 @@ export default async function AdminClientsPage() {
             <div className="flex justify-between items-start mb-4">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] p-0.5">
-                  <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center font-bold text-lg">
-                    {client.full_name.charAt(0).toUpperCase()}
+                  <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center font-display font-bold text-lg text-[var(--color-text-primary)]">
+                    {client.full_name?.charAt(0)?.toUpperCase() || 'C'}
                   </div>
                 </div>
                 <div>
