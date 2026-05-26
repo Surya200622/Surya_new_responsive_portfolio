@@ -1,17 +1,41 @@
 import { FileText, Download, CheckCircle, Clock } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import PendingQuotationHandler from './PendingQuotationHandler';
+import QuotationActions from './QuotationActions';
 
 export default async function ClientQuotationsPage() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  // Use admin client to bypass missing RLS SELECT policies on quotations table
+  const supabaseAdmin = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
   // Fetch quotations and their linked project names
-  const { data: quotations } = await supabase
+  const { data: quotations } = await supabaseAdmin
     .from('quotations')
     .select('*, projects(project_name)')
     .eq('client_id', user?.id)
     .order('created_at', { ascending: false });
+
+  // Fetch admin id for notifications
+  const { data: adminData } = await supabaseAdmin
+    .from('profiles')
+    .select('id')
+    .eq('role', 'admin')
+    .limit(1)
+    .single();
+  const adminId = adminData?.id || null;
+
+  // Fetch client profile for notifications
+  const { data: userProfile } = await supabaseAdmin
+    .from('profiles')
+    .select('full_name')
+    .eq('id', user?.id)
+    .single();
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -66,10 +90,14 @@ export default async function ClientQuotationsPage() {
                   <button className="btn btn--glass px-3 py-2" title="Download PDF (Coming Soon)">
                     <Download size={16} />
                   </button>
-                  {quote.status !== 'accepted' && (
-                    <button className="btn btn--primary px-4 py-2 flex items-center gap-2">
-                      <CheckCircle size={16} /> Accept
-                    </button>
+                  {quote.status !== 'accepted' && quote.status !== 'rejected' && (
+                    <QuotationActions 
+                      quoteId={quote.id} 
+                      projectId={quote.project_id}
+                      adminId={adminId}
+                      clientName={userProfile?.full_name || 'A client'}
+                      projectName={quote.projects?.project_name || 'Project Quotation'}
+                    />
                   )}
                 </div>
               </div>

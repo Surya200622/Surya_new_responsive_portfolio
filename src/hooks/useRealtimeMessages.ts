@@ -127,6 +127,24 @@ export function useRealtimeMessages(currentUserId: string, otherUserId: string) 
       throw error;
     }
 
+    // Send a notification to the receiver
+    try {
+      // Need user's name for notification title (optional, could fetch from profile context, but generic is fine for now)
+      await fetch('/api/notifications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: otherUserId,
+          title: 'New Message',
+          message: content.length > 50 ? content.substring(0, 50) + '...' : content,
+          type: 'message',
+          link: '/dashboard/messages' // or /admin/messages
+        })
+      });
+    } catch (notifError) {
+      console.warn('Failed to send message notification:', notifError);
+    }
+
     // Replace temp message with actual message
     setMessages((prev) => prev.map(m => m.id === tempId ? (data as Message) : m));
   };
