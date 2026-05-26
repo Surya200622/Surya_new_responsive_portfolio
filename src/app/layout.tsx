@@ -3,18 +3,19 @@ import '../index.css';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Surya CS | IBM Certified Full-Stack Python Developer | Coimbatore, India',
+  metadataBase: new URL('https://suryadev-nine.vercel.app'),
+  title: 'Surya CS | Full-Stack Python Developer | Coimbatore, India',
   description:
-    'Portfolio of Surya CS, an IBM Certified Full-Stack Python Developer specializing in Django, React, and modern web solutions. View projects, resume, and contact for freelance work.',
+    'Portfolio of Surya CS, an Full-Stack Python Developer specializing in Django, React, and modern web solutions. View projects, resume, and contact for freelance work.',
   keywords:
     'Surya CS, Cssurya, Full Stack Developer, Python Developer, Django, React, Web Development, Coimbatore, Freelance Developer, IBM Certified',
   authors: [{ name: 'Surya CS' }],
   openGraph: {
     type: 'website',
-    url: 'https://suryacs.unaux.com/',
-    title: 'Surya CS | IBM Certified Full-Stack Python Developer',
+    url: 'https://suryadev-nine.vercel.app',
+    title: 'Surya CS | Full-Stack Python Developer',
     description:
-      'Portfolio of Surya CS, an IBM Certified Full-Stack Python Developer specializing in Django, React, and modern web solutions.',
+      'Portfolio of Surya CS, an Full-Stack Python Developer specializing in Django, React, and modern web solutions.',
     images: ['/images/surya-cinematic.jpg'],
     locale: 'en_IN',
   },
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Surya CS | Full-Stack Python Developer',
     description:
-      'IBM Certified Full-Stack Python Developer specializing in Django & React. Based in Coimbatore, India.',
+      'Full-Stack Python Developer specializing in Django & React. Based in Coimbatore, India.',
     images: ['/images/surya-cinematic.jpg'],
   },
 };
@@ -62,9 +63,9 @@ export default function RootLayout({
               '@context': 'https://schema.org',
               '@type': 'Person',
               name: 'Surya CS',
-              url: 'https://suryacs.unaux.com',
+              url: 'https://suryadev-nine.vercel.app',
               image: '/images/surya-cinematic.jpg',
-              jobTitle: 'IBM Certified Full-Stack Python Developer',
+              jobTitle: 'Full-Stack Python Developer',
               description:
                 'B.COM.CA graduate from Sri Ramakrishna College of Arts & Science. IBM & ITC Python Certified. Django & React Specialist.',
               email: 'cssurya2006@gmail.com',
