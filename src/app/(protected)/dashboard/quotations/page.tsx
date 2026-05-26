@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import PendingQuotationHandler from './PendingQuotationHandler';
 import QuotationActions from './QuotationActions';
+import DownloadQuotationButton from '@/components/pdf/DownloadQuotationButton';
 
 export default async function ClientQuotationsPage() {
   const supabase = createClient();
@@ -79,17 +80,19 @@ export default async function ClientQuotationsPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between md:justify-end gap-6 w-full md:w-auto mt-2 md:mt-0 pt-4 md:pt-0 border-t md:border-t-0 border-[var(--color-glass-border)]">
-                <div className="text-right">
-                  <p className="text-xs text-[var(--color-text-muted)] uppercase tracking-wider mb-0.5">Total Amount</p>
-                  <p className="font-display font-bold text-lg text-[var(--color-text-primary)]">
-                    ₹{(quote.total || 0).toLocaleString('en-IN')}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 border-t border-[var(--color-glass-border)]">
+                <div>
+                  <p className="text-xs text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Total Estimated Cost</p>
+                  <p className="text-xl font-display font-bold text-[var(--color-text-primary)]">
+                    ₹{(quote.total_amount || 0).toLocaleString()}
                   </p>
                 </div>
+                
                 <div className="flex gap-2">
-                  <button className="btn btn--glass px-3 py-2" title="Download PDF (Coming Soon)">
-                    <Download size={16} />
-                  </button>
+                  <DownloadQuotationButton 
+                    quote={quote} 
+                    clientName={userProfile?.full_name || 'Client'} 
+                  />
                   {quote.status !== 'accepted' && quote.status !== 'rejected' && (
                     <QuotationActions 
                       quoteId={quote.id} 

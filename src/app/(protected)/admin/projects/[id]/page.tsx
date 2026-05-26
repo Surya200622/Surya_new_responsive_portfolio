@@ -3,6 +3,7 @@ import { ArrowLeft, Folder, Calendar, Clock, FileText, User } from 'lucide-react
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ProjectStatusUpdater from './ProjectStatusUpdater';
+import DownloadQuotationButton from '@/components/pdf/DownloadQuotationButton';
 
 interface ProjectDetailPageProps {
   params: { id: string };
@@ -166,6 +167,10 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                       Generated on {new Date(quote.created_at).toLocaleDateString()}
                     </p>
                   </div>
+                  <DownloadQuotationButton 
+                    quote={quote} 
+                    clientName={clientInfo?.full_name || 'Client'} 
+                  />
                 </div>
               ))}
             </div>

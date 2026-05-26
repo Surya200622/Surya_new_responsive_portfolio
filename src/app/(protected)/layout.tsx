@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { LogOut, Home, MessageSquare, Briefcase, Folder, FileText, Bell, User, Settings, X, ChevronDown } from 'lucide-react';
+import { LogOut, Home, MessageSquare, Briefcase, Folder, FileText, Bell, User, Settings, X, ChevronDown, Menu } from 'lucide-react';
 import { createBrowserClient } from '@supabase/ssr';
 import { useEffect, useState, useRef } from 'react';
 
@@ -39,6 +39,7 @@ export default function ProtectedLayout({
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [settingsForm, setSettingsForm] = useState({ full_name: '', company_name: '', phone: '' });
@@ -253,11 +254,65 @@ export default function ProtectedLayout({
         </div>
       </aside>
 
+      {/* Mobile Sidebar Overlay */}
+      {showMobileMenu && (
+        <div className="md:hidden fixed inset-0 z-[60] flex">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowMobileMenu(false)} />
+          <aside className="relative w-64 max-w-[80%] bg-[var(--color-bg-primary)] border-r border-[var(--color-glass-border)] flex flex-col h-full shadow-2xl animate-in slide-in-from-left duration-300">
+            <div className="p-6 border-b border-[var(--color-glass-border)] flex items-center justify-between">
+              <div>
+                <Link href="/" className="text-xl font-display font-bold text-[var(--color-text-primary)] tracking-wide">
+                  Surya CS<span className="text-[var(--color-accent-primary)]">.</span>
+                </Link>
+                <div className="mt-2 text-xs text-[var(--color-text-muted)] font-medium tracking-wider uppercase">
+                  {isAdmin ? 'Admin Portal' : 'Client Portal'}
+                </div>
+              </div>
+              <button onClick={() => setShowMobileMenu(false)} className="p-2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setShowMobileMenu(false)}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group ${
+                      isActive
+                        ? 'bg-[var(--color-accent-primary)]/10 text-[var(--color-accent-primary)]'
+                        : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-glass)]'
+                    }`}
+                  >
+                    <link.icon className={`w-5 h-5 transition-colors ${isActive ? 'text-[var(--color-accent-primary)]' : 'group-hover:text-[var(--color-accent-primary)]'}`} />
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </nav>
+            <div className="p-4 border-t border-[var(--color-glass-border)]">
+              <button onClick={handleSignOut} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all">
+                <LogOut className="w-5 h-5" />
+                Sign Out
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
+
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Top Header */}
         <header className="h-16 border-b border-[var(--color-glass-border)] flex items-center justify-between px-6 shrink-0 relative z-50" style={{ background: 'var(--color-bg-glass)', backdropFilter: 'blur(24px) saturate(180%)', WebkitBackdropFilter: 'blur(24px) saturate(180%)' }}>
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center gap-3">
+            <button 
+              onClick={() => setShowMobileMenu(true)}
+              className="p-2 -ml-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
             <Link href="/" className="text-xl font-display font-bold text-[var(--color-text-primary)] tracking-wide">
               Surya CS<span className="text-[var(--color-accent-primary)]">.</span>
             </Link>
