@@ -84,7 +84,7 @@ export default async function ClientQuotationsPage() {
                 <div>
                   <p className="text-xs text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Total Estimated Cost</p>
                   <p className="text-xl font-display font-bold text-[var(--color-text-primary)]">
-                    ₹{(quote.total_amount || 0).toLocaleString()}
+                    ₹{(quote.total || 0).toLocaleString()}
                   </p>
                 </div>
                 

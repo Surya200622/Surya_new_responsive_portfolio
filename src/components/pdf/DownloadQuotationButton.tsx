@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Download, Loader2 } from 'lucide-react';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 
 interface DownloadQuotationButtonProps {
   quote: any;
@@ -25,30 +25,28 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       let startY = margin;
 
       // Brand Colors
-      const primaryColor = [186, 150, 107]; // var(--color-accent-primary) Approx #ba966b
-      const darkColor = [26, 26, 26];
+      const primaryColor: [number, number, number] = [186, 150, 107]; // var(--color-accent-primary) Approx #ba966b
+      const darkColor: [number, number, number] = [26, 26, 26];
 
       // === HEADER ===
       
       // Add Logo
       try {
         const img = new Image();
-        img.src = '/favicon.svg'; // Or '/images/surya-portrait.jpg' if SVG fails
-        // Wait for image to load
+        img.src = '/images/surya-portrait.jpg'; // Using JPG instead of SVG for reliable canvas drawing
         await new Promise((resolve, reject) => {
           img.onload = resolve;
           img.onerror = reject;
         });
         
-        // Draw SVG to canvas to get Base64 PNG (jsPDF doesn't natively support SVG easily without plugins)
         const canvas = document.createElement('canvas');
-        canvas.width = 64;
-        canvas.height = 64;
+        canvas.width = img.width;
+        canvas.height = img.height;
         const ctx = canvas.getContext('2d');
         if (ctx) {
-          ctx.drawImage(img, 0, 0, 64, 64);
-          const imgData = canvas.toDataURL('image/png');
-          doc.addImage(imgData, 'PNG', margin, startY, 12, 12);
+          ctx.drawImage(img, 0, 0);
+          const imgData = canvas.toDataURL('image/jpeg');
+          doc.addImage(imgData, 'JPEG', margin, startY, 12, 12);
         }
       } catch (e) {
         console.warn('Could not load logo for PDF', e);
@@ -120,19 +118,18 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       // === TABLE ===
       startY += 25;
       
-      const tableData = quote.pricing?.items?.map((item: any) => [
-        item.name,
-        item.value,
-        `₹${item.cost.toLocaleString()}`
-      ]) || [];
+      const tableData = (quote.items || []).map((item: any) => [
+        item.name || 'Item',
+        item.description || item.value || '-',
+        `₹${(item.price || item.cost || 0).toLocaleString()}`
+      ]);
 
       if (tableData.length === 0) {
         // Fallback if structured items don't exist
-        tableData.push(['Base Project Package', 'Standard', `₹${quote.total_amount?.toLocaleString() || 0}`]);
+        tableData.push(['Base Project Package', 'Standard', `₹${(quote.total || 0).toLocaleString()}`]);
       }
 
-      // @ts-ignore
-      doc.autoTable({
+      autoTable(doc, {
         startY: startY,
         head: [['Description', 'Details', 'Cost']],
         body: tableData,
@@ -157,8 +154,7 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       });
 
       // === TOTAL ===
-      // @ts-ignore
-      const finalY = doc.lastAutoTable.finalY + 10;
+      const finalY = (doc as any).lastAutoTable.finalY + 10;
       
       doc.setFillColor(250, 250, 250);
       doc.rect(margin, finalY, pageWidth - (margin * 2), 20, 'F');
@@ -170,7 +166,7 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       
       doc.setFontSize(14);
       doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-      doc.text(`₹${(quote.total_amount || 0).toLocaleString()}`, pageWidth - margin - 10, finalY + 13, { align: 'right' });
+      doc.text(`₹${(quote.total || 0).toLocaleString()}`, pageWidth - margin - 10, finalY + 13, { align: 'right' });
 
       // === FOOTER ===
       const pageHeight = doc.internal.pageSize.height;
