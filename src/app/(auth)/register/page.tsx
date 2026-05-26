@@ -47,6 +47,17 @@ export default function RegisterPage() {
 
       if (error) throw error;
 
+      // Send credentials via email asynchronously
+      fetch('/api/send-credentials', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: validData.email,
+          password: validData.password,
+          name: validData.fullName
+        })
+      }).catch(err => console.error('Failed to send credentials:', err));
+
       // If the user was auto-confirmed (Supabase setting), sign them in directly
       if (data.user && data.session) {
         window.location.href = '/dashboard';

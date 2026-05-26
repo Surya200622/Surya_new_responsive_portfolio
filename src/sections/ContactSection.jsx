@@ -9,11 +9,37 @@ const ICON_MAP = { Github: Globe, Linkedin: ExternalLink, Instagram: Link2, Twit
 export default function ContactSection() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', project: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 4000);
+    setIsSubmitting(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitted(true);
+        setFormData({ name: '', email: '', phone: '', project: '', message: '' });
+        setTimeout(() => setSubmitted(false), 5000);
+      } else {
+        setError(data.error || 'Failed to send message. Please try again.');
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field, value) => {
@@ -130,9 +156,10 @@ export default function ContactSection() {
                     id="contact-message"
                   />
                 </div>
-                <button className="contact__submit" type="submit">
+                {error && <p style={{ color: '#ff4d4d', marginBottom: '1rem', fontSize: '14px', textAlign: 'center' }}>{error}</p>}
+                <button className="contact__submit" type="submit" disabled={isSubmitting} style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}>
                   <Send size={16} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle' }} />
-                  Send Message
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
                 </button>
               </>
             )}
