@@ -159,6 +159,9 @@ export default function HeroSection() {
             <button className="btn btn--primary" onClick={() => scrollToSection('#projects')}>
               View My Work <ArrowRight size={16} />
             </button>
+            <a href="/resume.pdf" download="Surya_CS_Resume.pdf" className="btn btn--glass" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              Download Resume
+            </a>
             <button className="btn btn--glass" onClick={() => scrollToSection('#contact')}>
               Get In Touch
             </button>

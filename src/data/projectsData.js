@@ -145,7 +145,7 @@ export const TESTIMONIALS = [
 export const SOCIAL_LINKS = [
   { name: 'GitHub', icon: 'Github', url: 'https://github.com/Surya200622' },
   { name: 'LinkedIn', icon: 'Linkedin', url: 'https://linkedin.com/in/suryacs22/' },
-  { name: 'Portfolio', icon: 'Instagram', url: 'https://surya-cs-portfolio.vercel.app' },
+  { name: 'Instagram', icon: 'Instagram', url: 'https://www.instagram.com/surya_codes_/' },
 ];
 
 export const CONTACT_INFO = {

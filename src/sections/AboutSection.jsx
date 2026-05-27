@@ -266,7 +266,7 @@ export default function AboutSection() {
             whileInView="visible"
             viewport={{ once: true }}
           >
-            Technical <span className="text-gradient">Skills</span>
+            My <span className="text-gradient">Skills</span>
           </motion.h2>
 
           <div className="about__skills-grid">
@@ -279,14 +279,8 @@ export default function AboutSection() {
                 viewport={{ once: true, amount: 0.5 }}
                 transition={{ delay: i * 0.05, duration: 0.5 }}
               >
-                <div className="about__skill-header">
-                  <span className="about__skill-name">{skill.name}</span>
-                  <span className="about__skill-percent">{skill.level}%</span>
-                </div>
-                <div className="about__skill-bar">
-                  <div className="about__skill-fill" data-level={skill.level} />
-                </div>
-                <div className="about__skill-category">{skill.category}</div>
+                <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: skill.category === 'Frontend' ? 'var(--color-accent-primary)' : 'var(--color-accent-secondary)' }} />
+                <div className="about__skill-name">{skill.name}</div>
               </motion.div>
             ))}
           </div>

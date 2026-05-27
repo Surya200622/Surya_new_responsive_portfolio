@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     title: 'Surya CS | Full-Stack Python Developer',
     description:
       'Portfolio of Surya CS, an Full-Stack Python Developer specializing in Django, React, and modern web solutions.',
-    images: ['/images/surya-cinematic.jpg'],
+    images: ['/images/surya-portrait.jpg'],
     locale: 'en_IN',
   },
   twitter: {
@@ -24,7 +24,10 @@ export const metadata: Metadata = {
     title: 'Surya CS | Full-Stack Python Developer',
     description:
       'Full-Stack Python Developer specializing in Django & React. Based in Coimbatore, India.',
-    images: ['/images/surya-cinematic.jpg'],
+    images: ['/images/surya-portrait.jpg'],
+  },
+  verification: {
+    google: 'nzjJHjv3TTj8mUzNEFx4RH3ecj-OGGnMglPAKj3IubQ',
   },
 };
 
@@ -64,7 +67,7 @@ export default function RootLayout({
               '@type': 'Person',
               name: 'Surya CS',
               url: 'https://suryadev-nine.vercel.app',
-              image: '/images/surya-cinematic.jpg',
+              image: '/images/surya-portrait.jpg',
               jobTitle: 'Full-Stack Python Developer',
               description:
                 'B.COM.CA graduate from Sri Ramakrishna College of Arts & Science. IBM & ITC Python Certified. Django & React Specialist.',
@@ -74,6 +77,7 @@ export default function RootLayout({
                 '@type': 'PostalAddress',
                 addressLocality: 'Coimbatore',
                 addressRegion: 'Tamil Nadu',
+                postalCode: '641027',
                 addressCountry: 'India',
               },
               alumniOf: {
@@ -83,7 +87,8 @@ export default function RootLayout({
               sameAs: [
                 'https://github.com/Surya200622',
                 'https://linkedin.com/in/suryacs22/',
-                'https://surya-cs-portfolio.vercel.app',
+                'https://suryadev-nine.vercel.app',
+                'https://www.instagram.com/surya_codes_/'
               ],
             }),
           }}
