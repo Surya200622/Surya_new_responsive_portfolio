@@ -121,12 +121,12 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       const tableData = (quote.items || []).map((item: any) => [
         item.name || 'Item',
         item.description || item.value || '-',
-        `₹${(item.price || item.cost || 0).toLocaleString()}`
+        `Rs. ${(item.price || item.cost || 0).toLocaleString()}`
       ]);
 
       if (tableData.length === 0) {
         // Fallback if structured items don't exist
-        tableData.push(['Base Project Package', 'Standard', `₹${(quote.total || 0).toLocaleString()}`]);
+        tableData.push(['Base Project Package', 'Standard', `Rs. ${(quote.total || 0).toLocaleString()}`]);
       }
 
       autoTable(doc, {
@@ -166,7 +166,7 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       
       doc.setFontSize(14);
       doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-      doc.text(`₹${(quote.total || 0).toLocaleString()}`, pageWidth - margin - 10, finalY + 13, { align: 'right' });
+      doc.text(`Rs. ${(quote.total || 0).toLocaleString()}`, pageWidth - margin - 10, finalY + 13, { align: 'right' });
 
       // === FOOTER ===
       const pageHeight = doc.internal.pageSize.height;

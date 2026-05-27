@@ -60,7 +60,7 @@ export default function CalculatorSection() {
 
   const handleEmail = () => {
     const { subject, body } = generateEmailBody(state, pricing);
-    window.open(`mailto:cssurya2006@gmail.com?subject=${subject}&body=${body}`, '_blank');
+    window.location.href = `mailto:cssurya2006@gmail.com?subject=${subject}&body=${body}`;
   };
 
   const handleGetQuote = () => {
@@ -229,52 +229,7 @@ export default function CalculatorSection() {
               </div>
             </div>
 
-            {/* Feature Toggles */}
-            <div className="calc__step-label" style={{ marginTop: 'var(--space-2xl)' }}>Features</div>
-            <div className="calc__features-grid">
-              {booleanFeatures.map(([key, feat]) => {
-                const IconComp = ICON_MAP[feat.icon] || Code;
-                return (
-                  <div
-                    key={key}
-                    className={`calc__feature-card${features[key] ? ' calc__feature-card--active' : ''}`}
-                    onClick={() => toggleFeature(key)}
-                  >
-                    <div className="calc__feature-left">
-                      <div className="calc__feature-icon"><IconComp size={18} /></div>
-                      <div className="calc__feature-info">
-                        <span className="calc__feature-name">{feat.label}</span>
-                        <span className="calc__feature-cost">+₹{feat.cost.toLocaleString('en-IN')}</span>
-                      </div>
-                    </div>
-                    <label className="calc__toggle" onClick={(e) => e.stopPropagation()}>
-                      <input
-                        type="checkbox"
-                        checked={features[key]}
-                        onChange={() => toggleFeature(key)}
-                      />
-                      <span className="calc__toggle-slider" />
-                    </label>
-                  </div>
-                );
-              })}
-            </div>
 
-            {/* API Integrations Slider */}
-            <div className="calc__slider-group">
-              <div className="calc__slider-header">
-                <span className="calc__slider-label">API Integrations</span>
-                <span className="calc__slider-value">{features.apiIntegrations}</span>
-              </div>
-              <input
-                type="range"
-                className="calc__slider"
-                min="0"
-                max="20"
-                value={features.apiIntegrations}
-                onChange={(e) => setFeatures(prev => ({ ...prev, apiIntegrations: Number(e.target.value) }))}
-              />
-            </div>
 
             {/* Maintenance */}
             <div className="calc__radio-group">

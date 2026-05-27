@@ -32,7 +32,16 @@ export default function Navbar({ theme, toggleTheme }) {
 
   const scrollTo = (href) => {
     setMobileOpen(false);
-    const el = document.querySelector(href);
+    
+    // If not on home page and trying to go to a hash section, navigate to home first
+    if (window.location.pathname !== '/' && href.startsWith('/#')) {
+      window.location.href = href;
+      return;
+    }
+    
+    // On home page, just scroll to the section
+    const selector = href.startsWith('/#') ? href.substring(1) : href;
+    const el = document.querySelector(selector);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 

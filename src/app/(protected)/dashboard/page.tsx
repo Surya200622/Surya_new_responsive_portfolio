@@ -130,7 +130,7 @@ export default function DashboardOverview() {
             {projects.length > 0 ? (
               <div className="space-y-2">
                 {projects.map(project => (
-                  <Link href={`/dashboard/projects/${project.id}`} key={project.id} className="flex items-center justify-between p-4 rounded-xl hover:bg-[var(--color-bg-glass-strong)] transition-colors group">
+                  <Link href={`/dashboard/projects`} key={project.id} className="flex items-center justify-between p-4 rounded-xl hover:bg-[var(--color-bg-glass-strong)] transition-colors group">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 rounded-lg bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] flex items-center justify-center">
                         <Folder className="w-5 h-5 text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent-primary)] transition-colors" />
