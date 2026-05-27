@@ -60,7 +60,7 @@ export default function CalculatorSection() {
 
   const handleEmail = () => {
     const { subject, body } = generateEmailBody(state, pricing);
-    window.location.href = `mailto:cssurya2006@gmail.com?subject=${subject}&body=${body}`;
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=cssurya2006@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
   };
 
   const handleGetQuote = () => {

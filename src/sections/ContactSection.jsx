@@ -182,7 +182,7 @@ export default function ContactSection() {
                 <div className="contact__detail-icon"><Mail size={20} /></div>
                 <div>
                   <div className="contact__detail-label">Email</div>
-                  <a href={`mailto:${CONTACT_INFO.email}`} className="contact__detail-text">{CONTACT_INFO.email}</a>
+                  <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_INFO.email}`} target="_blank" rel="noopener noreferrer" className="contact__detail-text">{CONTACT_INFO.email}</a>
                 </div>
               </div>
               <div className="contact__detail-item">
@@ -212,7 +212,9 @@ export default function ContactSection() {
               </a>
               <a
                 className="btn btn--glass"
-                href={`mailto:${CONTACT_INFO.email}`}
+                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_INFO.email}`}
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <Mail size={14} /> Email
               </a>
