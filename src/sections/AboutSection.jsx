@@ -14,7 +14,7 @@ const ICON_MAP = { Briefcase, Heart, Award, Code };
 const STORY_BLOCKS = [
   {
     title: 'Who I Am',
-    text: 'I\'m Surya CS — an IBM Certified Full-Stack Python Developer based in Coimbatore, India. I\'m a B.COM.CA graduate from Sri Ramakrishna College of Arts & Science with IBM & ITC Python certifications. I don\'t just build websites — I craft digital experiences.',
+    text: 'I\'m Surya CS — an Full-Stack Python Developer based in Coimbatore, India. I\'m a B.COM.CA graduate from Sri Ramakrishna College of Arts & Science with IBM & ITC Python certifications. I don\'t just build websites — I craft digital experiences.',
   },
   {
     title: 'What I Do',
