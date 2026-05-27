@@ -225,31 +225,16 @@ export default function AboutSection() {
             <div className="about__timeline-items">
               {TIMELINE_DATA.map((item, i) => (
                 <div key={item.year} className="about__timeline-item">
-                  {i % 2 === 0 ? (
-                    <>
-                      <div className="about__timeline-card">
-                        <h4 className="about__timeline-title">{item.title}</h4>
-                        <p className="about__timeline-desc">{item.description}</p>
-                      </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem' }}>
-                        <div className={`about__timeline-dot${item.type === 'current' ? ' about__timeline-dot--current' : ''}`} />
-                        <span className="about__timeline-year">{item.year}</span>
-                      </div>
-                      <div className="about__timeline-spacer" />
-                    </>
-                  ) : (
-                    <>
-                      <div className="about__timeline-spacer" />
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem' }}>
-                        <div className={`about__timeline-dot${item.type === 'current' ? ' about__timeline-dot--current' : ''}`} />
-                        <span className="about__timeline-year">{item.year}</span>
-                      </div>
-                      <div className="about__timeline-card">
-                        <h4 className="about__timeline-title">{item.title}</h4>
-                        <p className="about__timeline-desc">{item.description}</p>
-                      </div>
-                    </>
-                  )}
+                  <div className={`about__timeline-content ${i % 2 === 0 ? 'about__timeline-content--left' : 'about__timeline-content--right'}`}>
+                    <div className="about__timeline-card">
+                      <h4 className="about__timeline-title">{item.title}</h4>
+                      <p className="about__timeline-desc">{item.description}</p>
+                    </div>
+                  </div>
+                  <div className="about__timeline-center">
+                    <div className={`about__timeline-dot${item.type === 'current' ? ' about__timeline-dot--current' : ''}`} />
+                    <span className="about__timeline-year">{item.year}</span>
+                  </div>
                 </div>
               ))}
             </div>

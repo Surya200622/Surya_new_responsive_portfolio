@@ -226,6 +226,22 @@
   transform: translateY(30px);
 }
 
+.about__timeline-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  grid-column: 2;
+}
+
+.about__timeline-content--left {
+  grid-column: 1;
+}
+
+.about__timeline-content--right {
+  grid-column: 3;
+}
+
 .about__timeline-dot {
   width: 16px;
   height: 16px;
@@ -277,10 +293,6 @@
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
   line-height: 1.7;
-}
-
-.about__timeline-spacer {
-  /* empty spacer for grid alignment */
 }
 
 /* Skills */
@@ -370,8 +382,13 @@
     gap: var(--space-md);
   }
 
-  .about__timeline-spacer {
-    display: none;
+  .about__timeline-center {
+    grid-column: 1;
+  }
+
+  .about__timeline-content--left,
+  .about__timeline-content--right {
+    grid-column: 2;
   }
 
   .about__timeline-year {
