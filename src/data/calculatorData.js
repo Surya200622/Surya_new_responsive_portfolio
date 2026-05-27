@@ -298,22 +298,22 @@ export function generateEmailBody(state, pricing) {
 
   const pkg = PACKAGES.find(p => p.id === state.selectedPackage);
 
-  const subject = encodeURIComponent(`Project Inquiry: ${projectType?.name || 'Custom Project'}`);
-  let body = `Hello Surya,%0D%0A%0D%0A`;
-  body += `I am interested in your web development services.%0D%0A%0D%0A`;
-  body += `Project Type: ${projectType?.name || 'Custom'}%0D%0A`;
-  body += `Package: ${pkg?.name || 'Custom'}%0D%0A%0D%0A`;
+  const subject = `Project Inquiry: ${projectType?.name || 'Custom Project'}`;
+  let body = `Hello Surya,\n\n`;
+  body += `I am interested in your web development services.\n\n`;
+  body += `Project Type: ${projectType?.name || 'Custom'}\n`;
+  body += `Package: ${pkg?.name || 'Custom'}\n\n`;
 
   if (enabledFeatures.length > 0) {
-    body += `Selected Features:%0D%0A`;
-    enabledFeatures.forEach(f => { body += `• ${f}%0D%0A`; });
-    body += `%0D%0A`;
+    body += `Selected Features:\n`;
+    enabledFeatures.forEach(f => { body += `• ${f}\n`; });
+    body += `\n`;
   }
 
-  body += `Estimated Budget: ₹${pricing.total.toLocaleString('en-IN')}%0D%0A`;
-  body += `Estimated Timeline: ${pricing.timeline} Days%0D%0A`;
-  body += `Complexity: ${pricing.complexity}%0D%0A%0D%0A`;
-  body += `Please contact me to discuss this project further.%0D%0A%0D%0A`;
+  body += `Estimated Budget: ₹${pricing.total.toLocaleString('en-IN')}\n`;
+  body += `Estimated Timeline: ${pricing.timeline} Days\n`;
+  body += `Complexity: ${pricing.complexity}\n\n`;
+  body += `Please contact me to discuss this project further.\n\n`;
   body += `Best regards`;
 
   return { subject, body };
