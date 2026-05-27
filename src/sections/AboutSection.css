@@ -288,13 +288,34 @@
   padding: var(--space-3xl) 0;
 }
 
-.about__skills-grid {
+.about__skills-marquee {
+  width: 100%;
+  overflow: hidden;
+  padding: var(--space-lg) 0;
+  position: relative;
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.about__skills-track {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  width: max-content;
+  animation: scroll-marquee 25s linear infinite;
+}
+
+.about__skills-track:hover {
+  animation-play-state: paused;
+}
+
+.about__skills-group {
+  display: flex;
   gap: var(--space-md);
-  max-width: 900px;
-  margin: 0 auto;
+  padding-right: var(--space-md);
+}
+
+@keyframes scroll-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 .about__skill-card {

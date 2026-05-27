@@ -269,20 +269,27 @@ export default function AboutSection() {
             My <span className="text-gradient">Skills</span>
           </motion.h2>
 
-          <div className="about__skills-grid">
-            {SKILLS.map((skill, i) => (
-              <motion.div
-                key={skill.name}
-                className="about__skill-card"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ delay: i * 0.05, duration: 0.5 }}
-              >
-                <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: skill.category === 'Frontend' ? 'var(--color-accent-primary)' : 'var(--color-accent-secondary)' }} />
-                <div className="about__skill-name">{skill.name}</div>
-              </motion.div>
-            ))}
+          <div className="about__skills-marquee">
+            <div className="about__skills-track">
+              {/* Group 1 */}
+              <div className="about__skills-group">
+                {SKILLS.map((skill) => (
+                  <div key={`g1-${skill.name}`} className="about__skill-card">
+                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: skill.category === 'Frontend' ? 'var(--color-accent-primary)' : 'var(--color-accent-secondary)' }} />
+                    <div className="about__skill-name">{skill.name}</div>
+                  </div>
+                ))}
+              </div>
+              {/* Group 2 */}
+              <div className="about__skills-group">
+                {SKILLS.map((skill) => (
+                  <div key={`g2-${skill.name}`} className="about__skill-card">
+                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: skill.category === 'Frontend' ? 'var(--color-accent-primary)' : 'var(--color-accent-secondary)' }} />
+                    <div className="about__skill-name">{skill.name}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
