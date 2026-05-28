@@ -1,20 +1,22 @@
-import { MetadataRoute } from 'next';
+import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://suryadev-nine.vercel.app';
-
   return [
     {
-      url: `${baseUrl}/`,
+      url: 'https://suryadev-nine.vercel.app',
       lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1,
     },
     {
-      url: `${baseUrl}/login`,
+      url: 'https://suryadev-nine.vercel.app/about',
       lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
     },
-  ];
+    {
+      url: 'https://suryadev-nine.vercel.app/projects',
+      lastModified: new Date(),
+    },
+    {
+      url: 'https://suryadev-nine.vercel.app/contact',
+      lastModified: new Date(),
+    },
+  ]
 }
