@@ -1,22 +1,33 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const baseUrl = 'https://suryadev-nine.vercel.app'
+  const lastModified = new Date('2026-05-28T03:24:56.786Z')
+
   return [
     {
-      url: 'https://suryadev-nine.vercel.app',
-      lastModified: new Date(),
+      url: baseUrl,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 1.0,
     },
     {
-      url: 'https://suryadev-nine.vercel.app/about',
-      lastModified: new Date(),
+      url: `${baseUrl}/about`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.8,
     },
     {
-      url: 'https://suryadev-nine.vercel.app/projects',
-      lastModified: new Date(),
+      url: `${baseUrl}/projects`,
+      lastModified,
+      changeFrequency: 'weekly',
+      priority: 0.9,
     },
     {
-      url: 'https://suryadev-nine.vercel.app/contact',
-      lastModified: new Date(),
+      url: `${baseUrl}/contact`,
+      lastModified,
+      changeFrequency: 'yearly',
+      priority: 0.7,
     },
   ]
 }
