@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const FLOATING_STATS = [
   { value: '3+', label: 'Projects', icon: Briefcase },
-  { value: 'IBM', label: 'Certified', icon: Award },
+  { value: 'IBM & ITC', label: 'Trained', icon: Award },
   { value: '10+', label: 'Technologies', icon: Heart },
 ];
 
@@ -113,7 +113,7 @@ export default function HeroSection() {
           >
             <img
               src="/images/surya-portrait.jpg"
-              alt="Surya CS — IBM Certified Full-Stack Python Developer"
+              alt="Surya CS — Full-Stack Python Developer"
               className="hero__portrait-img"
               loading="eager"
             />
@@ -151,7 +151,7 @@ export default function HeroSection() {
           </motion.h1>
 
           <motion.p className="hero__subtitle" variants={itemVariants}>
-            IBM Certified Full-Stack Python Developer crafting modern, blazing-fast
+            Full-Stack Python Developer crafting modern, blazing-fast
             web solutions with Django & React. Based in Coimbatore, India.
           </motion.p>
 

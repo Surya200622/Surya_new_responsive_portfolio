@@ -72,9 +72,9 @@ export const TIMELINE_DATA = [
   },
   {
     year: '2024',
-    title: 'IBM & ITC Python Certifications',
+    title: 'IBM & ITC Python Pandas & NumPy Training',
     description:
-      'Earned IBM Certified Python Developer and ITC Python Certificate, solidifying my full-stack development foundations with industry-recognized credentials.',
+      'Completed IBM & ITC collaborative training in Python Pandas & NumPy, building strong data analysis and manipulation foundations with hands-on project experience.',
     type: 'milestone',
   },
   {

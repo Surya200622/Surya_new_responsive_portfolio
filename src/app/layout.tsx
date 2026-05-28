@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description:
     'Portfolio of Surya CS, an Full-Stack Python Developer specializing in Django, React, and modern web solutions. View projects, resume, and contact for freelance work.',
   keywords:
-    'Surya CS, Cssurya, Full Stack Developer, Python Developer, Django, React, Web Development, Coimbatore, Freelance Developer, IBM Certified',
+    'Surya CS, Cssurya, Full Stack Developer, Python Developer, Django, React, Web Development, Coimbatore, Freelance Developer',
   authors: [{ name: 'Surya CS' }],
   openGraph: {
     type: 'website',
@@ -70,7 +70,7 @@ export default function RootLayout({
               image: '/images/surya-portrait.jpg',
               jobTitle: 'Full-Stack Python Developer',
               description:
-                'B.COM.CA graduate from Sri Ramakrishna College of Arts & Science. IBM & ITC Python Certified. Django & React Specialist.',
+                'B.COM.CA graduate from Sri Ramakrishna College of Arts & Science. IBM & ITC trained in Python Pandas & NumPy. Django & React Specialist.',
               email: 'cssurya2006@gmail.com',
               telephone: '+918220443165',
               address: {

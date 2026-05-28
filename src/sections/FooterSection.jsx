@@ -36,7 +36,7 @@ export default function FooterSection() {
               Surya CS<span className="footer__logo-dot">.</span>
             </div>
             <p className="footer__brand-desc">
-              IBM Certified Full-Stack Python Developer crafting modern web solutions with Django & React from Coimbatore, India.
+              Full-Stack Python Developer crafting modern web solutions with Django & React from Coimbatore, India.
             </p>
           </div>
 
