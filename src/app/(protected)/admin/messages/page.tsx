@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 import ChatWindow from '@/components/chat/ChatWindow';
-import { MessageSquare, Search } from 'lucide-react';
+import { MessageSquare, Search, ArrowLeft } from 'lucide-react';
 
 interface ClientProfile {
   id: string;
@@ -138,7 +138,7 @@ export default function AdminMessagesPage() {
   return (
     <div className="h-[calc(100vh-8rem)] flex flex-col md:flex-row glass-card-strong rounded-2xl border border-[var(--color-glass-border)] overflow-hidden">
       {/* Sidebar — Client List */}
-      <div className="w-full md:w-80 border-b md:border-b-0 md:border-r border-[var(--color-glass-border)] bg-[var(--color-bg-glass)] flex flex-col h-full shrink-0">
+      <div className={`w-full md:w-80 border-b md:border-b-0 md:border-r border-[var(--color-glass-border)] bg-[var(--color-bg-glass)] flex-col h-full shrink-0 ${selectedClient ? 'hidden md:flex' : 'flex'}`}>
         <div className="p-4 border-b border-[var(--color-glass-border)] space-y-3">
           <h2 className="font-display font-bold text-[var(--color-text-primary)]">Conversations</h2>
           <div className="relative">
@@ -214,11 +214,18 @@ export default function AdminMessagesPage() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 bg-[var(--color-bg-primary)]/50 overflow-hidden flex flex-col">
+      <div className={`flex-1 bg-[var(--color-bg-primary)]/50 overflow-hidden flex-col ${!selectedClient ? 'hidden md:flex' : 'flex'}`}>
         {selectedClient && currentUserId ? (
           <>
             {/* Chat header */}
             <div className="p-4 border-b border-[var(--color-glass-border)] bg-[var(--color-bg-glass)] flex items-center gap-3 shrink-0">
+              {/* Mobile back button */}
+              <button
+                onClick={() => setSelectedClient('')}
+                className="md:hidden p-1.5 -ml-1 rounded-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-tertiary)] transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </button>
               <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] p-0.5">
                 <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center text-sm font-display font-bold text-[var(--color-text-primary)]">
                   {selectedClientProfile?.full_name?.charAt(0)?.toUpperCase() || 'C'}

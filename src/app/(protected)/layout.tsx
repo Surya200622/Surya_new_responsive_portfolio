@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { LogOut, Home, MessageSquare, Briefcase, Folder, FileText, Bell, User, Settings, X, ChevronDown, Menu } from 'lucide-react';
+import { LogOut, Home, MessageSquare, Briefcase, Folder, FileText, Bell, User, Settings, X, ChevronDown, Menu, Trash2, CheckSquare, Square } from 'lucide-react';
 import { createBrowserClient } from '@supabase/ssr';
 import { useEffect, useState, useRef } from 'react';
 
@@ -44,6 +44,8 @@ export default function ProtectedLayout({
   const [unreadCount, setUnreadCount] = useState(0);
   const [settingsForm, setSettingsForm] = useState({ full_name: '', company_name: '', phone: '' });
   const [saving, setSaving] = useState(false);
+  const [selectedNotifIds, setSelectedNotifIds] = useState<Set<string>>(new Set());
+  const [clearingNotifs, setClearingNotifs] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
@@ -167,6 +169,64 @@ export default function ProtectedLayout({
 
     setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
     setUnreadCount(0);
+  };
+
+  const toggleNotifSelection = (id: string) => {
+    setSelectedNotifIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedNotifIds.size === notifications.length) {
+      setSelectedNotifIds(new Set());
+    } else {
+      setSelectedNotifIds(new Set(notifications.map(n => n.id)));
+    }
+  };
+
+  const handleClearSelected = async () => {
+    if (selectedNotifIds.size === 0) return;
+    setClearingNotifs(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setClearingNotifs(false); return; }
+
+    const ids = Array.from(selectedNotifIds);
+    await supabase
+      .from('notifications')
+      .delete()
+      .in('id', ids)
+      .eq('user_id', user.id);
+
+    setNotifications(prev => {
+      const remaining = prev.filter(n => !selectedNotifIds.has(n.id));
+      setUnreadCount(remaining.filter(n => !n.is_read).length);
+      return remaining;
+    });
+    setSelectedNotifIds(new Set());
+    setClearingNotifs(false);
+  };
+
+  const handleClearAll = async () => {
+    setClearingNotifs(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setClearingNotifs(false); return; }
+
+    await supabase
+      .from('notifications')
+      .delete()
+      .eq('user_id', user.id);
+
+    setNotifications([]);
+    setUnreadCount(0);
+    setSelectedNotifIds(new Set());
+    setClearingNotifs(false);
   };
 
   const handleSaveSettings = async () => {
@@ -341,23 +401,80 @@ export default function ProtectedLayout({
 
               {showNotifications && (
                 <div className="absolute right-0 top-12 w-80 glass-card-strong rounded-2xl border border-[var(--color-glass-border)] shadow-xl z-50 overflow-hidden">
+                  {/* Header */}
                   <div className="flex items-center justify-between p-4 border-b border-[var(--color-glass-border)]">
                     <h3 className="text-sm font-display font-bold text-[var(--color-text-primary)]">Notifications</h3>
-                    {unreadCount > 0 && (
-                      <button onClick={handleMarkAllRead} className="text-xs text-[var(--color-accent-primary)] hover:text-[var(--color-accent-warm)] transition-colors">
-                        Mark all read
-                      </button>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {unreadCount > 0 && (
+                        <button onClick={handleMarkAllRead} className="text-xs text-[var(--color-accent-primary)] hover:text-[var(--color-accent-warm)] transition-colors">
+                          Mark all read
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  <div className="max-h-80 overflow-y-auto custom-scrollbar">
+
+                  {/* Selection toolbar */}
+                  {notifications.length > 0 && (
+                    <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--color-glass-border)] bg-[var(--color-bg-glass)]">
+                      <button
+                        onClick={toggleSelectAll}
+                        className="flex items-center gap-1.5 text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+                      >
+                        {selectedNotifIds.size === notifications.length ? (
+                          <CheckSquare className="w-3.5 h-3.5 text-[var(--color-accent-primary)]" />
+                        ) : (
+                          <Square className="w-3.5 h-3.5" />
+                        )}
+                        {selectedNotifIds.size === notifications.length ? 'Deselect all' : 'Select all'}
+                      </button>
+                      <div className="flex items-center gap-2">
+                        {selectedNotifIds.size > 0 && (
+                          <button
+                            onClick={handleClearSelected}
+                            disabled={clearingNotifs}
+                            className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors disabled:opacity-50"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                            Clear ({selectedNotifIds.size})
+                          </button>
+                        )}
+                        <button
+                          onClick={handleClearAll}
+                          disabled={clearingNotifs}
+                          className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors disabled:opacity-50"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                          Clear all
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Notification items */}
+                  <div className="max-h-72 overflow-y-auto custom-scrollbar">
                     {notifications.length > 0 ? (
                       notifications.map(notif => (
-                        <div key={notif.id} className={`p-4 border-b border-[var(--color-glass-border)] last:border-0 hover:bg-[var(--color-bg-glass)] transition-colors ${!notif.is_read ? 'bg-[var(--color-accent-primary)]/5' : ''}`}>
+                        <div
+                          key={notif.id}
+                          className={`p-4 border-b border-[var(--color-glass-border)] last:border-0 hover:bg-[var(--color-bg-glass)] transition-colors cursor-pointer ${
+                            !notif.is_read ? 'bg-[var(--color-accent-primary)]/5' : ''
+                          } ${selectedNotifIds.has(notif.id) ? 'bg-[var(--color-accent-primary)]/10' : ''}`}
+                          onClick={() => toggleNotifSelection(notif.id)}
+                        >
                           <div className="flex items-start gap-3">
+                            {/* Checkbox */}
+                            <div className="shrink-0 mt-0.5">
+                              {selectedNotifIds.has(notif.id) ? (
+                                <CheckSquare className="w-4 h-4 text-[var(--color-accent-primary)]" />
+                              ) : (
+                                <Square className="w-4 h-4 text-[var(--color-text-muted)]" />
+                              )}
+                            </div>
+                            {/* Unread dot */}
                             {!notif.is_read && <div className="w-2 h-2 rounded-full bg-[var(--color-accent-primary)] mt-1.5 shrink-0" />}
-                            <div className={!notif.is_read ? '' : 'ml-5'}>
+                            <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium text-[var(--color-text-primary)]">{notif.title}</p>
-                              <p className="text-xs text-[var(--color-text-secondary)] mt-1">{notif.message}</p>
+                              <p className="text-xs text-[var(--color-text-secondary)] mt-1 line-clamp-2">{notif.message}</p>
                               <p className="text-[10px] text-[var(--color-text-muted)] mt-2">{new Date(notif.created_at).toLocaleString()}</p>
                             </div>
                           </div>
@@ -418,7 +535,7 @@ export default function ProtectedLayout({
         </header>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-3 md:p-6">
           <div className="max-w-6xl mx-auto">
             {children}
           </div>
