@@ -3,7 +3,7 @@ import '../index.css';
 import './globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://suryadev-nine.vercel.app'),
+  metadataBase: new URL('https://suryacs.is-a.dev'),
   title: 'Surya CS | Full-Stack Python Developer | Coimbatore, India',
   description:
     'Portfolio of Surya CS, an Full-Stack Python Developer specializing in Django, React, and modern web solutions. View projects, resume, and contact for freelance work.',
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   authors: [{ name: 'Surya CS' }],
   openGraph: {
     type: 'website',
-    url: 'https://suryadev-nine.vercel.app',
+    url: 'https://suryacs.is-a.dev',
     title: 'Surya CS | Full-Stack Python Developer',
     description:
       'Portfolio of Surya CS, an Full-Stack Python Developer specializing in Django, React, and modern web solutions.',
@@ -66,7 +66,7 @@ export default function RootLayout({
               '@context': 'https://schema.org',
               '@type': 'Person',
               name: 'Surya CS',
-              url: 'https://suryadev-nine.vercel.app',
+              url: 'https://suryacs.is-a.dev',
               image: '/images/surya-portrait.jpg',
               jobTitle: 'Full-Stack Python Developer',
               description:
@@ -87,7 +87,7 @@ export default function RootLayout({
               sameAs: [
                 'https://github.com/Surya200622',
                 'https://linkedin.com/in/suryacs22/',
-                'https://suryadev-nine.vercel.app',
+                'https://suryacs.is-a.dev',
                 'https://www.instagram.com/surya_codes_/'
               ],
             }),
