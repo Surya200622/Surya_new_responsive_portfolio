@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     url: 'https://suryacs.is-a.dev',
+    siteName: 'Surya CS',
     title: 'Surya CS | Full-Stack Python Developer',
     description:
       'Portfolio of Surya CS, an Full-Stack Python Developer specializing in Django, React, and modern web solutions.',
@@ -54,43 +55,49 @@ export default function RootLayout({
           rel="stylesheet"
         />
 
-        {/* Favicon */}
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="theme-color" content="#0a0a0f" />
 
         {/* Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'Person',
-              name: 'Surya CS',
-              url: 'https://suryacs.is-a.dev',
-              image: '/images/surya-portrait.jpg',
-              jobTitle: 'Full-Stack Python Developer',
-              description:
-                'B.COM.CA graduate from Sri Ramakrishna College of Arts & Science. IBM & ITC trained in Python Pandas & NumPy. Django & React Specialist.',
-              email: 'cssurya2006@gmail.com',
-              telephone: '+918220443165',
-              address: {
-                '@type': 'PostalAddress',
-                addressLocality: 'Coimbatore',
-                addressRegion: 'Tamil Nadu',
-                postalCode: '641027',
-                addressCountry: 'India',
+            __html: JSON.stringify([
+              {
+                '@context': 'https://schema.org',
+                '@type': 'WebSite',
+                name: 'Surya CS',
+                url: 'https://suryacs.is-a.dev'
               },
-              alumniOf: {
-                '@type': 'CollegeOrUniversity',
-                name: 'Sri Ramakrishna College of Arts & Science',
-              },
-              sameAs: [
-                'https://github.com/Surya200622',
-                'https://linkedin.com/in/suryacs22/',
-                'https://suryacs.is-a.dev',
-                'https://www.instagram.com/surya_codes_/'
-              ],
-            }),
+              {
+                '@context': 'https://schema.org',
+                '@type': 'Person',
+                name: 'Surya CS',
+                url: 'https://suryacs.is-a.dev',
+                image: '/images/surya-portrait.jpg',
+                jobTitle: 'Full-Stack Python Developer',
+                description:
+                  'B.COM.CA graduate from Sri Ramakrishna College of Arts & Science. IBM & ITC trained in Python Pandas & NumPy. Django & React Specialist.',
+                email: 'cssurya2006@gmail.com',
+                telephone: '+918220443165',
+                address: {
+                  '@type': 'PostalAddress',
+                  addressLocality: 'Coimbatore',
+                  addressRegion: 'Tamil Nadu',
+                  postalCode: '641027',
+                  addressCountry: 'India',
+                },
+                alumniOf: {
+                  '@type': 'CollegeOrUniversity',
+                  name: 'Sri Ramakrishna College of Arts & Science',
+                },
+                sameAs: [
+                  'https://github.com/Surya200622',
+                  'https://linkedin.com/in/suryacs22/',
+                  'https://suryacs.is-a.dev',
+                  'https://www.instagram.com/surya_codes_/'
+                ],
+              }
+            ]),
           }}
         />
       </head>
