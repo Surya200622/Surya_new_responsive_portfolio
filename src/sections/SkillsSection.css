@@ -1,6 +1,5 @@
 /* ============================================
-   SKILLS SECTION — Horizontal Scroll Gallery
-   GSAP pin + horizontal translateX
+   SKILLS SECTION — Auto Scrolling Marquee
    ============================================ */
 
 /* ---------- Section Root ---------- */
@@ -8,6 +7,7 @@
   position: relative;
   overflow: hidden;
   background: var(--color-bg-secondary);
+  padding-bottom: var(--space-4xl);
 }
 
 /* ---------- Section Header ---------- */
@@ -61,14 +61,53 @@
 .skills__scroll-wrapper {
   position: relative;
   overflow: hidden;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
 }
 
-.skills__scroll-track {
+.skills__scroll-wrapper::before,
+.skills__scroll-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 150px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.skills__scroll-wrapper::before {
+  left: 0;
+  background: linear-gradient(to right, var(--color-bg-secondary), transparent);
+}
+
+.skills__scroll-wrapper::after {
+  right: 0;
+  background: linear-gradient(to left, var(--color-bg-secondary), transparent);
+}
+
+.skills__marquee-track {
   display: flex;
   gap: var(--space-xl);
-  padding: var(--space-3xl) var(--container-padding);
   width: max-content;
-  will-change: transform;
+  animation: marquee 35s linear infinite;
+  padding: 0 var(--space-xl);
+}
+
+.skills__marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50% - (var(--space-xl) / 2)));
+  }
 }
 
 /* ============================================
@@ -76,9 +115,7 @@
    ============================================ */
 .skills__category-panel {
   flex-shrink: 0;
-  width: 85vw;
-  max-width: 500px;
-  min-height: 520px;
+  width: 400px; /* Fixed width for better marquee appearance */
   display: flex;
   flex-direction: column;
 }
@@ -211,12 +248,7 @@
   height: 100%;
   border-radius: var(--radius-full);
   transform-origin: left center;
-  transform: scaleX(0);
   transition: transform 1.2s var(--ease-out-expo);
-}
-
-.skills__progress-fill.is-visible {
-  transform: scaleX(1);
 }
 
 /* Gradient variants for categories */
@@ -234,46 +266,6 @@
 
 .skills__progress-fill--tools {
   background: linear-gradient(90deg, var(--color-accent-tertiary), var(--color-accent-primary));
-}
-
-/* ============================================
-   SCROLL PROGRESS INDICATOR
-   ============================================ */
-.skills__scroll-indicator {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-md);
-  padding: var(--space-2xl) var(--container-padding);
-  max-width: var(--max-width);
-  margin: 0 auto;
-}
-
-.skills__scroll-dots {
-  display: flex;
-  gap: var(--space-sm);
-}
-
-.skills__scroll-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--color-border);
-  transition: all var(--duration-normal) var(--ease-smooth);
-}
-
-.skills__scroll-dot.is-active {
-  width: 32px;
-  border-radius: var(--radius-full);
-  background: var(--color-accent-primary);
-}
-
-.skills__scroll-hint {
-  font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-weight: var(--weight-medium);
 }
 
 /* ============================================
@@ -310,22 +302,17 @@
    ============================================ */
 @media (max-width: 768px) {
   .skills__category-panel {
-    width: 90vw;
-    min-height: 420px;
+    width: 320px;
   }
 
-  .skills__scroll-track {
-    padding: var(--space-2xl) var(--container-padding);
-  }
-
-  .skills__card {
-    padding: var(--space-lg);
+  .skills__scroll-wrapper::before,
+  .skills__scroll-wrapper::after {
+    width: 50px;
   }
 }
 
 @media (max-width: 480px) {
   .skills__category-panel {
-    width: 92vw;
-    min-height: auto;
+    width: 280px;
   }
 }

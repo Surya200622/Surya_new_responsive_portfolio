@@ -1,13 +1,8 @@
 import { useRef, useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useGSAP } from '@gsap/react';
 import { Code2, Database, PenTool, Wrench } from 'lucide-react';
 import { SKILLS } from '../data/projectsData';
 import './SkillsSection.css';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const ICON_MAP = {
   frontend: Code2,
@@ -17,10 +12,6 @@ const ICON_MAP = {
 };
 
 export default function SkillsSection() {
-  const sectionRef = useRef(null);
-  const trackRef = useRef(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-
   // Group skills by category
   const categories = useMemo(() => {
     const grouped = SKILLS.reduce((acc, skill) => {
@@ -36,53 +27,11 @@ export default function SkillsSection() {
     }));
   }, []);
 
-  useGSAP(() => {
-    const panels = gsap.utils.toArray('.skills__category-panel');
-    if (panels.length === 0) return;
-    
-    // Horizontal scroll
-    const scrollTween = gsap.to(panels, {
-      xPercent: -100 * (panels.length - 1),
-      ease: 'none',
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        pin: true,
-        scrub: 1,
-        snap: 1 / (panels.length - 1),
-        start: 'top top',
-        end: () => `+=${trackRef.current.offsetWidth}`,
-        onUpdate: (self) => {
-          const newIndex = Math.round(self.progress * (panels.length - 1));
-          if (newIndex !== activeIndex) {
-            setActiveIndex(newIndex);
-          }
-        }
-      },
-    });
-
-    // Animate progress bars
-    panels.forEach((panel, i) => {
-      const fills = panel.querySelectorAll('.skills__progress-fill');
-      gsap.fromTo(fills, 
-        { scaleX: 0 },
-        {
-          scaleX: 1,
-          duration: 1.5,
-          ease: 'power3.out',
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: panel,
-            containerAnimation: scrollTween,
-            start: 'left center',
-            toggleActions: 'play none none reverse',
-          }
-        }
-      );
-    });
-  }, { scope: sectionRef, dependencies: [categories] });
+  // Duplicate categories for infinite marquee effect
+  const marqueeItems = [...categories, ...categories];
 
   return (
-    <section ref={sectionRef} className="skills section" id="skills">
+    <section className="skills section" id="skills">
       <div className="skills__orb--1" />
       <div className="skills__orb--2" />
       
@@ -119,11 +68,11 @@ export default function SkillsSection() {
       </div>
 
       <div className="skills__scroll-wrapper">
-        <div ref={trackRef} className="skills__scroll-track">
-          {categories.map((category, index) => {
+        <div className="skills__marquee-track">
+          {marqueeItems.map((category, index) => {
             const Icon = ICON_MAP[category.name] || Code2;
             return (
-              <div key={category.name} className="skills__category-panel">
+              <div key={`${category.name}-${index}`} className="skills__category-panel">
                 <div className="skills__category-header">
                   <div className={`skills__category-icon skills__category-icon--${category.name}`}>
                     <Icon size={24} />
@@ -146,7 +95,7 @@ export default function SkillsSection() {
                       <div className="skills__progress-track">
                         <div 
                           className={`skills__progress-fill skills__progress-fill--${category.name}`}
-                          style={{ width: `${skill.level}%` }}
+                          style={{ width: `${skill.level}%`, transform: 'scaleX(1)' }}
                         />
                       </div>
                     </div>
@@ -155,18 +104,6 @@ export default function SkillsSection() {
               </div>
             );
           })}
-        </div>
-      </div>
-
-      <div className="skills__scroll-indicator">
-        <span className="skills__scroll-hint">Scroll to explore</span>
-        <div className="skills__scroll-dots">
-          {categories.map((_, idx) => (
-            <div 
-              key={idx} 
-              className={`skills__scroll-dot ${idx === activeIndex ? 'is-active' : ''}`}
-            />
-          ))}
         </div>
       </div>
     </section>
