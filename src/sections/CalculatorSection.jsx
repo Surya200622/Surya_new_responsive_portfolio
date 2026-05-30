@@ -312,14 +312,24 @@ export default function CalculatorSection() {
             </div>
 
             <div className="calc__total-actions">
-              <button className="btn btn--primary" onClick={handleGetQuote}>
-                Get Quote <ArrowRight size={14} />
+              <button 
+                className="btn btn--primary" 
+                onClick={() => {
+                  const msg = `Hi Surya, I have initiated a payment of ₹${pricing.total.toLocaleString('en-IN')} for my project via GPay. Let's continue the conversation about the project customizations!`;
+                  window.open(`https://wa.me/918220443165?text=${encodeURIComponent(msg)}`, '_blank');
+                  
+                  // Trigger UPI intent for GPay in the current window
+                  window.location.href = `upi://pay?pa=9994566325@upi&pn=Surya&am=${pricing.total}&cu=INR&tn=Project%20Payment`;
+                }} 
+                style={{ background: 'linear-gradient(135deg, #4285F4, #34A853)', border: 'none', color: 'white' }}
+              >
+                Pay via GPay
+              </button>
+              <button className="btn btn--glass" onClick={handleGetQuote}>
+                Save Quote
               </button>
               <button className="btn btn--glass" onClick={handleWhatsApp}>
-                <MessageSquare size={14} /> WhatsApp
-              </button>
-              <button className="btn btn--glass" onClick={handleEmail}>
-                <Mail size={14} /> Email
+                <MessageSquare size={14} /> Discuss
               </button>
             </div>
           </motion.div>
