@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import nodemailer from 'nodemailer';
+import { getBrandEmailTemplate } from '@/lib/email-template';
 
 export async function POST(req: Request) {
   try {
@@ -37,30 +38,24 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: linkError.message }, { status: 400 });
     }
 
+    const emailContent = `
+      <p>We received a request to reset the password for the account associated with <strong>${email}</strong>.</p>
+      
+      <div style="margin: 30px 0; text-align: center;">
+        <a href="${linkData.properties.action_link}" class="button">
+          Reset Password
+        </a>
+      </div>
+      
+      <p>If you did not request this, you can safely ignore this email. Your password will not be changed.</p>
+    `;
+
     // 2. Send the custom email via Nodemailer
     await transporter.sendMail({
       from: `"Portfolio Admin" <${process.env.EMAIL_USER}>`,
       to: email, // Now sending directly to the user!
       subject: 'Reset Your Password - Client Portal',
-      html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
-          <h2 style="color: #333; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">Password Reset Request</h2>
-          
-          <p style="font-size: 16px; color: #444; line-height: 1.5;">
-            We received a request to reset the password for the account associated with <strong>${email}</strong>.
-          </p>
-          
-          <div style="margin: 30px 0; text-align: center;">
-            <a href="${linkData.properties.action_link}" style="background-color: #000; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
-              Reset Password
-            </a>
-          </div>
-          
-          <p style="font-size: 14px; color: #666; line-height: 1.5;">
-            If you did not request this, you can safely ignore this email. Your password will not be changed.
-          </p>
-        </div>
-      `,
+      html: getBrandEmailTemplate('Password Reset Request', emailContent, 'Reset your client portal password'),
     });
 
     return NextResponse.json({ success: true });
