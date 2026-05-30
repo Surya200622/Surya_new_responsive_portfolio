@@ -63,7 +63,7 @@ export default function AdminProjectsPage() {
   const fetchProjects = async () => {
     try {
       const { data, error } = await supabase
-        .from('projects')
+        .from('portfolio_projects')
         .select('*')
         .order('created_at', { ascending: false });
       
@@ -158,10 +158,10 @@ export default function AdminProjectsPage() {
       };
 
       if (editingId) {
-        const { error } = await supabase.from('projects').update(dbData).eq('id', editingId);
+        const { error } = await supabase.from('portfolio_projects').update(dbData).eq('id', editingId);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('projects').insert([dbData]);
+        const { error } = await supabase.from('portfolio_projects').insert([dbData]);
         if (error) throw error;
       }
 
@@ -181,7 +181,7 @@ export default function AdminProjectsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this project?')) return;
     try {
-      const { error } = await supabase.from('projects').delete().eq('id', id);
+      const { error } = await supabase.from('portfolio_projects').delete().eq('id', id);
       if (error) throw error;
       setProjects(prev => prev.filter(p => p.id !== id));
     } catch (err) {

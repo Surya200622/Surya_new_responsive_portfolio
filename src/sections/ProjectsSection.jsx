@@ -25,7 +25,7 @@ export default function ProjectsSection() {
     const fetchProjects = async () => {
       try {
         const { data, error } = await supabase
-          .from('projects')
+          .from('portfolio_projects')
           .select('*')
           .order('created_at', { ascending: true });
           
