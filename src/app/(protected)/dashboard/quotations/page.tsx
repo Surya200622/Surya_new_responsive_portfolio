@@ -4,6 +4,7 @@ import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import PendingQuotationHandler from './PendingQuotationHandler';
 import QuotationActions from './QuotationActions';
 import DownloadQuotationButton from '@/components/pdf/DownloadQuotationButton';
+import PayUPIButton from './PayUPIButton';
 
 export default async function ClientQuotationsPage() {
   const supabase = createClient();
@@ -89,6 +90,9 @@ export default async function ClientQuotationsPage() {
                 </div>
                 
                 <div className="flex gap-2">
+                  {quote.status !== 'rejected' && (
+                    <PayUPIButton amount={quote.total || 0} projectName={quote.projects?.project_name || 'Project Quotation'} />
+                  )}
                   <DownloadQuotationButton 
                     quote={quote} 
                     clientName={userProfile?.full_name || 'Client'} 
