@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { LogOut, Home, MessageSquare, Briefcase, Folder, FileText, Bell, User, Settings, X, ChevronDown, Menu, Trash2, CheckSquare, Square } from 'lucide-react';
+import { LogOut, Home, MessageSquare, Briefcase, Folder, FileText, Bell, User, Settings, X, ChevronDown, Menu, Trash2, CheckSquare, Square, Camera, Loader2 } from 'lucide-react';
 import { createBrowserClient } from '@supabase/ssr';
 import { useEffect, useState, useRef } from 'react';
 
@@ -47,6 +47,7 @@ export default function ProtectedLayout({
   const [selectedNotifIds, setSelectedNotifIds] = useState<Set<string>>(new Set());
   const [clearingNotifs, setClearingNotifs] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
 
@@ -229,6 +230,47 @@ export default function ProtectedLayout({
     setUnreadCount(0);
     setSelectedNotifIds(new Set());
     setClearingNotifs(false);
+  };
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      if (!e.target.files || e.target.files.length === 0) return;
+      const file = e.target.files[0];
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      setAvatarUploading(true);
+      
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}-${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+        
+      const avatarUrl = data.publicUrl;
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: avatarUrl })
+        .eq('id', user.id);
+
+      if (updateError) throw updateError;
+
+      setProfile(prev => prev ? { ...prev, avatar_url: avatarUrl } : prev);
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      alert('Error uploading avatar');
+    } finally {
+      setAvatarUploading(false);
+    }
   };
 
   const handleSaveSettings = async () => {
@@ -515,9 +557,13 @@ export default function ProtectedLayout({
                 className="flex items-center gap-2 group"
               >
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] p-0.5">
-                  <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center font-display font-bold text-sm text-[var(--color-text-primary)]">
-                    {profile?.full_name?.charAt(0)?.toUpperCase() || 'U'}
-                  </div>
+                  {profile?.avatar_url ? (
+                    <img src={profile?.avatar_url} alt="Avatar" className="w-full h-full rounded-full object-cover bg-[var(--color-bg-primary)]" />
+                  ) : (
+                    <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center font-display font-bold text-sm text-[var(--color-text-primary)]">
+                      {profile?.full_name?.charAt(0)?.toUpperCase() || 'U'}
+                    </div>
+                  )}
                 </div>
                 <ChevronDown className={`w-4 h-4 text-[var(--color-text-muted)] transition-transform ${showProfileMenu ? 'rotate-180' : ''}`} />
               </button>
@@ -571,6 +617,31 @@ export default function ProtectedLayout({
             </div>
 
             <div className="p-6 space-y-5">
+              <div className="flex justify-center mb-2">
+                <div className="relative group">
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] p-0.5">
+                    {profile?.avatar_url ? (
+                      <img src={profile.avatar_url} alt="Avatar" className="w-full h-full rounded-full object-cover bg-[var(--color-bg-primary)]" />
+                    ) : (
+                      <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center font-display font-bold text-3xl text-[var(--color-text-primary)]">
+                        {profile?.full_name?.charAt(0)?.toUpperCase() || 'U'}
+                      </div>
+                    )}
+                  </div>
+                  <label className="absolute inset-0 bg-black/60 rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                    {avatarUploading ? (
+                      <Loader2 className="w-6 h-6 animate-spin text-white" />
+                    ) : (
+                      <>
+                        <Camera className="w-6 h-6 text-white mb-1" />
+                        <span className="text-[10px] font-medium text-white uppercase tracking-wider">Change</span>
+                      </>
+                    )}
+                    <input type="file" className="hidden" accept="image/*" onChange={handleAvatarUpload} disabled={avatarUploading} />
+                  </label>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Full Name</label>
                 <div className="relative">
