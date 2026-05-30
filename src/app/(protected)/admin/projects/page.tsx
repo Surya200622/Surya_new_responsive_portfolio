@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
-import { Plus, Edit2, Trash2, Loader2, Save, X, ExternalLink } from 'lucide-react';
+import { Plus, Edit2, Trash2, Loader2, Save, X, ExternalLink, Image as ImageIcon } from 'lucide-react';
 import { z } from 'zod';
 
 const projectSchema = z.object({
@@ -40,6 +40,7 @@ export default function AdminProjectsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [imageUploading, setImageUploading] = useState(false);
   
   const [formData, setFormData] = useState({
     slug: '',
@@ -78,6 +79,35 @@ export default function AdminProjectsPage() {
   useEffect(() => {
     fetchProjects();
   }, []);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      if (!e.target.files || e.target.files.length === 0) return;
+      
+      setImageUploading(true);
+      setError('');
+      const file = e.target.files[0];
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('project-images')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from('project-images')
+        .getPublicUrl(fileName);
+
+      setFormData(prev => ({ ...prev, image: data.publicUrl }));
+    } catch (err: any) {
+      console.error('Error uploading image:', err);
+      setError('Error uploading image: ' + err.message);
+    } finally {
+      setImageUploading(false);
+    }
+  };
 
   const handleOpenModal = (project?: Project) => {
     setError('');
@@ -342,14 +372,23 @@ export default function AdminProjectsPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Image Path/URL</label>
-                    <input
-                      type="text"
-                      className="auth-input px-4"
-                      value={formData.image}
-                      onChange={e => setFormData({ ...formData, image: e.target.value })}
-                      placeholder="/images/project-name.jpg"
-                    />
+                    <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Project Image</label>
+                    <div className="flex items-center gap-4">
+                      {formData.image && (
+                        <img src={formData.image} alt="Preview" className="w-12 h-12 rounded-lg object-cover border border-[var(--color-glass-border)] shrink-0" />
+                      )}
+                      <label className="flex-1 cursor-pointer flex items-center justify-center py-2 px-4 border border-dashed border-[var(--color-text-muted)] rounded-xl hover:border-[var(--color-accent-primary)] hover:bg-[var(--color-bg-glass)] transition-colors h-[48px]">
+                        {imageUploading ? (
+                          <Loader2 className="w-5 h-5 animate-spin text-[var(--color-accent-primary)]" />
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <ImageIcon className="w-4 h-4 text-[var(--color-text-muted)]" />
+                            <span className="text-xs text-[var(--color-text-secondary)]">Upload image</span>
+                          </div>
+                        )}
+                        <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={imageUploading} />
+                      </label>
+                    </div>
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">External Link</label>

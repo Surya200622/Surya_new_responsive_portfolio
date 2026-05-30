@@ -58,11 +58,7 @@ export default function App() {
 
         <div className="section-divider" />
 
-        <Suspense fallback={<SectionLoader />}>
-          <SkillsSection />
-        </Suspense>
 
-        <div className="section-divider" />
 
         <Suspense fallback={<SectionLoader />}>
           <ProjectsSection />

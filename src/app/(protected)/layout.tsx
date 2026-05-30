@@ -608,7 +608,7 @@ export default function ProtectedLayout({
       {/* Settings Modal */}
       {showSettingsModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowSettingsModal(false)}>
-          <div className="glass-card-strong rounded-2xl border border-[var(--color-glass-border)] w-full max-w-lg shadow-2xl" onClick={e => e.stopPropagation()}>
+          <div className="glass-card-strong rounded-2xl border border-[var(--color-glass-border)] w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between p-6 border-b border-[var(--color-glass-border)]">
               <h2 className="text-lg font-display font-bold text-[var(--color-text-primary)]">Account Settings</h2>
               <button onClick={() => setShowSettingsModal(false)} className="w-8 h-8 rounded-full bg-[var(--color-bg-glass)] flex items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors">
@@ -616,7 +616,7 @@ export default function ProtectedLayout({
               </button>
             </div>
 
-            <div className="p-6 space-y-5">
+            <div className="p-6 space-y-5 flex-1 overflow-y-auto custom-scrollbar">
               <div className="flex justify-center mb-2">
                 <div className="relative group">
                   <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] p-0.5">
