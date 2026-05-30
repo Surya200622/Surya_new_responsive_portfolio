@@ -119,8 +119,8 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
 </head>
 <body>
   ${preheader ? `<div class="preheader">${preheader}</div>` : ''}
-  <div class="container">
-    <div class="header" style="text-align: center; margin-bottom: 40px;">
+  <div class="container" style="background-color: #0a0a0f; width: 100%; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+    <div class="header" style="text-align: center; margin-bottom: 40px; background-color: #13131a; padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);">
       <a href="https://suryacs.is-a.dev" style="font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #ffffff !important; text-decoration: none;">Surya CS<span style="color: #f97316;">.</span></a>
     </div>
     

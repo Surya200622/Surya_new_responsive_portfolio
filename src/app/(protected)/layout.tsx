@@ -42,7 +42,7 @@ export default function ProtectedLayout({
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [settingsForm, setSettingsForm] = useState({ full_name: '', company_name: '', phone: '' });
+  const [settingsForm, setSettingsForm] = useState({ full_name: '', company_name: '', phone: '', new_password: '' });
   const [saving, setSaving] = useState(false);
   const [selectedNotifIds, setSelectedNotifIds] = useState<Set<string>>(new Set());
   const [clearingNotifs, setClearingNotifs] = useState(false);
@@ -73,10 +73,11 @@ export default function ProtectedLayout({
         if (profileData) {
           setProfile(profileData);
           setIsAdmin(profileData.role === 'admin');
-          setSettingsForm({
+            setSettingsForm({
             full_name: profileData.full_name || '',
             company_name: profileData.company_name || '',
             phone: profileData.phone || '',
+            new_password: '',
           });
 
           // If admin is on /dashboard, redirect to /admin
@@ -102,6 +103,7 @@ export default function ProtectedLayout({
             full_name: fallbackProfile.full_name,
             company_name: fallbackProfile.company_name || '',
             phone: fallbackProfile.phone || '',
+            new_password: '',
           });
 
           if (fallbackRole === 'admin' && pathname?.startsWith('/dashboard')) {
@@ -235,7 +237,19 @@ export default function ProtectedLayout({
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { error } = await supabase
+    let success = true;
+
+    if (settingsForm.new_password) {
+      const { error: authError } = await supabase.auth.updateUser({
+        password: settingsForm.new_password,
+      });
+      if (authError) {
+        success = false;
+        console.error('Password update failed:', authError);
+      }
+    }
+
+    const { error: profileError } = await supabase
       .from('profiles')
       .update({
         full_name: settingsForm.full_name,
@@ -244,10 +258,13 @@ export default function ProtectedLayout({
       })
       .eq('id', user.id);
 
-    if (!error) {
+    if (profileError) success = false;
+
+    if (success) {
       setProfile(prev => prev ? { ...prev, ...settingsForm } : prev);
+      setSettingsForm(prev => ({ ...prev, new_password: '' })); // clear password field
       setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 2000);
+      setTimeout(() => setSaveSuccess(false), 3000);
     }
     setSaving(false);
   };
@@ -597,6 +614,21 @@ export default function ProtectedLayout({
                     placeholder="+1 234 567 8900"
                   />
                 </div>
+              </div>
+
+              <div className="pt-4 border-t border-[var(--color-glass-border)]">
+                <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Change Password</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><Lock className="h-4 w-4 text-[var(--color-text-muted)]" /></div>
+                  <input 
+                    type="password" 
+                    className="auth-input pl-11" 
+                    placeholder="Enter new password (optional)" 
+                    value={settingsForm.new_password}
+                    onChange={e => setSettingsForm({ ...settingsForm, new_password: e.target.value })}
+                  />
+                </div>
+                <p className="mt-1.5 text-[10px] text-[var(--color-text-muted)]">Leave blank if you don't want to change your password.</p>
               </div>
             </div>
 
