@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
-import { Lock, Loader2, ArrowRight } from 'lucide-react';
+import { Lock, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 import { resetPasswordSchema, type ResetPasswordInput } from '@/lib/validations/auth';
 
@@ -13,6 +13,8 @@ export default function ResetPasswordPage() {
   const [errors, setErrors] = useState<Partial<Record<keyof ResetPasswordInput, string>>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -74,13 +76,20 @@ export default function ResetPasswordPage() {
               <Lock className="h-4 w-4 text-[var(--color-text-muted)]" />
             </div>
             <input
-              type="password"
-              className={`auth-input pl-11 ${errors.password ? 'border-red-500/50' : ''}`}
+              type={showPassword ? 'text' : 'password'}
+              className={`auth-input pl-11 pr-11 ${errors.password ? 'border-red-500/50' : ''}`}
               placeholder="••••••••"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               disabled={isLoading}
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-0 pr-4 flex items-center text-[var(--color-text-muted)] hover:text-white transition-colors"
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
           </div>
           {errors.password && <p className="mt-1.5 text-xs text-red-400">{errors.password}</p>}
         </div>
@@ -92,13 +101,20 @@ export default function ResetPasswordPage() {
               <Lock className="h-4 w-4 text-[var(--color-text-muted)]" />
             </div>
             <input
-              type="password"
-              className={`auth-input pl-11 ${errors.confirmPassword ? 'border-red-500/50' : ''}`}
+              type={showConfirmPassword ? 'text' : 'password'}
+              className={`auth-input pl-11 pr-11 ${errors.confirmPassword ? 'border-red-500/50' : ''}`}
               placeholder="••••••••"
               value={formData.confirmPassword}
               onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
               disabled={isLoading}
             />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute inset-y-0 right-0 pr-4 flex items-center text-[var(--color-text-muted)] hover:text-white transition-colors"
+            >
+              {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
           </div>
           {errors.confirmPassword && <p className="mt-1.5 text-xs text-red-400">{errors.confirmPassword}</p>}
         </div>

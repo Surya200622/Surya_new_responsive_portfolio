@@ -11,6 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 // Lazy load below-fold sections for performance
 const AboutSection = lazy(() => import('./sections/AboutSection'));
+const SkillsSection = lazy(() => import('./sections/SkillsSection'));
 const ProjectsSection = lazy(() => import('./sections/ProjectsSection'));
 const CalculatorSection = lazy(() => import('./sections/CalculatorSection'));
 const ContactSection = lazy(() => import('./sections/ContactSection'));
@@ -53,6 +54,12 @@ export default function App() {
 
         <Suspense fallback={<SectionLoader />}>
           <AboutSection />
+        </Suspense>
+
+        <div className="section-divider" />
+
+        <Suspense fallback={<SectionLoader />}>
+          <SkillsSection />
         </Suspense>
 
         <div className="section-divider" />

@@ -120,8 +120,8 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
 <body>
   ${preheader ? `<div class="preheader">${preheader}</div>` : ''}
   <div class="container">
-    <div class="header">
-      <a href="https://suryacs.is-a.dev" class="logo">Surya CS<span class="logo-dot">.</span></a>
+    <div class="header" style="text-align: center; margin-bottom: 40px;">
+      <a href="https://suryacs.is-a.dev" style="font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: #ffffff !important; text-decoration: none;">Surya CS<span style="color: #f97316;">.</span></a>
     </div>
     
     <div class="card">

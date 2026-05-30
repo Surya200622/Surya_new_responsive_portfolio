@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { label: 'About', href: '#about' },
   { label: 'Projects', href: '#projects' },
   { label: 'Calculator', href: '#calculator' },
+  { label: 'Blog', href: 'https://blogcraft.pythonanywhere.com' },
   { label: 'Contact', href: '#contact' },
 ];
 
@@ -42,11 +43,27 @@ export default function FooterSection() {
 
           <div className="footer__links">
             <div className="footer__links-title">Quick Links</div>
-            {NAV_LINKS.map(link => (
-              <span key={link.href} className="footer__link" onClick={() => scrollTo(link.href)}>
-                {link.label}
-              </span>
-            ))}
+            {NAV_LINKS.map(link => {
+              if (link.href.startsWith('http')) {
+                return (
+                  <a
+                    key={link.href}
+                    className="footer__link"
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ display: 'block', textDecoration: 'none' }}
+                  >
+                    {link.label}
+                  </a>
+                );
+              }
+              return (
+                <span key={link.href} className="footer__link" onClick={() => scrollTo(link.href)}>
+                  {link.label}
+                </span>
+              );
+            })}
           </div>
 
           <div>

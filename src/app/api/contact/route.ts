@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { getBrandEmailTemplate } from '@/lib/email-template';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
 export async function POST(request: Request) {
   try {
@@ -56,6 +57,35 @@ export async function POST(request: Request) {
       subject: `New Portfolio Inquiry from ${name}`,
       html: getBrandEmailTemplate('New Contact Form Submission', emailContent, `Inquiry from ${name}`),
     });
+
+    // Save message to Supabase
+    try {
+      const supabaseAdmin = createSupabaseClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+      );
+
+      // Find the admin user
+      const { data: adminUser } = await supabaseAdmin
+        .from('profiles')
+        .select('id')
+        .eq('role', 'admin')
+        .limit(1)
+        .single();
+
+      if (adminUser) {
+        await supabaseAdmin
+          .from('messages')
+          .insert({
+            receiver_id: adminUser.id,
+            content: `From: ${name} (${email})\nPhone: ${phone || 'N/A'}\nProject: ${project || 'N/A'}\n\nMessage: ${message}`,
+            is_read: false
+          });
+      }
+    } catch (dbError) {
+      console.error('Failed to save to Supabase:', dbError);
+      // We don't fail the request if the email was sent successfully
+    }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

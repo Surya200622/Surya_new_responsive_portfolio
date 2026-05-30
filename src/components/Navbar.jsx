@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Sun, Moon, Menu, X } from 'lucide-react';
+import { Sun, Moon, Menu, X, LogOut, Settings, LayoutDashboard } from 'lucide-react';
+import { createBrowserClient } from '@supabase/ssr';
 import './Navbar.css';
 
 const NAV_LINKS = [
@@ -7,6 +8,7 @@ const NAV_LINKS = [
   { label: 'About', href: '/#about' },
   { label: 'Projects', href: '/#projects' },
   { label: 'Calculator', href: '/#calculator' },
+  { label: 'Blog', href: 'https://blogcraft.pythonanywhere.com' },
   { label: 'Contact', href: '/#contact' },
 ];
 
@@ -16,6 +18,41 @@ export default function Navbar({ theme, toggleTheme }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [lastScroll, setLastScroll] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    );
+
+    const getUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUser(session.user);
+        const { data } = await supabase
+          .from('profiles')
+          .select('avatar_url, full_name, role')
+          .eq('id', session.user.id)
+          .single();
+        if (data) setProfile(data);
+      }
+    };
+    getUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+        setProfile(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleScroll = useCallback(() => {
     const current = window.scrollY;
@@ -54,25 +91,73 @@ export default function Navbar({ theme, toggleTheme }) {
           </a>
 
           <div className="navbar__links">
-            {NAV_LINKS.map(link => (
-              <a
-                key={link.href}
-                className="navbar__link"
-                onClick={() => scrollTo(link.href)}
-                tabIndex={0}
-              >
-                {link.label}
-              </a>
-            ))}
+            {NAV_LINKS.map(link => {
+              if (link.href.startsWith('http')) {
+                return (
+                  <a
+                    key={link.href}
+                    className="navbar__link"
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    tabIndex={0}
+                  >
+                    {link.label}
+                  </a>
+                );
+              }
+              return (
+                <a
+                  key={link.href}
+                  className="navbar__link"
+                  onClick={() => scrollTo(link.href)}
+                  tabIndex={0}
+                >
+                  {link.label}
+                </a>
+              );
+            })}
           </div>
 
           <div className="navbar__actions">
-            <a 
-              href="/login" 
-              className="text-xs font-semibold text-[var(--color-accent-primary)] hover:text-[var(--color-accent-warm)] px-4 py-2 border border-[var(--color-accent-primary)]/30 rounded-full hover:bg-[var(--color-accent-primary)]/10 transition-all hidden md:block"
-            >
-              Client Portal
-            </a>
+            {user ? (
+              <div className="relative group hidden md:block" onMouseEnter={() => setDropdownOpen(true)} onMouseLeave={() => setDropdownOpen(false)}>
+                <button className="flex items-center justify-center w-9 h-9 rounded-full border border-[var(--color-border)] overflow-hidden bg-[var(--color-bg-secondary)] hover:border-[var(--color-accent-primary)] transition-colors">
+                  {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-sm font-bold text-[var(--color-text-primary)]">
+                      {profile?.full_name?.charAt(0) || user.email?.charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </button>
+                <div className={`absolute right-0 top-full mt-2 w-48 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-xl transition-all ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'} flex flex-col overflow-hidden z-50`}>
+                  <a href={profile?.role === 'admin' ? '/admin' : '/dashboard'} className="flex items-center gap-2 px-4 py-3 hover:bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] text-sm transition-colors border-b border-[var(--color-border)]">
+                    <LayoutDashboard size={16} /> Dashboard
+                  </a>
+                  <a href="/dashboard/settings" className="flex items-center gap-2 px-4 py-3 hover:bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] text-sm transition-colors border-b border-[var(--color-border)]">
+                    <Settings size={16} /> Account Settings
+                  </a>
+                  <button 
+                    onClick={async () => {
+                      const supabase = createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+                      await supabase.auth.signOut();
+                      window.location.reload();
+                    }} 
+                    className="flex items-center gap-2 px-4 py-3 hover:bg-red-500/10 text-red-500 hover:text-red-400 text-sm text-left transition-colors"
+                  >
+                    <LogOut size={16} /> Sign Out
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <a 
+                href="/login" 
+                className="text-xs font-semibold text-[var(--color-accent-primary)] hover:text-[var(--color-accent-warm)] px-4 py-2 border border-[var(--color-accent-primary)]/30 rounded-full hover:bg-[var(--color-accent-primary)]/10 transition-all hidden md:block"
+              >
+                Client Portal
+              </a>
+            )}
             
             <button
               className="navbar__theme-btn"
@@ -106,23 +191,61 @@ export default function Navbar({ theme, toggleTheme }) {
         </button>
 
         <div className="navbar__mobile-links">
-          {NAV_LINKS.map(link => (
+          {NAV_LINKS.map(link => {
+            if (link.href.startsWith('http')) {
+              return (
+                <a
+                  key={link.href}
+                  className="navbar__mobile-link"
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  tabIndex={0}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {link.label}
+                </a>
+              );
+            }
+            return (
+              <a
+                key={link.href}
+                className="navbar__mobile-link"
+                onClick={() => scrollTo(link.href)}
+                tabIndex={0}
+              >
+                {link.label}
+              </a>
+            );
+          })}
+          {user ? (
+            <>
+              <a href={profile?.role === 'admin' ? '/admin' : '/dashboard'} className="navbar__mobile-link text-[var(--color-accent-primary)] flex items-center gap-2">
+                <LayoutDashboard size={18} /> Dashboard
+              </a>
+              <a href="/dashboard/settings" className="navbar__mobile-link text-[var(--color-text-primary)] flex items-center gap-2">
+                <Settings size={18} /> Account Settings
+              </a>
+              <button 
+                onClick={async () => {
+                  const supabase = createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+                  await supabase.auth.signOut();
+                  window.location.reload();
+                }} 
+                className="navbar__mobile-link text-red-500 flex items-center gap-2 mt-4 text-left w-full"
+              >
+                <LogOut size={18} /> Sign Out
+              </button>
+            </>
+          ) : (
             <a
-              key={link.href}
-              className="navbar__mobile-link"
-              onClick={() => scrollTo(link.href)}
+              href="/login"
+              className="navbar__mobile-link text-[var(--color-accent-primary)] mt-4"
               tabIndex={0}
             >
-              {link.label}
+              Client Portal
             </a>
-          ))}
-          <a
-            href="/login"
-            className="navbar__mobile-link text-[var(--color-accent-primary)]"
-            tabIndex={0}
-          >
-            Client Portal
-          </a>
+          )}
         </div>
 
         <button className="navbar__theme-btn" onClick={toggleTheme} style={{ alignSelf: 'flex-start' }}>
