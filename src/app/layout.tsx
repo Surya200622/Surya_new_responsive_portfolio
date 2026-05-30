@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     images: ['/images/surya-portrait.jpg'],
   },
   verification: {
-    google: ['nzjJHjv3TTj8mUzNEFx4RH3ecj-OGGnMglPAKj3IubQ', 'FXp4jqzCy6bxO6ThBXz34F29BgX2w0qgt9v4tONOfec'],
+    google: ['FXp4jqzCy6bxO6ThBXz34F29BgX2w0qgt9v4tONOfec'],
   },
 };
 
