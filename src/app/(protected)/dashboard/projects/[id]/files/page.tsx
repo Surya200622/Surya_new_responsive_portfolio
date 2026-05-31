@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Upload, File, Image as ImageIcon, X, Loader2 } from 'lucide-react';
+import { Upload, File, Image as ImageIcon, X, Loader2, Folder } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 
