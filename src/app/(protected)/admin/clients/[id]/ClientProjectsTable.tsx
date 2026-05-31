@@ -74,7 +74,7 @@ export default function ClientProjectsTable({ initialProjects }: { initialProjec
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-sm text-left">
+      <table className="w-full min-w-[700px] text-sm text-left">
         <thead className="text-xs text-[var(--color-text-muted)] uppercase bg-[var(--color-bg-glass)]">
           <tr>
             <th className="px-6 py-3 rounded-tl-xl">Project Name</th>

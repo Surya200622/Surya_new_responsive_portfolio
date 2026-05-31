@@ -246,14 +246,14 @@ export default function ClientFilesPage() {
         </div>
       ) : (
         <div
-          className={`glass-card-strong rounded-2xl border border-[var(--color-glass-border)] overflow-hidden ${
+          className={`glass-card-strong rounded-2xl border border-[var(--color-glass-border)] overflow-x-auto ${
             dragOver ? 'ring-2 ring-[var(--color-accent-primary)]' : ''
           }`}
           onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
         >
-          <table className="w-full text-sm text-left">
+          <table className="w-full min-w-[600px] text-sm text-left">
             <thead className="text-xs text-[var(--color-text-muted)] uppercase bg-[var(--color-bg-glass)]">
               <tr>
                 <th className="px-6 py-3">File</th>
