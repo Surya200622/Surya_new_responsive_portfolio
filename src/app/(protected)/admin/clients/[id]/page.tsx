@@ -201,7 +201,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
                   </div>
                 </div>
                 <a 
-                  href={file.file_url}
+                  href={`${file.file_url}?download=`}
                   download
                   target="_blank"
                   rel="noopener noreferrer"
