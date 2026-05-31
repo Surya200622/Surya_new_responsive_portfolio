@@ -423,15 +423,15 @@ export default function ProtectedLayout({
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Top Header */}
-        <header className="h-16 border-b border-[var(--color-glass-border)] flex items-center justify-between px-6 shrink-0 relative z-50" style={{ background: 'var(--color-bg-glass)', backdropFilter: 'blur(24px) saturate(180%)', WebkitBackdropFilter: 'blur(24px) saturate(180%)' }}>
-          <div className="md:hidden flex items-center gap-3">
+        <header className="h-16 border-b border-[var(--color-glass-border)] flex items-center justify-between px-3 md:px-6 shrink-0 relative z-50" style={{ background: 'var(--color-bg-glass)', backdropFilter: 'blur(24px) saturate(180%)', WebkitBackdropFilter: 'blur(24px) saturate(180%)' }}>
+          <div className="md:hidden flex items-center gap-2">
             <button 
               onClick={() => setShowMobileMenu(true)}
-              className="p-2 -ml-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+              className="p-1.5 -ml-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors shrink-0"
             >
               <Menu className="w-6 h-6" />
             </button>
-            <Link href="/" className="text-xl font-display font-bold text-[var(--color-text-primary)] tracking-wide">
+            <Link href="/" className="text-lg font-display font-bold text-[var(--color-text-primary)] tracking-wide truncate">
               Surya CS<span className="text-[var(--color-accent-primary)]">.</span>
             </Link>
           </div>
@@ -442,23 +442,23 @@ export default function ProtectedLayout({
             </h2>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
             {/* Notification Bell */}
             <div className="relative" ref={notifRef}>
               <button
                 onClick={() => { setShowNotifications(!showNotifications); setShowProfileMenu(false); }}
-                className="w-10 h-10 rounded-full bg-[var(--color-bg-glass)] border border-[var(--color-glass-border)] flex items-center justify-center text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-accent-primary)] transition-all relative"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[var(--color-bg-glass)] border border-[var(--color-glass-border)] flex items-center justify-center text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-accent-primary)] transition-all relative shrink-0"
               >
-                <Bell className="w-5 h-5" />
+                <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-white text-[10px] font-bold flex items-center justify-center border-2 border-[var(--color-bg-primary)]">
+                  <span className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 bg-red-500 rounded-full text-white text-[8px] sm:text-[10px] font-bold flex items-center justify-center border-2 border-[var(--color-bg-primary)]">
                     {unreadCount}
                   </span>
                 )}
               </button>
 
               {showNotifications && (
-                <div className="absolute right-0 top-12 w-80 glass-card-strong rounded-2xl border border-[var(--color-glass-border)] shadow-xl z-50 overflow-hidden">
+                <div className="absolute right-0 top-12 w-[calc(100vw-24px)] sm:w-80 max-w-sm glass-card-strong rounded-2xl border border-[var(--color-glass-border)] shadow-xl z-50 overflow-hidden">
                   {/* Header */}
                   <div className="flex items-center justify-between p-4 border-b border-[var(--color-glass-border)]">
                     <h3 className="text-sm font-display font-bold text-[var(--color-text-primary)]">Notifications</h3>
@@ -553,22 +553,22 @@ export default function ProtectedLayout({
             <div className="relative" ref={profileRef}>
               <button
                 onClick={() => { setShowProfileMenu(!showProfileMenu); setShowNotifications(false); }}
-                className="flex items-center gap-2 group"
+                className="flex items-center gap-1.5 sm:gap-2 group shrink-0"
               >
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] p-0.5">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 shrink-0 rounded-full bg-gradient-to-br from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] p-0.5">
                   {profile?.avatar_url ? (
                     <img src={profile?.avatar_url} alt="Avatar" className="w-full h-full rounded-full object-cover bg-[var(--color-bg-primary)]" />
                   ) : (
-                    <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center font-display font-bold text-sm text-[var(--color-text-primary)]">
+                    <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center font-display font-bold text-xs sm:text-sm text-[var(--color-text-primary)]">
                       {profile?.full_name?.charAt(0)?.toUpperCase() || 'U'}
                     </div>
                   )}
                 </div>
-                <ChevronDown className={`w-4 h-4 text-[var(--color-text-muted)] transition-transform ${showProfileMenu ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-3.5 h-3.5 sm:w-4 sm:h-4 hidden sm:block text-[var(--color-text-muted)] transition-transform ${showProfileMenu ? 'rotate-180' : ''}`} />
               </button>
 
               {showProfileMenu && (
-                <div className="absolute right-0 top-12 w-64 glass-card-strong rounded-2xl border border-[var(--color-glass-border)] shadow-xl z-50 overflow-hidden">
+                <div className="absolute right-0 top-12 w-[calc(100vw-24px)] sm:w-64 max-w-xs glass-card-strong rounded-2xl border border-[var(--color-glass-border)] shadow-xl z-50 overflow-hidden">
                   <div className="p-4 border-b border-[var(--color-glass-border)]">
                     <p className="text-sm font-display font-bold text-[var(--color-text-primary)]">{profile?.full_name}</p>
                     <p className="text-xs text-[var(--color-text-muted)] mt-0.5">{profile?.email}</p>
