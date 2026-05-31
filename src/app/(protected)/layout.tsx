@@ -320,7 +320,6 @@ export default function ProtectedLayout({
     { label: 'Dashboard', href: '/dashboard', icon: Home },
     { label: 'Messages', href: '/dashboard/messages', icon: MessageSquare },
     { label: 'Projects', href: '/dashboard/projects', icon: Briefcase },
-    { label: 'Files', href: '/dashboard/files', icon: Folder },
     { label: 'Quotations', href: '/dashboard/quotations', icon: FileText },
   ];
 

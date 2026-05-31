@@ -73,9 +73,9 @@ export default function ProjectFilesPage({ params }: { params: { id: string } })
       
       // Reset input
       e.target.value = '';
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading file:', error);
-      alert('Failed to upload file. Please try again.');
+      alert(`Failed to upload file: ${error.message || 'Please check if the "project-files" storage bucket exists and has the correct permissions.'}`);
     } finally {
       setIsUploading(false);
     }
