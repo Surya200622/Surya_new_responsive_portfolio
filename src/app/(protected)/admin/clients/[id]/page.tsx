@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { ArrowLeft, Mail, Phone, Building2, Calendar, Briefcase, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import ClientProjectsTable from './ClientProjectsTable';
 
 interface ClientDetailPageProps {
   params: { id: string };
@@ -147,51 +148,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
       <div className="glass-card-strong p-6 rounded-2xl border border-[var(--color-glass-border)]">
         <h2 className="text-xl font-display font-bold text-[var(--color-text-primary)] mb-6">Projects</h2>
 
-        {projects && projects.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="text-xs text-[var(--color-text-muted)] uppercase bg-[var(--color-bg-glass)]">
-                <tr>
-                  <th className="px-6 py-3 rounded-tl-xl">Project Name</th>
-                  <th className="px-6 py-3">Status</th>
-                  <th className="px-6 py-3">Created</th>
-                  <th className="px-6 py-3 rounded-tr-xl text-right">Budget</th>
-                </tr>
-              </thead>
-              <tbody>
-                {projects.map((project: any) => (
-                  <tr key={project.id} className="border-b border-[var(--color-glass-border)] last:border-0 hover:bg-[var(--color-bg-glass)] transition-colors">
-                    <td className="px-6 py-4 font-medium text-[var(--color-text-primary)]">
-                      {project.name || project.title || 'Untitled Project'}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider border ${
-                        project.status === 'completed' ? 'bg-green-500/10 border-green-500/30 text-green-500' :
-                        project.status === 'in_progress' || project.status === 'active' ? 'bg-blue-500/10 border-blue-500/30 text-blue-500' :
-                        project.status === 'cancelled' ? 'bg-red-500/10 border-red-500/30 text-red-500' :
-                        'bg-[var(--color-accent-primary)]/10 border-[var(--color-accent-primary)]/30 text-[var(--color-accent-primary)]'
-                      }`}>
-                        {project.status?.replace('_', ' ') || 'pending'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-[var(--color-text-secondary)]">
-                      {new Date(project.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 text-right text-[var(--color-text-secondary)]">
-                      {project.budget ? `₹${Number(project.budget).toLocaleString()}` : '-'}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <Briefcase className="w-12 h-12 text-[var(--color-text-muted)] mx-auto mb-3" />
-            <p className="text-[var(--color-text-secondary)] font-medium">No projects yet</p>
-            <p className="text-sm text-[var(--color-text-muted)] mt-1">Projects assigned to this client will appear here.</p>
-          </div>
-        )}
+        <ClientProjectsTable initialProjects={projects || []} />
       </div>
     </div>
   );
