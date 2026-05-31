@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
-import { ArrowLeft, Mail, Phone, Building2, Calendar, Briefcase, MessageSquare } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, Building2, Calendar, Briefcase, MessageSquare, File, Download, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ClientProjectsTable from './ClientProjectsTable';
@@ -35,6 +35,18 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
     .from('messages')
     .select('*', { count: 'exact', head: true })
     .or(`sender_id.eq.${params.id},receiver_id.eq.${params.id}`);
+
+  // Fetch client's uploaded files
+  const projectIds = projects?.map(p => p.id) || [];
+  let files: any[] = [];
+  if (projectIds.length > 0) {
+    const { data: projectFiles } = await supabase
+      .from('project_files')
+      .select('*, projects(name, title)')
+      .in('project_id', projectIds)
+      .order('created_at', { ascending: false });
+    files = projectFiles || [];
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -149,6 +161,61 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
         <h2 className="text-xl font-display font-bold text-[var(--color-text-primary)] mb-6">Projects</h2>
 
         <ClientProjectsTable initialProjects={projects || []} />
+      </div>
+
+      {/* Uploaded Files Section */}
+      <div className="glass-card-strong p-6 rounded-2xl border border-[var(--color-glass-border)]">
+        <h2 className="text-xl font-display font-bold text-[var(--color-text-primary)] mb-6">Client Uploaded Files</h2>
+
+        {files && files.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {files.map(file => (
+              <div key={file.id} className="glass-card-strong p-4 rounded-xl border border-[var(--color-glass-border)] flex items-center justify-between group bg-[var(--color-bg-glass)]">
+                <div className="flex items-center gap-3 overflow-hidden">
+                  <div className="w-10 h-10 rounded-lg bg-[var(--color-bg-tertiary)] flex items-center justify-center shrink-0">
+                    {file.file_type?.startsWith('image/') ? (
+                      <ImageIcon className="w-5 h-5 text-[var(--color-accent-secondary)]" />
+                    ) : (
+                      <File className="w-5 h-5 text-[var(--color-accent-primary)]" />
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <a href={file.file_url} target="_blank" rel="noopener noreferrer" className="font-medium text-sm text-[var(--color-text-primary)] hover:text-[var(--color-accent-primary)] truncate block">
+                      {file.file_name}
+                    </a>
+                    <div className="flex flex-col gap-1 mt-1">
+                      <div className="flex items-center gap-2 text-[10px] text-[var(--color-text-muted)]">
+                        <span className="uppercase px-1.5 py-0.5 bg-[var(--color-bg-tertiary)] rounded-sm">
+                          {file.category?.replace('_', ' ')}
+                        </span>
+                        <span>{(file.file_size / 1024).toFixed(1)} KB</span>
+                      </div>
+                      <span className="text-[10px] text-[var(--color-text-secondary)] truncate">
+                        Project: {file.projects?.name || file.projects?.title || 'Unknown Project'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <a 
+                  href={file.file_url}
+                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 text-[var(--color-text-muted)] hover:text-[var(--color-accent-primary)] hover:bg-[var(--color-accent-primary)]/10 rounded-lg transition-all shrink-0"
+                  title="Download File"
+                >
+                  <Download className="w-4 h-4" />
+                </a>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <File className="w-12 h-12 text-[var(--color-text-muted)] mx-auto mb-3" />
+            <p className="text-[var(--color-text-secondary)] font-medium">No files uploaded yet</p>
+            <p className="text-sm text-[var(--color-text-muted)] mt-1">Files uploaded by the client will appear here.</p>
+          </div>
+        )}
       </div>
     </div>
   );
