@@ -458,7 +458,7 @@ export default function ProtectedLayout({
               </button>
 
               {showNotifications && (
-                <div className="absolute right-0 top-12 w-[calc(100vw-24px)] sm:w-80 max-w-sm glass-card-strong rounded-2xl border border-[var(--color-glass-border)] shadow-xl z-50 overflow-hidden">
+                <div className="absolute right-0 top-12 w-[calc(100vw-24px)] sm:w-80 max-w-sm bg-[var(--color-bg-secondary)] rounded-2xl border border-[var(--color-glass-border)] shadow-xl z-50 overflow-hidden">
                   {/* Header */}
                   <div className="flex items-center justify-between p-4 border-b border-[var(--color-glass-border)]">
                     <h3 className="text-sm font-display font-bold text-[var(--color-text-primary)]">Notifications</h3>
@@ -568,7 +568,7 @@ export default function ProtectedLayout({
               </button>
 
               {showProfileMenu && (
-                <div className="absolute right-0 top-12 w-[calc(100vw-24px)] sm:w-64 max-w-xs glass-card-strong rounded-2xl border border-[var(--color-glass-border)] shadow-xl z-50 overflow-hidden">
+                <div className="absolute right-0 top-12 w-[calc(100vw-24px)] sm:w-64 max-w-xs bg-[var(--color-bg-secondary)] rounded-2xl border border-[var(--color-glass-border)] shadow-xl z-50 overflow-hidden">
                   <div className="p-4 border-b border-[var(--color-glass-border)]">
                     <p className="text-sm font-display font-bold text-[var(--color-text-primary)]">{profile?.full_name}</p>
                     <p className="text-xs text-[var(--color-text-muted)] mt-0.5">{profile?.email}</p>
