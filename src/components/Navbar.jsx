@@ -121,17 +121,20 @@ export default function Navbar({ theme, toggleTheme }) {
 
           <div className="navbar__actions">
             {user ? (
-              <div className="relative group hidden md:block" onMouseEnter={() => setDropdownOpen(true)} onMouseLeave={() => setDropdownOpen(false)}>
-                <button className="flex items-center justify-center w-9 h-9 rounded-full border border-[var(--color-border)] overflow-hidden bg-[var(--color-bg-secondary)] hover:border-[var(--color-accent-primary)] transition-colors">
+              <div className="relative group shrink-0" onMouseEnter={() => setDropdownOpen(true)} onMouseLeave={() => setDropdownOpen(false)}>
+                <button 
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 shrink-0 rounded-full border border-[var(--color-border)] overflow-hidden bg-[var(--color-bg-secondary)] hover:border-[var(--color-accent-primary)] transition-colors"
+                >
                   {profile?.avatar_url ? (
                     <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-sm font-bold text-[var(--color-text-primary)]">
+                    <span className="text-xs sm:text-sm font-bold text-[var(--color-text-primary)]">
                       {profile?.full_name?.charAt(0) || user.email?.charAt(0).toUpperCase()}
                     </span>
                   )}
                 </button>
-                <div className={`absolute right-0 top-full mt-2 w-48 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-xl transition-all ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'} flex flex-col overflow-hidden z-50`}>
+                <div className={`absolute right-0 top-full mt-2 w-[calc(100vw-24px)] sm:w-48 max-w-[200px] bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-xl transition-all ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'} flex flex-col overflow-hidden z-[60]`}>
                   <a href={profile?.role === 'admin' ? '/admin' : '/dashboard'} className="flex items-center gap-2 px-4 py-3 hover:bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] text-sm transition-colors border-b border-[var(--color-border)]">
                     <LayoutDashboard size={16} /> Dashboard
                   </a>
