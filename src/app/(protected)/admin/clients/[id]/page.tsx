@@ -40,11 +40,15 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const projectIds = projects?.map(p => p.id) || [];
   let files: any[] = [];
   if (projectIds.length > 0) {
-    const { data: projectFiles } = await supabase
+    const { data: projectFiles, error: fetchFilesError } = await supabase
       .from('project_files')
-      .select('*, projects(name, title)')
+      .select('*, projects(project_name)')
       .in('project_id', projectIds)
       .order('created_at', { ascending: false });
+    
+    if (fetchFilesError) {
+      console.error('Error fetching project files:', fetchFilesError);
+    }
     files = projectFiles || [];
   }
 
@@ -191,7 +195,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
                         <span>{(file.file_size / 1024).toFixed(1)} KB</span>
                       </div>
                       <span className="text-[10px] text-[var(--color-text-secondary)] truncate">
-                        Project: {file.projects?.name || file.projects?.title || 'Unknown Project'}
+                        Project: {file.projects?.project_name || 'Unknown Project'}
                       </span>
                     </div>
                   </div>
