@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import '../index.css';
 import './globals.css';
+import WhatsAppFloatingButton from "@/components/WhatsAppFloatingButton";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://suryacs.is-a.dev'),
@@ -101,7 +102,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <WhatsAppFloatingButton />
+      </body>
     </html>
   );
 }

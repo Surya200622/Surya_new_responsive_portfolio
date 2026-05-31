@@ -13,13 +13,13 @@ export default async function ClientProjectsPage() {
     .order('created_at', { ascending: false });
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed': return 'bg-green-500/10 border-green-500/20 text-green-400';
-      case 'in_progress': return 'bg-blue-500/10 border-blue-500/20 text-blue-400';
-      case 'review': return 'bg-purple-500/10 border-purple-500/20 text-purple-400';
-      case 'cancelled': return 'bg-red-500/10 border-red-500/20 text-red-400';
-      default: return 'bg-orange-500/10 border-orange-500/20 text-orange-400';
-    }
+    const s = status.toLowerCase();
+    if (s.includes('completed')) return 'bg-green-500/10 border-green-500/20 text-green-400';
+    if (s.includes('development') || s.includes('progress')) return 'bg-blue-500/10 border-blue-500/20 text-blue-400';
+    if (s.includes('review') || s.includes('testing')) return 'bg-purple-500/10 border-purple-500/20 text-purple-400';
+    if (s.includes('cancelled') || s.includes('failed')) return 'bg-red-500/10 border-red-500/20 text-red-400';
+    if (s.includes('payment') || s.includes('gathering')) return 'bg-orange-500/10 border-orange-500/20 text-orange-400';
+    return 'bg-gray-500/10 border-gray-500/20 text-gray-400';
   };
 
   return (
@@ -48,9 +48,23 @@ export default async function ClientProjectsPage() {
               </div>
               
               <h3 className="text-lg font-display font-bold text-[var(--color-text-primary)] mb-2">{project.project_name}</h3>
-              <p className="text-sm text-[var(--color-text-secondary)] line-clamp-2 mb-6 flex-1">
+              <p className="text-sm text-[var(--color-text-secondary)] line-clamp-2 mb-4 flex-1">
                 {project.description || "No description provided."}
               </p>
+
+              {/* Progress Tracking */}
+              <div className="mb-4">
+                <div className="flex justify-between items-center mb-1.5">
+                  <span className="text-xs font-medium text-[var(--color-text-muted)]">Project Progress</span>
+                  <span className="text-xs font-bold text-[var(--color-accent-primary)]">{project.progress_percentage || 0}%</span>
+                </div>
+                <div className="h-2 w-full bg-[var(--color-bg-tertiary)] rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-secondary)] rounded-full transition-all duration-1000"
+                    style={{ width: `${project.progress_percentage || 0}%` }}
+                  />
+                </div>
+              </div>
 
               <div className="space-y-3 mt-auto pt-4 border-t border-[var(--color-glass-border)]">
                 {project.timeline && (
@@ -59,9 +73,14 @@ export default async function ClientProjectsPage() {
                     <span>Timeline: {project.timeline}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-3 text-sm text-[var(--color-text-muted)]">
-                  <Calendar className="w-4 h-4 text-[var(--color-text-secondary)]" />
-                  <span>Created: {new Date(project.created_at).toLocaleDateString()}</span>
+                <div className="flex items-center justify-between text-sm text-[var(--color-text-muted)]">
+                  <div className="flex items-center gap-3">
+                    <Calendar className="w-4 h-4 text-[var(--color-text-secondary)]" />
+                    <span>Created: {new Date(project.created_at).toLocaleDateString()}</span>
+                  </div>
+                  <Link href={`/dashboard/projects/${project.id}/files`} className="text-[var(--color-accent-primary)] hover:underline text-xs font-medium">
+                    View Files
+                  </Link>
                 </div>
               </div>
             </div>

@@ -19,7 +19,7 @@ export default async function ClientQuotationsPage() {
   // Fetch quotations and their linked project names
   const { data: quotations } = await supabaseAdmin
     .from('quotations')
-    .select('*, projects(project_name)')
+    .select('*, projects(project_name, reference_code)')
     .eq('client_id', user?.id)
     .order('created_at', { ascending: false });
 
@@ -91,7 +91,13 @@ export default async function ClientQuotationsPage() {
                 
                 <div className="flex gap-2">
                   {quote.status !== 'rejected' && (
-                    <PayUPIButton amount={quote.total || 0} projectName={quote.projects?.project_name || 'Project Quotation'} />
+                    <PayUPIButton 
+                      amount={quote.total || 0} 
+                      projectName={quote.projects?.project_name || 'Project Quotation'}
+                      projectId={quote.project_id}
+                      quotationId={quote.id}
+                      referenceCode={quote.reference_code || quote.projects?.reference_code || `QUOTE-${quote.id.substring(0, 8).toUpperCase()}`}
+                    />
                   )}
                   <DownloadQuotationButton 
                     quote={quote} 
