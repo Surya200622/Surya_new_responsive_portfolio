@@ -13,6 +13,7 @@ gsap.registerPlugin(ScrollTrigger);
 const AboutSection = lazy(() => import('./sections/AboutSection'));
 const SkillsSection = lazy(() => import('./sections/SkillsSection'));
 const ProjectsSection = lazy(() => import('./sections/ProjectsSection'));
+const OffersSection = lazy(() => import('./sections/OffersSection'));
 const CalculatorSection = lazy(() => import('./sections/CalculatorSection'));
 const ContactSection = lazy(() => import('./sections/ContactSection'));
 const FooterSection = lazy(() => import('./sections/FooterSection'));
@@ -58,9 +59,11 @@ export default function App() {
 
         <div className="section-divider" />
 
-
-
         <Suspense fallback={<SectionLoader />}>
+          <OffersSection />
+        </Suspense>
+
+        <div className="section-divider" />        <Suspense fallback={<SectionLoader />}>
           <ProjectsSection />
         </Suspense>
 

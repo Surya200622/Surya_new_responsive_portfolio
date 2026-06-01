@@ -5,7 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { ArrowRight, Briefcase, Heart, Award } from 'lucide-react';
 import { useMousePosition } from '../hooks/useMousePosition';
-import Floating3DElement from '../components/Floating3DElement';
+import MorphingBrackets from '../components/MorphingBrackets';
 import './HeroSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -90,7 +90,7 @@ export default function HeroSection() {
       </div>
       <div className="hero__bg-overlay" />
       <div className="hero__bg-vignette" />
-      <Floating3DElement />
+      <MorphingBrackets />
 
       {/* Gradient Orbs */}
       <div className="hero__orb hero__orb--1" aria-hidden="true" />

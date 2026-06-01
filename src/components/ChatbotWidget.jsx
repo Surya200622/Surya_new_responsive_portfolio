@@ -44,10 +44,10 @@ export default function ChatbotWidget() {
       if (res.ok) {
         setMessages(prev => [...prev, { role: 'assistant', content: data.reply }]);
       } else {
-        setMessages(prev => [...prev, { role: 'assistant', content: 'Oops, I had a little glitch. Please try again or contact Surya directly at cssurya2006@gmail.com!' }]);
+        setMessages(prev => [...prev, { role: 'assistant', content: `Error: ${data.error || 'Glitch occurred'}. Please check API keys.` }]);
       }
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Connection error. Please try again later.' }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: `Connection error: ${error.message}` }]);
     } finally {
       setIsLoading(false);
     }

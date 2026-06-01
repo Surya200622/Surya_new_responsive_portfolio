@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import '../index.css';
 import './globals.css';
-import WhatsAppFloatingButton from "@/components/WhatsAppFloatingButton";
 import ChatbotWidget from "@/components/ChatbotWidget";
 import MagicCursor from "@/components/MagicCursor";
 
@@ -106,7 +105,6 @@ export default function RootLayout({
       </head>
       <body>
         {children}
-        <WhatsAppFloatingButton />
         <ChatbotWidget />
         <MagicCursor />
       </body>

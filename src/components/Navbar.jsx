@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Sun, Moon, Menu, X, LogOut, Settings, LayoutDashboard } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 import './Navbar.css';
 
@@ -68,12 +69,20 @@ export default function Navbar({ theme, toggleTheme }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
+  const router = useRouter();
+
   const scrollTo = (href) => {
     setMobileOpen(false);
     
+    // If it's a direct page link like /resume
+    if (href.startsWith('/') && !href.startsWith('/#')) {
+      router.push(href);
+      return;
+    }
+
     // If not on home page and trying to go to a hash section, navigate to home first
     if (window.location.pathname !== '/' && href.startsWith('/#')) {
-      window.location.href = href;
+      router.push(href);
       return;
     }
     
@@ -135,11 +144,11 @@ export default function Navbar({ theme, toggleTheme }) {
                     </span>
                   )}
                 </button>
-                <div className={`absolute right-0 top-full mt-2 w-[calc(100vw-24px)] sm:w-48 max-w-[200px] bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-xl shadow-xl transition-all ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'} flex flex-col overflow-hidden z-[60]`}>
-                  <a href={profile?.role === 'admin' ? '/admin' : '/dashboard'} className="flex items-center gap-2 px-4 py-3 hover:bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] text-sm transition-colors border-b border-[var(--color-border)]">
+                <div className={`absolute right-0 top-full mt-2 w-[calc(100vw-24px)] sm:w-48 max-w-[200px] bg-white border border-gray-200 rounded-xl shadow-xl transition-all ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'} flex flex-col overflow-hidden z-[60]`}>
+                  <a href={profile?.role === 'admin' ? '/admin' : '/dashboard'} className="flex items-center gap-2 px-4 py-3 hover:bg-gray-50 text-gray-800 font-medium text-sm transition-colors border-b border-gray-100">
                     <LayoutDashboard size={16} /> Dashboard
                   </a>
-                  <a href="/dashboard/settings" className="flex items-center gap-2 px-4 py-3 hover:bg-[var(--color-bg-secondary)] text-[var(--color-text-primary)] text-sm transition-colors border-b border-[var(--color-border)]">
+                  <a href="/dashboard/settings" className="flex items-center gap-2 px-4 py-3 hover:bg-gray-50 text-gray-800 font-medium text-sm transition-colors border-b border-gray-100">
                     <Settings size={16} /> Account Settings
                   </a>
                   <button 
