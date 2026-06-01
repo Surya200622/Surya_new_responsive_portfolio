@@ -57,6 +57,12 @@ export default function OffersSection() {
             >
               <div className="offer-card-glow" />
               
+              {offer.image_url && (
+                <div className="offer-image-container">
+                  <img src={offer.image_url} alt={offer.title} className="offer-image" />
+                </div>
+              )}
+              
               {offer.discount_percentage > 0 && (
                 <div className="offer-badge">
                   <Tag size={14} /> {offer.discount_percentage}% OFF

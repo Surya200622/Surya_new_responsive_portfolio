@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { LogOut, Home, MessageSquare, Briefcase, Folder, FileText, Bell, User, Settings, X, ChevronDown, Menu, Trash2, CheckSquare, Square, Camera, Loader2, Lock } from 'lucide-react';
+import { LogOut, Home, MessageSquare, Briefcase, Folder, FileText, Bell, User, Settings, X, ChevronDown, Menu, Trash2, CheckSquare, Square, Camera, Loader2, Lock, Tag } from 'lucide-react';
 import { createBrowserClient } from '@supabase/ssr';
 import { useEffect, useState, useRef } from 'react';
 
@@ -316,6 +316,7 @@ export default function ProtectedLayout({
     { label: 'Clients', href: '/admin/clients', icon: Briefcase },
     { label: 'Messages', href: '/admin/messages', icon: MessageSquare },
     { label: 'Projects', href: '/admin/projects', icon: Folder },
+    { label: 'Offers', href: '/admin/offers', icon: Tag },
   ] : [
     { label: 'Dashboard', href: '/dashboard', icon: Home },
     { label: 'Messages', href: '/dashboard/messages', icon: MessageSquare },

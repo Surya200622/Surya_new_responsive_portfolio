@@ -1,0 +1,234 @@
+'use client';
+
+import { useState } from 'react';
+import { createBrowserClient } from '@supabase/ssr';
+import { Tag, Send, Upload, Loader2, Image as ImageIcon, X } from 'lucide-react';
+
+export default function AdminOffersPage() {
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    discount_percentage: '',
+    valid_until: '',
+    send_email: true
+  });
+  
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      let image_url = null;
+
+      // 1. Upload image if selected
+      if (imageFile) {
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random()}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('offers')
+          .upload(filePath, imageFile);
+
+        if (uploadError) {
+          throw new Error(`Image upload failed: ${uploadError.message}. Did you create the 'offers' storage bucket?`);
+        }
+
+        const { data } = supabase.storage.from('offers').getPublicUrl(filePath);
+        image_url = data.publicUrl;
+      }
+
+      // 2. Submit to API
+      const res = await fetch('/api/offers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          discount_percentage: parseInt(formData.discount_percentage) || 0,
+          image_url
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to create offer');
+      }
+
+      setSuccess('Offer successfully created and broadcasted!');
+      setFormData({
+        title: '',
+        description: '',
+        discount_percentage: '',
+        valid_until: '',
+        send_email: true
+      });
+      removeImage();
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'An unexpected error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div>
+        <h1 className="text-2xl font-display font-bold text-[var(--color-text-primary)] mb-1">Create Special Offer</h1>
+        <p className="text-sm text-[var(--color-text-muted)]">Post a new freelance deal and broadcast it to all your clients.</p>
+      </div>
+
+      <div className="glass-card-strong p-6 sm:p-8 rounded-2xl border border-[var(--color-glass-border)] max-w-2xl">
+        {error && (
+          <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl mb-6 text-sm">
+            {error}
+          </div>
+        )}
+        
+        {success && (
+          <div className="bg-green-500/10 border border-green-500/20 text-green-400 p-4 rounded-xl mb-6 text-sm">
+            {success}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Offer Title</label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Tag className="h-4 w-4 text-[var(--color-text-muted)]" />
+              </div>
+              <input
+                type="text"
+                required
+                className="auth-input pl-11 w-full"
+                placeholder="e.g. 50% Off E-commerce Sites"
+                value={formData.title}
+                onChange={e => setFormData({...formData, title: e.target.value})}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Description</label>
+            <textarea
+              required
+              rows={4}
+              className="auth-input p-4 w-full"
+              placeholder="Describe what's included in this offer..."
+              value={formData.description}
+              onChange={e => setFormData({...formData, description: e.target.value})}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Discount % (Optional)</label>
+              <input
+                type="number"
+                min="0"
+                max="100"
+                className="auth-input px-4 w-full"
+                placeholder="e.g. 20"
+                value={formData.discount_percentage}
+                onChange={e => setFormData({...formData, discount_percentage: e.target.value})}
+              />
+            </div>
+            
+            <div>
+              <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Valid Until</label>
+              <input
+                type="date"
+                required
+                className="auth-input px-4 w-full"
+                value={formData.valid_until}
+                onChange={e => setFormData({...formData, valid_until: e.target.value})}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Offer Image (Optional)</label>
+            {!imagePreview ? (
+              <label className="border-2 border-dashed border-[var(--color-glass-border)] rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer hover:bg-[var(--color-bg-glass)] hover:border-[var(--color-accent-primary)] transition-all">
+                <Upload className="w-8 h-8 text-[var(--color-text-muted)] mb-3" />
+                <span className="text-sm text-[var(--color-text-secondary)] font-medium">Click to upload image</span>
+                <span className="text-xs text-[var(--color-text-muted)] mt-1">PNG, JPG up to 5MB</span>
+                <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
+              </label>
+            ) : (
+              <div className="relative rounded-xl overflow-hidden border border-[var(--color-glass-border)] bg-[var(--color-bg-glass)] flex items-center justify-center">
+                <img src={imagePreview} alt="Preview" className="max-h-[300px] object-contain" />
+                <button 
+                  type="button" 
+                  onClick={removeImage}
+                  className="absolute top-3 right-3 p-1.5 bg-black/50 hover:bg-red-500 text-white rounded-full transition-colors backdrop-blur-sm"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="pt-4 border-t border-[var(--color-glass-border)] flex items-center justify-between">
+            <label className="flex items-center gap-3 cursor-pointer group">
+              <div className="relative flex items-center">
+                <input
+                  type="checkbox"
+                  className="peer sr-only"
+                  checked={formData.send_email}
+                  onChange={e => setFormData({...formData, send_email: e.target.checked})}
+                />
+                <div className="w-10 h-6 bg-[var(--color-glass-border)] rounded-full peer peer-checked:bg-[var(--color-accent-primary)] transition-colors"></div>
+                <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform peer-checked:translate-x-4"></div>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm font-medium text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-primary)] transition-colors">Broadcast via Email</span>
+                <span className="text-xs text-[var(--color-text-muted)]">Sends to all registered clients</span>
+              </div>
+            </label>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="gradient-btn px-6 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-lg shadow-[var(--color-accent-primary)]/20"
+            >
+              {loading ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</>
+              ) : (
+                <><Send className="w-4 h-4" /> Publish Offer</>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

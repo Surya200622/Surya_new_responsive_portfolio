@@ -6,7 +6,7 @@ import { getBrandEmailTemplate } from '@/lib/email-template';
 // POST: Create a new offer and optionally send it via email to clients
 export async function POST(req: Request) {
   try {
-    const { title, description, discount_percentage, valid_until, send_email } = await req.json();
+    const { title, description, discount_percentage, valid_until, send_email, image_url } = await req.json();
 
     if (!title || !description || !valid_until) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -27,6 +27,7 @@ export async function POST(req: Request) {
           description,
           discount_percentage: discount_percentage || 0,
           valid_until,
+          image_url: image_url || null,
           is_active: true
         }
       ])
@@ -56,6 +57,7 @@ export async function POST(req: Request) {
 
         const emailContent = `
           <h2 style="color: #f97316; margin-bottom: 10px;">${discount_percentage ? `${discount_percentage}% OFF!` : 'New Special Offer!'}</h2>
+          ${image_url ? `<img src="${image_url}" alt="${title}" style="max-width: 100%; border-radius: 12px; margin-bottom: 20px;" />` : ''}
           <p>${description.replace(/\n/g, '<br>')}</p>
           <div class="data-box" style="margin-top: 20px;">
             <div class="data-label">Valid Until</div>

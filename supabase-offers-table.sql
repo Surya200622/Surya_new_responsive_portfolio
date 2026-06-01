@@ -1,3 +1,4 @@
+-- IMPORTANT: You must also create a public storage bucket named "offers" in the Supabase Dashboard
 -- Create the offers table
 CREATE TABLE IF NOT EXISTS public.offers (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -6,6 +7,7 @@ CREATE TABLE IF NOT EXISTS public.offers (
     discount_percentage INTEGER DEFAULT 0,
     valid_until TIMESTAMP WITH TIME ZONE NOT NULL,
     is_active BOOLEAN DEFAULT true,
+    image_url TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
