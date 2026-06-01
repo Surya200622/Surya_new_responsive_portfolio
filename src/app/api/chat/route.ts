@@ -25,8 +25,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
     }
 
-    // Use gemini-pro (Gemini 1.0 Pro) for maximum compatibility across regions and keys
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // Use gemini-2.5-flash since older models are deprecated
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     
     // Create the chat prompt with the system instructions
     const prompt = `${SYSTEM_PROMPT}\n\nUser: ${message}\nAssistant:`;
