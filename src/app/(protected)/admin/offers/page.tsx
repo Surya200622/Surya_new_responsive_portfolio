@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
 import { Tag, Send, Upload, Loader2, Image as ImageIcon, X } from 'lucide-react';
 
+import { PROJECT_TYPES } from '@/data/calculatorData';
+
 export default function AdminOffersPage() {
   const [formData, setFormData] = useState({
     title: '',
@@ -119,16 +121,37 @@ export default function AdminOffersPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Offer Title</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Tag className="h-4 w-4 text-[var(--color-text-muted)]" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Select Service</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Tag className="h-4 w-4 text-[var(--color-text-muted)]" />
+                </div>
+                <select
+                  className="auth-input pl-11 w-full appearance-none"
+                  onChange={e => {
+                    const serviceName = e.target.value;
+                    const discount = formData.discount_percentage;
+                    const newTitle = discount ? `${discount}% Off ${serviceName}` : `${serviceName} Special Offer`;
+                    setFormData({...formData, title: newTitle});
+                  }}
+                  defaultValue=""
+                >
+                  <option value="" disabled>Select a predefined service...</option>
+                  {PROJECT_TYPES.map(type => (
+                    <option key={type.id} value={type.name}>{type.name}</option>
+                  ))}
+                </select>
               </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Offer Title</label>
               <input
                 type="text"
                 required
-                className="auth-input pl-11 w-full"
+                className="auth-input px-4 w-full"
                 placeholder="e.g. 50% Off E-commerce Sites"
                 value={formData.title}
                 onChange={e => setFormData({...formData, title: e.target.value})}
