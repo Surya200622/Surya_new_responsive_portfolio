@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { Briefcase, Heart, Award, Code } from 'lucide-react';
 import { SKILLS, TIMELINE_DATA, STATS } from '../data/projectsData';
+import GithubStats from '../components/GithubStats';
 import './AboutSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -149,7 +150,25 @@ export default function AboutSection() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.5 }}
           >
-            Crafting the Future of <span className="text-gradient">Web Experiences</span>
+            Crafting the Future of <span className="text-gradient" style={{ position: 'relative' }}>
+              Web Experiences
+              <motion.svg 
+                width="120%" height="20" viewBox="0 0 200 20" 
+                style={{ position: 'absolute', bottom: '-10px', left: '-10%', zIndex: -1 }}
+                initial={{ pathLength: 0, opacity: 0 }}
+                whileInView={{ pathLength: 1, opacity: 1 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 1.5, ease: 'easeInOut', delay: 0.5 }}
+              >
+                <motion.path 
+                  d="M5,15 Q100,5 195,15" 
+                  fill="none" 
+                  stroke="var(--color-accent-primary)" 
+                  strokeWidth="4" 
+                  strokeLinecap="round" 
+                />
+              </motion.svg>
+            </span>
           </motion.h2>
         </div>
 
@@ -204,6 +223,8 @@ export default function AboutSection() {
             );
           })}
         </div>
+
+        <GithubStats username="Surya200622" />
 
         {/* Timeline */}
         <div className="about__timeline" ref={timelineRef}>

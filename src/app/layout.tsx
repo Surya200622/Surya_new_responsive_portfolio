@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import '../index.css';
 import './globals.css';
 import WhatsAppFloatingButton from "@/components/WhatsAppFloatingButton";
+import ChatbotWidget from "@/components/ChatbotWidget";
+import MagicCursor from "@/components/MagicCursor";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://suryacs.is-a.dev'),
@@ -18,7 +20,7 @@ export const metadata: Metadata = {
     title: 'Surya CS | Full-Stack Python Developer',
     description:
       'Portfolio of Surya CS, an Full-Stack Python Developer specializing in Django, React, and modern web solutions.',
-    images: ['/images/surya-portrait.jpg'],
+    images: ['/api/og'],
     locale: 'en_IN',
   },
   twitter: {
@@ -105,6 +107,8 @@ export default function RootLayout({
       <body>
         {children}
         <WhatsAppFloatingButton />
+        <ChatbotWidget />
+        <MagicCursor />
       </body>
     </html>
   );

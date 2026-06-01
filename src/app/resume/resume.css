@@ -1,0 +1,220 @@
+.resume-page-wrapper {
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  background-color: var(--color-bg);
+  font-family: var(--font-body);
+}
+
+.resume-nav {
+  max-width: 900px;
+  margin: 0 auto 2rem auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.back-link, .download-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.back-link:hover, .download-btn:hover {
+  color: var(--color-accent-primary);
+  transform: translateY(-2px);
+}
+
+.download-btn {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 2rem;
+}
+
+.resume-container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.resume-header {
+  padding: 3rem;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2)), url('/images/surya-casual.jpg') center/cover;
+  position: relative;
+}
+
+.resume-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--color-bg) 0%, transparent 100%);
+  opacity: 0.9;
+}
+
+.header-content {
+  position: relative;
+  z-index: 1;
+}
+
+.resume-name {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin: 0 0 0.25rem 0;
+  letter-spacing: -0.02em;
+}
+
+.resume-title {
+  font-size: 1.25rem;
+  color: var(--color-accent-primary);
+  margin: 0 0 1.5rem 0;
+  font-weight: 500;
+}
+
+.contact-info, .social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.contact-info a, .contact-info span, .social-links a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.contact-info a:hover, .social-links a:hover {
+  color: var(--color-accent-primary);
+}
+
+.resume-content-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 3rem;
+  padding: 3rem;
+}
+
+@media (max-width: 768px) {
+  .resume-content-grid {
+    grid-template-columns: 1fr;
+    padding: 2rem;
+  }
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.profile-text {
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.experience-item {
+  margin-bottom: 2rem;
+}
+
+.experience-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.25rem;
+}
+
+.experience-header h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.experience-header .date {
+  font-size: 0.875rem;
+  color: var(--color-accent-primary);
+  font-weight: 500;
+}
+
+.tech-stack {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin: 0 0 0.75rem 0;
+  font-style: italic;
+}
+
+.experience-list {
+  padding-left: 1.25rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.experience-list li {
+  margin-bottom: 0.5rem;
+}
+
+.skill-category {
+  margin-bottom: 1.5rem;
+}
+
+.skill-category h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 0.75rem 0;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-tags span {
+  padding: 0.25rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.cert-list, .lang-list {
+  list-style: none;
+  padding: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.cert-list li, .lang-list li {
+  margin-bottom: 0.5rem;
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.cert-list li::before, .lang-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--color-accent-primary);
+}

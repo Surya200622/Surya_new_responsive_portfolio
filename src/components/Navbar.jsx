@@ -7,6 +7,7 @@ const NAV_LINKS = [
   { label: 'Home', href: '/#hero' },
   { label: 'About', href: '/#about' },
   { label: 'Projects', href: '/#projects' },
+  { label: 'Resume', href: '/resume' },
   { label: 'Calculator', href: '/#calculator' },
   { label: 'Blog', href: 'https://blogcraft.pythonanywhere.com' },
   { label: 'Contact', href: '/#contact' },
