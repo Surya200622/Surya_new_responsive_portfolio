@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
   Building2, ShoppingCart, Palette, LayoutDashboard, Settings, Rocket,
@@ -20,6 +21,7 @@ const ICON_MAP = {
 };
 
 export default function CalculatorSection() {
+  const searchParams = useSearchParams();
   const [projectType, setProjectType] = useState('');
   const [pages, setPages] = useState(5);
   const [uiComplexity, setUiComplexity] = useState('professional');
@@ -58,21 +60,20 @@ export default function CalculatorSection() {
       }
     }
     fetchOffers();
+  }, []);
 
-    // Automatically select project service from URL query
-    if (typeof window !== 'undefined') {
-      const searchParams = new URLSearchParams(window.location.search);
+  // Listen to searchParams changes to dynamically select projectType and scroll
+  useEffect(() => {
+    if (searchParams) {
       const serviceParam = searchParams.get('service');
       if (serviceParam) {
         setProjectType(serviceParam);
-        if (window.location.hash === '#calculator') {
-          setTimeout(() => {
-            document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
-          }, 300);
-        }
+        setTimeout(() => {
+          document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
       }
     }
-  }, []);
+  }, [searchParams]);
 
   const toggleFeature = (key) => {
     setFeatures(prev => ({ ...prev, [key]: !prev[key] }));

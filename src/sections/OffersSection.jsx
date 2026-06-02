@@ -49,7 +49,16 @@ export default function OffersSection() {
         <div className="offers-grid">
           {offers.map((offer, index) => {
             let serviceQuery = '';
-            const matchedProject = PROJECT_TYPES.find(p => offer.title.toLowerCase().includes(p.name.toLowerCase()));
+            const offerTitleLower = offer.title.toLowerCase();
+            const matchedProject = PROJECT_TYPES.find(p => {
+              const nameLower = p.name.toLowerCase();
+              const idLower = p.id.toLowerCase();
+              const firstWord = nameLower.split(' ')[0];
+              return offerTitleLower.includes(nameLower) || 
+                     offerTitleLower.includes(idLower) || 
+                     offerTitleLower.includes(firstWord);
+            });
+            
             if (matchedProject) {
               serviceQuery = `?service=${matchedProject.id}`;
             }

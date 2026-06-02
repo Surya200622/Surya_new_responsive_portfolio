@@ -58,7 +58,16 @@ export async function POST(req: Request) {
 
         // Determine if there is a specific project type associated with this offer
         let serviceQuery = '';
-        const matchedProject = PROJECT_TYPES.find((p: any) => title.toLowerCase().includes(p.name.toLowerCase()));
+        const offerTitleLower = title.toLowerCase();
+        const matchedProject = PROJECT_TYPES.find((p: any) => {
+          const nameLower = p.name.toLowerCase();
+          const idLower = p.id.toLowerCase();
+          const firstWord = nameLower.split(' ')[0];
+          return offerTitleLower.includes(nameLower) || 
+                 offerTitleLower.includes(idLower) || 
+                 offerTitleLower.includes(firstWord);
+        });
+        
         if (matchedProject) {
           serviceQuery = `?service=${matchedProject.id}`;
         }
