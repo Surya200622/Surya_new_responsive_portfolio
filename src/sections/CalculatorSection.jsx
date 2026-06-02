@@ -58,6 +58,20 @@ export default function CalculatorSection() {
       }
     }
     fetchOffers();
+
+    // Automatically select project service from URL query
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const serviceParam = searchParams.get('service');
+      if (serviceParam) {
+        setProjectType(serviceParam);
+        if (window.location.hash === '#calculator') {
+          setTimeout(() => {
+            document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
+          }, 300);
+        }
+      }
+    }
   }, []);
 
   const toggleFeature = (key) => {

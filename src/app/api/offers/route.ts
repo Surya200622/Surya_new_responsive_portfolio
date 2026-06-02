@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import nodemailer from 'nodemailer';
 import { getBrandEmailTemplate } from '@/lib/email-template';
+import { PROJECT_TYPES } from '@/data/calculatorData';
 
 // POST: Create a new offer and optionally send it via email to clients
 export async function POST(req: Request) {
@@ -55,6 +56,13 @@ export async function POST(req: Request) {
           },
         });
 
+        // Determine if there is a specific project type associated with this offer
+        let serviceQuery = '';
+        const matchedProject = PROJECT_TYPES.find((p: any) => title.toLowerCase().includes(p.name.toLowerCase()));
+        if (matchedProject) {
+          serviceQuery = `?service=${matchedProject.id}`;
+        }
+
         const emailContent = `
           <h2 style="color: #f97316; margin-bottom: 10px;">${discount_percentage ? `${discount_percentage}% OFF!` : 'New Special Offer!'}</h2>
           ${image_url ? `<img src="${image_url}" alt="${title}" style="max-width: 100%; border-radius: 12px; margin-bottom: 20px;" />` : ''}
@@ -64,7 +72,7 @@ export async function POST(req: Request) {
             <div class="data-value" style="color: #f97316;">${new Date(valid_until).toLocaleDateString()}</div>
           </div>
           <div style="margin: 30px 0; text-align: center;">
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev'}/contact" class="button">
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev'}/${serviceQuery}#calculator" class="button">
               Claim Offer Now
             </a>
           </div>
