@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Tag, Calendar, ArrowRight } from 'lucide-react';
 import { PROJECT_TYPES } from '../data/calculatorData';
 import './OffersSection.css';
 
 export default function OffersSection() {
+  const router = useRouter();
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -95,7 +97,14 @@ export default function OffersSection() {
                     <span>Valid till {new Date(offer.valid_until).toLocaleDateString()}</span>
                   </div>
                   
-                  <a href={`/${serviceQuery}#calculator`} className="offer-cta">
+                  <a 
+                    href={`/${serviceQuery}#calculator`} 
+                    className="offer-cta"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      router.push(`/${serviceQuery}#calculator`);
+                    }}
+                  >
                     Claim Offer <ArrowRight size={16} />
                   </a>
                 </div>
