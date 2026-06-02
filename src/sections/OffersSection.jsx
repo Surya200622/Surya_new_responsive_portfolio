@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Tag, Calendar, ArrowRight } from 'lucide-react';
+import { PROJECT_TYPES } from '../data/calculatorData';
 import './OffersSection.css';
 
 export default function OffersSection() {
@@ -46,44 +47,52 @@ export default function OffersSection() {
         </motion.div>
 
         <div className="offers-grid">
-          {offers.map((offer, index) => (
-            <motion.div 
-              key={offer.id}
-              className="offer-card"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              <div className="offer-card-glow" />
-              
-              {offer.image_url && (
-                <div className="offer-image-container">
-                  <img src={offer.image_url} alt={offer.title} className="offer-image" />
-                </div>
-              )}
-              
-              {offer.discount_percentage > 0 && (
-                <div className="offer-badge">
-                  <Tag size={14} /> {offer.discount_percentage}% OFF
-                </div>
-              )}
-              
-              <h3 className="offer-title">{offer.title}</h3>
-              <p className="offer-desc">{offer.description}</p>
-              
-              <div className="offer-footer">
-                <div className="offer-expiry">
-                  <Calendar size={14} />
-                  <span>Valid till {new Date(offer.valid_until).toLocaleDateString()}</span>
-                </div>
+          {offers.map((offer, index) => {
+            let serviceQuery = '';
+            const matchedProject = PROJECT_TYPES.find(p => offer.title.toLowerCase().includes(p.name.toLowerCase()));
+            if (matchedProject) {
+              serviceQuery = `?service=${matchedProject.id}`;
+            }
+
+            return (
+              <motion.div 
+                key={offer.id}
+                className="offer-card"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <div className="offer-card-glow" />
                 
-                <a href="#contact" className="offer-cta">
-                  Claim Offer <ArrowRight size={16} />
-                </a>
-              </div>
-            </motion.div>
-          ))}
+                {offer.image_url && (
+                  <div className="offer-image-container">
+                    <img src={offer.image_url} alt={offer.title} className="offer-image" />
+                  </div>
+                )}
+                
+                {offer.discount_percentage > 0 && (
+                  <div className="offer-badge">
+                    <Tag size={14} /> {offer.discount_percentage}% OFF
+                  </div>
+                )}
+                
+                <h3 className="offer-title">{offer.title}</h3>
+                <p className="offer-desc">{offer.description}</p>
+                
+                <div className="offer-footer">
+                  <div className="offer-expiry">
+                    <Calendar size={14} />
+                    <span>Valid till {new Date(offer.valid_until).toLocaleDateString()}</span>
+                  </div>
+                  
+                  <a href={`/${serviceQuery}#calculator`} className="offer-cta">
+                    Claim Offer <ArrowRight size={16} />
+                  </a>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
