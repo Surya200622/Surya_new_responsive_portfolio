@@ -107,14 +107,12 @@ export const UI_COMPLEXITY = {
   basic: { multiplier: 1.0, label: 'Basic', description: 'Clean & functional' },
   professional: { multiplier: 1.3, label: 'Professional', description: 'Polished & refined' },
   premium: { multiplier: 1.7, label: 'Premium', description: 'Luxury & cinematic' },
-  ultra: { multiplier: 2.2, label: 'Ultra', description: 'Award-winning quality' },
 };
 
 export const ANIMATION_LEVELS = {
   none: { multiplier: 1.0, label: 'None', description: 'Static design' },
   subtle: { multiplier: 1.1, label: 'Subtle', description: 'Smooth transitions' },
   moderate: { multiplier: 1.25, label: 'Moderate', description: 'Interactive animations' },
-  cinematic: { multiplier: 1.5, label: 'Cinematic', description: 'Full motion design' },
 };
 
 export const DELIVERY_SPEEDS = {
