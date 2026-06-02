@@ -6,19 +6,25 @@ import MagicCursor from "@/components/MagicCursor";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://suryacs.is-a.dev'),
+  applicationName: 'Surya CS',
   title: 'Surya CS | Full-Stack Python Developer | Coimbatore, India',
   description:
-    'Portfolio of Surya CS, an Full-Stack Python Developer specializing in Django, React, and modern web solutions. View projects, resume, and contact for freelance work.',
+    'Portfolio of Surya CS, a Full-Stack Python Developer specializing in Django, React, and modern web solutions. View projects, resume, and contact for freelance work.',
   keywords:
     'Surya CS, Cssurya, Full Stack Developer, Python Developer, Django, React, Web Development, Coimbatore, Freelance Developer',
   authors: [{ name: 'Surya CS' }],
+  creator: 'Surya CS',
+  publisher: 'Surya CS',
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     type: 'website',
     url: 'https://suryacs.is-a.dev',
     siteName: 'Surya CS',
     title: 'Surya CS | Full-Stack Python Developer',
     description:
-      'Portfolio of Surya CS, an Full-Stack Python Developer specializing in Django, React, and modern web solutions.',
+      'Portfolio of Surya CS, a Full-Stack Python Developer specializing in Django, React, and modern web solutions.',
     images: ['/api/og'],
     locale: 'en_IN',
   },
@@ -67,15 +73,18 @@ export default function RootLayout({
               {
                 '@context': 'https://schema.org',
                 '@type': 'WebSite',
+                '@id': 'https://suryacs.is-a.dev/#website',
                 name: 'Surya CS',
-                url: 'https://suryacs.is-a.dev'
+                alternateName: ['Suryacs', 'Surya CS', 'Cssurya'],
+                url: 'https://suryacs.is-a.dev/'
               },
               {
                 '@context': 'https://schema.org',
                 '@type': 'Person',
+                '@id': 'https://suryacs.is-a.dev/#person',
                 name: 'Surya CS',
                 url: 'https://suryacs.is-a.dev',
-                image: '/images/surya-portrait.jpg',
+                image: 'https://suryacs.is-a.dev/images/surya-portrait.jpg',
                 jobTitle: 'Full-Stack Python Developer',
                 description:
                   'B.COM.CA graduate from Sri Ramakrishna College of Arts & Science. IBM & ITC trained in Python Pandas & NumPy. Django & React Specialist.',
