@@ -6,8 +6,10 @@ import { motion } from 'framer-motion';
 export default function MagicCursor() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     // Check if device has a fine pointer (mouse) instead of coarse (touch)
     if (window.matchMedia('(pointer: coarse)').matches) return;
 
@@ -38,7 +40,8 @@ export default function MagicCursor() {
     };
   }, []);
 
-  // Hide on touch devices
+  // Hide on touch devices or during SSR
+  if (!isMounted) return null;
   if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
     return null;
   }

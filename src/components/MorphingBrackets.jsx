@@ -135,6 +135,7 @@ export default function MorphingBrackets() {
   return (
     <canvas 
       ref={canvasRef} 
+      className="hidden lg:block"
       style={{ 
         position: 'absolute', 
         top: 0, 
