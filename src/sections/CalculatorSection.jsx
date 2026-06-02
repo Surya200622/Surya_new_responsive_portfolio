@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Building2, ShoppingCart, Palette, LayoutDashboard, Settings, Rocket,
@@ -43,6 +43,23 @@ export default function CalculatorSection() {
     analyticsDashboard: false,
   });
 
+  const [offers, setOffers] = useState([]);
+
+  useEffect(() => {
+    async function fetchOffers() {
+      try {
+        const res = await fetch('/api/offers');
+        if (res.ok) {
+          const data = await res.json();
+          setOffers(data.offers || []);
+        }
+      } catch (error) {
+        console.error('Failed to fetch offers:', error);
+      }
+    }
+    fetchOffers();
+  }, []);
+
   const toggleFeature = (key) => {
     setFeatures(prev => ({ ...prev, [key]: !prev[key] }));
   };
@@ -51,7 +68,29 @@ export default function CalculatorSection() {
     projectType, pages, uiComplexity, animationLevel, deliverySpeed, selectedPackage, features,
   }), [projectType, pages, uiComplexity, animationLevel, deliverySpeed, selectedPackage, features]);
 
-  const pricing = useMemo(() => calculatePricing(state), [state]);
+  const applicableOffer = useMemo(() => {
+    if (!projectType || !offers.length) return null;
+    const currentProject = PROJECT_TYPES.find(p => p.id === projectType);
+    if (!currentProject) return null;
+    
+    return offers.find(offer => 
+      offer.title.toLowerCase().includes(currentProject.name.toLowerCase()) && 
+      offer.discount_percentage > 0
+    );
+  }, [projectType, offers]);
+
+  const pricing = useMemo(() => {
+    const basePricing = calculatePricing(state);
+    if (applicableOffer) {
+      return {
+        ...basePricing,
+        originalTotal: basePricing.total,
+        total: Math.round(basePricing.total * (1 - applicableOffer.discount_percentage / 100)),
+        discountPercentage: applicableOffer.discount_percentage
+      };
+    }
+    return basePricing;
+  }, [state, applicableOffer]);
 
   const handleWhatsApp = () => {
     const msg = generateWhatsAppMessage(state, pricing);
@@ -295,7 +334,26 @@ export default function CalculatorSection() {
             <div className="calc__total-info">
               <div className="calc__total-item">
                 <span className="calc__total-label">Estimated Cost</span>
-                <span className="calc__total-value">₹{pricing.total.toLocaleString('en-IN')}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                  {pricing.originalTotal && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <span className="calc__total-value" style={{ textDecoration: 'line-through', opacity: 0.5, fontSize: '0.9em' }}>
+                        ₹{pricing.originalTotal.toLocaleString('en-IN')}
+                      </span>
+                      <span style={{ 
+                        background: 'rgba(249, 115, 22, 0.2)', 
+                        color: '#f97316', 
+                        padding: '2px 8px', 
+                        borderRadius: '12px', 
+                        fontSize: '0.75em',
+                        fontWeight: 'bold'
+                      }}>
+                        Save {pricing.discountPercentage}%
+                      </span>
+                    </div>
+                  )}
+                  <span className="calc__total-value">₹{pricing.total.toLocaleString('en-IN')}</span>
+                </div>
               </div>
               <div className="calc__total-item">
                 <span className="calc__total-label">Timeline</span>

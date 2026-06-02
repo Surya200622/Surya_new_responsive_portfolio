@@ -3,7 +3,7 @@ export const PROJECT_TYPES = [
     id: 'business',
     name: 'Business Website',
     icon: 'Building2',
-    basePrice: 15000,
+    basePrice: 3500,
     baseTimeline: 14,
     description: 'Professional web presence for your business',
   },
@@ -11,7 +11,7 @@ export const PROJECT_TYPES = [
     id: 'ecommerce',
     name: 'E-commerce Website',
     icon: 'ShoppingCart',
-    basePrice: 35000,
+    basePrice: 8000,
     baseTimeline: 28,
     description: 'Full-featured online store with payments',
   },
@@ -19,7 +19,7 @@ export const PROJECT_TYPES = [
     id: 'portfolio',
     name: 'Portfolio Website',
     icon: 'Palette',
-    basePrice: 10000,
+    basePrice: 2500,
     baseTimeline: 10,
     description: 'Stunning showcase for your work',
   },
@@ -27,7 +27,7 @@ export const PROJECT_TYPES = [
     id: 'saas',
     name: 'SaaS Dashboard',
     icon: 'LayoutDashboard',
-    basePrice: 50000,
+    basePrice: 12000,
     baseTimeline: 35,
     description: 'Scalable software-as-a-service platform',
   },
@@ -35,7 +35,7 @@ export const PROJECT_TYPES = [
     id: 'admin',
     name: 'Admin Dashboard',
     icon: 'Settings',
-    basePrice: 30000,
+    basePrice: 7500,
     baseTimeline: 21,
     description: 'Powerful admin panel with analytics',
   },
@@ -43,23 +43,15 @@ export const PROJECT_TYPES = [
     id: 'landing',
     name: 'Landing Page',
     icon: 'Rocket',
-    basePrice: 8000,
+    basePrice: 2000,
     baseTimeline: 7,
     description: 'High-converting single page experience',
-  },
-  {
-    id: 'ai-webapp',
-    name: 'AI Web App',
-    icon: 'Brain',
-    basePrice: 60000,
-    baseTimeline: 42,
-    description: 'AI-powered web application',
   },
   {
     id: 'booking',
     name: 'Booking Website',
     icon: 'CalendarCheck',
-    basePrice: 25000,
+    basePrice: 6000,
     baseTimeline: 21,
     description: 'Appointment & reservation system',
   },
@@ -67,7 +59,7 @@ export const PROJECT_TYPES = [
     id: 'blog',
     name: 'Blog Website',
     icon: 'BookOpen',
-    basePrice: 12000,
+    basePrice: 3000,
     baseTimeline: 10,
     description: 'Content-rich blog with CMS',
   },
@@ -75,7 +67,7 @@ export const PROJECT_TYPES = [
     id: 'portal',
     name: 'Client Portal',
     icon: 'Users',
-    basePrice: 40000,
+    basePrice: 9000,
     baseTimeline: 28,
     description: 'Secure client management portal',
   },
@@ -83,32 +75,32 @@ export const PROJECT_TYPES = [
     id: 'custom',
     name: 'Custom Web App',
     icon: 'Code',
-    basePrice: 45000,
+    basePrice: 10000,
     baseTimeline: 35,
     description: 'Tailored solution for unique needs',
   },
 ];
 
 export const FEATURE_COSTS = {
-  adminDashboard: { cost: 15000, timeline: 7, label: 'Admin Dashboard', icon: 'LayoutDashboard' },
-  clientDashboard: { cost: 12000, timeline: 5, label: 'Client Dashboard', icon: 'Users' },
-  authentication: { cost: 8000, timeline: 3, label: 'Authentication System', icon: 'Shield' },
-  database: { cost: 10000, timeline: 4, label: 'Database Integration', icon: 'Database' },
-  paymentGateway: { cost: 12000, timeline: 5, label: 'Payment Gateway', icon: 'CreditCard' },
-  cms: { cost: 8000, timeline: 4, label: 'CMS Support', icon: 'FileEdit' },
-  seo: { cost: 5000, timeline: 2, label: 'SEO Optimization', icon: 'Search' },
-  hosting: { cost: 3000, timeline: 1, label: 'Hosting Setup', icon: 'Server' },
-  aiFeatures: { cost: 20000, timeline: 10, label: 'AI Features', icon: 'Brain' },
-  customAnimations: { cost: 8000, timeline: 4, label: 'Custom Animations', icon: 'Sparkles' },
-  realtimeChat: { cost: 15000, timeline: 7, label: 'Real-time Chat', icon: 'MessageCircle' },
-  analyticsDashboard: { cost: 10000, timeline: 5, label: 'Analytics Dashboard', icon: 'BarChart3' },
+  adminDashboard: { cost: 3500, timeline: 7, label: 'Admin Dashboard', icon: 'LayoutDashboard' },
+  clientDashboard: { cost: 3000, timeline: 5, label: 'Client Dashboard', icon: 'Users' },
+  authentication: { cost: 2000, timeline: 3, label: 'Authentication System', icon: 'Shield' },
+  database: { cost: 2500, timeline: 4, label: 'Database Integration', icon: 'Database' },
+  paymentGateway: { cost: 3000, timeline: 5, label: 'Payment Gateway', icon: 'CreditCard' },
+  cms: { cost: 2000, timeline: 4, label: 'CMS Support', icon: 'FileEdit' },
+  seo: { cost: 1000, timeline: 2, label: 'SEO Optimization', icon: 'Search' },
+  hosting: { cost: 1000, timeline: 1, label: 'Hosting Setup', icon: 'Server' },
+  aiFeatures: { cost: 5000, timeline: 10, label: 'AI Features', icon: 'Brain' },
+  customAnimations: { cost: 2000, timeline: 4, label: 'Custom Animations', icon: 'Sparkles' },
+  realtimeChat: { cost: 3500, timeline: 7, label: 'Real-time Chat', icon: 'MessageCircle' },
+  analyticsDashboard: { cost: 2500, timeline: 5, label: 'Analytics Dashboard', icon: 'BarChart3' },
 };
 
 export const MAINTENANCE_OPTIONS = [
   { value: 'none', label: 'No Maintenance', cost: 0, timeline: 0 },
-  { value: '3months', label: '3 Months', cost: 5000, timeline: 0 },
-  { value: '6months', label: '6 Months', cost: 9000, timeline: 0 },
-  { value: '12months', label: '12 Months', cost: 15000, timeline: 0 },
+  { value: '3months', label: '3 Months', cost: 1200, timeline: 0 },
+  { value: '6months', label: '6 Months', cost: 2000, timeline: 0 },
+  { value: '12months', label: '12 Months', cost: 3500, timeline: 0 },
 ];
 
 export const UI_COMPLEXITY = {
@@ -170,7 +162,7 @@ export const PACKAGES = [
   },
 ];
 
-export const PAGE_RATE = 1500; // per page
+export const PAGE_RATE = 400; // per page
 
 export function calculatePricing(state) {
   const projectType = PROJECT_TYPES.find(p => p.id === state.projectType);
@@ -199,7 +191,7 @@ export function calculatePricing(state) {
         breakdown.push({ label: `Maintenance (${maint.label})`, cost: maint.cost });
       }
     } else if (key === 'apiIntegrations' && value > 0) {
-      const apiCost = value * 5000;
+      const apiCost = value * 1000;
       totalCost += apiCost;
       totalTimeline += value * 2;
       breakdown.push({ label: `${value} API Integrations`, cost: apiCost });
