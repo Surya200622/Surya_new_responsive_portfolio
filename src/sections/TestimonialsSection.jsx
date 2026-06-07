@@ -55,7 +55,6 @@ export default function TestimonialsSection() {
           What Clients <span className="text-gradient">Say</span>
         </motion.h2>
 
-        {/* Founder Spotlight */}
         <motion.div
           className="testimonials__founder"
           initial={{ opacity: 0, y: 40 }}
@@ -63,13 +62,15 @@ export default function TestimonialsSection() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.8 }}
         >
-          <img src="/images/surya-nature.jpg" alt="Surya — Founder" loading="lazy" />
           <div className="testimonials__founder-content">
             <div className="testimonials__founder-quote">
               "I don't just build websites — I craft digital experiences. Every project I deliver combines beautiful design with powerful functionality."
             </div>
             <div className="testimonials__founder-name">Surya CS</div>
             <div className="testimonials__founder-role">Full-Stack Python Developer</div>
+          </div>
+          <div className="testimonials__founder-image">
+            <img src="/images/surya-portrait.jpg" alt="Surya — Founder" loading="lazy" />
           </div>
         </motion.div>
 
