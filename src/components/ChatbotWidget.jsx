@@ -44,7 +44,9 @@ export default function ChatbotWidget() {
       if (res.ok) {
         setMessages(prev => [...prev, { role: 'assistant', content: data.reply }]);
       } else {
-        setMessages(prev => [...prev, { role: 'assistant', content: `Error: ${data.error || 'Glitch occurred'}. Please check API keys.` }]);
+        // Use the exact error message from the backend if provided, avoiding confusing appended strings for standard overloaded errors
+        const errorMsg = data.error || 'Glitch occurred. Please check API keys.';
+        setMessages(prev => [...prev, { role: 'assistant', content: `Error: ${errorMsg}` }]);
       }
     } catch (error) {
       setMessages(prev => [...prev, { role: 'assistant', content: `Connection error: ${error.message}` }]);

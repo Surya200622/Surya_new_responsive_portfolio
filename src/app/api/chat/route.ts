@@ -51,19 +51,35 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
     }
 
-    // Use gemini-2.5-flash since older models are deprecated
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-    
-    // Create the chat prompt with the system instructions
+    // Use gemini-2.5-flash as primary, but prepare fallback to 1.5-flash
     const systemInstruction = isAdmin ? `${BASE_PROMPT}\n\n${ADMIN_INSTRUCTION}` : `${BASE_PROMPT}\n\n${CLIENT_RESTRICTION}`;
     const prompt = `${systemInstruction}\n\nUser: ${message}\nAssistant:`;
+
+    let responseText = '';
     
-    const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
+    try {
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const result = await model.generateContent(prompt);
+      responseText = result.response.text();
+    } catch (e: any) {
+      if (e.message && e.message.includes('503')) {
+        console.warn('Gemini 2.5 Flash 503 overloaded. Falling back to 1.5 Flash.');
+        const fallbackModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await fallbackModel.generateContent(prompt);
+        responseText = result.response.text();
+      } else {
+        throw e;
+      }
+    }
 
     return NextResponse.json({ reply: responseText });
   } catch (error: any) {
     console.error('Chat API Error:', error);
+    
+    if (error.message && error.message.includes('503')) {
+      return NextResponse.json({ error: 'The AI is currently experiencing high demand and is taking a short break. Please try again in a few moments.' }, { status: 503 });
+    }
+    
     return NextResponse.json({ error: error.message || 'Failed to generate response' }, { status: 500 });
   }
 }
