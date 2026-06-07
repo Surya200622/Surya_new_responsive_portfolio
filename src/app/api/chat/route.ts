@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import Groq from 'groq-sdk';
 import { createClient } from '@/lib/supabase/server';
 
-// Initialize the API clients
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+// Initialize the Groq API client
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || '' });
 
 const BASE_PROMPT = `
@@ -58,7 +56,6 @@ export async function POST(req: Request) {
     try {
       if (!process.env.GROQ_API_KEY) throw new Error('Groq API Key not configured');
       
-      // Try Groq First (Llama 3)
       const chatCompletion = await groq.chat.completions.create({
         messages: [
           { role: 'system', content: systemInstruction },
@@ -70,38 +67,18 @@ export async function POST(req: Request) {
       responseText = chatCompletion.choices[0]?.message?.content || '';
       
     } catch (groqError: any) {
-      console.warn('Groq failed, falling back to Gemini...', groqError.message);
+      console.error('Groq API Error:', groqError.message);
       
-      // Fallback to Gemini
-      try {
-        if (!process.env.GEMINI_API_KEY) throw new Error('Gemini API key not configured');
-        
-        const prompt = `${systemInstruction}\n\nUser: ${message}\nAssistant:`;
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
-        const result = await model.generateContent(prompt);
-        responseText = result.response.text();
-        
-      } catch (geminiError: any) {
-        if (geminiError.message && (geminiError.message.includes('503') || geminiError.message.includes('404'))) {
-          console.warn('Gemini 1.5 Flash overloaded or missing. Falling back to gemini-pro.');
-          const prompt = `${systemInstruction}\n\nUser: ${message}\nAssistant:`;
-          const fallbackModel = genAI.getGenerativeModel({ model: "gemini-pro" });
-          const result = await fallbackModel.generateContent(prompt);
-          responseText = result.response.text();
-        } else {
-          throw geminiError;
-        }
+      if (groqError.message && groqError.message.includes('429')) {
+        return NextResponse.json({ error: 'The AI is currently experiencing high demand. Please try again in a few moments.' }, { status: 429 });
       }
+      
+      throw groqError;
     }
 
     return NextResponse.json({ reply: responseText });
   } catch (error: any) {
     console.error('Chat API Error:', error);
-    
-    if (error.message && error.message.includes('503')) {
-      return NextResponse.json({ error: 'The AI is currently experiencing high demand and is taking a short break. Please try again in a few moments.' }, { status: 503 });
-    }
-    
     return NextResponse.json({ error: error.message || 'Failed to generate response' }, { status: 500 });
   }
 }
