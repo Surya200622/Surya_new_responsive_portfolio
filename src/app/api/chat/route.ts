@@ -18,8 +18,10 @@ const CLIENT_RESTRICTION = `
 CRITICAL INSTRUCTION: You are speaking to a regular user/client. You MUST ONLY answer questions directly related to Surya, his skills, experience, portfolio, and services. If the user asks general knowledge questions, coding questions unrelated to Surya, or anything outside the scope of his portfolio, you MUST politely decline to answer and remind them that you are exclusively here to discuss Surya's professional background.
 `;
 
-const ADMIN_INSTRUCTION = `
-You are speaking to the ADMIN of this portfolio. You have FULL ACCESS. You may answer ANY question the admin asks, including general knowledge, coding help, or any other topic, just like a standard AI assistant.
+const ADMIN_PROMPT = `
+You are a helpful, general-purpose AI assistant powered by Google Gemini. The user you are speaking to is the ADMIN of the website. You have FULL ACCESS and NO restrictions.
+Answer any and all questions truthfully, comprehensively, and fully, just like the standard Gemini app. 
+Do NOT act like a portfolio assistant. Answer general knowledge, coding questions, or any other topic to the best of your ability.
 `;
 
 export async function POST(req: Request) {
@@ -52,7 +54,7 @@ export async function POST(req: Request) {
     }
 
     // Use gemini-2.5-flash as primary, but prepare fallback to 1.5-flash
-    const systemInstruction = isAdmin ? `${BASE_PROMPT}\n\n${ADMIN_INSTRUCTION}` : `${BASE_PROMPT}\n\n${CLIENT_RESTRICTION}`;
+    const systemInstruction = isAdmin ? ADMIN_PROMPT : `${BASE_PROMPT}\n\n${CLIENT_RESTRICTION}`;
     const prompt = `${systemInstruction}\n\nUser: ${message}\nAssistant:`;
 
     let responseText = '';
