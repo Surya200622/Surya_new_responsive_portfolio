@@ -69,7 +69,7 @@ export default function TestimonialsSection() {
               "I don't just build websites — I craft digital experiences. Every project I deliver combines beautiful design with powerful functionality."
             </div>
             <div className="testimonials__founder-name">Surya CS</div>
-            <div className="testimonials__founder-role">IBM Certified Full-Stack Python Developer</div>
+            <div className="testimonials__founder-role">Full-Stack Python Developer</div>
           </div>
         </motion.div>
 
