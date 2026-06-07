@@ -12,7 +12,8 @@ export default function TestimonialsSection() {
   useEffect(() => {
     async function fetchReviews() {
       try {
-        const res = await fetch('/api/reviews');
+        const timestamp = new Date().getTime();
+        const res = await fetch(`/api/reviews?t=${timestamp}`, { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           setReviews(data.reviews || []);
@@ -74,30 +75,29 @@ export default function TestimonialsSection() {
           </div>
         </motion.div>
 
-        {/* Testimonial Cards */}
-        <div className="testimonials__grid">
-          {reviews.map((t, i) => (
-            <motion.div
-              key={t.id}
-              className="testimonials__card"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ delay: i * 0.1, duration: 0.6 }}
-            >
-              <div className="testimonials__quote-mark">"</div>
-              <p className="testimonials__card-text">{t.content}</p>
-              <div className="testimonials__card-stars">
-                {Array.from({ length: t.rating || 5 }, (_, j) => (
-                  <Star key={j} size={14} fill="currentColor" />
-                ))}
+        {/* Testimonial Cards (Marquee) */}
+        <div className="testimonials__scroll-wrapper">
+          <div className="testimonials__marquee-track">
+            {/* Render reviews twice for seamless infinite scrolling */}
+            {[...reviews, ...reviews].map((t, i) => (
+              <div
+                key={`${t.id}-${i}`}
+                className="testimonials__card"
+              >
+                <div className="testimonials__quote-mark">"</div>
+                <p className="testimonials__card-text">{t.content}</p>
+                <div className="testimonials__card-stars">
+                  {Array.from({ length: t.rating || 5 }, (_, j) => (
+                    <Star key={j} size={14} fill="currentColor" />
+                  ))}
+                </div>
+                <div className="testimonials__card-author">
+                  <span className="testimonials__card-name">{t.name}</span>
+                  <span className="testimonials__card-role">{t.role}</span>
+                </div>
               </div>
-              <div className="testimonials__card-author">
-                <span className="testimonials__card-name">{t.name}</span>
-                <span className="testimonials__card-role">{t.role}</span>
-              </div>
-            </motion.div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
