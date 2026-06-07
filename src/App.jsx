@@ -15,6 +15,7 @@ const SkillsSection = lazy(() => import('./sections/SkillsSection'));
 const ProjectsSection = lazy(() => import('./sections/ProjectsSection'));
 const OffersSection = lazy(() => import('./sections/OffersSection'));
 const CalculatorSection = lazy(() => import('./sections/CalculatorSection'));
+const TestimonialsSection = lazy(() => import('./sections/TestimonialsSection'));
 const ContactSection = lazy(() => import('./sections/ContactSection'));
 const FooterSection = lazy(() => import('./sections/FooterSection'));
 
@@ -71,6 +72,12 @@ export default function App() {
 
         <Suspense fallback={<SectionLoader />}>
           <CalculatorSection />
+        </Suspense>
+
+        <div className="section-divider" />
+
+        <Suspense fallback={<SectionLoader />}>
+          <TestimonialsSection />
         </Suspense>
 
         <div className="section-divider" />

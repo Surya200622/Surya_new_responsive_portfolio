@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { label: 'Projects', href: '/#projects' },
   { label: 'Resume', href: '/resume' },
   { label: 'Calculator', href: '/#calculator' },
+  { label: 'Reviews', href: '/#testimonials' },
   { label: 'Blog', href: 'https://blogcraft.pythonanywhere.com' },
   { label: 'Contact', href: '/#contact' },
 ];
