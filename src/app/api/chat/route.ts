@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import Groq from 'groq-sdk';
 import { createClient } from '@/lib/supabase/server';
 
-// Initialize the Gemini API client
+// Initialize the API clients
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || '' });
 
 const BASE_PROMPT = `
 You are Surya CS's friendly, professional AI assistant for his portfolio website.
@@ -19,8 +21,8 @@ CRITICAL INSTRUCTION: You are speaking to a regular user/client. You MUST ONLY a
 `;
 
 const ADMIN_PROMPT = `
-You are a helpful, general-purpose AI assistant powered by Google Gemini. The user you are speaking to is the ADMIN of the website. You have FULL ACCESS and NO restrictions.
-Answer any and all questions truthfully, comprehensively, and fully, just like the standard Gemini app. 
+You are a helpful, general-purpose AI assistant. The user you are speaking to is the ADMIN of the website. You have FULL ACCESS and NO restrictions.
+Answer any and all questions truthfully, comprehensively, and fully. 
 Do NOT act like a portfolio assistant. Answer general knowledge, coding questions, or any other topic to the best of your ability.
 `;
 
@@ -49,28 +51,46 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
 
-    if (!process.env.GEMINI_API_KEY) {
-      return NextResponse.json({ error: 'API key not configured' }, { status: 500 });
-    }
-
-    // Use gemini-2.5-flash as primary, but prepare fallback to 1.5-flash
     const systemInstruction = isAdmin ? ADMIN_PROMPT : `${BASE_PROMPT}\n\n${CLIENT_RESTRICTION}`;
-    const prompt = `${systemInstruction}\n\nUser: ${message}\nAssistant:`;
-
-    let responseText = '';
     
+    let responseText = '';
+
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-      const result = await model.generateContent(prompt);
-      responseText = result.response.text();
-    } catch (e: any) {
-      if (e.message && e.message.includes('503')) {
-        console.warn('Gemini 2.5 Flash 503 overloaded. Falling back to 1.5 Flash.');
-        const fallbackModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const result = await fallbackModel.generateContent(prompt);
+      if (!process.env.GROQ_API_KEY) throw new Error('Groq API Key not configured');
+      
+      // Try Groq First (Llama 3)
+      const chatCompletion = await groq.chat.completions.create({
+        messages: [
+          { role: 'system', content: systemInstruction },
+          { role: 'user', content: message }
+        ],
+        model: 'llama3-8b-8192',
+      });
+      
+      responseText = chatCompletion.choices[0]?.message?.content || '';
+      
+    } catch (groqError: any) {
+      console.warn('Groq failed, falling back to Gemini...', groqError.message);
+      
+      // Fallback to Gemini
+      try {
+        if (!process.env.GEMINI_API_KEY) throw new Error('Gemini API key not configured');
+        
+        const prompt = `${systemInstruction}\n\nUser: ${message}\nAssistant:`;
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+        const result = await model.generateContent(prompt);
         responseText = result.response.text();
-      } else {
-        throw e;
+        
+      } catch (geminiError: any) {
+        if (geminiError.message && (geminiError.message.includes('503') || geminiError.message.includes('404'))) {
+          console.warn('Gemini 1.5 Flash overloaded or missing. Falling back to gemini-pro.');
+          const prompt = `${systemInstruction}\n\nUser: ${message}\nAssistant:`;
+          const fallbackModel = genAI.getGenerativeModel({ model: "gemini-pro" });
+          const result = await fallbackModel.generateContent(prompt);
+          responseText = result.response.text();
+        } else {
+          throw geminiError;
+        }
       }
     }
 
