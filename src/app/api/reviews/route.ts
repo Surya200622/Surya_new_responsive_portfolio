@@ -7,6 +7,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+export const dynamic = 'force-dynamic';
+
 // GET /api/reviews - Fetch all approved/public reviews
 export async function GET() {
   try {
