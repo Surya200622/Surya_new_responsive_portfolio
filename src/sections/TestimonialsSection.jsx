@@ -75,15 +75,11 @@ export default function TestimonialsSection() {
           </div>
         </motion.div>
 
-        {/* Testimonial Cards (Marquee) */}
-        <div className="testimonials__scroll-wrapper">
-          <div className="testimonials__marquee-track">
-            {/* Render reviews many times for seamless infinite scrolling on ultra-wide screens */}
-            {Array(10).fill(reviews).flat().map((t, i) => (
-              <div
-                key={`${t.id}-${i}`}
-                className="testimonials__card"
-              >
+        {/* Testimonial Cards */}
+        {reviews.length < 4 ? (
+          <div className="testimonials__static-grid">
+            {reviews.map((t, i) => (
+              <div key={t.id} className="testimonials__card">
                 <div className="testimonials__quote-mark">"</div>
                 <p className="testimonials__card-text">{t.content}</p>
                 <div className="testimonials__card-stars">
@@ -98,7 +94,28 @@ export default function TestimonialsSection() {
               </div>
             ))}
           </div>
-        </div>
+        ) : (
+          <div className="testimonials__scroll-wrapper">
+            <div className="testimonials__marquee-track">
+              {/* Render reviews enough times to guarantee a seamless loop */}
+              {[...reviews, ...reviews, ...reviews, ...reviews].map((t, i) => (
+                <div key={`${t.id}-${i}`} className="testimonials__card">
+                  <div className="testimonials__quote-mark">"</div>
+                  <p className="testimonials__card-text">{t.content}</p>
+                  <div className="testimonials__card-stars">
+                    {Array.from({ length: t.rating || 5 }, (_, j) => (
+                      <Star key={j} size={14} fill="currentColor" />
+                    ))}
+                  </div>
+                  <div className="testimonials__card-author">
+                    <span className="testimonials__card-name">{t.name}</span>
+                    <span className="testimonials__card-role">{t.role}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

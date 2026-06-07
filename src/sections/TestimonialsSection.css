@@ -122,6 +122,14 @@
   100% { transform: translateX(calc(-50% - (var(--space-xl) / 2))); }
 }
 
+/* Static Grid (For when there are < 4 reviews) */
+.testimonials__static-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-xl);
+}
+
 .testimonials__card {
   width: clamp(280px, 85vw, 400px); /* Fully responsive width */
   flex-shrink: 0;
