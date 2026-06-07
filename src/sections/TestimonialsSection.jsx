@@ -78,8 +78,8 @@ export default function TestimonialsSection() {
         {/* Testimonial Cards (Marquee) */}
         <div className="testimonials__scroll-wrapper">
           <div className="testimonials__marquee-track">
-            {/* Render reviews twice for seamless infinite scrolling */}
-            {[...reviews, ...reviews].map((t, i) => (
+            {/* Render reviews many times for seamless infinite scrolling on ultra-wide screens */}
+            {Array(10).fill(reviews).flat().map((t, i) => (
               <div
                 key={`${t.id}-${i}`}
                 className="testimonials__card"
