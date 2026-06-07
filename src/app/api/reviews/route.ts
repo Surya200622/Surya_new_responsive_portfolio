@@ -1,0 +1,28 @@
+import { NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase admin client for secure backend fetching
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+// GET /api/reviews - Fetch all approved/public reviews
+export async function GET() {
+  try {
+    const { data: reviews, error } = await supabase
+      .from('reviews')
+      .select('id, name, role, content, rating, created_at')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching reviews:', error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ reviews });
+  } catch (error: any) {
+    console.error('API Error:', error);
+    return NextResponse.json({ error: error.message || 'Failed to fetch reviews' }, { status: 500 });
+  }
+}

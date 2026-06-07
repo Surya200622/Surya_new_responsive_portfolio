@@ -1,0 +1,227 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { createBrowserClient } from '@supabase/ssr';
+import { Star, Save, AlertCircle } from 'lucide-react';
+
+export default function ReviewsPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [reviewId, setReviewId] = useState<string | null>(null);
+  const [profileName, setProfileName] = useState('');
+  
+  const [form, setForm] = useState({
+    role: '',
+    content: '',
+    rating: 5,
+  });
+
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          router.push('/login');
+          return;
+        }
+
+        // Get user profile name
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', user.id)
+          .single();
+
+        if (profile?.full_name) {
+          setProfileName(profile.full_name);
+        } else {
+          setProfileName(user.email?.split('@')[0] || 'User');
+        }
+
+        // Get existing review
+        const { data: review } = await supabase
+          .from('reviews')
+          .select('*')
+          .eq('client_id', user.id)
+          .maybeSingle();
+
+        if (review) {
+          setReviewId(review.id);
+          setForm({
+            role: review.role || '',
+            content: review.content || '',
+            rating: review.rating || 5,
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load review data:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadData();
+  }, [router, supabase]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    setMessage(null);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      if (!form.content.trim() || !form.role.trim()) {
+        throw new Error('Please fill out all fields.');
+      }
+
+      const reviewData = {
+        client_id: user.id,
+        name: profileName,
+        role: form.role,
+        content: form.content,
+        rating: form.rating,
+      };
+
+      if (reviewId) {
+        // Update
+        const { error } = await supabase
+          .from('reviews')
+          .update(reviewData)
+          .eq('id', reviewId);
+        if (error) throw error;
+        setMessage({ type: 'success', text: 'Review updated successfully! It is now live on the portfolio.' });
+      } else {
+        // Insert
+        const { data, error } = await supabase
+          .from('reviews')
+          .insert([reviewData])
+          .select()
+          .single();
+        if (error) throw error;
+        if (data) setReviewId(data.id);
+        setMessage({ type: 'success', text: 'Review published successfully! It is now live on the portfolio.' });
+      }
+    } catch (err: any) {
+      console.error('Save review error:', err);
+      setMessage({ type: 'error', text: err.message || 'Failed to save review. Ensure the database table is created.' });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="w-8 h-8 border-2 border-[var(--color-accent-primary)] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-3xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div>
+        <h1 className="text-2xl font-display font-bold text-[var(--color-text-primary)]">Your Review</h1>
+        <p className="text-sm text-[var(--color-text-secondary)] mt-1">
+          Share your experience working with Surya. Your review will be displayed publicly on the testimonials section.
+        </p>
+      </div>
+
+      <div className="glass-card-strong p-6 md:p-8 rounded-2xl border border-[var(--color-glass-border)]">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          
+          {message && (
+            <div className={`p-4 rounded-xl flex items-start gap-3 ${
+              message.type === 'success' 
+                ? 'bg-green-500/10 border border-green-500/20 text-green-400' 
+                : 'bg-red-500/10 border border-red-500/20 text-red-400'
+            }`}>
+              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+              <p className="text-sm font-medium">{message.text}</p>
+            </div>
+          )}
+
+          <div>
+            <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Display Name</label>
+            <input 
+              type="text" 
+              className="auth-input opacity-50 cursor-not-allowed" 
+              value={profileName} 
+              disabled 
+            />
+            <p className="text-[10px] text-[var(--color-text-muted)] mt-1">Your display name is pulled from your profile settings.</p>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Your Role / Profession <span className="text-red-400">*</span></label>
+            <input 
+              type="text" 
+              className="auth-input" 
+              placeholder="e.g. Startup Founder, Marketing Director, Small Business Owner" 
+              value={form.role} 
+              onChange={e => setForm({ ...form, role: e.target.value })}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Rating</label>
+            <div className="flex gap-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setForm({ ...form, rating: star })}
+                  className="p-1 hover:scale-110 transition-transform focus:outline-none"
+                >
+                  <Star 
+                    className={`w-8 h-8 ${form.rating >= star ? 'fill-yellow-400 text-yellow-400' : 'text-[var(--color-text-muted)]'}`} 
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Review Description <span className="text-red-400">*</span></label>
+            <textarea 
+              className="auth-input min-h-[150px] py-3 resize-y" 
+              placeholder="Write about your experience working with Surya..." 
+              value={form.content} 
+              onChange={e => setForm({ ...form, content: e.target.value })}
+              required
+            />
+          </div>
+
+          <div className="pt-4 border-t border-[var(--color-glass-border)] flex justify-end">
+            <button 
+              type="submit" 
+              disabled={saving}
+              className="gradient-btn px-8 py-3 rounded-xl font-semibold flex items-center gap-2"
+            >
+              {saving ? (
+                <>Saving...</>
+              ) : (
+                <>
+                  <Save className="w-5 h-5" />
+                  {reviewId ? 'Update Review' : 'Publish Review'}
+                </>
+              )}
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  );
+}

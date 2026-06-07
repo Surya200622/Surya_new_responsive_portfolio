@@ -101,47 +101,11 @@ export const TIMELINE_DATA = [
 ];
 
 export const STATS = [
-  { value: '3+', label: 'Projects Delivered', icon: 'Briefcase' },
+  { value: '2+', label: 'Projects Delivered', icon: 'Briefcase' },
   { value: '2+', label: 'Certifications', icon: 'Award' },
   { value: '10+', label: 'Technologies', icon: 'Code' },
   { value: '1+', label: 'Years Experience', icon: 'Heart' },
 ];
-
-export const TESTIMONIALS = [
-  {
-    id: 1,
-    name: 'Dr. Priya M.',
-    role: 'Dental Clinic Owner, Coimbatore',
-    content:
-      'Surya built our entire clinic management system from scratch. The appointment booking system has made our workflow so much smoother. Highly professional and dedicated developer.',
-    rating: 5,
-  },
-  {
-    id: 2,
-    name: 'Anand K.',
-    role: 'CipherApparel Founder',
-    content:
-      "Working with Surya on our fashion e-commerce platform was excellent. He understood our vision and delivered a beautiful, functional website. The product listing and offers system works flawlessly.",
-    rating: 5,
-  },
-  {
-    id: 3,
-    name: 'Ravi S.',
-    role: 'Startup Founder, Chennai',
-    content:
-      'Surya delivered a clean, fast, and responsive portfolio website for our brand. His attention to detail with animations and user experience is remarkable for someone so early in their career.',
-    rating: 5,
-  },
-  {
-    id: 4,
-    name: 'Meena V.',
-    role: 'Small Business Owner',
-    content:
-      'Excellent communication and technical skills. Surya built exactly what we needed — a modern, mobile-friendly website with smooth navigation. Would definitely work with him again.',
-    rating: 4,
-  },
-];
-
 export const SOCIAL_LINKS = [
   { name: 'GitHub', icon: 'Github', url: 'https://github.com/Surya200622' },
   { name: 'LinkedIn', icon: 'Linkedin', url: 'https://linkedin.com/in/suryacs22/' },
