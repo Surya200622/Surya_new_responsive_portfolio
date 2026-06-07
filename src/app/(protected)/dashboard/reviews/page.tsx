@@ -211,11 +211,22 @@ export default function ReviewsPage() {
                   if (!confirm('Are you sure you want to delete your review?')) return;
                   setSaving(true);
                   try {
-                    const { error } = await supabase.from('reviews').delete().eq('id', reviewId);
-                    if (error) throw error;
+                    const { data: { session } } = await supabase.auth.getSession();
+                    const res = await fetch('/api/reviews', {
+                      method: 'DELETE',
+                      headers: {
+                        'Authorization': `Bearer ${session?.access_token}`
+                      }
+                    });
+                    
+                    if (!res.ok) {
+                      const data = await res.json();
+                      throw new Error(data.error || 'Failed to delete review');
+                    }
+                    
                     setReviewId(null);
                     setForm({ role: '', content: '', rating: 5 });
-                    setMessage({ type: 'success', text: 'Review deleted successfully.' });
+                    setMessage({ type: 'success', text: 'Review deleted successfully! It is instantly removed from the portfolio.' });
                   } catch (err: any) {
                     setMessage({ type: 'error', text: err.message || 'Failed to delete review.' });
                   } finally {
