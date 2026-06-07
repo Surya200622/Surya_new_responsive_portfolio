@@ -203,7 +203,32 @@ export default function ReviewsPage() {
             />
           </div>
 
-          <div className="pt-4 border-t border-[var(--color-glass-border)] flex justify-end">
+          <div className="pt-4 border-t border-[var(--color-glass-border)] flex justify-between items-center">
+            {reviewId ? (
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!confirm('Are you sure you want to delete your review?')) return;
+                  setSaving(true);
+                  try {
+                    const { error } = await supabase.from('reviews').delete().eq('id', reviewId);
+                    if (error) throw error;
+                    setReviewId(null);
+                    setForm({ role: '', content: '', rating: 5 });
+                    setMessage({ type: 'success', text: 'Review deleted successfully.' });
+                  } catch (err: any) {
+                    setMessage({ type: 'error', text: err.message || 'Failed to delete review.' });
+                  } finally {
+                    setSaving(false);
+                  }
+                }}
+                disabled={saving}
+                className="text-red-400 hover:text-red-300 text-sm font-medium transition-colors"
+              >
+                Delete Review
+              </button>
+            ) : <div />}
+
             <button 
               type="submit" 
               disabled={saving}
