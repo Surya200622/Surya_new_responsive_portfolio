@@ -262,9 +262,6 @@ export default function Navbar({ theme, toggleTheme }) {
           )}
         </div>
 
-        <button className="navbar__theme-btn" onClick={toggleTheme} style={{ alignSelf: 'flex-start' }}>
-          {mounted && (theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />)}
-        </button>
       </div>
     </>
   );
