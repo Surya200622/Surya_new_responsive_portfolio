@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     title: 'Surya CS | Full-Stack Python Developer',
     description:
       'Portfolio of Surya CS, a Full-Stack Python Developer specializing in Django, React, and modern web solutions.',
-    images: ['/api/og'],
+    images: ['/images/surya-portrait.jpg'],
     locale: 'en_IN',
   },
   twitter: {

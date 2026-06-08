@@ -54,6 +54,9 @@ export default function ResumePage() {
               <a href="https://suryacs.is-a.dev" target="_blank" rel="noreferrer"><ExternalLink size={16} /> suryacs.is-a.dev</a>
             </div>
           </div>
+          <div className="resume-header-image">
+            <img src="/images/surya-portrait.jpg" alt="Surya CS" loading="lazy" />
+          </div>
         </header>
 
         <div className="resume-content-grid">

@@ -365,7 +365,9 @@
   }
 
   .about__story-image {
-    aspect-ratio: 4/3;
+    aspect-ratio: 3/4;
+    max-width: 400px;
+    margin: 0 auto;
   }
 
   .about__stats {
