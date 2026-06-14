@@ -1,4 +1,4 @@
-import { Globe, ExternalLink, Link2, Heart } from 'lucide-react';
+import { Globe, ExternalLink, Link2, Heart, Shield, FileText } from 'lucide-react';
 import { SOCIAL_LINKS } from '../data/projectsData';
 import './FooterSection.css';
 
@@ -11,6 +11,11 @@ const NAV_LINKS = [
   { label: 'Calculator', href: '#calculator' },
   { label: 'Blog', href: 'https://blogcraft.pythonanywhere.com' },
   { label: 'Contact', href: '#contact' },
+];
+
+const LEGAL_LINKS = [
+  { label: 'Privacy Policy', href: '/privacy-policy', icon: Shield },
+  { label: 'Terms of Service', href: '/terms-of-service', icon: FileText },
 ];
 
 export default function FooterSection() {
@@ -66,11 +71,29 @@ export default function FooterSection() {
             })}
           </div>
 
+          <div className="footer__links">
+            <div className="footer__links-title">Legal</div>
+            {LEGAL_LINKS.map(link => {
+              const IconComp = link.icon;
+              return (
+                <a
+                  key={link.href}
+                  className="footer__link footer__legal-link"
+                  href={link.href}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none' }}
+                >
+                  <IconComp size={14} />
+                  {link.label}
+                </a>
+              );
+            })}
+          </div>
+
           <div>
             <div className="footer__links-title" style={{ marginBottom: '0.75rem' }}>Follow Me</div>
             <div className="footer__socials">
               {SOCIAL_LINKS.map(link => {
-                const IconComp = ICON_MAP[link.icon] || Github;
+                const IconComp = ICON_MAP[link.icon] || Globe;
                 return (
                   <a
                     key={link.name}
@@ -90,6 +113,11 @@ export default function FooterSection() {
 
         <div className="footer__bottom">
           <span className="footer__copyright">© {new Date().getFullYear()} Surya CS. All rights reserved.</span>
+          <div className="footer__bottom-links">
+            <a href="/privacy-policy" className="footer__bottom-legal-link">Privacy Policy</a>
+            <span className="footer__bottom-divider">·</span>
+            <a href="/terms-of-service" className="footer__bottom-legal-link">Terms of Service</a>
+          </div>
           <span className="footer__made">
             Crafted with <Heart size={12} className="footer__heart" fill="currentColor" style={{ display: 'inline', verticalAlign: 'middle' }} /> and passion
           </span>
