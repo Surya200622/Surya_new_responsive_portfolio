@@ -71,7 +71,7 @@ export default function TestimonialsSection() {
             <div className="testimonials__founder-role">Full-Stack Python Developer</div>
           </div>
           <div className="testimonials__founder-image">
-            <img src="/images/surya-portrait.jpg" alt="Surya — Founder" loading="lazy" />
+            <img src="/images/WhatsApp Image 2026-06-14 at 8.25.27 PM.jpeg" alt="Surya — Founder" loading="lazy" />
           </div>
         </motion.div>
 

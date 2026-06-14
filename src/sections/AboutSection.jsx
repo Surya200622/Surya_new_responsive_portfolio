@@ -1,9 +1,9 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { Briefcase, Heart, Award, Code } from 'lucide-react';
+import { Briefcase, Heart, Award, Code, Coffee, Zap, Globe2, Layers } from 'lucide-react';
 import { SKILLS, TIMELINE_DATA, STATS } from '../data/projectsData';
 import GithubStats from '../components/GithubStats';
 import './AboutSection.css';
@@ -27,6 +27,10 @@ const STORY_BLOCKS = [
   },
 ];
 
+
+
+
+
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.25, 0.1, 0.25, 1] } },
@@ -38,6 +42,23 @@ export default function AboutSection() {
   const revealRef = useRef(null);
   const timelineRef = useRef(null);
   const skillsRef = useRef(null);
+  const tiltRef = useRef(null);
+
+  // 3D tilt effect on story image
+  const handleMouseMove = (e) => {
+    if (!tiltRef.current) return;
+    const rect = tiltRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    const rotateX = (y - 0.5) * -15;
+    const rotateY = (x - 0.5) * 15;
+    tiltRef.current.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+  };
+
+  const handleMouseLeave = () => {
+    if (!tiltRef.current) return;
+    tiltRef.current.style.transform = 'perspective(800px) rotateX(0) rotateY(0) scale(1)';
+  };
 
   useGSAP(() => {
     // Story blocks reveal
@@ -60,9 +81,11 @@ export default function AboutSection() {
 
     // Image clip-path reveal
     if (revealRef.current) {
-      const revealImage = revealRef.current.querySelector('.about__reveal-image');
-      if (revealImage) {
-        gsap.to(revealImage, {
+      const revealContainer = revealRef.current.querySelector('.about__reveal-container');
+      const symbolsBg = revealRef.current.querySelector('.about__reveal-symbols');
+      
+      if (revealContainer) {
+        gsap.to(revealContainer, {
           clipPath: 'circle(75% at 50% 50%)',
           ease: 'power2.out',
           scrollTrigger: {
@@ -71,6 +94,25 @@ export default function AboutSection() {
             end: 'center center',
             scrub: 1,
           },
+        });
+      }
+
+      const symbols = revealRef.current.querySelectorAll('.about__symbol');
+      if (symbols.length > 0) {
+        symbols.forEach((symbol, index) => {
+          const speed = (index % 3 + 1) * 30; // 30, 60, 90
+          const dir = index % 2 === 0 ? -1 : 1;
+          gsap.to(symbol, {
+            yPercent: speed * dir,
+            rotation: `+=${dir * 60}`,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: revealRef.current,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true,
+            },
+          });
         });
       }
     }
@@ -174,12 +216,19 @@ export default function AboutSection() {
 
         {/* Story Grid */}
         <div className="about__story" ref={storyRef}>
-          <div className="about__story-image">
+          <div
+            className="about__story-image about__tilt-card"
+            ref={tiltRef}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+          >
             <img
-              src="/images/surya-nature.jpg"
+              src="/images/WhatsApp Image 2026-06-14 at 8.25.27 PM.jpeg"
               alt="Surya CS — Full-Stack Python Developer"
               loading="lazy"
             />
+            {/* 3D Tilt Shine Effect */}
+            <div className="about__tilt-shine" aria-hidden="true" />
           </div>
 
           <div className="about__story-text">
@@ -192,16 +241,8 @@ export default function AboutSection() {
           </div>
         </div>
 
-        {/* Image Reveal */}
-        <div className="about__reveal" ref={revealRef}>
-          <div className="about__reveal-image">
-            <img
-              src="/images/surya-casual.jpg"
-              alt="Surya CS"
-              loading="lazy"
-            />
-          </div>
-        </div>
+
+
 
         {/* Stats */}
         <div className="about__stats">
@@ -245,7 +286,7 @@ export default function AboutSection() {
 
             <div className="about__timeline-items">
               {TIMELINE_DATA.map((item, i) => (
-                <div key={item.year} className="about__timeline-item">
+                <div key={i} className="about__timeline-item">
                   <div className={`about__timeline-content ${i % 2 === 0 ? 'about__timeline-content--left' : 'about__timeline-content--right'}`}>
                     <div className="about__timeline-card">
                       <h4 className="about__timeline-title">{item.title}</h4>

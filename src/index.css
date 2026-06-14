@@ -146,10 +146,10 @@
   --color-text-tertiary: #8a857e;
   --color-text-muted: #b0aba4;
 
-  --color-accent-primary: #9e7e2e;
-  --color-accent-secondary: #9e5060;
+  --color-accent-primary: #ff007f;
+  --color-accent-secondary: #00d2ff;
   --color-accent-tertiary: #5c4f8e;
-  --color-accent-warm: #b47850;
+  --color-accent-warm: #ff8c00;
 
   --color-border: rgba(0, 0, 0, 0.08);
   --color-border-subtle: rgba(0, 0, 0, 0.04);
@@ -174,6 +174,75 @@
   --scrollbar-track: #f2efe9;
   --scrollbar-thumb: rgba(158, 126, 46, 0.3);
   --scrollbar-thumb-hover: rgba(158, 126, 46, 0.5);
+}
+
+/* ---------- Light Theme Hardware-Accelerated Rainbow Elements ---------- */
+[data-theme="light"] .text-gradient,
+[data-theme="light"] .text-gradient--warm,
+[data-theme="light"] .btn--primary,
+[data-theme="light"] .btn--outline,
+[data-theme="light"] .btn--outline:hover,
+[data-theme="light"] .navbar__logo-dot,
+[data-theme="light"] .navbar__link::after,
+[data-theme="light"] .navbar__theme-btn:hover,
+[data-theme="light"] .navbar__mobile-btn:hover,
+[data-theme="light"] .navbar__mobile-close:hover,
+[data-theme="light"] .navbar__mobile-link:hover,
+[data-theme="light"] .about__subtitle,
+[data-theme="light"] .about__symbol,
+[data-theme="light"] .fact-item__number,
+[data-theme="light"] .skill-category-title,
+[data-theme="light"] .skill-progress-bar,
+[data-theme="light"] .timeline-dot,
+[data-theme="light"] .timeline-date,
+[data-theme="light"] .hero__subtitle,
+[data-theme="light"] .hero__image-glow,
+[data-theme="light"] .hero__portrait-badge,
+[data-theme="light"] .hero__scroll-indicator .mouse-wheel,
+[data-theme="light"] .project-card__title::after,
+[data-theme="light"] .project-card__link,
+[data-theme="light"] .offer-card__icon,
+[data-theme="light"] .offer-card__title,
+[data-theme="light"] .process-step__icon,
+[data-theme="light"] .process-step::after,
+[data-theme="light"] .tech-item:hover,
+[data-theme="light"] .tech-item:hover .tech-item__icon,
+[data-theme="light"] .tech-item__icon,
+[data-theme="light"] .tech-card__glow,
+[data-theme="light"] .tech-category-btn.active,
+[data-theme="light"] .testimonials__founder::before,
+[data-theme="light"] .testimonials__quote-mark,
+[data-theme="light"] .testimonials__card-stars,
+[data-theme="light"] .testimonial-nav-btn:hover,
+[data-theme="light"] .testimonial-card__quote,
+[data-theme="light"] .contact__info-icon,
+[data-theme="light"] .contact__info-content h4,
+[data-theme="light"] .contact-form .input-field:focus,
+[data-theme="light"] .calculator-card::before,
+[data-theme="light"] .calculator-header,
+[data-theme="light"] .calculator-icon,
+[data-theme="light"] .input-field:focus,
+[data-theme="light"] .tab-btn.active,
+[data-theme="light"] .slider::-webkit-slider-thumb,
+[data-theme="light"] .slider-value,
+[data-theme="light"] .summary-row.total,
+[data-theme="light"] .summary-card.total,
+[data-theme="light"] .footer-top,
+[data-theme="light"] .footer-logo-dot,
+[data-theme="light"] .footer-link:hover,
+[data-theme="light"] .social-link:hover,
+[data-theme="light"] .contact__submit,
+[data-theme="light"] .chatbot-widget__toggle,
+[data-theme="light"] .chatbot-widget__header,
+[data-theme="light"] .chatbot-message.bot,
+[data-theme="light"] .chatbot-input input:focus,
+[data-theme="light"] .about__timeline-progress,
+[data-theme="light"] .about__timeline-dot,
+[data-theme="light"] .about__timeline-dot--current,
+[data-theme="light"] .magic-cursor-ring,
+[data-theme="light"] .magic-cursor-dot,
+[data-theme="light"] .section-divider {
+  animation: hue-shift 8s linear infinite !important;
 }
 
 /* ---------- CSS Reset ---------- */
@@ -435,6 +504,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ---------- Animations ---------- */
+@keyframes hue-shift {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
@@ -496,6 +570,63 @@ h1, h2, h3, h4, h5, h6 {
 @keyframes rotate-slow {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.2), 0 0 40px rgba(201, 168, 76, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(201, 168, 76, 0.4), 0 0 60px rgba(201, 168, 76, 0.2);
+  }
+}
+
+@keyframes rotate-gradient {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes typing-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes status-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.5;
+  }
+}
+
+@keyframes neon-flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    text-shadow: 0 0 4px var(--color-accent-primary), 0 0 11px var(--color-accent-primary);
+  }
+  20%, 24%, 55% {
+    text-shadow: none;
+  }
+}
+
+@keyframes border-dance {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes particle-float {
+  0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100vh) translateX(20px) scale(0.5); opacity: 0; }
+}
+
+@keyframes ring-progress {
+  from { stroke-dashoffset: var(--ring-circumference, 283); }
+  to { stroke-dashoffset: var(--ring-target, 0); }
 }
 
 /* ---------- Gradient Orbs (Background Decoration) ---------- */

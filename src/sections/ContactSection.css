@@ -107,10 +107,9 @@
 
 .contact__portrait {
   position: relative;
-  border-radius: 50%;
+  border-radius: var(--radius-xl);
   overflow: hidden;
   isolation: isolate;
-  aspect-ratio: 1/1;
   max-width: 320px;
   margin: 0 auto;
   box-shadow: var(--shadow-lg);
@@ -119,8 +118,7 @@
 .contact__portrait img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
+  object-fit: contain;
 }
 
 .contact__portrait::before {

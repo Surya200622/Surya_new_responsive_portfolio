@@ -209,6 +209,8 @@
   color: var(--color-accent-primary);
 }
 
+
+
 @media (max-width: 768px) {
   .navbar__links {
     display: none;

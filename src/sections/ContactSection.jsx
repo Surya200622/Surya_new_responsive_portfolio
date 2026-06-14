@@ -174,7 +174,7 @@ export default function ContactSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <div className="contact__portrait">
-              <img src="/images/WhatsApp Image 2026-03-03 at 10.04.23 AM.jpeg" alt="Surya" loading="lazy" />
+              <img src="/images/WhatsApp Image 2026-06-14 at 8.19.47 PM.jpeg" alt="Surya" loading="lazy" />
             </div>
 
             <div className="contact__details">
