@@ -16,7 +16,7 @@ export default function MessageBubble({ message, isOwn }: MessageBubbleProps) {
     >
       <div className={`max-w-[75%] rounded-2xl px-4 py-3 relative ${
         isOwn 
-          ? 'bg-gradient-to-br from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] text-[#0a0a0f] rounded-tr-sm' 
+          ? 'bg-[var(--color-accent-primary)] text-[#0a0a0f] rounded-tr-sm' 
           : 'bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] text-[var(--color-text-primary)] rounded-tl-sm'
       }`}>
         

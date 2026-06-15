@@ -29,7 +29,7 @@ export default async function ClientProjectsPage() {
           <h1 className="text-2xl font-display font-bold text-[var(--color-text-primary)] mb-1">Your Projects</h1>
           <p className="text-sm text-[var(--color-text-muted)]">Track the status and details of your requested projects.</p>
         </div>
-        <Link href="/dashboard/messages" className="btn btn--primary text-sm py-2">
+        <Link href="/dashboard/messages" className="btn bg-[var(--color-accent-primary)] hover:brightness-110 text-[#0a0a0f] text-sm py-2">
           Request New Project
         </Link>
       </div>
@@ -60,7 +60,7 @@ export default async function ClientProjectsPage() {
                 </div>
                 <div className="h-2 w-full bg-[var(--color-bg-tertiary)] rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-secondary)] rounded-full transition-all duration-1000"
+                    className="h-full bg-[var(--color-accent-primary)] rounded-full transition-all duration-1000"
                     style={{ width: `${project.progress_percentage || 0}%` }}
                   />
                 </div>

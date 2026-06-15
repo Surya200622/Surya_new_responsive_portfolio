@@ -123,7 +123,7 @@ export default function AdminOverviewPage() {
               {recentClients.map((client) => (
                 <tr key={client.id} className="border-b border-[var(--color-glass-border)] last:border-0 hover:bg-[var(--color-bg-glass)] transition-colors">
                   <td className="px-6 py-4 font-medium text-[var(--color-text-primary)] flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] p-0.5">
+                    <div className="w-8 h-8 rounded-full bg-[var(--color-accent-primary)] p-0.5">
                       <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center text-xs text-[var(--color-text-primary)]">
                         {client.full_name?.charAt(0)?.toUpperCase() || 'C'}
                       </div>

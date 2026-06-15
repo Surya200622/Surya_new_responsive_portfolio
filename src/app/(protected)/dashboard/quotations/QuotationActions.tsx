@@ -70,7 +70,7 @@ export default function QuotationActions({ quoteId, projectId, adminId, clientNa
       <button 
         onClick={() => handleAction('accept')}
         disabled={isProcessing !== null}
-        className="btn btn--primary px-4 py-2 flex items-center gap-2"
+        className="btn px-4 py-2 flex items-center gap-2 bg-[var(--color-accent-primary)] hover:brightness-110 text-[#0a0a0f]"
       >
         {isProcessing === 'accept' ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle size={16} />} 
         Accept

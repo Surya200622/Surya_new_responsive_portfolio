@@ -26,7 +26,7 @@ export default async function ClientMessagesPage() {
   return (
     <div className="h-[calc(100vh-8rem)] md:h-[calc(100vh-8rem)] flex flex-col glass-card-strong rounded-2xl border border-[var(--color-glass-border)] overflow-hidden min-h-0">
       <div className="p-3 md:p-4 border-b border-[var(--color-glass-border)] bg-[var(--color-bg-glass)] flex items-center gap-3 md:gap-4 shrink-0">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] p-[1px]">
+        <div className="w-10 h-10 rounded-full bg-[var(--color-accent-primary)] p-[1px]">
           <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center">
             <img src="/images/surya-portrait.jpg" alt="Surya" className="w-full h-full rounded-full object-cover" />
           </div>

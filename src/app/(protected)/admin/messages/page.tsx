@@ -173,7 +173,7 @@ export default function AdminMessagesPage() {
                   }`}
                 >
                   {/* Avatar */}
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] p-0.5 shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-[var(--color-accent-primary)] p-0.5 shrink-0">
                     <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center text-sm font-display font-bold text-[var(--color-text-primary)]">
                       {client.full_name?.charAt(0)?.toUpperCase() || 'C'}
                     </div>
@@ -226,7 +226,7 @@ export default function AdminMessagesPage() {
               >
                 <ArrowLeft className="w-5 h-5" />
               </button>
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] p-0.5">
+              <div className="w-9 h-9 rounded-full bg-[var(--color-accent-primary)] p-0.5">
                 <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center text-sm font-display font-bold text-[var(--color-text-primary)]">
                   {selectedClientProfile?.full_name?.charAt(0)?.toUpperCase() || 'C'}
                 </div>

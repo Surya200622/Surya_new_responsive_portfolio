@@ -178,7 +178,7 @@ export default function DashboardOverview() {
                     {!msg.is_read && (
                       <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-[var(--color-accent-primary)] animate-pulse" />
                     )}
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] p-[1px] shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-[var(--color-accent-primary)] p-[1px] shrink-0">
                       <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center">
                         <img src="/images/surya-portrait.jpg" alt="Surya" className="w-full h-full rounded-full object-cover" />
                       </div>

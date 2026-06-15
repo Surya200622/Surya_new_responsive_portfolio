@@ -98,7 +98,7 @@ export default function ChatInput({ onSendMessage, onTyping }: ChatInputProps) {
         <button
           type="submit"
           disabled={isSending || (!content.trim() && !file)}
-          className="gradient-btn p-3 rounded-xl flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-[var(--color-accent-primary)] hover:brightness-110 text-[#0a0a0f] p-3 rounded-xl flex items-center justify-center shrink-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
           {isSending ? <Loader2 className="w-5 h-5 animate-spin text-[#0a0a0f]" /> : <Send className="w-5 h-5 text-[#0a0a0f]" />}
         </button>
