@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { X, CreditCard, Copy, CheckCircle, MessageSquare } from 'lucide-react';
 import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -23,19 +24,23 @@ export default function PaymentModal({
   quotationId,
   referenceCode = 'PENDING-REF'
 }: PaymentModalProps) {
-  const [paymentType, setPaymentType] = useState<'advance' | 'final'>('advance');
+  const [paymentType, setPaymentType] = useState<'advance' | 'remaining' | 'full'>('full');
   const [step, setStep] = useState<'options' | 'qr' | 'confirm'>('options');
   const [transactionId, setTransactionId] = useState('');
   const [copied, setCopied] = useState(false);
 
   // Calculate amounts
   const advanceAmount = Math.round(amount * 0.2); // 20% advance
-  const finalAmount = amount - advanceAmount;
-  const payAmount = paymentType === 'advance' ? advanceAmount : finalAmount;
+  const remainingAmount = amount - advanceAmount; // 80% remaining
+  const fullAmount = amount; // 100% full payment
+  
+  let payAmount = fullAmount;
+  if (paymentType === 'advance') payAmount = advanceAmount;
+  if (paymentType === 'remaining') payAmount = remainingAmount;
 
   // UPI Details
-  const upiId = 'cbpushpalatha357@okhdfcbank';
-  const payeeName = 'Pushpalatha C.b';
+  const upiId = 'cssurya2006@okicici';
+  const payeeName = 'C.S. SURYA';
   const note = `Payment for ${projectName} (${referenceCode})`;
   
   // Construct dynamic UPI URL
@@ -43,8 +48,6 @@ export default function PaymentModal({
   
   // Generate QR code dynamically using QR Server API
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiUrl)}`;
-
-  if (!isOpen) return null;
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -64,7 +67,7 @@ export default function PaymentModal({
     
 I have paid ₹${payAmount.toLocaleString('en-IN')} for ${projectName}.
 Reference: ${referenceCode}
-Type: ${paymentType === 'advance' ? 'Advance Payment' : 'Final Payment'}
+Type: ${paymentType === 'advance' ? 'Advance Payment (20%)' : paymentType === 'remaining' ? 'Remaining Balance (80%)' : 'Full Payment (100%)'}
 
 Transaction ID:
 ${transactionId || '__________'}
@@ -78,8 +81,23 @@ Please verify the payment.`;
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-[var(--color-bg-primary)] border border-[var(--color-glass-border)] rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh]">
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
+        >
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="bg-[var(--color-bg-primary)] border border-[var(--color-glass-border)] rounded-2xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh] relative"
+          >
+            {/* Ambient Glow */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[200%] h-32 bg-[var(--color-accent-primary)] opacity-10 blur-3xl pointer-events-none rounded-full" />
         
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-[var(--color-glass-border)] bg-[var(--color-bg-secondary)]">
@@ -120,21 +138,38 @@ Please verify the payment.`;
                     <span className="font-bold text-[var(--color-text-primary)]">₹{advanceAmount.toLocaleString('en-IN')}</span>
                   </label>
 
-                  <label className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${paymentType === 'final' ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10' : 'border-[var(--color-glass-border)] hover:border-[var(--color-text-muted)]'}`}>
+                  <label className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${paymentType === 'remaining' ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10' : 'border-[var(--color-glass-border)] hover:border-[var(--color-text-muted)]'}`}>
                     <div className="flex items-center gap-3">
                       <input 
                         type="radio" 
                         name="paymentType" 
-                        checked={paymentType === 'final'}
-                        onChange={() => setPaymentType('final')}
+                        checked={paymentType === 'remaining'}
+                        onChange={() => setPaymentType('remaining')}
                         className="w-4 h-4 accent-[var(--color-accent-primary)]"
                       />
                       <div>
-                        <p className="font-medium text-[var(--color-text-primary)]">Pay Full Amount</p>
-                        <p className="text-xs text-[var(--color-text-muted)]">Clear all dues</p>
+                        <p className="font-medium text-[var(--color-text-primary)]">Pay Remaining (80%)</p>
+                        <p className="text-xs text-[var(--color-text-muted)]">If advance is already paid</p>
                       </div>
                     </div>
-                    <span className="font-bold text-[var(--color-text-primary)]">₹{amount.toLocaleString('en-IN')}</span>
+                    <span className="font-bold text-[var(--color-text-primary)]">₹{remainingAmount.toLocaleString('en-IN')}</span>
+                  </label>
+
+                  <label className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${paymentType === 'full' ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10' : 'border-[var(--color-glass-border)] hover:border-[var(--color-text-muted)]'}`}>
+                    <div className="flex items-center gap-3">
+                      <input 
+                        type="radio" 
+                        name="paymentType" 
+                        checked={paymentType === 'full'}
+                        onChange={() => setPaymentType('full')}
+                        className="w-4 h-4 accent-[var(--color-accent-primary)]"
+                      />
+                      <div>
+                        <p className="font-medium text-[var(--color-text-primary)]">Pay Full Amount (100%)</p>
+                        <p className="text-xs text-[var(--color-text-muted)]">Clear all dues at once</p>
+                      </div>
+                    </div>
+                    <span className="font-bold text-[var(--color-text-primary)]">₹{fullAmount.toLocaleString('en-IN')}</span>
                   </label>
                 </div>
               </div>
@@ -158,13 +193,23 @@ Please verify the payment.`;
                 </h3>
               </div>
 
-              <div className="bg-white p-4 rounded-2xl border-4 border-[var(--color-bg-secondary)] shadow-xl relative">
+              <motion.div 
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", bounce: 0.5 }}
+                className="bg-white p-4 rounded-2xl border-4 border-[var(--color-bg-secondary)] shadow-xl relative overflow-hidden"
+              >
+                <motion.div
+                  animate={{ backgroundPosition: ['0% 0%', '100% 100%'] }}
+                  transition={{ duration: 3, repeat: Infinity, repeatType: 'reverse' }}
+                  className="absolute inset-0 opacity-10 bg-gradient-to-tr from-[var(--color-accent-primary)] via-transparent to-[var(--color-accent-secondary)]"
+                />
                 <img 
                   src={qrCodeUrl} 
                   alt="UPI QR Code" 
-                  className="w-48 h-48 object-contain"
+                  className="w-48 h-48 object-contain relative z-10 rounded-lg"
                 />
-              </div>
+              </motion.div>
 
               <div className="w-full bg-[var(--color-bg-secondary)] p-4 rounded-xl border border-[var(--color-glass-border)] space-y-3">
                 <div className="flex justify-between items-center text-sm">
@@ -244,7 +289,9 @@ Please verify the payment.`;
           )}
 
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
