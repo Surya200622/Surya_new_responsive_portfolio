@@ -32,50 +32,13 @@ const itemVariants = {
   },
 };
 
-// Typing effect hook
-function useTypingEffect(texts, typingSpeed = 80, deletingSpeed = 40, pauseDuration = 2000) {
-  const [displayText, setDisplayText] = useState('');
-  const [textIndex, setTextIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
 
-  useEffect(() => {
-    const currentText = texts[textIndex];
-    let timeout;
-
-    if (!isDeleting && displayText === currentText) {
-      timeout = setTimeout(() => setIsDeleting(true), pauseDuration);
-    } else if (isDeleting && displayText === '') {
-      setIsDeleting(false);
-      setTextIndex((prev) => (prev + 1) % texts.length);
-    } else {
-      timeout = setTimeout(() => {
-        setDisplayText(
-          isDeleting
-            ? currentText.substring(0, displayText.length - 1)
-            : currentText.substring(0, displayText.length + 1)
-        );
-      }, isDeleting ? deletingSpeed : typingSpeed);
-    }
-
-    return () => clearTimeout(timeout);
-  }, [displayText, isDeleting, textIndex, texts, typingSpeed, deletingSpeed, pauseDuration]);
-
-  return displayText;
-}
-
-const TYPING_TEXTS = [
-  'Full-Stack Python Developer',
-  'Django & React Specialist',
-  'UI/UX Enthusiast',
-  'Problem Solver',
-];
 
 export default function HeroSection() {
   const sectionRef = useRef(null);
   const bgRef = useRef(null);
   const portraitRef = useRef(null);
   const mouse = useMousePosition();
-  const typedText = useTypingEffect(TYPING_TEXTS);
 
   // Parallax on scroll
   useGSAP(() => {
@@ -144,9 +107,6 @@ export default function HeroSection() {
       >
         {/* Portrait */}
         <motion.div className="hero__portrait-container" variants={itemVariants}>
-          {/* Glowing Ring */}
-          <div className="hero__portrait-ring" aria-hidden="true" />
-
           <div
             className="hero__portrait-wrapper"
             ref={portraitRef}
@@ -156,7 +116,7 @@ export default function HeroSection() {
             }}
           >
             <img
-              src="/images/WhatsApp Image 2026-06-14 at 8.19.47 PM.jpeg"
+              src="/images/surya-portrait.jpg"
               alt="Surya CS — Full-Stack Python Developer"
               className="hero__portrait-img"
               loading="eager"
@@ -195,9 +155,7 @@ export default function HeroSection() {
         {/* Text */}
         <div className="hero__text">
           <motion.div className="hero__label" variants={itemVariants}>
-            <span className="hero__label-line" />
-            <span className="hero__typing-text">{typedText}</span>
-            <span className="hero__typing-cursor" aria-hidden="true">|</span>
+            <span className="hero__typing-text">Full-Stack Python Developer</span>
           </motion.div>
 
           <motion.h1 className="hero__title" variants={itemVariants}>

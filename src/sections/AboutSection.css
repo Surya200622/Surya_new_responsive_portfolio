@@ -174,7 +174,7 @@
   width: 52px;
   height: 52px;
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, rgba(201, 168, 76, 0.15), rgba(183, 110, 121, 0.15));
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.15), rgba(14, 165, 233, 0.15));
   color: var(--fact-color, var(--color-accent-primary));
   margin-bottom: var(--space-lg);
 }
@@ -388,7 +388,7 @@
 
 .about__timeline-dot--current {
   background: var(--color-accent-secondary);
-  box-shadow: 0 0 0 2px var(--color-accent-secondary), 0 0 20px rgba(183, 110, 121, 0.3);
+  box-shadow: 0 0 0 2px var(--color-accent-secondary), 0 0 20px rgba(14, 165, 233, 0.3);
 }
 
 .about__timeline-card {
@@ -480,7 +480,7 @@
 .about__skill-card:hover {
   transform: translateY(-2px);
   border-color: var(--color-accent-primary);
-  box-shadow: 0 4px 20px rgba(183, 110, 121, 0.15);
+  box-shadow: 0 4px 20px rgba(14, 165, 233, 0.15);
   background: var(--color-bg-glass-strong);
 }
 
