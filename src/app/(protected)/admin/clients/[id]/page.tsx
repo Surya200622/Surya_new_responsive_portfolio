@@ -3,6 +3,7 @@ import { ArrowLeft, Mail, Phone, Building2, Calendar, Briefcase, MessageSquare, 
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ClientProjectsTable from './ClientProjectsTable';
+import ClientQuotationsTable from './ClientQuotationsTable';
 
 interface ClientDetailPageProps {
   params: { id: string };
@@ -35,6 +36,13 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
     .from('messages')
     .select('*', { count: 'exact', head: true })
     .or(`sender_id.eq.${params.id},receiver_id.eq.${params.id}`);
+
+  // Fetch client quotations
+  const { data: quotations } = await supabase
+    .from('quotations')
+    .select('*, projects(project_name)')
+    .eq('client_id', params.id)
+    .order('created_at', { ascending: false });
 
   // Fetch client's uploaded files
   const projectIds = projects?.map(p => p.id) || [];
@@ -163,8 +171,13 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
       {/* Projects Table */}
       <div className="glass-card-strong p-6 rounded-2xl border border-[var(--color-glass-border)]">
         <h2 className="text-xl font-display font-bold text-[var(--color-text-primary)] mb-6">Projects</h2>
-
         <ClientProjectsTable initialProjects={projects || []} />
+      </div>
+
+      {/* Quotations & Payments Table */}
+      <div className="glass-card-strong p-6 rounded-2xl border border-[var(--color-glass-border)]">
+        <h2 className="text-xl font-display font-bold text-[var(--color-text-primary)] mb-6">Quotations & Payments</h2>
+        <ClientQuotationsTable initialQuotations={quotations || []} />
       </div>
 
       {/* Uploaded Files Section */}

@@ -155,12 +155,14 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                         ₹{(quote.total || 0).toLocaleString('en-IN')}
                       </span>
                       <span className={`px-2 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider ${
-                        quote.status === 'accepted' ? 'bg-green-500/10 text-green-400' :
-                        quote.status === 'sent' ? 'bg-blue-500/10 text-blue-400' :
+                        quote.status === 'fully_paid' ? 'bg-green-500/10 text-green-400' :
+                        quote.status === 'advance_paid' ? 'bg-emerald-500/10 text-emerald-400' :
+                        quote.status === 'accepted' ? 'bg-blue-500/10 text-blue-400' :
+                        quote.status === 'sent' ? 'bg-purple-500/10 text-purple-400' :
                         quote.status === 'rejected' ? 'bg-red-500/10 text-red-400' :
                         'bg-orange-500/10 text-orange-400'
                       }`}>
-                        {quote.status}
+                        {quote.status?.replace('_', ' ')}
                       </span>
                     </div>
                     <p className="text-xs text-[var(--color-text-muted)]">

@@ -192,11 +192,11 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
     <button 
       onClick={generatePDF}
       disabled={isGenerating}
-      className="btn btn--glass px-3 py-2 flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+      className="btn btn--glass w-full justify-center sm:w-auto px-3 py-2 flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
       title="Download PDF"
     >
       {isGenerating ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
-      <span className="hidden sm:inline text-sm">{isGenerating ? 'Generating...' : 'Download PDF'}</span>
+      <span className="text-sm">{isGenerating ? 'Generating...' : 'Download PDF'}</span>
     </button>
   );
 }

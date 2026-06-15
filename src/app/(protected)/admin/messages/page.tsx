@@ -129,14 +129,14 @@ export default function AdminMessagesPage() {
 
   if (loading) {
     return (
-      <div className="h-[calc(100vh-8rem)] flex items-center justify-center">
+      <div className="h-[calc(100dvh-8rem)] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-[var(--color-accent-primary)] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="h-[calc(100vh-8rem)] flex flex-col md:flex-row glass-card-strong rounded-2xl border border-[var(--color-glass-border)] overflow-hidden">
+    <div className="h-[calc(100dvh-8rem)] flex flex-col md:flex-row glass-card-strong rounded-2xl border border-[var(--color-glass-border)] overflow-hidden">
       {/* Sidebar — Client List */}
       <div className={`w-full md:w-80 border-b md:border-b-0 md:border-r border-[var(--color-glass-border)] bg-[var(--color-bg-glass)] flex-col h-full shrink-0 ${selectedClient ? 'hidden md:flex' : 'flex'}`}>
         <div className="p-4 border-b border-[var(--color-glass-border)] space-y-3">

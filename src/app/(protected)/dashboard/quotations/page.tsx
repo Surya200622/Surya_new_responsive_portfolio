@@ -41,8 +41,10 @@ export default async function ClientQuotationsPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'accepted': return 'bg-green-500/10 border-green-500/20 text-green-400';
-      case 'sent': return 'bg-blue-500/10 border-blue-500/20 text-blue-400';
+      case 'fully_paid': return 'bg-green-500/10 border-green-500/20 text-green-400';
+      case 'advance_paid': return 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400';
+      case 'accepted': return 'bg-blue-500/10 border-blue-500/20 text-blue-400';
+      case 'sent': return 'bg-purple-500/10 border-purple-500/20 text-purple-400';
       case 'rejected': return 'bg-red-500/10 border-red-500/20 text-red-400';
       default: return 'bg-orange-500/10 border-orange-500/20 text-orange-400';
     }
@@ -71,7 +73,7 @@ export default async function ClientQuotationsPage() {
                       {quote.projects?.project_name || 'Project Quotation'}
                     </h3>
                     <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-medium border ${getStatusColor(quote.status)} uppercase tracking-wider`}>
-                      {quote.status}
+                      {quote.status?.replace('_', ' ')}
                     </span>
                   </div>
                   <p className="text-sm text-[var(--color-text-secondary)] flex items-center gap-2">
@@ -88,9 +90,8 @@ export default async function ClientQuotationsPage() {
                     ₹{(quote.total || 0).toLocaleString()}
                   </p>
                 </div>
-                
-                <div className="flex flex-wrap gap-2">
-                  {quote.status !== 'rejected' && (
+                <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full sm:w-auto">
+                  {quote.status !== 'rejected' && quote.status !== 'fully_paid' && (
                     <PayUPIButton 
                       amount={quote.total || 0} 
                       projectName={quote.projects?.project_name || 'Project Quotation'}

@@ -55,6 +55,19 @@ export default function PaymentModal({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleContinueToPay = () => {
+    // Check if the user is on a mobile or tablet device
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // Automatically redirect to default UPI apps
+      window.location.href = upiUrl;
+    }
+    
+    // Always proceed to the next step so they can confirm payment afterwards
+    setStep('qr');
+  };
+
   const handleIvePaidClick = () => {
     setStep('confirm');
   };
@@ -71,6 +84,8 @@ Type: ${paymentType === 'advance' ? 'Advance Payment (20%)' : paymentType === 'r
 
 Transaction ID:
 ${transactionId || '__________'}
+
+*[Please find the payment screenshot attached below]*
 
 Please verify the payment.`;
 
@@ -113,7 +128,7 @@ Please verify the payment.`;
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto">
+        <div className="p-4 sm:p-6 overflow-y-auto">
           
           {step === 'options' && (
             <div className="space-y-6 animate-in slide-in-from-right-4">
@@ -121,61 +136,61 @@ Please verify the payment.`;
                 <p className="text-sm text-[var(--color-text-secondary)] mb-4">Select your payment preference for <strong>{projectName}</strong></p>
                 
                 <div className="space-y-3">
-                  <label className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${paymentType === 'advance' ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10' : 'border-[var(--color-glass-border)] hover:border-[var(--color-text-muted)]'}`}>
-                    <div className="flex items-center gap-3">
+                  <label className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 gap-3 sm:gap-0 rounded-xl border cursor-pointer transition-all ${paymentType === 'advance' ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10' : 'border-[var(--color-glass-border)] hover:border-[var(--color-text-muted)]'}`}>
+                    <div className="flex items-start sm:items-center gap-3">
                       <input 
                         type="radio" 
                         name="paymentType" 
                         checked={paymentType === 'advance'}
                         onChange={() => setPaymentType('advance')}
-                        className="w-4 h-4 accent-[var(--color-accent-primary)]"
+                        className="w-4 h-4 mt-1 sm:mt-0 accent-[var(--color-accent-primary)] shrink-0"
                       />
                       <div>
                         <p className="font-medium text-[var(--color-text-primary)]">Pay Advance (20%)</p>
                         <p className="text-xs text-[var(--color-text-muted)]">To start the project</p>
                       </div>
                     </div>
-                    <span className="font-bold text-[var(--color-text-primary)]">₹{advanceAmount.toLocaleString('en-IN')}</span>
+                    <span className="font-bold text-[var(--color-text-primary)] sm:text-right w-full sm:w-auto ml-7 sm:ml-0">₹{advanceAmount.toLocaleString('en-IN')}</span>
                   </label>
 
-                  <label className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${paymentType === 'remaining' ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10' : 'border-[var(--color-glass-border)] hover:border-[var(--color-text-muted)]'}`}>
-                    <div className="flex items-center gap-3">
+                  <label className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 gap-3 sm:gap-0 rounded-xl border cursor-pointer transition-all ${paymentType === 'remaining' ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10' : 'border-[var(--color-glass-border)] hover:border-[var(--color-text-muted)]'}`}>
+                    <div className="flex items-start sm:items-center gap-3">
                       <input 
                         type="radio" 
                         name="paymentType" 
                         checked={paymentType === 'remaining'}
                         onChange={() => setPaymentType('remaining')}
-                        className="w-4 h-4 accent-[var(--color-accent-primary)]"
+                        className="w-4 h-4 mt-1 sm:mt-0 accent-[var(--color-accent-primary)] shrink-0"
                       />
                       <div>
                         <p className="font-medium text-[var(--color-text-primary)]">Pay Remaining (80%)</p>
                         <p className="text-xs text-[var(--color-text-muted)]">If advance is already paid</p>
                       </div>
                     </div>
-                    <span className="font-bold text-[var(--color-text-primary)]">₹{remainingAmount.toLocaleString('en-IN')}</span>
+                    <span className="font-bold text-[var(--color-text-primary)] sm:text-right w-full sm:w-auto ml-7 sm:ml-0">₹{remainingAmount.toLocaleString('en-IN')}</span>
                   </label>
 
-                  <label className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${paymentType === 'full' ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10' : 'border-[var(--color-glass-border)] hover:border-[var(--color-text-muted)]'}`}>
-                    <div className="flex items-center gap-3">
+                  <label className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 gap-3 sm:gap-0 rounded-xl border cursor-pointer transition-all ${paymentType === 'full' ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10' : 'border-[var(--color-glass-border)] hover:border-[var(--color-text-muted)]'}`}>
+                    <div className="flex items-start sm:items-center gap-3">
                       <input 
                         type="radio" 
                         name="paymentType" 
                         checked={paymentType === 'full'}
                         onChange={() => setPaymentType('full')}
-                        className="w-4 h-4 accent-[var(--color-accent-primary)]"
+                        className="w-4 h-4 mt-1 sm:mt-0 accent-[var(--color-accent-primary)] shrink-0"
                       />
                       <div>
                         <p className="font-medium text-[var(--color-text-primary)]">Pay Full Amount (100%)</p>
                         <p className="text-xs text-[var(--color-text-muted)]">Clear all dues at once</p>
                       </div>
                     </div>
-                    <span className="font-bold text-[var(--color-text-primary)]">₹{fullAmount.toLocaleString('en-IN')}</span>
+                    <span className="font-bold text-[var(--color-text-primary)] sm:text-right w-full sm:w-auto ml-7 sm:ml-0">₹{fullAmount.toLocaleString('en-IN')}</span>
                   </label>
                 </div>
               </div>
 
               <button 
-                onClick={() => setStep('qr')}
+                onClick={handleContinueToPay}
                 className="w-full py-3 rounded-xl font-bold text-white shadow-lg transition-transform active:scale-95"
                 style={{ background: 'linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary))' }}
               >
@@ -255,14 +270,46 @@ Please verify the payment.`;
           {step === 'confirm' && (
             <div className="space-y-6 animate-in slide-in-from-right-4">
               <div className="text-center">
-                <div className="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle size={32} />
-                </div>
-                <h3 className="text-xl font-display font-bold text-[var(--color-text-primary)]">
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", bounce: 0.5, duration: 0.6 }}
+                  className="relative w-24 h-24 mx-auto mb-6 flex items-center justify-center"
+                >
+                  <motion.div 
+                    animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="absolute inset-0 bg-green-500/20 rounded-full"
+                  />
+                  <motion.div 
+                    animate={{ scale: [1, 1.2, 1], opacity: [0.8, 0, 0.8] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                    className="absolute inset-2 bg-green-500/20 rounded-full"
+                  />
+                  <div className="relative w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(34,197,94,0.6)] z-10">
+                    <motion.svg 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="3" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      className="w-8 h-8"
+                    >
+                      <motion.path 
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 0.6, delay: 0.4, type: "tween" }}
+                        d="M20 6L9 17l-5-5"
+                      />
+                    </motion.svg>
+                  </div>
+                </motion.div>
+                <h3 className="text-2xl font-display font-bold text-[var(--color-text-primary)]">
                   Payment Submitted?
                 </h3>
                 <p className="text-sm text-[var(--color-text-secondary)] mt-2">
-                  Please provide your transaction ID and notify us via WhatsApp to verify your payment.
+                  Please provide your transaction ID below. When WhatsApp opens, <strong>don't forget to attach your payment screenshot!</strong>
                 </p>
               </div>
 
