@@ -12,6 +12,7 @@ import {
   UI_COMPLEXITY, ANIMATION_LEVELS, DELIVERY_SPEEDS, PAGE_RATE,
   calculatePricing, generateWhatsAppMessage, generateEmailBody,
 } from '../data/calculatorData';
+import PaymentModal from '../components/payment/PaymentModal';
 import './CalculatorSection.css';
 
 const ICON_MAP = {
@@ -46,6 +47,7 @@ export default function CalculatorSection() {
   });
 
   const [offers, setOffers] = useState([]);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
   useEffect(() => {
     async function fetchOffers() {
@@ -387,13 +389,7 @@ export default function CalculatorSection() {
             <div className="calc__total-actions">
               <button 
                 className="btn btn--primary" 
-                onClick={() => {
-                  const msg = `Hi Surya, I have initiated a payment of ₹${pricing.total.toLocaleString('en-IN')} for my project via GPay. Let's continue the conversation about the project customizations!`;
-                  window.open(`https://wa.me/918220443165?text=${encodeURIComponent(msg)}`, '_blank');
-                  
-                  // Trigger UPI intent for GPay in the current window
-                  window.location.href = `upi://pay?pa=9994566325@upi&pn=Surya&am=${pricing.total}&cu=INR&tn=Project%20Payment`;
-                }} 
+                onClick={() => setIsPaymentModalOpen(true)} 
                 style={{ background: 'linear-gradient(135deg, #4285F4, #34A853)', border: 'none', color: 'white' }}
               >
                 Pay via GPay
@@ -407,6 +403,14 @@ export default function CalculatorSection() {
             </div>
           </motion.div>
         )}
+        
+        <PaymentModal 
+          isOpen={isPaymentModalOpen}
+          onClose={() => setIsPaymentModalOpen(false)}
+          amount={pricing.total}
+          projectName={projectType ? PROJECT_TYPES.find(p => p.id === projectType)?.name || 'Custom Project' : 'Custom Project'}
+          referenceCode={`QUOTE-${new Date().getFullYear()}-${Math.floor(Math.random() * 9000 + 1000)}`}
+        />
       </div>
     </section>
   );

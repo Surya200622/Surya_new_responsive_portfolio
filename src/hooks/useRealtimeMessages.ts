@@ -93,7 +93,7 @@ export function useRealtimeMessages(currentUserId: string, otherUserId: string) 
   }, [currentUserId, otherUserId, supabase]);
 
   const sendMessage = async (content: string, fileData?: { url: string; name: string }) => {
-    const tempId = crypto.randomUUID();
+    const tempId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const tempMessage: Message = {
       id: tempId,
       sender_id: currentUserId,

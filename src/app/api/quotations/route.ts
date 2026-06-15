@@ -32,7 +32,7 @@ export async function POST(req: Request) {
         description: `Automated quotation for a ${data.pages || 1}-page ${projectName} (Package: ${data.selectedPackage || 'Standard'}). Generated via pricing calculator.`,
         budget: data.pricing?.total || 0,
         timeline: `${data.pricing?.timeline || 0} Days`,
-        status: 'pending'
+        status: 'Pending'
       })
       .select()
       .single();

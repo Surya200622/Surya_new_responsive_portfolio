@@ -62,6 +62,7 @@
   transition: color var(--duration-fast) var(--ease-smooth);
   position: relative;
   padding: var(--space-xs) 0;
+  cursor: pointer;
 }
 
 .navbar__link::after {
@@ -203,6 +204,7 @@
   color: var(--color-text-secondary);
   transition: color var(--duration-fast) var(--ease-smooth);
   padding: var(--space-sm) 0;
+  cursor: pointer;
 }
 
 .navbar__mobile-link:hover {
