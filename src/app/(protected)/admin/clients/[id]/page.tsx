@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { ArrowLeft, Mail, Phone, Building2, Calendar, Briefcase, MessageSquare, File, Download, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -11,9 +12,13 @@ interface ClientDetailPageProps {
 
 export default async function ClientDetailPage({ params }: ClientDetailPageProps) {
   const supabase = createClient();
+  const supabaseAdmin = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
 
   // Fetch client profile
-  const { data: client, error } = await supabase
+  const { data: client, error } = await supabaseAdmin
     .from('profiles')
     .select('*')
     .eq('id', params.id)
@@ -25,20 +30,20 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   }
 
   // Fetch client's projects
-  const { data: projects } = await supabase
+  const { data: projects } = await supabaseAdmin
     .from('projects')
     .select('*')
     .eq('client_id', params.id)
     .order('created_at', { ascending: false });
 
   // Fetch message count
-  const { count: messageCount } = await supabase
+  const { count: messageCount } = await supabaseAdmin
     .from('messages')
     .select('*', { count: 'exact', head: true })
     .or(`sender_id.eq.${params.id},receiver_id.eq.${params.id}`);
 
   // Fetch client quotations
-  const { data: quotations } = await supabase
+  const { data: quotations } = await supabaseAdmin
     .from('quotations')
     .select('*, projects(project_name)')
     .eq('client_id', params.id)
@@ -48,7 +53,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const projectIds = projects?.map(p => p.id) || [];
   let files: any[] = [];
   if (projectIds.length > 0) {
-    const { data: projectFiles, error: fetchFilesError } = await supabase
+    const { data: projectFiles, error: fetchFilesError } = await supabaseAdmin
       .from('project_files')
       .select('*, projects(project_name)')
       .in('project_id', projectIds)

@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { LogOut, Home, MessageSquare, Briefcase, Folder, FileText, Bell, User, Settings, X, ChevronDown, Menu, Trash2, CheckSquare, Square, Camera, Loader2, Lock, Tag, Star } from 'lucide-react';
 import { createBrowserClient } from '@supabase/ssr';
 import { useEffect, useState, useRef } from 'react';
+import PendingQuotationHandler from './dashboard/quotations/PendingQuotationHandler';
 
 interface Profile {
   id: string;
@@ -164,11 +165,11 @@ export default function ProtectedLayout({
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    await supabase
-      .from('notifications')
-      .update({ is_read: true })
-      .eq('user_id', user.id)
-      .eq('is_read', false);
+    await fetch('/api/notifications', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ markAllRead: true }),
+    });
 
     setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
     setUnreadCount(0);
@@ -201,11 +202,11 @@ export default function ProtectedLayout({
     if (!user) { setClearingNotifs(false); return; }
 
     const ids = Array.from(selectedNotifIds);
-    await supabase
-      .from('notifications')
-      .delete()
-      .in('id', ids)
-      .eq('user_id', user.id);
+    await fetch('/api/notifications', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids }),
+    });
 
     setNotifications(prev => {
       const remaining = prev.filter(n => !selectedNotifIds.has(n.id));
@@ -221,10 +222,11 @@ export default function ProtectedLayout({
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setClearingNotifs(false); return; }
 
-    await supabase
-      .from('notifications')
-      .delete()
-      .eq('user_id', user.id);
+    await fetch('/api/notifications', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clearAll: true }),
+    });
 
     setNotifications([]);
     setUnreadCount(0);
@@ -601,6 +603,7 @@ export default function ProtectedLayout({
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto custom-scrollbar p-3 md:p-6">
           <div className="max-w-6xl mx-auto">
+            <PendingQuotationHandler />
             {children}
           </div>
         </div>

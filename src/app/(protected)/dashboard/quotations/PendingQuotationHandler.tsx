@@ -28,12 +28,17 @@ export default function PendingQuotationHandler() {
         if (response.ok) {
           // Clear it so we don't process it again
           localStorage.removeItem('pendingQuote');
-          router.refresh(); // Refresh server component to show new quotation
+          window.location.reload(); // Hard reload to guarantee data shows up
         } else {
-          console.error('Failed to create quotation from pending quote');
+          const errorData = await response.json();
+          console.error('Failed to create quotation:', errorData);
+          alert('Failed to generate quotation: ' + (errorData.error || 'Unknown error') + (errorData.details ? '\nDetails: ' + JSON.stringify(errorData.details) : ''));
+          localStorage.removeItem('pendingQuote'); // Remove it anyway so we don't get stuck
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error processing pending quote:', error);
+        alert('Network error while processing quote: ' + error.message);
+        localStorage.removeItem('pendingQuote');
       } finally {
         setIsProcessing(false);
       }
