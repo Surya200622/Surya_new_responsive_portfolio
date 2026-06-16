@@ -668,7 +668,7 @@ export default function ProtectedLayout({
                 <p className="mt-1 text-[10px] text-[var(--color-text-muted)]">Email cannot be changed.</p>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Company</label>
                   <input
