@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, CreditCard, Copy, CheckCircle, MessageSquare } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -28,6 +29,11 @@ export default function PaymentModal({
   const [step, setStep] = useState<'options' | 'qr' | 'confirm'>('options');
   const [transactionId, setTransactionId] = useState('');
   const [copied, setCopied] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Calculate amounts
   const advanceAmount = Math.round(amount * 0.2); // 20% advance
@@ -95,7 +101,9 @@ Please verify the payment.`;
     setTimeout(() => onClose(), 1000);
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div 
@@ -339,6 +347,7 @@ Please verify the payment.`;
       </motion.div>
     </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
