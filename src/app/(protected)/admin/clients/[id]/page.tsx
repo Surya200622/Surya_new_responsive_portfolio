@@ -1,5 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
-import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { ArrowLeft, Mail, Phone, Building2, Calendar, Briefcase, MessageSquare, File, Download, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -7,21 +6,18 @@ import ClientProjectsTable from './ClientProjectsTable';
 import ClientQuotationsTable from './ClientQuotationsTable';
 
 interface ClientDetailPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function ClientDetailPage({ params }: ClientDetailPageProps) {
-  const supabase = createClient();
-  const supabaseAdmin = createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  const { id } = await params;
+  const supabaseAdmin = createAdminClient();
 
   // Fetch client profile
   const { data: client, error } = await supabaseAdmin
     .from('profiles')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .eq('role', 'client')
     .single();
 
@@ -33,20 +29,20 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
   const { data: projects } = await supabaseAdmin
     .from('projects')
     .select('*')
-    .eq('client_id', params.id)
+    .eq('client_id', id)
     .order('created_at', { ascending: false });
 
   // Fetch message count
   const { count: messageCount } = await supabaseAdmin
     .from('messages')
     .select('*', { count: 'exact', head: true })
-    .or(`sender_id.eq.${params.id},receiver_id.eq.${params.id}`);
+    .or(`sender_id.eq.${id},receiver_id.eq.${id}`);
 
   // Fetch client quotations
   const { data: quotations } = await supabaseAdmin
     .from('quotations')
     .select('*, projects(project_name)')
-    .eq('client_id', params.id)
+    .eq('client_id', id)
     .order('created_at', { ascending: false });
 
   // Fetch client's uploaded files
@@ -126,7 +122,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
           {/* Actions */}
           <div className="flex gap-3 shrink-0">
             <Link
-              href={`/admin/messages?client=${params.id}`}
+              href={`/admin/messages?client=${id}`}
               className="gradient-btn px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2"
             >
               <MessageSquare className="w-4 h-4" />

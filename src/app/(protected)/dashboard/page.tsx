@@ -88,7 +88,7 @@ export default function DashboardOverview() {
             <div>
               <p className="text-sm text-[var(--color-text-secondary)] font-medium uppercase tracking-wider">Active Projects</p>
               <h3 className="text-2xl font-display font-bold text-[var(--color-text-primary)]">
-                {projects.filter(p => p.status === 'in_progress' || p.status === 'pending').length}
+                {projects.filter(p => !['Completed', 'Cancelled'].includes(p.status)).length}
               </h3>
             </div>
           </div>
@@ -102,7 +102,7 @@ export default function DashboardOverview() {
             <div>
               <p className="text-sm text-[var(--color-text-secondary)] font-medium uppercase tracking-wider">Completed</p>
               <h3 className="text-2xl font-display font-bold text-[var(--color-text-primary)]">
-                {projects.filter(p => p.status === 'completed').length}
+                {projects.filter(p => p.status === 'Completed').length}
               </h3>
             </div>
           </div>
@@ -143,11 +143,11 @@ export default function DashboardOverview() {
                       </div>
                     </div>
                     <span className={`px-3 py-1 rounded-full text-xs font-medium border ${
-                      project.status === 'completed' ? 'bg-green-500/10 border-green-500/20 text-green-400' :
-                      project.status === 'in_progress' ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' :
+                      project.status === 'Completed' ? 'bg-green-500/10 border-green-500/20 text-green-400' :
+                      (project.status === 'Development Phase' || project.status === 'Testing Phase' || project.status === 'Design Phase') ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' :
                       'bg-orange-500/10 border-orange-500/20 text-orange-400'
                     }`}>
-                      {project.status?.replace('_', ' ')?.toUpperCase() || 'UNKNOWN'}
+                      {project.status?.toUpperCase() || 'UNKNOWN'}
                     </span>
                   </Link>
                 ))}

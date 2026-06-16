@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export async function POST(req: Request) {
   try {
@@ -14,10 +14,42 @@ export async function POST(req: Request) {
     const data = await req.json();
 
     // Use admin client to bypass RLS for inserting records
-    const supabaseAdmin = createSupabaseClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const supabaseAdmin = createAdminClient();
+
+    // === ENSURE PROFILE EXISTS ===
+    // Some users (Google OAuth, auto-confirmed) may not have a profiles row
+    // if the handle_new_user trigger failed or didn't fire.
+    const { data: existingProfile } = await supabaseAdmin
+      .from('profiles')
+      .select('id')
+      .eq('id', user.id)
+      .single();
+
+    if (!existingProfile) {
+      // Profile doesn't exist — create one from auth metadata
+      const meta = user.user_metadata || {};
+      const fullName = meta.full_name || meta.name || user.email?.split('@')[0] || 'User';
+      const email = user.email || '';
+
+      const { error: profileError } = await supabaseAdmin
+        .from('profiles')
+        .insert({
+          id: user.id,
+          full_name: fullName,
+          email: email,
+          company_name: meta.company_name || null,
+          phone: meta.phone || null,
+          role: 'client',
+        });
+
+      if (profileError) {
+        console.error('Error creating profile:', profileError);
+        return NextResponse.json({
+          error: `Could not create user profile: ${profileError.message}`,
+          details: profileError
+        }, { status: 500 });
+      }
+    }
 
     // 1. Create a Pending Project
     const projectName = data.projectType 
@@ -37,7 +69,13 @@ export async function POST(req: Request) {
       .select()
       .single();
 
-    if (projectError) throw projectError;
+    if (projectError) {
+      console.error('Error creating project:', projectError);
+      return NextResponse.json({
+        error: `Failed to create project: ${projectError.message}`,
+        details: projectError
+      }, { status: 500 });
+    }
 
     // 2. Create the Quotation
     const lineItems = [
@@ -62,7 +100,13 @@ export async function POST(req: Request) {
       .select()
       .single();
 
-    if (quoteError) throw quoteError;
+    if (quoteError) {
+      console.error('Error creating quotation:', quoteError);
+      return NextResponse.json({
+        error: `Failed to create quotation: ${quoteError.message}`,
+        details: quoteError
+      }, { status: 500 });
+    }
 
     return NextResponse.json({ success: true, quotation });
   } catch (error: any) {

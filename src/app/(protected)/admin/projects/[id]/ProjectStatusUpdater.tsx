@@ -11,11 +11,15 @@ interface ProjectStatusUpdaterProps {
 }
 
 const STATUS_OPTIONS = [
-  { value: 'pending', label: 'Pending', color: 'text-orange-500 bg-orange-500/10' },
-  { value: 'in_progress', label: 'In Progress', color: 'text-blue-500 bg-blue-500/10' },
-  { value: 'review', label: 'Review', color: 'text-purple-500 bg-purple-500/10' },
-  { value: 'completed', label: 'Completed', color: 'text-green-500 bg-green-500/10' },
-  { value: 'cancelled', label: 'Cancelled', color: 'text-red-500 bg-red-500/10' }
+  { value: 'Pending', label: 'Pending', color: 'text-orange-500 bg-orange-500/10' },
+  { value: 'Waiting for Payment', label: 'Waiting for Payment', color: 'text-amber-500 bg-amber-500/10' },
+  { value: 'Requirements Gathering', label: 'Requirements Gathering', color: 'text-yellow-500 bg-yellow-500/10' },
+  { value: 'Design Phase', label: 'Design Phase', color: 'text-indigo-500 bg-indigo-500/10' },
+  { value: 'Development Phase', label: 'Development Phase', color: 'text-blue-500 bg-blue-500/10' },
+  { value: 'Testing Phase', label: 'Testing Phase', color: 'text-cyan-500 bg-cyan-500/10' },
+  { value: 'Review Phase', label: 'Review Phase', color: 'text-purple-500 bg-purple-500/10' },
+  { value: 'Completed', label: 'Completed', color: 'text-green-500 bg-green-500/10' },
+  { value: 'Cancelled', label: 'Cancelled', color: 'text-red-500 bg-red-500/10' }
 ];
 
 export default function ProjectStatusUpdater({ projectId, currentStatus }: ProjectStatusUpdaterProps) {
@@ -45,9 +49,9 @@ export default function ProjectStatusUpdater({ projectId, currentStatus }: Proje
       
       router.refresh();
       setIsOpen(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating project status:', error);
-      alert('Failed to update project status. Please try again.');
+      alert('Failed to update project status: ' + (error.message || 'Unknown error'));
     } finally {
       setIsUpdating(false);
     }
@@ -72,8 +76,8 @@ export default function ProjectStatusUpdater({ projectId, currentStatus }: Proje
             className="fixed inset-0 z-10" 
             onClick={() => setIsOpen(false)} 
           />
-          <div className="absolute top-full mt-2 right-0 md:left-0 z-20 w-48 rounded-xl border border-[var(--color-glass-border)] bg-[var(--color-bg-primary)] shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="p-1">
+          <div className="absolute top-full mt-2 right-0 md:left-0 z-20 w-56 rounded-xl border border-[var(--color-glass-border)] bg-[var(--color-bg-primary)] shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-1 max-h-64 overflow-y-auto custom-scrollbar">
               {STATUS_OPTIONS.map((option) => (
                 <button
                   key={option.value}

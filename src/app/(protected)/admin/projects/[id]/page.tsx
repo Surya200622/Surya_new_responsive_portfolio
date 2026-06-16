@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { ArrowLeft, Folder, Calendar, Clock, FileText, User } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -6,20 +7,21 @@ import ProjectStatusUpdater from './ProjectStatusUpdater';
 import DownloadQuotationButton from '@/components/pdf/DownloadQuotationButton';
 
 interface ProjectDetailPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
-  const supabase = createClient();
+  const { id } = await params;
+  const supabaseAdmin = createAdminClient();
 
   // Fetch project with client details
-  const { data: project, error } = await supabase
+  const { data: project, error } = await supabaseAdmin
     .from('projects')
     .select(`
       *,
       client:profiles(id, full_name, company_name, email)
     `)
-    .eq('id', params.id)
+    .eq('id', id)
     .single();
 
   if (error || !project) {
@@ -27,21 +29,21 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
   }
 
   // Fetch quotations for this project
-  const { data: quotations } = await supabase
+  const { data: quotations } = await supabaseAdmin
     .from('quotations')
     .select('*')
     .eq('project_id', project.id)
     .order('created_at', { ascending: false });
 
   const getStatusBadge = (status: string) => {
-    const map: Record<string, string> = {
-      pending: 'bg-orange-500/10 border-orange-500/20 text-orange-400',
-      in_progress: 'bg-blue-500/10 border-blue-500/20 text-blue-400',
-      review: 'bg-purple-500/10 border-purple-500/20 text-purple-400',
-      completed: 'bg-green-500/10 border-green-500/20 text-green-400',
-      cancelled: 'bg-red-500/10 border-red-500/20 text-red-400',
-    };
-    return map[status] || map.pending;
+    const s = status?.toLowerCase() || '';
+    if (s.includes('completed')) return 'bg-green-500/10 border-green-500/20 text-green-400';
+    if (s.includes('development') || s.includes('progress')) return 'bg-blue-500/10 border-blue-500/20 text-blue-400';
+    if (s.includes('review') || s.includes('testing')) return 'bg-purple-500/10 border-purple-500/20 text-purple-400';
+    if (s.includes('design')) return 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400';
+    if (s.includes('cancelled')) return 'bg-red-500/10 border-red-500/20 text-red-400';
+    if (s.includes('payment') || s.includes('gathering')) return 'bg-orange-500/10 border-orange-500/20 text-orange-400';
+    return 'bg-orange-500/10 border-orange-500/20 text-orange-400';
   };
 
   const clientInfo = project.client as any;
@@ -81,7 +83,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
               <div>
                 <p className="text-xs text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Budget</p>
                 <p className="font-semibold text-[var(--color-text-primary)]">
-                  {project.budget ? `₹${project.budget.toLocaleString('en-IN')}` : 'Not specified'}
+                  {project.budget ? `₹${Number(project.budget).toLocaleString('en-IN')}` : 'Not specified'}
                 </p>
               </div>
               <div>

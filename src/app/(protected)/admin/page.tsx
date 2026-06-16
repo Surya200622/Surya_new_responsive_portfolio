@@ -17,6 +17,7 @@ export default function AdminOverviewPage() {
   const [clientCount, setClientCount] = useState(0);
   const [projectCount, setProjectCount] = useState(0);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [revenue, setRevenue] = useState(0);
   const [recentClients, setRecentClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -29,8 +30,15 @@ export default function AdminOverviewPage() {
     async function loadData() {
       try {
         const { count: cc } = await supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'client');
-        const { count: pc } = await supabase.from('projects').select('*', { count: 'exact', head: true }).neq('status', 'completed').neq('status', 'cancelled');
+        const { count: pc } = await supabase.from('projects').select('*', { count: 'exact', head: true }).neq('status', 'Completed').neq('status', 'Cancelled');
         const { count: uc } = await supabase.from('messages').select('*', { count: 'exact', head: true }).eq('is_read', false);
+
+        const { data: revenueData } = await supabase
+          .from('quotations')
+          .select('total')
+          .in('status', ['accepted', 'advance_paid', 'fully_paid']);
+          
+        const totalRev = revenueData?.reduce((sum, q) => sum + (Number(q.total) || 0), 0) || 0;
 
         const { data: clients } = await supabase
           .from('profiles')
@@ -42,6 +50,7 @@ export default function AdminOverviewPage() {
         setClientCount(cc || 0);
         setProjectCount(pc || 0);
         setUnreadCount(uc || 0);
+        setRevenue(totalRev);
         if (clients) setRecentClients(clients);
       } catch (e) {
         console.warn('Admin data load error:', e);
@@ -99,7 +108,7 @@ export default function AdminOverviewPage() {
             </div>
             <p className="text-sm text-[var(--color-text-secondary)] font-medium">Revenue (Est)</p>
           </div>
-          <h3 className="text-3xl font-display font-bold text-[var(--color-text-primary)]">₹0</h3>
+          <h3 className="text-3xl font-display font-bold text-[var(--color-text-primary)]">₹{revenue.toLocaleString('en-IN')}</h3>
         </div>
       </div>
 

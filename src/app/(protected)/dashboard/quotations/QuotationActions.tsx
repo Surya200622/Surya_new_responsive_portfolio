@@ -27,7 +27,11 @@ export default function QuotationActions({ quoteId, projectId, adminId, clientNa
         body: JSON.stringify({ action, projectId })
       });
 
-      if (!res.ok) throw new Error('Failed to update quotation');
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        const errorMsg = errorData.error || `Failed to ${action} quotation`;
+        throw new Error(errorMsg);
+      }
 
       // 2. Send Notification to Admin
       if (adminId) {
@@ -48,9 +52,9 @@ export default function QuotationActions({ quoteId, projectId, adminId, clientNa
       }
 
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
       console.error(`Error during quotation ${action}:`, error);
-      alert(`Failed to ${action} quotation. Please try again.`);
+      alert(error.message || `Failed to ${action} quotation. Please try again.`);
     } finally {
       setIsProcessing(null);
     }

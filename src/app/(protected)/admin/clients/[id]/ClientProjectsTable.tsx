@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 
 interface Project {
   id: string;
+  project_name?: string;
   name?: string;
   title?: string;
   status: string;
@@ -87,7 +88,7 @@ export default function ClientProjectsTable({ initialProjects }: { initialProjec
           {projects.map((project) => (
             <tr key={project.id} className="border-b border-[var(--color-glass-border)] last:border-0 hover:bg-[var(--color-bg-glass)] transition-colors">
               <td className="px-6 py-4 font-medium text-[var(--color-text-primary)]">
-                {project.name || project.title || 'Untitled Project'}
+                {project.project_name || project.name || project.title || 'Untitled Project'}
               </td>
               <td className="px-6 py-4">
                 <div className="flex items-center gap-2">
