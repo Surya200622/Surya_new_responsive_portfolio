@@ -78,7 +78,7 @@ export async function POST(req: Request) {
           <p>${description.replace(/\n/g, '<br>')}</p>
           <div class="data-box" style="margin-top: 20px;">
             <div class="data-label">Valid Until</div>
-            <div class="data-value" style="color: #f97316;">${new Date(valid_until).toLocaleDateString()}</div>
+            <div class="data-value" style="color: #f97316;">${(() => { const d = new Date(valid_until); return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; })()}</div>
           </div>
           <div style="margin: 30px 0; text-align: center;">
             <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev'}/${serviceQuery}#calculator" class="button">

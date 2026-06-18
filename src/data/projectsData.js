@@ -79,17 +79,17 @@ export const TIMELINE_DATA = [
   },
   {
     year: '2025',
-    title: 'Built DentalExperts',
+    title: 'Launched DentalExperts, CipherApparel & Portfolio',
     description:
-      'Created a comprehensive dental clinic management system — my first full-stack Django project featuring appointment booking, patient records, and doctor schedule management.',
+      'Built a dental clinic management system with appointment booking & patient records, a fashion e-commerce platform with Django, and a cinematic personal portfolio with React & Vite — establishing my freelance web development practice.',
     type: 'project',
   },
   {
     year: '2025',
-    title: 'Launched CipherApparel & Portfolio',
+    title: 'Indra Institute of Education — Full-Stack Python',
     description:
-      'Built a fashion e-commerce platform with Django and a cinematic personal portfolio with React & Vite, establishing my freelance web development practice.',
-    type: 'project',
+      'Full-Stack Python Developer training at Indra Institute of Education, 100 Feet Road. Intensive program from July 09, 2025 to December 15, 2025, deepening expertise in Python full-stack development.',
+    type: 'education',
   },
   {
     year: '2026',

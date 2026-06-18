@@ -2,15 +2,125 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { Tag, Calendar, ArrowRight } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Tag, Calendar, ArrowRight, X, Eye } from 'lucide-react';
 import { PROJECT_TYPES } from '../data/calculatorData';
 import './OffersSection.css';
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+}
+
+function truncateText(text, maxLen = 100) {
+  if (!text || text.length <= maxLen) return text;
+  return text.slice(0, maxLen).trim() + '…';
+}
+
+function OfferModal({ offer, isOpen, onClose, serviceQuery }) {
+  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+
+  if (!mounted || !offer) return null;
+
+  return createPortal(
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="offer-modal-overlay"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+        >
+          <motion.div
+            className="offer-modal-container"
+            initial={{ scale: 0.9, opacity: 0, y: 30 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 30 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Ambient Glow */}
+            <div className="offer-modal-glow" />
+
+            {/* Header */}
+            <div className="offer-modal-header">
+              <h2 className="offer-modal-header-title">Offer Details</h2>
+              <button onClick={onClose} className="offer-modal-close">
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Scrollable Content */}
+            <div className="offer-modal-body">
+              {offer.image_url && (
+                <div className="offer-modal-image">
+                  <img src={offer.image_url} alt={offer.title} />
+                </div>
+              )}
+
+              {offer.discount_percentage > 0 && (
+                <div className="offer-modal-badge">
+                  <Tag size={16} /> {offer.discount_percentage}% OFF
+                </div>
+              )}
+
+              <h3 className="offer-modal-title">{offer.title}</h3>
+
+              <div className="offer-modal-desc">
+                {offer.description.split('\n').map((line, i) => (
+                  <p key={i}>{line}</p>
+                ))}
+              </div>
+
+              <div className="offer-modal-meta">
+                <div className="offer-modal-meta-item">
+                  <Calendar size={16} />
+                  <span>Valid till {formatDate(offer.valid_until)}</span>
+                </div>
+              </div>
+
+              <a
+                href={`/${serviceQuery}#calculator`}
+                className="offer-modal-cta"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onClose();
+                  router.push(`/${serviceQuery}#calculator`);
+                }}
+              >
+                Claim This Offer <ArrowRight size={18} />
+              </a>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>,
+    document.body
+  );
+}
 
 export default function OffersSection() {
   const router = useRouter();
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedOffer, setSelectedOffer] = useState(null);
+  const [selectedServiceQuery, setSelectedServiceQuery] = useState('');
 
   useEffect(() => {
     async function fetchOffers() {
@@ -31,7 +141,20 @@ export default function OffersSection() {
   }, []);
 
   if (loading || offers.length === 0) {
-    return null; // Don't show the section if there are no active offers
+    return null;
+  }
+
+  function getServiceQuery(offer) {
+    const offerTitleLower = offer.title.toLowerCase();
+    const matchedProject = PROJECT_TYPES.find(p => {
+      const nameLower = p.name.toLowerCase();
+      const idLower = p.id.toLowerCase();
+      const firstWord = nameLower.split(' ')[0];
+      return offerTitleLower.includes(nameLower) ||
+             offerTitleLower.includes(idLower) ||
+             offerTitleLower.includes(firstWord);
+    });
+    return matchedProject ? `?service=${matchedProject.id}` : '';
   }
 
   return (
@@ -50,20 +173,7 @@ export default function OffersSection() {
 
         <div className="offers-grid">
           {offers.map((offer, index) => {
-            let serviceQuery = '';
-            const offerTitleLower = offer.title.toLowerCase();
-            const matchedProject = PROJECT_TYPES.find(p => {
-              const nameLower = p.name.toLowerCase();
-              const idLower = p.id.toLowerCase();
-              const firstWord = nameLower.split(' ')[0];
-              return offerTitleLower.includes(nameLower) || 
-                     offerTitleLower.includes(idLower) || 
-                     offerTitleLower.includes(firstWord);
-            });
-            
-            if (matchedProject) {
-              serviceQuery = `?service=${matchedProject.id}`;
-            }
+            const serviceQuery = getServiceQuery(offer);
 
             return (
               <motion.div 
@@ -89,30 +199,36 @@ export default function OffersSection() {
                 )}
                 
                 <h3 className="offer-title">{offer.title}</h3>
-                <p className="offer-desc">{offer.description}</p>
+                <p className="offer-desc">{truncateText(offer.description)}</p>
                 
                 <div className="offer-footer">
                   <div className="offer-expiry">
                     <Calendar size={14} />
-                    <span>Valid till {new Date(offer.valid_until).toLocaleDateString()}</span>
+                    <span>Valid till {formatDate(offer.valid_until)}</span>
                   </div>
                   
-                  <a 
-                    href={`/${serviceQuery}#calculator`} 
-                    className="offer-cta"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      router.push(`/${serviceQuery}#calculator`);
+                  <button
+                    className="offer-view-btn"
+                    onClick={() => {
+                      setSelectedOffer(offer);
+                      setSelectedServiceQuery(serviceQuery);
                     }}
                   >
-                    Claim Offer <ArrowRight size={16} />
-                  </a>
+                    <Eye size={15} /> View Full Offer
+                  </button>
                 </div>
               </motion.div>
             );
           })}
         </div>
       </div>
+
+      <OfferModal
+        offer={selectedOffer}
+        isOpen={!!selectedOffer}
+        onClose={() => setSelectedOffer(null)}
+        serviceQuery={selectedServiceQuery}
+      />
     </section>
   );
 }

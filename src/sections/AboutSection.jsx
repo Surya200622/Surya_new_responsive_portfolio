@@ -117,20 +117,150 @@ export default function AboutSection() {
       }
     }
 
-    // Timeline items
+    // Timeline items — parallax + scroll effects for desktop
     const timelineItems = timelineRef.current?.querySelectorAll('.about__timeline-item');
     if (timelineItems) {
-      timelineItems.forEach((item) => {
-        gsap.to(item, {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: item,
-            start: 'top 85%',
-            toggleActions: 'play none none reverse',
-          },
+      const mm = gsap.matchMedia();
+
+      // ===== DESKTOP: full parallax + bidirectional scroll =====
+      mm.add('(min-width: 969px)', () => {
+        timelineItems.forEach((item, idx) => {
+          const isLeft = idx % 2 === 0;
+          const parallaxWrapper = item.querySelector('.about__timeline-parallax');
+          const card = item.querySelector('.about__timeline-card');
+          const dot = item.querySelector('.about__timeline-dot');
+          const yearEl = item.querySelector('.about__timeline-year');
+          const center = item.querySelector('.about__timeline-center');
+
+          // --- Layer 1: Parallax depth on wrapper (continuous, scrub-based) ---
+          // Each item moves at a different speed for multi-layer depth
+          if (parallaxWrapper) {
+            gsap.fromTo(parallaxWrapper,
+              { y: 60 + (idx * 15) },
+              {
+                y: -(30 + (idx * 10)),
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: item,
+                  start: 'top bottom',
+                  end: 'bottom top',
+                  scrub: true,
+                },
+              }
+            );
+          }
+
+          // Center column (dot + year) parallax at a different rate
+          if (center) {
+            gsap.fromTo(center,
+              { y: 40 },
+              {
+                y: -20,
+                ease: 'none',
+                scrollTrigger: {
+                  trigger: item,
+                  start: 'top bottom',
+                  end: 'bottom top',
+                  scrub: true,
+                },
+              }
+            );
+          }
+
+          // --- Layer 2: Entry/exit animations (play forward + reverse on scroll) ---
+          // Card slides in from its side with 3D rotation
+          gsap.fromTo(card,
+            {
+              x: isLeft ? -120 : 120,
+              opacity: 0,
+              rotateY: isLeft ? -15 : 15,
+              scale: 0.85,
+            },
+            {
+              x: 0,
+              opacity: 1,
+              rotateY: 0,
+              scale: 1,
+              duration: 1,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: item,
+                start: 'top 85%',
+                end: 'top 50%',
+                scrub: 1.5,
+              },
+            }
+          );
+
+          // Dot pops in with scale
+          if (dot) {
+            gsap.fromTo(dot,
+              { scale: 0, opacity: 0 },
+              {
+                scale: 1,
+                opacity: 1,
+                duration: 0.5,
+                ease: 'back.out(3)',
+                scrollTrigger: {
+                  trigger: item,
+                  start: 'top 80%',
+                  end: 'top 60%',
+                  scrub: 1,
+                },
+              }
+            );
+          }
+
+          // Year label fades up
+          if (yearEl) {
+            gsap.fromTo(yearEl,
+              { opacity: 0, scale: 0.5 },
+              {
+                opacity: 1,
+                scale: 1,
+                duration: 0.5,
+                ease: 'power2.out',
+                scrollTrigger: {
+                  trigger: item,
+                  start: 'top 78%',
+                  end: 'top 58%',
+                  scrub: 1,
+                },
+              }
+            );
+          }
+
+          // Parent item itself fades in
+          gsap.fromTo(item,
+            { opacity: 0 },
+            {
+              opacity: 1,
+              duration: 0.3,
+              scrollTrigger: {
+                trigger: item,
+                start: 'top 90%',
+                end: 'top 70%',
+                scrub: 1,
+              },
+            }
+          );
+        });
+      });
+
+      // ===== MOBILE/TABLET: simple fade-in (bidirectional) =====
+      mm.add('(max-width: 968px)', () => {
+        timelineItems.forEach((item) => {
+          gsap.to(item, {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: item,
+              start: 'top 85%',
+              toggleActions: 'play reverse play reverse',
+            },
+          });
         });
       });
     }
@@ -288,9 +418,11 @@ export default function AboutSection() {
               {TIMELINE_DATA.map((item, i) => (
                 <div key={i} className="about__timeline-item">
                   <div className={`about__timeline-content ${i % 2 === 0 ? 'about__timeline-content--left' : 'about__timeline-content--right'}`}>
-                    <div className="about__timeline-card">
-                      <h4 className="about__timeline-title">{item.title}</h4>
-                      <p className="about__timeline-desc">{item.description}</p>
+                    <div className="about__timeline-parallax">
+                      <div className="about__timeline-card">
+                        <h4 className="about__timeline-title">{item.title}</h4>
+                        <p className="about__timeline-desc">{item.description}</p>
+                      </div>
                     </div>
                   </div>
                   <div className="about__timeline-center">

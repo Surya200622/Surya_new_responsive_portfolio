@@ -320,6 +320,7 @@
 .about__timeline {
   padding: var(--space-section) 0;
   position: relative;
+  perspective: 1200px;
 }
 
 .about__timeline-line {
@@ -375,6 +376,10 @@
   grid-column: 3;
 }
 
+.about__timeline-parallax {
+  will-change: transform;
+}
+
 .about__timeline-dot {
   width: 16px;
   height: 16px;
@@ -384,6 +389,7 @@
   box-shadow: 0 0 0 2px var(--color-accent-primary);
   z-index: 1;
   flex-shrink: 0;
+  transition: box-shadow 0.4s ease;
 }
 
 .about__timeline-dot--current {
@@ -398,11 +404,15 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--space-xl);
-  transition: border-color var(--duration-normal) var(--ease-smooth);
+  transition: border-color var(--duration-normal) var(--ease-smooth),
+              box-shadow var(--duration-normal) var(--ease-smooth);
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
 }
 
 .about__timeline-card:hover {
   border-color: var(--color-border-accent);
+  box-shadow: 0 8px 40px rgba(14, 165, 233, 0.12);
 }
 
 .about__timeline-year {
@@ -412,6 +422,7 @@
   color: var(--color-accent-primary);
   letter-spacing: 0.05em;
   text-align: center;
+  will-change: transform, opacity;
 }
 
 .about__timeline-title {

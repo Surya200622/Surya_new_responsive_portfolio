@@ -63,6 +63,12 @@ export default function App() {
         <div className="section-divider" />
 
         <Suspense fallback={<SectionLoader />}>
+          <OffersSection />
+        </Suspense>
+
+        <div className="section-divider" />
+
+        <Suspense fallback={<SectionLoader />}>
           <CalculatorSection />
         </Suspense>
 
@@ -76,12 +82,6 @@ export default function App() {
 
         <Suspense fallback={<SectionLoader />}>
           <ProcessSection />
-        </Suspense>
-
-        <div className="section-divider" />
-
-        <Suspense fallback={<SectionLoader />}>
-          <OffersSection />
         </Suspense>
 
         <div className="section-divider" />
