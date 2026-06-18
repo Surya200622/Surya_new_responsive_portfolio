@@ -185,8 +185,9 @@
 .experience-header {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 0.25rem;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
 }
 
 .experience-header h4 {
@@ -200,6 +201,22 @@
   font-size: 0.875rem;
   color: var(--color-accent-primary);
   font-weight: 500;
+  white-space: nowrap;
+}
+
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-accent-primary);
+  opacity: 0.7;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.project-link:hover {
+  opacity: 1;
+  transform: translateY(-1px);
 }
 
 .tech-stack {
@@ -213,10 +230,25 @@
   padding-left: 1.25rem;
   color: var(--color-text-secondary);
   line-height: 1.6;
+  margin-top: 0.5rem;
 }
 
 .experience-list li {
   margin-bottom: 0.5rem;
+}
+
+.experience-item p {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin: 0.5rem 0 0 0;
+}
+
+@media (max-width: 600px) {
+  .experience-header {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
 }
 
 .skill-category {

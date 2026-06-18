@@ -63,50 +63,83 @@ export default function ResumePage() {
           {/* Main Column */}
           <main className="main-col">
             <section className="resume-section">
-              <h3 className="section-title">Professional Profile</h3>
+              <h3 className="section-title">Professional Summary</h3>
               <p className="profile-text">
-                Dedicated Full-Stack Developer specializing in Python, Django, and React. With a strong foundation in Computer Applications (B.COM.CA), I craft comprehensive web solutions focusing on performance, responsive design, and seamless user experiences. Completed IBM & ITC collaborative training in Data Science (Pandas & NumPy).
+                Highly motivated Entry-Level Python Full-Stack Developer with expertise in Django, MySQL, and Responsive Web Design. Proven ability to architect and deploy functional web applications (E-commerce, CRM, and Blog platforms), seeking to contribute technical skills and innovation to a dynamic IT environment.
               </p>
             </section>
 
             <section className="resume-section">
-              <h3 className="section-title">Experience & Projects</h3>
+              <h3 className="section-title">Work Experience</h3>
+
+              <div className="experience-item">
+                <div className="experience-header">
+                  <h4>Icon Graphics — ID Cards &amp; Lanyards</h4>
+                  <span className="date">27 April 2026 - 17 June 2026</span>
+                </div>
+                <ul className="experience-list">
+                  <li>Part-time role handling ID card lanyards for companies and schools.</li>
+                </ul>
+              </div>
+            </section>
+              
+            <section className="resume-section">
+              <h3 className="section-title">Projects</h3>
               
               <div className="experience-item">
                 <div className="experience-header">
-                  <h4>DentalExperts — Clinic Management System</h4>
-                  <span className="date">2025</span>
+                  <h4>DentalExperts — Django</h4>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <span className="date">2025</span>
+                    <a href="https://suryacs.pythonanywhere.com" target="_blank" rel="noreferrer" className="project-link"><ExternalLink size={14} /></a>
+                  </div>
                 </div>
-                <p className="tech-stack">Python, Django, SQLite, Bootstrap</p>
                 <ul className="experience-list">
-                  <li>Developed a full-stack booking system allowing patients to easily schedule appointments.</li>
-                  <li>Implemented secure doctor/admin dashboards to manage patient records and schedules efficiently.</li>
-                  <li>Deployed the application successfully on PythonAnywhere.</li>
+                  <li>Architected a full-stack CRM using Django/Python to streamline dental appointment booking.</li>
+                  <li>The system enables online scheduling, clinic information access, and efficient management of patient records and doctor schedules.</li>
+                  <li>Deployed live on PythonAnywhere.</li>
                 </ul>
               </div>
 
               <div className="experience-item">
                 <div className="experience-header">
-                  <h4>CipherApparel — E-commerce Platform</h4>
-                  <span className="date">2025</span>
+                  <h4>CipherApparel — Django</h4>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <span className="date">2025</span>
+                    <a href="https://cipherapparel.pythonanywhere.com" target="_blank" rel="noreferrer" className="project-link"><ExternalLink size={14} /></a>
+                  </div>
                 </div>
-                <p className="tech-stack">Django, PostgreSQL, JavaScript, CSS3</p>
                 <ul className="experience-list">
-                  <li>Built a responsive fashion e-commerce web application with robust user authentication.</li>
-                  <li>Designed dynamic product listing, cart, and checkout workflows.</li>
-                  <li>Integrated database models for real-time inventory and order tracking.</li>
+                  <li>Built a responsive fashion e-commerce platform with Django, featuring secure user authentication, dynamic product listings, offers management, and seamless Python backend integration.</li>
+                  <li>Deployed live on PythonAnywhere.</li>
+                </ul>
+              </div>
+
+              <div className="experience-item">
+                <div className="experience-header">
+                  <h4>Blogcraft — Django</h4>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <span className="date">2026</span>
+                    <a href="https://blogcraft.pythonanywhere.com" target="_blank" rel="noreferrer" className="project-link"><ExternalLink size={14} /></a>
+                  </div>
+                </div>
+                <ul className="experience-list">
+                  <li>Engineered a full-stack blog platform using Django, implementing robust user authentication and systems for efficient post creation and management.</li>
+                  <li>Deployed live on PythonAnywhere.</li>
                 </ul>
               </div>
               
               <div className="experience-item">
                 <div className="experience-header">
-                  <h4>Magical Portfolio</h4>
-                  <span className="date">2025</span>
+                  <h4>Personal Portfolio — React/Next.js</h4>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <span className="date">2026</span>
+                    <a href="https://suryacs.is-a.dev" target="_blank" rel="noreferrer" className="project-link"><ExternalLink size={14} /></a>
+                  </div>
                 </div>
-                <p className="tech-stack">React (Next.js), GSAP, Framer Motion, Supabase</p>
                 <ul className="experience-list">
-                  <li>Designed an interactive, highly animated single-page portfolio using GSAP ScrollTrigger.</li>
-                  <li>Integrated Supabase for dynamic quotation requests and backend management.</li>
+                  <li>Developed a cinematic personal portfolio using React and Next.js to showcase expertise in over ten front-end and back-end technologies.</li>
+                  <li>Deployed live on Vercel.</li>
                 </ul>
               </div>
             </section>
@@ -115,10 +148,33 @@ export default function ResumePage() {
               <h3 className="section-title">Education</h3>
               <div className="experience-item">
                 <div className="experience-header">
-                  <h4>Bachelor of Commerce in Computer Applications (B.COM.CA)</h4>
-                  <span className="date">2023 - 2026</span>
+                  <h4>Sri Ramakrishna College of Arts &amp; Science, Nava-India</h4>
+                  <span className="date">July 2023 - March 2026</span>
                 </div>
-                <p>Sri Ramakrishna College of Arts & Science, Nava-India, Coimbatore</p>
+                <p>B.COM.CA (Bachelor of Commerce in Computer Applications)</p>
+              </div>
+              <div className="experience-item">
+                <div className="experience-header">
+                  <h4>Mani&apos;s Higher Secondary School, Nethaji Road, Papanaickenpalayam</h4>
+                </div>
+                <p>10th mark - All pass, 11th mark - 56%, 12th mark - 66%</p>
+              </div>
+            </section>
+
+            <section className="resume-section">
+              <h3 className="section-title">Extra-Curricular Activities</h3>
+              <div className="experience-item">
+                <div className="experience-header">
+                  <h4>Indra Institute of Education, 100 Feet Road</h4>
+                  <span className="date">July 09, 2025 - Dec 15, 2025</span>
+                </div>
+                <p>Full-Stack Python</p>
+              </div>
+              <div className="experience-item">
+                <div className="experience-header">
+                  <h4>IBM &amp; ITC Python Certificate in College</h4>
+                  <span className="date">Nov 03, 2025 - Nov 11, 2025</span>
+                </div>
               </div>
             </section>
           </main>
@@ -129,45 +185,29 @@ export default function ResumePage() {
               <h3 className="section-title">Skills</h3>
               
               <div className="skill-category">
-                <h4>Backend Development</h4>
+                <h4>Technical Skills</h4>
                 <div className="skill-tags">
+                  <span>HTML</span>
+                  <span>CSS</span>
+                  <span>JavaScript</span>
+                  <span>Bootstrap</span>
                   <span>Python</span>
                   <span>Django</span>
-                  <span>REST APIs</span>
-                  <span>SQLite</span>
-                  <span>PostgreSQL</span>
+                  <span>MySQL</span>
+                  <span>Responsive Web Design</span>
                 </div>
               </div>
               
               <div className="skill-category">
-                <h4>Frontend Development</h4>
+                <h4>Soft Skills</h4>
                 <div className="skill-tags">
-                  <span>React.js</span>
-                  <span>Next.js</span>
-                  <span>JavaScript (ES6+)</span>
-                  <span>HTML5 / CSS3</span>
-                  <span>Tailwind CSS</span>
-                  <span>GSAP</span>
-                  <span>Framer Motion</span>
+                  <span>Problem Solving</span>
+                  <span>Communication</span>
+                  <span>Adaptability</span>
+                  <span>Creativity</span>
+                  <span>Team Collaboration</span>
                 </div>
               </div>
-              
-              <div className="skill-category">
-                <h4>Tools & Others</h4>
-                <div className="skill-tags">
-                  <span>Git & GitHub</span>
-                  <span>Supabase</span>
-                  <span>Data Analysis (Pandas/NumPy)</span>
-                  <span>Vite</span>
-                </div>
-              </div>
-            </section>
-            
-            <section className="resume-section">
-              <h3 className="section-title">Certifications</h3>
-              <ul className="cert-list">
-                <li>IBM & ITC Collaborative Training — Python Pandas & NumPy</li>
-              </ul>
             </section>
             
             <section className="resume-section">
@@ -178,6 +218,14 @@ export default function ResumePage() {
               </ul>
             </section>
           </aside>
+
+          {/* Full Width Declaration */}
+          <section className="resume-section" style={{ gridColumn: '1 / -1' }}>
+            <h3 className="section-title">Declaration</h3>
+            <div className="profile-text" style={{ textAlign: 'left', width: '100%', marginBottom: 0 }}>
+              I hereby declare that the above-mentioned information is true to the best of my knowledge and belief.
+            </div>
+          </section>
         </div>
       </div>
     </div>
