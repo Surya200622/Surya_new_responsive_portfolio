@@ -6,6 +6,8 @@ import path from 'path';
 
 const execAsync = promisify(exec);
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     // Dynamically connect to the blog platform's SQLite database via a Python script
