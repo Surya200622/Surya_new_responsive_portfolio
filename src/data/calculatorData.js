@@ -117,6 +117,7 @@ export const ANIMATION_LEVELS = {
 export const DELIVERY_SPEEDS = {
   standard: { multiplier: 1.0, label: 'Standard', description: 'Regular timeline' },
   express: { multiplier: 1.3, label: 'Express', description: '30% faster delivery' },
+};
 
 export const PACKAGES = [
   {

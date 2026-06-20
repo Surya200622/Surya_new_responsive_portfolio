@@ -100,7 +100,7 @@ conn.close()
 
     return NextResponse.json({ 
       success: true, 
-      message: \`Successfully synced \${syncedCount} projects from blog platform to portfolio.\`,
+      message: `Successfully synced ${syncedCount} projects from blog platform to portfolio.`,
       data: blogPosts 
     });
 
