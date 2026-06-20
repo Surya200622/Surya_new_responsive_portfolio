@@ -285,7 +285,28 @@ export default function CalculatorSection() {
               </div>
             </div>
 
-
+            {/* Extra Features */}
+            <div className="calc__radio-group">
+              <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>Extra Features</div>
+              <div className="calc__radio-options">
+                {booleanFeatures.map(([key, val]) => {
+                  const IconComp = ICON_MAP[val.icon] || Code;
+                  return (
+                    <div
+                      key={key}
+                      className={`calc__radio-card${features[key] ? ' calc__radio-card--active' : ''}`}
+                      onClick={() => toggleFeature(key)}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                        <IconComp size={16} />
+                        <div className="calc__radio-card-label">{val.label}</div>
+                      </div>
+                      <div className="calc__radio-card-mult">+₹{val.cost.toLocaleString('en-IN')}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
 
             {/* Maintenance */}
             <div className="calc__radio-group">

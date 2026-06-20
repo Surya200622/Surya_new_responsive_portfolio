@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
-import { Search, Mail, Phone, MoreVertical } from 'lucide-react';
+import { Search, Mail, Phone } from 'lucide-react';
 import Link from 'next/link';
+import ClientActionsMenu from './ClientActionsMenu';
 
 export default async function AdminClientsPage() {
   const supabase = createClient();
@@ -49,9 +50,7 @@ export default async function AdminClientsPage() {
                   <p className="text-xs text-[var(--color-text-muted)]">{client.company_name || 'Individual'}</p>
                 </div>
               </div>
-              <button className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors">
-                <MoreVertical className="w-5 h-5" />
-              </button>
+              <ClientActionsMenu clientId={client.id} />
             </div>
             
             <div className="space-y-2 mb-6">

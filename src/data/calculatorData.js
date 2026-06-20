@@ -82,25 +82,24 @@ export const PROJECT_TYPES = [
 ];
 
 export const FEATURE_COSTS = {
-  adminDashboard: { cost: 3500, timeline: 7, label: 'Admin Dashboard', icon: 'LayoutDashboard' },
-  clientDashboard: { cost: 3000, timeline: 5, label: 'Client Dashboard', icon: 'Users' },
-  authentication: { cost: 2000, timeline: 3, label: 'Authentication System', icon: 'Shield' },
+  adminDashboard: { cost: 1500, timeline: 7, label: 'Admin Dashboard', icon: 'LayoutDashboard' },
+  clientDashboard: { cost: 1000, timeline: 5, label: 'Client Dashboard', icon: 'Users' },
+  authentication: { cost: 500, timeline: 3, label: 'Authentication System', icon: 'Shield' },
   database: { cost: 2500, timeline: 4, label: 'Database Integration', icon: 'Database' },
-  paymentGateway: { cost: 3000, timeline: 5, label: 'Payment Gateway', icon: 'CreditCard' },
+  paymentGateway: { cost: 1000, timeline: 5, label: 'Payment Gateway', icon: 'CreditCard' },
   cms: { cost: 2000, timeline: 4, label: 'CMS Support', icon: 'FileEdit' },
   seo: { cost: 1000, timeline: 2, label: 'SEO Optimization', icon: 'Search' },
   hosting: { cost: 1000, timeline: 1, label: 'Hosting Setup', icon: 'Server' },
-  aiFeatures: { cost: 5000, timeline: 10, label: 'AI Features', icon: 'Brain' },
-  customAnimations: { cost: 2000, timeline: 4, label: 'Custom Animations', icon: 'Sparkles' },
-  realtimeChat: { cost: 3500, timeline: 7, label: 'Real-time Chat', icon: 'MessageCircle' },
-  analyticsDashboard: { cost: 2500, timeline: 5, label: 'Analytics Dashboard', icon: 'BarChart3' },
+  customAnimations: { cost: 1000, timeline: 4, label: 'Custom Animations', icon: 'Sparkles' },
+  realtimeChat: { cost: 1500, timeline: 7, label: 'Real-time Chat', icon: 'MessageCircle' },
+  analyticsDashboard: { cost: 1000, timeline: 5, label: 'Analytics Dashboard', icon: 'BarChart3' },
 };
 
 export const MAINTENANCE_OPTIONS = [
   { value: 'none', label: 'No Maintenance', cost: 0, timeline: 0 },
-  { value: '3months', label: '3 Months', cost: 1200, timeline: 0 },
-  { value: '6months', label: '6 Months', cost: 2000, timeline: 0 },
-  { value: '12months', label: '12 Months', cost: 3500, timeline: 0 },
+  { value: '3months', label: '3 Months', cost: 400, timeline: 0 },
+  { value: '6months', label: '6 Months', cost: 800, timeline: 0 },
+  { value: '12months', label: '12 Months', cost: 1100, timeline: 0 },
 ];
 
 export const UI_COMPLEXITY = {
@@ -118,8 +117,6 @@ export const ANIMATION_LEVELS = {
 export const DELIVERY_SPEEDS = {
   standard: { multiplier: 1.0, label: 'Standard', description: 'Regular timeline' },
   express: { multiplier: 1.3, label: 'Express', description: '30% faster delivery' },
-  rush: { multiplier: 1.8, label: 'Rush', description: 'Priority development' },
-};
 
 export const PACKAGES = [
   {
@@ -145,7 +142,7 @@ export const PACKAGES = [
     name: 'Business',
     multiplier: 2.2,
     description: 'Full-stack with advanced integrations',
-    features: ['Everything in Professional', 'Admin Dashboard', 'Analytics', 'API Integrations', '5 Revision Rounds', 'Training Session'],
+    features: ['Everything in Professional', 'Admin Dashboard', 'Analytics', 'API Integrations', '5 Revision Rounds', 'Demo Session'],
     support: 'Dedicated support channel',
     badge: null,
   },
@@ -154,13 +151,13 @@ export const PACKAGES = [
     name: 'Enterprise',
     multiplier: 3.5,
     description: 'Custom everything with priority support',
-    features: ['Everything in Business', 'Custom Architecture', 'Security Audit', 'Load Testing', 'Unlimited Revisions', 'SLA Agreement'],
+    features: ['Everything in Business', 'Custom Architecture', 'Security Audit', 'Load Testing', 'Unlimited Revisions'],
     support: '24/7 priority support',
     badge: 'Premium',
   },
 ];
 
-export const PAGE_RATE = 400; // per page
+export const PAGE_RATE = 500; // per page
 
 export function calculatePricing(state) {
   const projectType = PROJECT_TYPES.find(p => p.id === state.projectType);

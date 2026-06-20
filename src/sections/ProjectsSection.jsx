@@ -153,7 +153,7 @@ export default function ProjectsSection() {
                     onMouseLeave={(e) => handleCardLeave(e.currentTarget)}
                   >
                     {!project.hide_link ? (
-                      <a href={project.link} target="_blank" rel="noopener noreferrer" className="projects__card-inner">
+                      <a href={`/project/${project.slug}`} className="projects__card-inner" style={{ textDecoration: 'none', color: 'inherit' }}>
                         <div className="projects__card-image">
                           <img src={project.image} alt={project.title} loading="lazy" />
                           <span className="projects__card-year">{project.year}</span>
@@ -170,7 +170,7 @@ export default function ProjectsSection() {
                           
                           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem' }}>
                             <span className="projects__card-link">
-                              View Project <ArrowRight size={14} />
+                              View Details <ArrowRight size={14} />
                             </span>
                             {project.buyable && (
                               <button 
@@ -189,7 +189,7 @@ export default function ProjectsSection() {
                         </div>
                       </a>
                     ) : (
-                      <div className="projects__card-inner">
+                      <a href={`/project/${project.slug}`} className="projects__card-inner" style={{ textDecoration: 'none', color: 'inherit' }}>
                         <div className="projects__card-image">
                           <img src={project.image} alt={project.title} loading="lazy" />
                           <span className="projects__card-year">{project.year}</span>
@@ -203,8 +203,13 @@ export default function ProjectsSection() {
                               <span key={t} className="projects__card-tag">{t}</span>
                             ))}
                           </div>
+                          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem' }}>
+                            <span className="projects__card-link">
+                              View Details <ArrowRight size={14} />
+                            </span>
+                          </div>
                         </div>
-                      </div>
+                      </a>
                     )}
                   </motion.div>
                 ))}
