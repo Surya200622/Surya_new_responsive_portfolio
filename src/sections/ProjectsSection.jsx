@@ -9,6 +9,15 @@ import './ProjectsSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const PROJECT_URLS = {
+  'Porfolio': 'https://blogcraft.pythonanywhere.com/blog/portfolio-for-dr-gurumoorthi-assistant-professor/',
+  'Attendence and salary calculator': 'https://blogcraft.pythonanywhere.com/blog/attendance-calculator/',
+  'personal-portfolio': 'https://blogcraft.pythonanywhere.com/blog/portfolio/',
+  'dental-experts': 'https://blogcraft.pythonanywhere.com/blog/dentalexperts/',
+  'cipher-apparel': 'https://blogcraft.pythonanywhere.com/blog/cipherapparel/',
+  'Blogsite': 'https://blogcraft.pythonanywhere.com/blog/blogcraft/'
+};
+
 export default function ProjectsSection() {
   const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState(['All']);
@@ -104,7 +113,7 @@ export default function ProjectsSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.1 }}
           >
-            Selected <span className="text-gradient">Works</span>
+            Projects <span className="text-gradient">Works</span>
           </motion.h2>
         </div>
 
@@ -153,7 +162,7 @@ export default function ProjectsSection() {
                     onMouseLeave={(e) => handleCardLeave(e.currentTarget)}
                   >
                     {!project.hide_link ? (
-                      <a href={`/project/${project.slug}`} className="projects__card-inner" style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <a href={PROJECT_URLS[project.slug] || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-inner" style={{ textDecoration: 'none', color: 'inherit' }}>
                         <div className="projects__card-image">
                           <img src={project.image} alt={project.title} loading="lazy" />
                           <span className="projects__card-year">{project.year}</span>
@@ -189,7 +198,7 @@ export default function ProjectsSection() {
                         </div>
                       </a>
                     ) : (
-                      <a href={`/project/${project.slug}`} className="projects__card-inner" style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <a href={PROJECT_URLS[project.slug] || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-inner" style={{ textDecoration: 'none', color: 'inherit' }}>
                         <div className="projects__card-image">
                           <img src={project.image} alt={project.title} loading="lazy" />
                           <span className="projects__card-year">{project.year}</span>
