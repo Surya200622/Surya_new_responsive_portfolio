@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { createBrowserClient } from '@supabase/ssr';
+import PaymentModal from '../components/payment/PaymentModal';
 import './ProjectsSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -18,11 +19,19 @@ const PROJECT_URLS = {
   'Blogsite': 'https://blogcraft.pythonanywhere.com/blog/blogcraft/'
 };
 
+const PROJECT_PRICES = {
+  'dental-experts': 15000,
+  'cipher-apparel': 12000,
+  'personal-portfolio': 5000,
+  'Attendence and salary calculator': 3500
+};
+
 export default function ProjectsSection() {
   const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState(['All']);
   const [activeFilter, setActiveFilter] = useState('All');
   const [loading, setLoading] = useState(true);
+  const [paymentModalState, setPaymentModalState] = useState({ isOpen: false, amount: 0, projectName: '' });
   const sectionRef = useRef(null);
 
   const supabase = createBrowserClient(
@@ -162,7 +171,7 @@ export default function ProjectsSection() {
                     onMouseLeave={(e) => handleCardLeave(e.currentTarget)}
                   >
                     {!project.hide_link ? (
-                      <a href={PROJECT_URLS[project.slug] || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-inner" style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <div className="projects__card-inner" style={{ color: 'inherit' }}>
                         <div className="projects__card-image">
                           <img src={project.image} alt={project.title} loading="lazy" />
                           <span className="projects__card-year">{project.year}</span>
@@ -177,28 +186,36 @@ export default function ProjectsSection() {
                             ))}
                           </div>
                           
-                          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem' }}>
-                            <span className="projects__card-link">
+                          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
+                            <a href={`/project/${project.slug}`} className="projects__card-link" style={{ textDecoration: 'none' }}>
                               View Details <ArrowRight size={14} />
-                            </span>
-                            {project.buyable && (
-                              <button 
-                                className="projects__card-link"
-                                style={{ color: '#25D366', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  window.open(`https://wa.me/919994566325?text=Hi%20Surya,%20I'm%20interested%20in%20buying%20the%20project:%20${encodeURIComponent(project.title)}`, '_blank');
-                                }}
-                              >
-                                Buy Project <ArrowRight size={14} />
-                              </button>
+                            </a>
+                            <a href={PROJECT_URLS[project.slug] || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }}>
+                              Live URL <ArrowRight size={14} />
+                            </a>
+                            {project.buyable && !['Blogsite', 'Porfolio'].includes(project.slug) && (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <span className="projects__card-price" style={{ fontWeight: 'bold', color: 'var(--color-accent-primary)' }}>
+                                  ₹{PROJECT_PRICES[project.slug]?.toLocaleString('en-IN') || '5,000'}
+                                </span>
+                                <button 
+                                  className="projects__card-link"
+                                  style={{ color: '#25D366', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    setPaymentModalState({ isOpen: true, amount: PROJECT_PRICES[project.slug] || 5000, projectName: project.title });
+                                  }}
+                                >
+                                  Buy Project <ArrowRight size={14} />
+                                </button>
+                              </div>
                             )}
                           </div>
 
                         </div>
-                      </a>
+                      </div>
                     ) : (
-                      <a href={PROJECT_URLS[project.slug] || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-inner" style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <div className="projects__card-inner" style={{ color: 'inherit' }}>
                         <div className="projects__card-image">
                           <img src={project.image} alt={project.title} loading="lazy" />
                           <span className="projects__card-year">{project.year}</span>
@@ -212,13 +229,13 @@ export default function ProjectsSection() {
                               <span key={t} className="projects__card-tag">{t}</span>
                             ))}
                           </div>
-                          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem' }}>
-                            <span className="projects__card-link">
+                          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
+                            <a href={`/project/${project.slug}`} className="projects__card-link" style={{ textDecoration: 'none' }}>
                               View Details <ArrowRight size={14} />
-                            </span>
+                            </a>
                           </div>
                         </div>
-                      </a>
+                      </div>
                     )}
                   </motion.div>
                 ))}
@@ -227,6 +244,13 @@ export default function ProjectsSection() {
           </>
         )}
       </div>
+
+      <PaymentModal 
+        isOpen={paymentModalState.isOpen}
+        onClose={() => setPaymentModalState({ ...paymentModalState, isOpen: false })}
+        amount={paymentModalState.amount}
+        projectName={paymentModalState.projectName}
+      />
     </section>
   );
 }
