@@ -25,10 +25,10 @@ export default function CalculatorSection() {
   const searchParams = useSearchParams();
   const [projectType, setProjectType] = useState('');
   const [pages, setPages] = useState(5);
-  const [uiComplexity, setUiComplexity] = useState('professional');
-  const [animationLevel, setAnimationLevel] = useState('subtle');
+  const [uiComplexity, setUiComplexity] = useState('basic');
+  const [animationLevel, setAnimationLevel] = useState('none');
   const [deliverySpeed, setDeliverySpeed] = useState('standard');
-  const [selectedPackage, setSelectedPackage] = useState('professional');
+  const [selectedPackage, setSelectedPackage] = useState('starter');
   const [features, setFeatures] = useState({
     adminDashboard: false,
     clientDashboard: false,
