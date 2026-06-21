@@ -10,13 +10,22 @@ import './ProjectsSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const PROJECT_URLS = {
+const VIEW_DETAILS_URLS = {
   'Porfolio': 'https://blogcraft.pythonanywhere.com/blog/portfolio-for-dr-gurumoorthi-assistant-professor/',
   'Attendence and salary calculator': 'https://blogcraft.pythonanywhere.com/blog/attendance-calculator/',
   'personal-portfolio': 'https://blogcraft.pythonanywhere.com/blog/portfolio/',
   'dental-experts': 'https://blogcraft.pythonanywhere.com/blog/dentalexperts/',
   'cipher-apparel': 'https://blogcraft.pythonanywhere.com/blog/cipherapparel/',
   'Blogsite': 'https://blogcraft.pythonanywhere.com/blog/blogcraft/'
+};
+
+const LIVE_URLS = {
+  'Porfolio': 'https://drgurumoorthi-ap-commerce.vercel.app',
+  'Attendence and salary calculator': 'https://attendance-calculator-dashboard.vercel.app/',
+  'personal-portfolio': 'https://surya-cs-portfolio.vercel.app/',
+  'dental-experts': 'https://suryacs.pythonanywhere.com/',
+  'cipher-apparel': 'https://cipher-apperal.vercel.app/',
+  'Blogsite': 'https://blogcraft.pythonanywhere.com/'
 };
 
 const PROJECT_PRICES = {
@@ -187,10 +196,10 @@ export default function ProjectsSection() {
                           </div>
                           
                           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
-                            <a href={`/project/${project.slug}`} className="projects__card-link" style={{ textDecoration: 'none' }}>
+                            <a href={VIEW_DETAILS_URLS[project.slug] || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }}>
                               View Details <ArrowRight size={14} />
                             </a>
-                            <a href={PROJECT_URLS[project.slug] || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }}>
+                            <a href={LIVE_URLS[project.slug] || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }}>
                               Live URL <ArrowRight size={14} />
                             </a>
                             {project.buyable && !['Blogsite', 'Porfolio'].includes(project.slug) && (
@@ -230,8 +239,11 @@ export default function ProjectsSection() {
                             ))}
                           </div>
                           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
-                            <a href={`/project/${project.slug}`} className="projects__card-link" style={{ textDecoration: 'none' }}>
+                            <a href={VIEW_DETAILS_URLS[project.slug] || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }}>
                               View Details <ArrowRight size={14} />
+                            </a>
+                            <a href={LIVE_URLS[project.slug] || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }}>
+                              Live URL <ArrowRight size={14} />
                             </a>
                           </div>
                         </div>
