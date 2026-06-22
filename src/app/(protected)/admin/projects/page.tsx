@@ -129,7 +129,7 @@ export default function AdminProjectsPage() {
         year: project.year,
         link: project.link || '',
         view_details_url: project.view_details_url || '',
-        project_price: project.project_price || '',
+        project_price: project.project_price?.toString() || '',
         buyable: project.buyable || false,
         hide_link: project.hide_link || false,
       });
