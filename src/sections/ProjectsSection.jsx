@@ -10,6 +10,31 @@ import './ProjectsSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const VIEW_DETAILS_URLS = {
+  'Porfolio': 'https://blogcraft.pythonanywhere.com/blog/portfolio-for-dr-gurumoorthi-assistant-professor/',
+  'Attendence and salary calculator': 'https://blogcraft.pythonanywhere.com/blog/attendance-calculator/',
+  'personal-portfolio': 'https://blogcraft.pythonanywhere.com/blog/portfolio/',
+  'dental-experts': 'https://blogcraft.pythonanywhere.com/blog/dentalexperts/',
+  'cipher-apparel': 'https://blogcraft.pythonanywhere.com/blog/cipherapparel/',
+  'Blogsite': 'https://blogcraft.pythonanywhere.com/blog/blogcraft/'
+};
+
+const LIVE_URLS = {
+  'Porfolio': 'https://drgurumoorthi-ap-commerce.vercel.app',
+  'Attendence and salary calculator': 'https://attendance-calculator-dashboard.vercel.app/',
+  'personal-portfolio': 'https://surya-cs-portfolio.vercel.app/',
+  'dental-experts': 'https://suryacs.pythonanywhere.com/',
+  'cipher-apparel': 'https://cipher-apperal.vercel.app/',
+  'Blogsite': 'https://blogcraft.pythonanywhere.com/'
+};
+
+const PROJECT_PRICES = {
+  'dental-experts': 9500,
+  'cipher-apparel': 8999,
+  'personal-portfolio': 5000,
+  'Attendence and salary calculator': 3500
+};
+
 export default function ProjectsSection() {
   const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState(['All']);
