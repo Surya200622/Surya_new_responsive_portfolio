@@ -29,8 +29,8 @@ const LIVE_URLS = {
 };
 
 const PROJECT_PRICES = {
-  'dental-experts': 15000,
-  'cipher-apparel': 12000,
+  'dental-experts': 9500,
+  'cipher-apparel': 8999,
   'personal-portfolio': 5000,
   'Attendence and salary calculator': 3500
 };
