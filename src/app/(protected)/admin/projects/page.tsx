@@ -14,6 +14,8 @@ const projectSchema = z.object({
   tech_array: z.string().min(1, 'Tech stack is required'), // We'll convert comma separated to array
   year: z.string().min(4, 'Year is required'),
   link: z.string().optional(),
+  view_details_url: z.string().optional(),
+  project_price: z.union([z.string(), z.number()]).optional(),
   buyable: z.boolean(),
   hide_link: z.boolean(),
 });
@@ -28,6 +30,8 @@ type Project = {
   tech_array: string[];
   year: string;
   link?: string;
+  view_details_url?: string;
+  project_price?: string | number;
   buyable: boolean;
   hide_link: boolean;
   created_at: string;
@@ -51,6 +55,8 @@ export default function AdminProjectsPage() {
     tech_array: '',
     year: new Date().getFullYear().toString(),
     link: '',
+    view_details_url: '',
+    project_price: '',
     buyable: false,
     hide_link: false,
   });
@@ -122,6 +128,8 @@ export default function AdminProjectsPage() {
         tech_array: project.tech_array.join(', '),
         year: project.year,
         link: project.link || '',
+        view_details_url: project.view_details_url || '',
+        project_price: project.project_price || '',
         buyable: project.buyable || false,
         hide_link: project.hide_link || false,
       });
@@ -129,7 +137,7 @@ export default function AdminProjectsPage() {
       setEditingId(null);
       setFormData({
         slug: '', title: '', category: '', description: '', image: '', tech_array: '', 
-        year: new Date().getFullYear().toString(), link: '', buyable: false, hide_link: false
+        year: new Date().getFullYear().toString(), link: '', view_details_url: '', project_price: '', buyable: false, hide_link: false
       });
     }
     setShowModal(true);
@@ -153,6 +161,8 @@ export default function AdminProjectsPage() {
         tech_array: techArray,
         year: validData.year,
         link: validData.link,
+        view_details_url: validData.view_details_url,
+        project_price: validData.project_price,
         buyable: validData.buyable,
         hide_link: validData.hide_link,
       };
@@ -391,13 +401,36 @@ export default function AdminProjectsPage() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">External Link</label>
+                    <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Live URLs</label>
                     <input
                       type="text"
                       className="auth-input px-4"
                       value={formData.link}
                       onChange={e => setFormData({ ...formData, link: e.target.value })}
                       placeholder="https://..."
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">View Details URLs</label>
+                    <input
+                      type="text"
+                      className="auth-input px-4"
+                      value={formData.view_details_url}
+                      onChange={e => setFormData({ ...formData, view_details_url: e.target.value })}
+                      placeholder="https://..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Project Prices</label>
+                    <input
+                      type="number"
+                      className="auth-input px-4"
+                      value={formData.project_price}
+                      onChange={e => setFormData({ ...formData, project_price: e.target.value })}
+                      placeholder="e.g. 5000"
                     />
                   </div>
                 </div>
