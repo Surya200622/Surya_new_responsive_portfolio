@@ -10,30 +10,6 @@ import './ProjectsSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const VIEW_DETAILS_URLS = {
-  'Porfolio': 'https://blogcraft.pythonanywhere.com/blog/portfolio-for-dr-gurumoorthi-assistant-professor/',
-  'Attendence and salary calculator': 'https://blogcraft.pythonanywhere.com/blog/attendance-calculator/',
-  'personal-portfolio': 'https://blogcraft.pythonanywhere.com/blog/portfolio/',
-  'dental-experts': 'https://blogcraft.pythonanywhere.com/blog/dentalexperts/',
-  'cipher-apparel': 'https://blogcraft.pythonanywhere.com/blog/cipherapparel/',
-  'Blogsite': 'https://blogcraft.pythonanywhere.com/blog/blogcraft/'
-};
-
-const LIVE_URLS = {
-  'Porfolio': 'https://drgurumoorthi-ap-commerce.vercel.app',
-  'Attendence and salary calculator': 'https://attendance-calculator-dashboard.vercel.app/',
-  'personal-portfolio': 'https://surya-cs-portfolio.vercel.app/',
-  'dental-experts': 'https://suryacs.pythonanywhere.com/',
-  'cipher-apparel': 'https://cipher-apperal.vercel.app/',
-  'Blogsite': 'https://blogcraft.pythonanywhere.com/'
-};
-
-const PROJECT_PRICES = {
-  'dental-experts': 9500,
-  'cipher-apparel': 8999,
-  'personal-portfolio': 5000,
-  'Attendence and salary calculator': 3500
-};
 
 export default function ProjectsSection() {
   const [projects, setProjects] = useState([]);
@@ -196,23 +172,23 @@ export default function ProjectsSection() {
                           </div>
                           
                           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
-                            <a href={project.view_details_url || VIEW_DETAILS_URLS[project.slug] || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }}>
+                            <a href={project.view_details_url || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }}>
                               View Details <ArrowRight size={14} />
                             </a>
-                            <a href={project.link || LIVE_URLS[project.slug] || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }}>
+                            <a href={project.link || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }}>
                               Live URL <ArrowRight size={14} />
                             </a>
                             {project.buyable && !['Blogsite', 'Porfolio'].includes(project.slug) && (
                               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                 <span className="projects__card-price" style={{ fontWeight: 'bold', color: 'var(--color-accent-primary)' }}>
-                                  ₹{Number(project.project_price || PROJECT_PRICES[project.slug] || 5000).toLocaleString('en-IN')}
+                                  ₹{Number(project.project_price || 5000).toLocaleString('en-IN')}
                                 </span>
                                 <button 
                                   className="projects__card-link"
                                   style={{ color: '#25D366', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
                                   onClick={(e) => {
                                     e.preventDefault();
-                                    setPaymentModalState({ isOpen: true, amount: Number(project.project_price || PROJECT_PRICES[project.slug] || 5000), projectName: project.title });
+                                    setPaymentModalState({ isOpen: true, amount: Number(project.project_price || 5000), projectName: project.title });
                                   }}
                                 >
                                   Buy Project <ArrowRight size={14} />
@@ -239,10 +215,10 @@ export default function ProjectsSection() {
                             ))}
                           </div>
                           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
-                            <a href={project.view_details_url || VIEW_DETAILS_URLS[project.slug] || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }}>
+                            <a href={project.view_details_url || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }}>
                               View Details <ArrowRight size={14} />
                             </a>
-                            <a href={project.link || LIVE_URLS[project.slug] || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }}>
+                            <a href={project.link || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }}>
                               Live URL <ArrowRight size={14} />
                             </a>
                           </div>
