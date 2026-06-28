@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { label: 'Home', href: '/#hero' },
   { label: 'About', href: '/#about' },
   { label: 'Projects', href: '/#projects' },
+  { label: 'Jarvis AI', href: 'https://jarvis-official.vercel.app/' },
   { label: 'Resume', href: '/resume' },
   { label: 'Calculator', href: '/#calculator' },
   { label: 'Reviews', href: '/#testimonials' },
