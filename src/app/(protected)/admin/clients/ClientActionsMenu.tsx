@@ -2,18 +2,12 @@
 
 import { useState } from 'react';
 import { MoreVertical, Trash2 } from 'lucide-react';
-import { createBrowserClient } from '@supabase/ssr';
 import { useRouter } from 'next/navigation';
 
 export default function ClientActionsMenu({ clientId }: { clientId: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
-
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
 
   const handleDelete = async () => {
     if (!confirm('Are you sure you want to completely remove this client and all their data? This action cannot be undone.')) {
@@ -22,12 +16,15 @@ export default function ClientActionsMenu({ clientId }: { clientId: string }) {
 
     setIsDeleting(true);
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', clientId);
+      const res = await fetch(`/api/admin/clients/${clientId}`, {
+        method: 'DELETE',
+      });
 
-      if (error) throw error;
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to delete client');
+      }
       
       router.refresh();
     } catch (err: any) {
