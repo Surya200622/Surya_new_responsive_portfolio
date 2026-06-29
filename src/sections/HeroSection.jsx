@@ -186,17 +186,7 @@ export default function HeroSection() {
         </div>
       </motion.div>
 
-      {/* Scroll Indicator */}
-      <motion.div
-        className="hero__scroll"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 1 }}
-        onClick={() => scrollToSection('#about')}
-      >
-        <span>Scroll</span>
-        <div className="hero__scroll-line" />
-      </motion.div>
+
     </section>
   );
 }
