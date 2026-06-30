@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Sun, Moon, Menu, X, LogOut, Settings, LayoutDashboard } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
@@ -20,7 +20,7 @@ export default function Navbar({ theme, toggleTheme }) {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [lastScroll, setLastScroll] = useState(0);
+  const lastScrollRef = useRef(0);
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
@@ -60,10 +60,21 @@ export default function Navbar({ theme, toggleTheme }) {
 
   const handleScroll = useCallback(() => {
     const current = window.scrollY;
-    setScrolled(current > 50);
-    setHidden(current > 300 && current > lastScroll);
-    setLastScroll(current);
-  }, [lastScroll]);
+    
+    setScrolled(prev => {
+      const isScrolled = current > 50;
+      if (prev !== isScrolled) return isScrolled;
+      return prev;
+    });
+    
+    if (current > lastScrollRef.current && current > 300) {
+      setHidden(true); // Scrolling down past 300px
+    } else if (current < lastScrollRef.current) {
+      setHidden(false); // Scrolling up
+    }
+    
+    lastScrollRef.current = current;
+  }, []);
 
   useEffect(() => {
     setMounted(true);

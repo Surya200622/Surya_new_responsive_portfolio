@@ -1,20 +1,28 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useState, useRef } from 'react';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
 
 export default function MagicCursor() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
+  // Use MotionValues to track mouse coordinates without re-rendering
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+
+  // Smooth out the ring movement with a spring
+  const springConfig = { damping: 25, stiffness: 400, mass: 0.5 };
+  const cursorXSpring = useSpring(cursorX, springConfig);
+  const cursorYSpring = useSpring(cursorY, springConfig);
+
   useEffect(() => {
     setIsMounted(true);
-    // Check if device has a fine pointer (mouse) instead of coarse (touch)
     if (window.matchMedia('(pointer: coarse)').matches) return;
 
     const updateMousePosition = (e) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
     };
 
     const handleMouseOver = (e) => {
@@ -31,62 +39,37 @@ export default function MagicCursor() {
       }
     };
 
-    window.addEventListener('mousemove', updateMousePosition);
-    window.addEventListener('mouseover', handleMouseOver);
+    window.addEventListener('mousemove', updateMousePosition, { passive: true });
+    window.addEventListener('mouseover', handleMouseOver, { passive: true });
 
     return () => {
       window.removeEventListener('mousemove', updateMousePosition);
       window.removeEventListener('mouseover', handleMouseOver);
     };
-  }, []);
+  }, [cursorX, cursorY]);
 
-  // Hide on touch devices or during SSR
   if (!isMounted) return null;
   if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
     return null;
   }
 
-  const variants = {
-    default: {
-      x: mousePosition.x - 16,
-      y: mousePosition.y - 16,
-      scale: 1,
-      backgroundColor: 'transparent',
-      border: '2px solid var(--color-accent-primary)',
-      opacity: 0.5,
-    },
-    hover: {
-      x: mousePosition.x - 24,
-      y: mousePosition.y - 24,
-      scale: 1.5,
-      backgroundColor: 'var(--color-accent-primary)',
-      border: '2px solid transparent',
-      opacity: 0.2,
-      mixBlendMode: 'difference'
-    }
-  };
-
-  const dotVariants = {
-    default: {
-      x: mousePosition.x - 4,
-      y: mousePosition.y - 4,
-      opacity: 1,
-    },
-    hover: {
-      x: mousePosition.x - 4,
-      y: mousePosition.y - 4,
-      opacity: 0,
-    }
-  };
-
   return (
     <>
       <motion.div
         className="magic-cursor-ring"
-        variants={variants}
-        animate={isHovering ? 'hover' : 'default'}
+        animate={{
+          scale: isHovering ? 1.5 : 1,
+          backgroundColor: isHovering ? 'var(--color-accent-primary)' : 'transparent',
+          border: isHovering ? '2px solid transparent' : '2px solid var(--color-accent-primary)',
+          opacity: isHovering ? 0.2 : 0.5,
+          mixBlendMode: isHovering ? 'difference' : 'normal'
+        }}
         transition={{ type: 'tween', ease: 'backOut', duration: 0.15 }}
         style={{
+          x: cursorXSpring,
+          y: cursorYSpring,
+          translateX: '-50%',
+          translateY: '-50%',
           position: 'fixed',
           top: 0,
           left: 0,
@@ -99,10 +82,15 @@ export default function MagicCursor() {
       />
       <motion.div
         className="magic-cursor-dot"
-        variants={dotVariants}
-        animate={isHovering ? 'hover' : 'default'}
+        animate={{
+          opacity: isHovering ? 0 : 1,
+        }}
         transition={{ type: 'tween', ease: 'linear', duration: 0 }}
         style={{
+          x: cursorX,
+          y: cursorY,
+          translateX: '-50%',
+          translateY: '-50%',
           position: 'fixed',
           top: 0,
           left: 0,

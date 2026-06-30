@@ -29,23 +29,30 @@ export default function AdminOverviewPage() {
   useEffect(() => {
     async function loadData() {
       try {
-        const { count: cc } = await supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'client');
-        const { count: pc } = await supabase.from('projects').select('*', { count: 'exact', head: true }).neq('status', 'Completed').neq('status', 'Cancelled');
-        const { count: uc } = await supabase.from('messages').select('*', { count: 'exact', head: true }).eq('is_read', false);
+        const { data: { session } } = await supabase.auth.getSession();
+        const userId = session?.user?.id;
 
-        const { data: revenueData } = await supabase
-          .from('quotations')
-          .select('total')
-          .in('status', ['accepted', 'advance_paid', 'fully_paid']);
-          
+        const [
+          { count: cc },
+          { count: pc },
+          { count: uc },
+          { data: revenueData },
+          { data: clients }
+        ] = await Promise.all([
+          supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'client'),
+          supabase.from('projects').select('*', { count: 'exact', head: true })
+            .neq('status', 'Completed')
+            .neq('status', 'Cancelled')
+            .neq('status', 'completed')
+            .neq('status', 'cancelled'),
+          supabase.from('messages').select('*', { count: 'exact', head: true })
+            .eq('is_read', false)
+            .eq('receiver_id', userId || ''),
+          supabase.from('quotations').select('total').in('status', ['accepted', 'advance_paid', 'fully_paid']),
+          supabase.from('profiles').select('*').eq('role', 'client').order('created_at', { ascending: false }).limit(5)
+        ]);
+
         const totalRev = revenueData?.reduce((sum, q) => sum + (Number(q.total) || 0), 0) || 0;
-
-        const { data: clients } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('role', 'client')
-          .order('created_at', { ascending: false })
-          .limit(5);
 
         setClientCount(cc || 0);
         setProjectCount(pc || 0);

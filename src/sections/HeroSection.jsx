@@ -4,7 +4,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { ArrowRight, Briefcase, Heart, Award } from 'lucide-react';
-import { useMousePosition } from '../hooks/useMousePosition';
 import MorphingBrackets from '../components/MorphingBrackets';
 import './HeroSection.css';
 
@@ -38,7 +37,6 @@ export default function HeroSection() {
   const sectionRef = useRef(null);
   const bgRef = useRef(null);
   const portraitRef = useRef(null);
-  const mouse = useMousePosition();
 
   // Parallax on scroll
   useGSAP(() => {
@@ -67,11 +65,36 @@ export default function HeroSection() {
     });
   }, { scope: sectionRef });
 
-  // Mouse parallax for portrait
-  const portraitX = mouse.normalizedX * 12;
-  const portraitY = mouse.normalizedY * 8;
-  const portraitRotateY = mouse.normalizedX * 3;
-  const portraitRotateX = -mouse.normalizedY * 3;
+  // Mouse parallax for portrait using direct DOM mutation to prevent React re-renders
+  useEffect(() => {
+    let animationFrameId;
+    
+    const handleMouseMove = (e) => {
+      if (!portraitRef.current) return;
+      
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      
+      animationFrameId = requestAnimationFrame(() => {
+        const normalizedX = (e.clientX / window.innerWidth - 0.5) * 2;
+        const normalizedY = (e.clientY / window.innerHeight - 0.5) * 2;
+        
+        const portraitX = normalizedX * 12;
+        const portraitY = normalizedY * 8;
+        const portraitRotateY = normalizedX * 3;
+        const portraitRotateX = -normalizedY * 3;
+        
+        portraitRef.current.style.transform = `translate3d(${portraitX}px, ${portraitY}px, 0) rotateY(${portraitRotateY}deg) rotateX(${portraitRotateX}deg)`;
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
 
   const scrollToSection = (id) => {
     const el = document.querySelector(id);
@@ -111,7 +134,6 @@ export default function HeroSection() {
             className="hero__portrait-wrapper"
             ref={portraitRef}
             style={{
-              transform: `translate3d(${portraitX}px, ${portraitY}px, 0) rotateY(${portraitRotateY}deg) rotateX(${portraitRotateX}deg)`,
               transition: 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)',
             }}
           >
