@@ -6,6 +6,9 @@ export async function middleware(request: NextRequest) {
   // Update session and get the base response
   const response = await updateSession(request);
 
+  // Add SEO Link header to help search engines easily find the sitemap
+  response.headers.set('Link', '<https://suryacs.is-a.dev/sitemap.xml>; rel="sitemap"');
+
   // Simple auth check for route protection
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -54,6 +57,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
+    // Ignore api, _next/static, _next/image, favicon.ico, sitemap.xml, robots.txt and all static images
+    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp|pdf)$).*)',
   ],
 };
