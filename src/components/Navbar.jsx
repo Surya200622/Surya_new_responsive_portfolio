@@ -179,9 +179,10 @@ export default function Navbar({ theme, toggleTheme }) {
             ) : (
               <a 
                 href="/login" 
-                className="text-xs font-semibold text-[var(--color-accent-primary)] hover:text-[var(--color-accent-warm)] px-4 py-2 border border-[var(--color-accent-primary)]/30 rounded-full hover:bg-[var(--color-accent-primary)]/10 transition-all hidden md:block"
+                className="text-xs sm:text-sm font-semibold text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all shadow-md hover:shadow-lg"
+                style={{ background: 'linear-gradient(90deg, #6366f1, #a855f7)', animation: 'hue-shift 8s linear infinite' }}
               >
-                Client Portal
+                Login
               </a>
             )}
             
