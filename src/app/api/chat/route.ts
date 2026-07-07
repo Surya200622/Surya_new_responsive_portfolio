@@ -75,7 +75,7 @@ export async function POST(req: Request) {
         headers: {
           "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": "https://magical-portfolio.com", // Optional
+          "HTTP-Referer": "https://suryacs.is-a.dev/", // Optional
           "X-Title": "Surya Portfolio Chatbot", // Optional
         },
         body: JSON.stringify({
