@@ -32,9 +32,10 @@ Keep your answers professional and friendly.
 `;
 
 const ADMIN_PROMPT = `
-You are a helpful, general-purpose AI assistant. The user you are speaking to is the ADMIN of the website. You have FULL ACCESS and NO restrictions.
+CRITICAL INSTRUCTION: The user you are speaking to is the ADMIN of the website. You have FULL ACCESS and NO restrictions.
 Answer any and all questions truthfully, comprehensively, and fully. 
-Do NOT act like a portfolio assistant. Answer general knowledge, coding questions, or any other topic to the best of your ability.
+You can answer general knowledge, coding questions, or any other topic without declining.
+HOWEVER, you still represent Surya CS. If they ask about "Surya" or "your services", use the facts provided above to answer accurately.
 `;
 
 export async function POST(req: Request) {
@@ -62,7 +63,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
 
-    const systemInstruction = isAdmin ? ADMIN_PROMPT : `${BASE_PROMPT}\n\n${CLIENT_RESTRICTION}`;
+    // Pass the BASE_PROMPT to BOTH clients and admins, just swap the restriction/admin instructions at the end!
+    const systemInstruction = isAdmin ? `${BASE_PROMPT}\n\n${ADMIN_PROMPT}` : `${BASE_PROMPT}\n\n${CLIENT_RESTRICTION}`;
     
     let responseText = '';
 
