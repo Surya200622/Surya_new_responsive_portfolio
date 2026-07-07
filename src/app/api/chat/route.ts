@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
 import { createClient } from '@/lib/supabase/server';
 
-// Initialize the Groq API client
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || '' });
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || '';
 
 const BASE_PROMPT = `
 You are Surya CS's friendly, professional AI assistant for his portfolio website.
@@ -54,26 +54,58 @@ export async function POST(req: Request) {
     let responseText = '';
 
     try {
-      if (!process.env.GROQ_API_KEY) throw new Error('Groq API Key not configured');
-      
-      const chatCompletion = await groq.chat.completions.create({
-        messages: [
-          { role: 'system', content: systemInstruction },
-          { role: 'user', content: message }
-        ],
-        model: 'llama-3.1-8b-instant',
+      // First try OpenRouter API
+      const openRouterRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": "https://magical-portfolio.com", // Optional
+          "X-Title": "Surya Portfolio Chatbot", // Optional
+        },
+        body: JSON.stringify({
+          "model": "meta-llama/llama-3.1-8b-instruct:free",
+          "messages": [
+            { role: 'system', content: systemInstruction },
+            { role: 'user', content: message }
+          ]
+        })
       });
       
-      responseText = chatCompletion.choices[0]?.message?.content || '';
-      
-    } catch (groqError: any) {
-      console.error('Groq API Error:', groqError.message);
-      
-      if (groqError.message && groqError.message.includes('429')) {
-        return NextResponse.json({ error: 'The AI is currently experiencing high demand. Please try again in a few moments.' }, { status: 429 });
+      if (!openRouterRes.ok) {
+        const errText = await openRouterRes.text();
+        console.error('OpenRouter API Error:', errText);
+        throw new Error(`OpenRouter API failed with status ${openRouterRes.status}`);
       }
+
+      const openRouterData = await openRouterRes.json();
+      responseText = openRouterData.choices?.[0]?.message?.content || '';
       
-      throw groqError;
+    } catch (openRouterError: any) {
+      console.warn('OpenRouter failed, falling back to Groq:', openRouterError.message);
+      
+      // Fallback to Groq API
+      try {
+        if (!process.env.GROQ_API_KEY) throw new Error('Groq API Key not configured and OpenRouter failed');
+        
+        const chatCompletion = await groq.chat.completions.create({
+          messages: [
+            { role: 'system', content: systemInstruction },
+            { role: 'user', content: message }
+          ],
+          model: 'llama-3.1-8b-instant',
+        });
+        
+        responseText = chatCompletion.choices[0]?.message?.content || '';
+      } catch (groqError: any) {
+        console.error('Groq API Error:', groqError.message);
+        
+        if (groqError.message && groqError.message.includes('429')) {
+          return NextResponse.json({ error: 'The AI is currently experiencing high demand. Please try again in a few moments.' }, { status: 429 });
+        }
+        
+        throw groqError;
+      }
     }
 
     return NextResponse.json({ reply: responseText });

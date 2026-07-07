@@ -60,6 +60,7 @@ export default function ChatbotWidget() {
       {/* Floating Toggle Button */}
       <motion.button
         className="chatbot-toggle"
+        aria-label="Toggle Chatbot"
         onClick={() => setIsOpen(true)}
         initial={{ scale: 0 }}
         animate={{ scale: isOpen ? 0 : 1 }}
