@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, ArrowRight } from 'lucide-react';
+import { X, Sparkles, ArrowRight, Loader2 } from 'lucide-react';
 import './JarvisAdPopup.css';
 
 export default function JarvisAdPopup() {
   const [isOpen, setIsOpen] = useState(false);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
 
   useEffect(() => {
     // Check if the user has already seen the popup in this session
@@ -52,15 +53,31 @@ export default function JarvisAdPopup() {
               </p>
               
               <div className="jarvis-popup-actions">
-                <a 
-                  href="https://jarvis-official.vercel.app/" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="jarvis-popup-btn primary"
-                  onClick={handleClose}
-                >
-                  Try it now <ArrowRight size={16} />
-                </a>
+                <div style={{ position: 'relative', width: '100%', height: '167px', borderRadius: '12px', overflow: 'hidden' }}>
+                  {!iframeLoaded && (
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255, 255, 255, 0.05)' }}>
+                      <Loader2 className="jarvis-popup-spinner" size={24} color="#a855f7" />
+                    </div>
+                  )}
+                  <iframe 
+                    onLoad={() => setIframeLoaded(true)}
+                    frameBorder="0" 
+                    src="https://itch.io/embed/4712303?linkback=true&amp;bg_color=e2e8f3&amp;fg_color=27a7f7&amp;link_color=27a7f7" 
+                    width="100%" 
+                    height="167"
+                    style={{ 
+                      borderRadius: '12px', 
+                      border: 'none', 
+                      opacity: iframeLoaded ? 1 : 0, 
+                      transition: 'opacity 0.5s ease',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0
+                    }}
+                  >
+                    <a href="https://surya-cs.itch.io/jarvis">Jarvis by surya-cs</a>
+                  </iframe>
+                </div>
                 <button className="jarvis-popup-btn secondary" onClick={handleClose}>
                   Maybe later
                 </button>
