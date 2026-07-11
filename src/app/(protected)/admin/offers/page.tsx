@@ -6,11 +6,7 @@ import { Tag, Send, Upload, Loader2, X, Edit2, Trash2 } from 'lucide-react';
 
 import { PROJECT_TYPES } from '@/data/calculatorData';
 
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Admin - Offers | Surya CS',
-};
 
 
 interface Offer {

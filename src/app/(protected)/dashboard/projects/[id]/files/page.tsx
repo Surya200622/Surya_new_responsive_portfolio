@@ -5,11 +5,7 @@ import { Upload, File, Image as ImageIcon, X, Loader2, Folder } from 'lucide-rea
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Dashboard - Projects - Files | Surya CS',
-};
 
 
 export default function ProjectFilesPage({ params }: { params: { id: string } }) {

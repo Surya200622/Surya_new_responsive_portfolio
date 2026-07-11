@@ -5,11 +5,7 @@ import { createBrowserClient } from '@supabase/ssr';
 import { Plus, Edit2, Trash2, Loader2, Save, X, ExternalLink, Image as ImageIcon } from 'lucide-react';
 import { z } from 'zod';
 
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Admin - Projects | Surya CS',
-};
 
 
 const projectSchema = z.object({

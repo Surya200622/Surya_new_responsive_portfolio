@@ -7,11 +7,7 @@ import { User, Mail, Building, Phone, Lock, Loader2, ArrowRight, CheckCircle2, E
 import { z } from 'zod';
 import { registerSchema, type RegisterInput } from '@/lib/validations/auth';
 
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Register | Surya CS',
-};
 
 
 export default function RegisterPage() {

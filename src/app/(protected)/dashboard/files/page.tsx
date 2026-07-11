@@ -4,11 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
 import { FileText, UploadCloud, Download, Trash2, Loader2, File, Image, FileArchive, X } from 'lucide-react';
 
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Dashboard - Files | Surya CS',
-};
 
 
 interface UploadedFile {

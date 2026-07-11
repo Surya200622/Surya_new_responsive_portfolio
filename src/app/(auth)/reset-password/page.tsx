@@ -7,11 +7,7 @@ import { Lock, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 import { resetPasswordSchema, type ResetPasswordInput } from '@/lib/validations/auth';
 
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Reset Password | Surya CS',
-};
 
 
 export default function ResetPasswordPage() {

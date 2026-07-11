@@ -8,11 +8,7 @@ import { Mail, Lock, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 import { loginSchema, type LoginInput } from '@/lib/validations/auth';
 
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Login | Surya CS',
-};
 
 
 export default function LoginPage() {

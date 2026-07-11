@@ -6,11 +6,7 @@ import { createBrowserClient } from '@supabase/ssr';
 import ChatWindow from '@/components/chat/ChatWindow';
 import { MessageSquare, Search, ArrowLeft } from 'lucide-react';
 
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Admin - Messages | Surya CS',
-};
 
 
 interface ClientProfile {

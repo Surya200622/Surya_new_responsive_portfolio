@@ -8,11 +8,7 @@ import { Mail, Lock, Loader2, ArrowRight, ShieldAlert, Eye, EyeOff } from 'lucid
 import { z } from 'zod';
 import { loginSchema, type LoginInput } from '@/lib/validations/auth';
 
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Admin - Login | Surya CS',
-};
 
 
 export default function AdminLoginPage() {

@@ -5,11 +5,7 @@ import Link from 'next/link';
 import { createBrowserClient } from '@supabase/ssr';
 import { Users, Briefcase, MessageSquare, IndianRupee } from 'lucide-react';
 
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Admin | Surya CS',
-};
 
 
 interface Client {
