@@ -5,6 +5,13 @@ import { notFound } from 'next/navigation';
 import ClientProjectsTable from './ClientProjectsTable';
 import ClientQuotationsTable from './ClientQuotationsTable';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Admin - Clients | Surya CS',
+};
+
+
 interface ClientDetailPageProps {
   params: Promise<{ id: string }>;
 }

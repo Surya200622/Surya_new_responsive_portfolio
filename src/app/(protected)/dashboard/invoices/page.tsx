@@ -2,6 +2,13 @@ import { FileText, Download, CheckCircle, Clock } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Dashboard - Invoices | Surya CS',
+};
+
+
 export default async function ClientInvoicesPage() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();

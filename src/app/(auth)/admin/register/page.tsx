@@ -5,6 +5,13 @@ import Link from 'next/link';
 import { createBrowserClient } from '@supabase/ssr';
 import { User, Mail, Lock, Loader2, ArrowRight, ShieldAlert, KeyRound, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Admin - Register | Surya CS',
+};
+
+
 export default function AdminRegisterPage() {
   const [formData, setFormData] = useState({
     fullName: '', email: '', password: '', secretKey: ''

@@ -1,6 +1,13 @@
 import { createClient } from '@/lib/supabase/server';
 import { User, Building, Phone, Lock, Save } from 'lucide-react';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Dashboard - Settings | Surya CS',
+};
+
+
 export default async function ClientSettingsPage() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();

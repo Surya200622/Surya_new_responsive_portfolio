@@ -5,6 +5,13 @@ import { useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 import { Star, Save, AlertCircle } from 'lucide-react';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Dashboard - Reviews | Surya CS',
+};
+
+
 export default function ReviewsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);

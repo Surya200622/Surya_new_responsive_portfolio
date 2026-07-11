@@ -7,6 +7,13 @@ import { Mail, Loader2, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { z } from 'zod';
 import { forgotPasswordSchema, type ForgotPasswordInput } from '@/lib/validations/auth';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Forgot Password | Surya CS',
+};
+
+
 export default function ForgotPasswordPage() {
   const [formData, setFormData] = useState<ForgotPasswordInput>({ email: '' });
   const [error, setError] = useState('');

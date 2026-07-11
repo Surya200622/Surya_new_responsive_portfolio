@@ -3,6 +3,13 @@ import { Search, Mail, Phone } from 'lucide-react';
 import Link from 'next/link';
 import ClientActionsMenu from './ClientActionsMenu';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Admin - Clients | Surya CS',
+};
+
+
 export default async function AdminClientsPage() {
   const supabase = createClient();
 

@@ -50,6 +50,42 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Update document title based on visible section
+  useEffect(() => {
+    const titles = {
+      hero: 'Surya CS | Full-Stack Python Developer',
+      projects: 'Portfolio | Surya CS',
+      offers: 'Special Offers | Surya CS',
+      calculator: 'Project Cost Calculator | Surya CS',
+      about: 'About Me | Surya CS',
+      process: 'Process | Surya CS',
+      techstack: 'Tech Stack | Surya CS',
+      skills: 'Skills | Surya CS',
+      testimonials: 'Testimonials | Surya CS',
+      contact: 'Contact | Surya CS'
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            if (titles[entry.target.id]) {
+              document.title = titles[entry.target.id];
+            }
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    const sections = document.querySelectorAll('section[id]');
+    sections.forEach((section) => observer.observe(section));
+
+    return () => {
+      sections.forEach((section) => observer.unobserve(section));
+    };
+  }, []);
+
   return (
     <>
       <JarvisAdPopup />

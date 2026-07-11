@@ -6,6 +6,13 @@ import { useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 import { ArrowRight, Briefcase, Clock, CheckCircle2, MessageSquare, Folder } from 'lucide-react';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Dashboard | Surya CS',
+};
+
+
 interface Project {
   id: string;
   project_name: string;

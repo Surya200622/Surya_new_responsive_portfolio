@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Sun, Moon, Menu, X, LogOut, Settings, LayoutDashboard } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
+import { motion } from 'framer-motion';
 import './Navbar.css';
 
 const NAV_LINKS = [
@@ -25,6 +26,9 @@ export default function Navbar({ theme, toggleTheme }) {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
+
+  const pathname = usePathname();
 
   useEffect(() => {
     const supabase = createBrowserClient(
@@ -82,6 +86,31 @@ export default function Navbar({ theme, toggleTheme }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
+  useEffect(() => {
+    if (pathname !== '/') {
+      setActiveSection('');
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    setTimeout(() => {
+      const sections = document.querySelectorAll('section[id]');
+      sections.forEach((section) => observer.observe(section));
+    }, 100);
+
+    return () => observer.disconnect();
+  }, [pathname]);
+
   const router = useRouter();
 
   const scrollTo = (href) => {
@@ -129,14 +158,28 @@ export default function Navbar({ theme, toggleTheme }) {
                   </a>
                 );
               }
+              const isHash = link.href.startsWith('/#');
+              const isActive = isHash 
+                ? (pathname === '/' && activeSection === link.href.substring(2))
+                : pathname === link.href;
+
               return (
                 <a
                   key={link.href}
-                  className="navbar__link"
+                  className={`navbar__link ${isActive ? 'navbar__link--active' : ''}`}
                   onClick={() => scrollTo(link.href)}
                   tabIndex={0}
+                  style={{ position: 'relative' }}
                 >
                   {link.label}
+                  {isActive && (
+                    <motion.div
+                      layoutId="navbar-underline"
+                      className="navbar__active-underline"
+                      initial={false}
+                      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                    />
+                  )}
                 </a>
               );
             })}
@@ -234,10 +277,15 @@ export default function Navbar({ theme, toggleTheme }) {
                 </a>
               );
             }
+            const isHash = link.href.startsWith('/#');
+            const isActive = isHash 
+              ? (pathname === '/' && activeSection === link.href.substring(2))
+              : pathname === link.href;
+
             return (
               <a
                 key={link.href}
-                className="navbar__mobile-link"
+                className={`navbar__mobile-link ${isActive ? 'navbar__link--active' : ''}`}
                 onClick={() => scrollTo(link.href)}
                 tabIndex={0}
               >

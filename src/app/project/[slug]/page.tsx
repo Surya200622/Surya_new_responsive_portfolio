@@ -4,6 +4,40 @@ import { notFound } from 'next/navigation'
 import { PROJECT_TYPES } from '../../../data/calculatorData'
 import { ArrowLeft, ExternalLink, Calendar, Tag } from 'lucide-react'
 import Link from 'next/link'
+import type { Metadata } from 'next'
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const cookieStore = cookies()
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value
+        },
+      },
+    }
+  )
+
+  const { data: project } = await supabase
+    .from('portfolio_projects')
+    .select('title, description')
+    .eq('slug', params.slug)
+    .single()
+
+  if (!project) {
+    return {
+      title: 'Project Not Found | Surya CS'
+    }
+  }
+
+  return {
+    title: `${project.title} | Surya CS`,
+    description: project.description?.substring(0, 160) || 'Project details',
+  }
+}
+
 
 export default async function ProjectDetailPage({ params }: { params: { slug: string } }) {
   const cookieStore = cookies()

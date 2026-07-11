@@ -2,6 +2,13 @@ import { createClient } from '@/lib/supabase/server';
 import { Briefcase, Folder, Clock, Calendar } from 'lucide-react';
 import Link from 'next/link';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Dashboard - Projects | Surya CS',
+};
+
+
 export default async function ClientProjectsPage() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();

@@ -6,6 +6,13 @@ import { notFound } from 'next/navigation';
 import ProjectStatusUpdater from './ProjectStatusUpdater';
 import DownloadQuotationButton from '@/components/pdf/DownloadQuotationButton';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Admin - Projects | Surya CS',
+};
+
+
 interface ProjectDetailPageProps {
   params: Promise<{ id: string }>;
 }

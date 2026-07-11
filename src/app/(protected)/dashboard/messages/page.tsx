@@ -2,6 +2,13 @@ import { createClient } from '@/lib/supabase/server';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import ChatWindow from '@/components/chat/ChatWindow';
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Dashboard - Messages | Surya CS',
+};
+
+
 export default async function ClientMessagesPage() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
