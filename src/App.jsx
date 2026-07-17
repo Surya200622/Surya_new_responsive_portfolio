@@ -15,7 +15,6 @@ const ProcessSection = lazy(() => import('./sections/ProcessSection'));
 const SkillsSection = lazy(() => import('./sections/SkillsSection'));
 const ProjectsSection = lazy(() => import('./sections/ProjectsSection'));
 const OffersSection = lazy(() => import('./sections/OffersSection'));
-const TechStackSection = lazy(() => import('./sections/TechStackSection'));
 const CalculatorSection = lazy(() => import('./sections/CalculatorSection'));
 const TestimonialsSection = lazy(() => import('./sections/TestimonialsSection'));
 const ContactSection = lazy(() => import('./sections/ContactSection'));
@@ -58,7 +57,6 @@ export default function App() {
       calculator: 'Project Cost Calculator | Surya CS',
       about: 'About Me | Surya CS',
       process: 'Process | Surya CS',
-      techstack: 'Tech Stack | Surya CS',
       skills: 'Skills | Surya CS',
       testimonials: 'Testimonials | Surya CS',
       contact: 'Contact | Surya CS'
@@ -122,11 +120,7 @@ export default function App() {
 
         <div className="section-divider" />
 
-        <Suspense fallback={<SectionLoader />}>
-          <TechStackSection />
-        </Suspense>
 
-        <div className="section-divider" />
 
         <Suspense fallback={<SectionLoader />}>
           <TestimonialsSection />
