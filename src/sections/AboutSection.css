@@ -353,7 +353,7 @@
 
 .about__timeline-item {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   gap: var(--space-xl);
   align-items: center;
   opacity: 0;

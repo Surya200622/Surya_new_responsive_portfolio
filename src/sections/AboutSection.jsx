@@ -122,128 +122,53 @@ export default function AboutSection() {
     if (timelineItems) {
       const mm = gsap.matchMedia();
 
-      // ===== DESKTOP: full parallax + bidirectional scroll =====
+      // ===== DESKTOP: Timeline animation with left/right slide-in =====
       mm.add('(min-width: 969px)', () => {
         timelineItems.forEach((item, idx) => {
           const isLeft = idx % 2 === 0;
-          const parallaxWrapper = item.querySelector('.about__timeline-parallax');
           const card = item.querySelector('.about__timeline-card');
           const dot = item.querySelector('.about__timeline-dot');
           const yearEl = item.querySelector('.about__timeline-year');
-          const center = item.querySelector('.about__timeline-center');
 
-          // --- Layer 1: Parallax depth on wrapper (continuous, scrub-based) ---
-          // Each item moves at a different speed for multi-layer depth
-          if (parallaxWrapper) {
-            gsap.fromTo(parallaxWrapper,
-              { y: 60 + (idx * 15) },
-              {
-                y: -(30 + (idx * 10)),
-                ease: 'none',
-                scrollTrigger: {
-                  trigger: item,
-                  start: 'top bottom',
-                  end: 'bottom top',
-                  scrub: true,
-                },
-              }
-            );
+          // Reset the CSS initial state so we can control it entirely with GSAP
+          gsap.set(item, { opacity: 1, y: 0 });
+          
+          if (card) {
+            gsap.set(card, { x: isLeft ? -100 : 100, opacity: 0, rotateY: isLeft ? -15 : 15, scale: 0.9 });
+          }
+          if (dot) {
+            gsap.set(dot, { scale: 0, opacity: 0 });
+          }
+          if (yearEl) {
+            gsap.set(yearEl, { opacity: 0, y: 20 });
           }
 
-          // Center column (dot + year) parallax at a different rate
-          if (center) {
-            gsap.fromTo(center,
-              { y: 40 },
-              {
-                y: -20,
-                ease: 'none',
-                scrollTrigger: {
-                  trigger: item,
-                  start: 'top bottom',
-                  end: 'bottom top',
-                  scrub: true,
-                },
-              }
-            );
-          }
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: item,
+              start: 'top 80%',
+              toggleActions: 'play none none reverse',
+            }
+          });
 
-          // --- Layer 2: Entry/exit animations (play forward + reverse on scroll) ---
-          // Card slides in from its side with 3D rotation
-          gsap.fromTo(card,
-            {
-              x: isLeft ? -120 : 120,
-              opacity: 0,
-              rotateY: isLeft ? -15 : 15,
-              scale: 0.85,
-            },
-            {
+          if (dot) {
+            tl.to(dot, { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(2)' });
+          }
+          
+          if (yearEl) {
+            tl.to(yearEl, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, '-=0.3');
+          }
+          
+          if (card) {
+            tl.to(card, {
               x: 0,
               opacity: 1,
               rotateY: 0,
               scale: 1,
-              duration: 1,
+              duration: 0.8,
               ease: 'power3.out',
-              scrollTrigger: {
-                trigger: item,
-                start: 'top 85%',
-                end: 'top 50%',
-                scrub: 1.5,
-              },
-            }
-          );
-
-          // Dot pops in with scale
-          if (dot) {
-            gsap.fromTo(dot,
-              { scale: 0, opacity: 0 },
-              {
-                scale: 1,
-                opacity: 1,
-                duration: 0.5,
-                ease: 'back.out(3)',
-                scrollTrigger: {
-                  trigger: item,
-                  start: 'top 80%',
-                  end: 'top 60%',
-                  scrub: 1,
-                },
-              }
-            );
+            }, '-=0.3');
           }
-
-          // Year label fades up
-          if (yearEl) {
-            gsap.fromTo(yearEl,
-              { opacity: 0, scale: 0.5 },
-              {
-                opacity: 1,
-                scale: 1,
-                duration: 0.5,
-                ease: 'power2.out',
-                scrollTrigger: {
-                  trigger: item,
-                  start: 'top 78%',
-                  end: 'top 58%',
-                  scrub: 1,
-                },
-              }
-            );
-          }
-
-          // Parent item itself fades in
-          gsap.fromTo(item,
-            { opacity: 0 },
-            {
-              opacity: 1,
-              duration: 0.3,
-              scrollTrigger: {
-                trigger: item,
-                start: 'top 90%',
-                end: 'top 70%',
-                scrub: 1,
-              },
-            }
-          );
         });
       });
 
