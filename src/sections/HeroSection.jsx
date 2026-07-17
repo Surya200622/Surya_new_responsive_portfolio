@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { ArrowRight, Briefcase, Heart, Award } from 'lucide-react';
 import MorphingBrackets from '../components/MorphingBrackets';
+import JarvisAdBanner from '../components/JarvisAdBanner';
 import './HeroSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -115,6 +116,11 @@ export default function HeroSection() {
       </div>
       <div className="hero__bg-overlay" />
       <div className="hero__bg-vignette" />
+      
+      <div className="hero__ad-banner">
+        <JarvisAdBanner />
+      </div>
+
       <MorphingBrackets />
 
       {/* Gradient Orbs */}

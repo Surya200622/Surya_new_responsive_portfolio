@@ -61,6 +61,14 @@
   z-index: 2;
 }
 
+.hero__ad-banner {
+  position: absolute;
+  top: 72px; /* Sits right below the fixed navbar */
+  left: 0;
+  width: 100%;
+  z-index: 20;
+}
+
 /* Content */
 .hero__content {
   position: relative;

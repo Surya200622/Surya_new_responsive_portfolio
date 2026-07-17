@@ -6,7 +6,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useTheme } from './hooks/useTheme';
 import Navbar from './components/Navbar';
 import HeroSection from './sections/HeroSection';
-import JarvisAdPopup from './components/JarvisAdPopup';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -88,7 +87,6 @@ export default function App() {
 
   return (
     <>
-      <JarvisAdPopup />
       <Navbar theme={theme} toggleTheme={toggleTheme} />
 
       <main>
