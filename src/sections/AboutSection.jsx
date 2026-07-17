@@ -146,8 +146,8 @@ export default function AboutSection() {
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: item,
-              start: 'top 80%',
-              toggleActions: 'play none none reverse',
+              start: 'top 85%', // match mobile start
+              toggleActions: 'play reverse play reverse',
             }
           });
 
