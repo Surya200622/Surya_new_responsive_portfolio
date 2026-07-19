@@ -56,24 +56,6 @@ export default function TestimonialsSection() {
           What Clients <span className="text-gradient">Say</span>
         </motion.h2>
 
-        <motion.div
-          className="testimonials__founder"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="testimonials__founder-content">
-            <div className="testimonials__founder-quote">
-              "I don't just build websites — I craft digital experiences. Every project I deliver combines beautiful design with powerful functionality."
-            </div>
-            <div className="testimonials__founder-name">Surya CS</div>
-            <div className="testimonials__founder-role">Full-Stack Python Developer</div>
-          </div>
-          <div className="testimonials__founder-image">
-            <img src="/images/WhatsApp Image 2026-06-14 at 8.25.27 PM.jpeg" alt="Surya — Founder" loading="lazy" />
-          </div>
-        </motion.div>
 
         {/* Testimonial Cards */}
         {reviews.length < 4 ? (
