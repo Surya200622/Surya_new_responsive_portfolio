@@ -208,6 +208,12 @@
   min-width: 0;
 }
 
+@media (min-width: 1024px) {
+  .hero__text {
+    margin-top: 60px;
+  }
+}
+
 .hero__label {
   font-family: var(--font-body);
   font-size: var(--text-sm);
