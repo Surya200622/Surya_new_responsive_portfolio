@@ -106,12 +106,13 @@ export default function ResumePage() {
                   <h4>CipherApparel — Django</h4>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <span className="date">2025</span>
-                    <a href="https://cipherapparel.pythonanywhere.com" target="_blank" rel="noreferrer" className="project-link"><ExternalLink size={14} /></a>
+                    <a href="https://github.com/Surya200622/CipherApparel" target="_blank" rel="noreferrer" className="project-link"><GithubIcon size={14} /></a>
+                    <a href="https://cipher-apparel.vercel.app" target="_blank" rel="noreferrer" className="project-link"><ExternalLink size={14} /></a>
                   </div>
                 </div>
                 <ul className="experience-list">
                   <li>Built a responsive fashion e-commerce platform with Django, featuring secure user authentication, dynamic product listings, offers management, and seamless Python backend integration.</li>
-                  <li>Deployed live on PythonAnywhere.</li>
+                  <li>Deployed live on Vercel.</li>
                 </ul>
               </div>
 

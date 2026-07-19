@@ -23,7 +23,7 @@ export const PROJECTS = [
     image: '/images/Cipherapparel.png',
     tech: ['Python', 'Django', 'JavaScript', 'Bootstrap', 'PostgreSQL'],
     year: '2025',
-    link: 'https://cipherapparel.pythonanywhere.com',
+    link: 'https://cipher-apparel.vercel.app',
   },
   {
     id: 'personal-portfolio',
