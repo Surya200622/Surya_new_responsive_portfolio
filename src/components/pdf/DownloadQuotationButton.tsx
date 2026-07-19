@@ -69,7 +69,7 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(100, 100, 100);
-      doc.text('Email: cssurya2006@gmail.com', pageWidth - margin, startY, { align: 'right' });
+      doc.text('Email: suryacs.is.a.dev@gmail.com', pageWidth - margin, startY, { align: 'right' });
       doc.text('Phone: +91 8220443165', pageWidth - margin, startY + 6, { align: 'right' });
       doc.text('Website: https://suryacs.is-a.dev/', pageWidth - margin, startY + 12, { align: 'right' });
 

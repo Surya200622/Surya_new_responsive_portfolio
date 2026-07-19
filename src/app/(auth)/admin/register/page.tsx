@@ -34,7 +34,7 @@ export default function AdminRegisterPage() {
     const newErrors: Record<string, string> = {};
     if (!formData.fullName) newErrors.fullName = 'Name is required';
     if (!formData.email) newErrors.email = 'Email is required';
-    if (formData.email !== 'cssurya2006@gmail.com') newErrors.email = 'Unauthorized admin email address';
+    if (formData.email !== 'suryacs.is.a.dev@gmail.com') newErrors.email = 'Unauthorized admin email address';
     if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
     if (formData.secretKey !== 'SURYA_ADMIN_SECURE') newErrors.secretKey = 'Invalid admin secret key';
 

@@ -38,7 +38,7 @@ export default function AdminLoginPage() {
       const validData = loginSchema.parse(formData);
 
       // Enforce the specific admin email
-      if (validData.email !== 'cssurya2006@gmail.com') {
+      if (validData.email !== 'suryacs.is.a.dev@gmail.com') {
         throw new Error('Unauthorized admin email. Only the master admin can log in here.');
       }
 

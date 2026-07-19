@@ -113,7 +113,7 @@ export const SOCIAL_LINKS = [
 ];
 
 export const CONTACT_INFO = {
-  email: 'cssurya2006@gmail.com',
+  email: 'suryacs.is.a.dev@gmail.com',
   whatsapp: '+918220443165',
   location: 'Coimbatore, Tamil Nadu, India',
 };

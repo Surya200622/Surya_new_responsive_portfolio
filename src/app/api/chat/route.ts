@@ -20,7 +20,7 @@ CRITICAL FACTS ABOUT SURYA:
   4. Database Design (MySQL)
   5. API Development & Integration
 
-Contact info: cssurya2006@gmail.com
+Contact info: suryacs.is.a.dev@gmail.com
 `;
 
 const CLIENT_RESTRICTION = `

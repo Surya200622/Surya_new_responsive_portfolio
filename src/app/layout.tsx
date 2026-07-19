@@ -88,7 +88,7 @@ export default function RootLayout({
                 jobTitle: 'Full-Stack Python Developer',
                 description:
                   'B.COM.CA graduate from Sri Ramakrishna College of Arts & Science. IBM & ITC trained in Python Pandas & NumPy. Django & React Specialist.',
-                email: 'cssurya2006@gmail.com',
+                email: 'suryacs.is.a.dev@gmail.com',
                 telephone: '+918220443165',
                 address: {
                   '@type': 'PostalAddress',

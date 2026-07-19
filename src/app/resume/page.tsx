@@ -43,7 +43,7 @@ export default function ResumePage() {
             <h2 className="resume-title">Full-Stack Python Developer</h2>
             
             <div className="contact-info">
-              <a href="mailto:cssurya2006@gmail.com"><Mail size={16} /> cssurya2006@gmail.com</a>
+              <a href="mailto:suryacs.is.a.dev@gmail.com"><Mail size={16} /> suryacs.is.a.dev@gmail.com</a>
               <a href="tel:+918220443165"><Phone size={16} /> +91 8220443165</a>
               <span><MapPin size={16} /> Coimbatore, India</span>
             </div>
@@ -55,7 +55,7 @@ export default function ResumePage() {
             </div>
           </div>
           <div className="resume-header-image">
-            <img src="/images/surya-portrait.jpg" alt="Surya CS" loading="lazy" />
+            <img src="/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png" alt="Surya CS" loading="lazy" />
           </div>
         </header>
 
