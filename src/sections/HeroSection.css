@@ -78,8 +78,7 @@
   gap: clamp(2rem, 5vw, 6rem);
   max-width: var(--max-width);
   width: 100%;
-  padding: 0 var(--container-padding);
-  padding-top: 110px;
+  padding: 110px var(--container-padding) 100px;
 }
 
 /* Portrait Side */
