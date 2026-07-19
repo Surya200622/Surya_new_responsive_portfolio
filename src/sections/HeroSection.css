@@ -27,8 +27,8 @@
 }
 
 [data-theme="light"] .hero__bg-img {
-  opacity: 0.2;
-  filter: brightness(0.7) saturate(0.6);
+  opacity: 0.4;
+  filter: brightness(0.9) saturate(0.8);
 }
 
 .hero__bg-overlay {
@@ -48,8 +48,8 @@
   background: linear-gradient(
     180deg,
     var(--color-bg-primary) 0%,
-    rgba(250, 248, 245, 0.5) 30%,
-    rgba(250, 248, 245, 0.5) 70%,
+    rgba(250, 248, 245, 0.3) 30%,
+    rgba(250, 248, 245, 0.3) 70%,
     var(--color-bg-primary) 100%
   );
 }
@@ -93,7 +93,7 @@
 .hero__portrait-wrapper {
   position: relative;
   width: clamp(260px, 25vw, 400px);
-  height: clamp(320px, 30vw, 500px);
+  aspect-ratio: 3 / 4;
   border-radius: var(--radius-xl);
   overflow: hidden;
   will-change: transform;

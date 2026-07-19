@@ -59,16 +59,16 @@ export default function ForgotPasswordPage() {
 
   if (isSuccess) {
     return (
-      <div className="glass-card-strong p-8 rounded-2xl w-full text-center">
-        <div className="w-16 h-16 bg-[var(--color-accent-primary)]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+      <div className="w-full text-center py-8">
+        <div className="w-16 h-16 bg-[var(--color-accent-primary)]/10 border border-[var(--color-accent-primary)]/20 rounded-full flex items-center justify-center mx-auto mb-6">
           <CheckCircle2 className="h-8 w-8 text-[var(--color-accent-primary)]" />
         </div>
         <h2 className="text-2xl font-display font-bold text-white mb-3">Check your email</h2>
-        <p className="text-[var(--color-text-muted)] text-sm mb-8">
+        <p className="text-[var(--color-text-muted)] text-sm mb-8 leading-relaxed">
           If an account exists for <span className="text-white font-medium">{formData.email}</span>, 
           you will receive a password reset link shortly.
         </p>
-        <Link href="/login" className="btn btn--glass w-full justify-center">
+        <Link href="/login" className="btn btn--primary w-full justify-center">
           Return to sign in
         </Link>
       </div>
@@ -76,11 +76,11 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="glass-card-strong p-8 rounded-2xl w-full shadow-2xl relative">
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] rounded-t-2xl" />
+    <div className="w-full">
+
       
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-display font-bold text-white mb-2">Reset Password</h1>
+        <h1 className="text-2xl font-display font-bold text-[var(--color-text-primary)] mb-2">Reset Password</h1>
         <p className="text-[var(--color-text-muted)] text-sm">Enter your email to receive a reset link</p>
       </div>
 
@@ -119,7 +119,7 @@ export default function ForgotPasswordPage() {
       </form>
 
       <div className="mt-6 text-center">
-        <Link href="/login" className="inline-flex items-center gap-2 text-sm text-[var(--color-text-muted)] hover:text-white transition-colors">
+        <Link href="/login" className="inline-flex items-center gap-2 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors">
           <ArrowLeft className="h-4 w-4" /> Back to sign in
         </Link>
       </div>

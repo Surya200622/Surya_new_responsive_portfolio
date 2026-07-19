@@ -79,11 +79,11 @@ export default function LoginPage() {
     };
 
     return (
-      <div className="glass-card-strong p-8 rounded-2xl w-full shadow-2xl relative">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] rounded-t-2xl" />
+      <div className="w-full">
+
         
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-display font-bold text-white mb-2">Welcome Back</h1>
+          <h1 className="text-3xl font-display font-bold text-[var(--color-text-primary)] mb-2">Welcome Back</h1>
           <p className="text-[var(--color-text-muted)] text-sm">Sign in to access your client portal</p>
         </div>
 
@@ -135,7 +135,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-4 flex items-center text-[var(--color-text-muted)] hover:text-white transition-colors"
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
@@ -164,7 +164,7 @@ export default function LoginPage() {
               <div className="w-full border-t border-[var(--color-glass-border)]"></div>
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-[#0a0a0f] px-2 text-[var(--color-text-muted)]">Or continue with</span>
+              <span className="bg-[var(--color-bg-primary)] px-2 text-[var(--color-text-muted)]">Or continue with</span>
             </div>
           </div>
           
@@ -172,7 +172,7 @@ export default function LoginPage() {
             <button
               onClick={handleGoogleLogin}
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-[var(--color-glass-border)] rounded-xl text-sm font-medium text-white hover:bg-white/5 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-accent-primary)] focus:ring-offset-[#0a0a0f]"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-[var(--color-glass-border)] rounded-xl text-sm font-medium text-[var(--color-text-primary)] hover:bg-[var(--color-bg-card-hover)] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-accent-primary)] focus:ring-offset-[var(--color-bg-primary)]"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -195,7 +195,7 @@ export default function LoginPage() {
         </p>
         
         <div className="pt-4 border-t border-[var(--color-glass-border)]">
-          <Link href="/admin/login" className="text-xs text-[var(--color-text-secondary)] hover:text-white transition-colors">
+          <Link href="/admin/login" className="text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
             Admin Login &rarr;
           </Link>
         </div>

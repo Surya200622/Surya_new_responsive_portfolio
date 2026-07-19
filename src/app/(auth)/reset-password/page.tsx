@@ -57,11 +57,10 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="glass-card-strong p-8 rounded-2xl w-full shadow-2xl relative">
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] rounded-t-2xl" />
+    <div className="w-full">
       
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-display font-bold text-white mb-2">Create New Password</h1>
+        <h1 className="text-2xl font-display font-bold text-[var(--color-text-primary)] mb-2">Create New Password</h1>
         <p className="text-[var(--color-text-muted)] text-sm">Please enter your new password below</p>
       </div>
 
@@ -89,7 +88,7 @@ export default function ResetPasswordPage() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 pr-4 flex items-center text-[var(--color-text-muted)] hover:text-white transition-colors"
+              className="absolute inset-y-0 right-0 pr-4 flex items-center text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
@@ -114,7 +113,7 @@ export default function ResetPasswordPage() {
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute inset-y-0 right-0 pr-4 flex items-center text-[var(--color-text-muted)] hover:text-white transition-colors"
+              className="absolute inset-y-0 right-0 pr-4 flex items-center text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
             >
               {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>

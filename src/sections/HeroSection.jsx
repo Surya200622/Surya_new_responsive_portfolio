@@ -107,7 +107,7 @@ export default function HeroSection() {
       {/* Background */}
       <div className="hero__bg" ref={bgRef}>
         <img
-          src="/images/surya-cinematic.jpg"
+          src="/images/Gemini_Generated_Image_z7lt8hz7lt8hz7lt.png"
           alt=""
           className="hero__bg-img"
           loading="eager"
@@ -144,7 +144,7 @@ export default function HeroSection() {
             }}
           >
             <img
-              src="/images/surya-portrait.jpg"
+              src="/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png"
               alt="Surya CS — Full-Stack Python Developer"
               className="hero__portrait-img"
               loading="eager"

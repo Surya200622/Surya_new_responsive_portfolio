@@ -85,16 +85,16 @@ export default function RegisterPage() {
 
   if (isSuccess) {
     return (
-      <div className="glass-card-strong p-8 rounded-2xl w-full text-center">
-        <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+      <div className="w-full text-center py-8">
+        <div className="w-16 h-16 bg-green-500/10 border border-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
           <CheckCircle2 className="h-8 w-8 text-green-500" />
         </div>
         <h2 className="text-2xl font-display font-bold text-white mb-3">Check your email</h2>
-        <p className="text-[var(--color-text-muted)] text-sm mb-6">
+        <p className="text-[var(--color-text-muted)] text-sm mb-8 leading-relaxed">
           We've sent a verification link to <span className="text-white font-medium">{formData.email}</span>. 
           Please verify your email to access the client portal.
         </p>
-        <Link href="/login" className="text-[var(--color-accent-primary)] hover:text-[var(--color-accent-warm)] text-sm font-medium transition-colors">
+        <Link href="/login" className="btn btn--primary w-full justify-center">
           Return to sign in
         </Link>
       </div>
@@ -102,11 +102,11 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="glass-card-strong p-8 rounded-2xl w-full shadow-2xl relative max-h-[85vh] overflow-y-auto custom-scrollbar">
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] rounded-t-2xl" />
+    <div className="w-full">
+
       
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-display font-bold text-white mb-2">Create Account</h1>
+        <h1 className="text-3xl font-display font-bold text-[var(--color-text-primary)] mb-2">Create Account</h1>
         <p className="text-[var(--color-text-muted)] text-sm">Set up your client portal access</p>
       </div>
 
@@ -162,7 +162,7 @@ export default function RegisterPage() {
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><Lock className="h-3.5 w-3.5 text-[var(--color-text-muted)]" /></div>
               <input type={showPassword ? 'text' : 'password'} className={`auth-input pl-9 pr-9 py-2.5 text-sm ${errors.password ? 'border-red-500/50' : ''}`} placeholder="••••••••" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} disabled={isLoading} />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--color-text-muted)] hover:text-white transition-colors">
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors">
                 {showPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
               </button>
             </div>
@@ -174,7 +174,7 @@ export default function RegisterPage() {
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><Lock className="h-3.5 w-3.5 text-[var(--color-text-muted)]" /></div>
               <input type={showConfirmPassword ? 'text' : 'password'} className={`auth-input pl-9 pr-9 py-2.5 text-sm ${errors.confirmPassword ? 'border-red-500/50' : ''}`} placeholder="••••••••" value={formData.confirmPassword} onChange={e => setFormData({...formData, confirmPassword: e.target.value})} disabled={isLoading} />
-              <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--color-text-muted)] hover:text-white transition-colors">
+              <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors">
                 {showConfirmPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
               </button>
             </div>
@@ -193,7 +193,7 @@ export default function RegisterPage() {
             <div className="w-full border-t border-[var(--color-glass-border)]"></div>
           </div>
           <div className="relative flex justify-center text-[10px]">
-            <span className="bg-[#0a0a0f] px-2 text-[var(--color-text-muted)] uppercase tracking-wider">Or continue with</span>
+            <span className="bg-[var(--color-bg-primary)] px-2 text-[var(--color-text-muted)] uppercase tracking-wider">Or continue with</span>
           </div>
         </div>
         
@@ -214,7 +214,7 @@ export default function RegisterPage() {
               }
             }}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-[var(--color-glass-border)] rounded-xl text-sm font-medium text-white hover:bg-white/5 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-accent-primary)] focus:ring-offset-[#0a0a0f]"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 border border-[var(--color-glass-border)] rounded-xl text-sm font-medium text-[var(--color-text-primary)] hover:bg-[var(--color-bg-card-hover)] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-accent-primary)] focus:ring-offset-[var(--color-bg-primary)]"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
