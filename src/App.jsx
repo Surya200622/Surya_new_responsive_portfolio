@@ -56,13 +56,13 @@ export default function App() {
     checkCalculatorSetting();
   }, []);
 
-  // Refresh ScrollTrigger on dynamic content load
+  // Refresh ScrollTrigger on dynamic content load & when calculator visibility changes
   useEffect(() => {
     const timer = setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 500);
+      ScrollTrigger.refresh(true);
+    }, 600);
     return () => clearTimeout(timer);
-  }, []);
+  }, [calculatorEnabled]);
 
   // Update document title based on visible section
   useEffect(() => {
