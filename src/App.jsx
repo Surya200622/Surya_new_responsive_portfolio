@@ -1,6 +1,6 @@
 'use client';
 
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useTheme } from './hooks/useTheme';
@@ -39,6 +39,22 @@ function SectionLoader() {
 
 export default function App() {
   const { theme, toggleTheme } = useTheme();
+  const [calculatorEnabled, setCalculatorEnabled] = useState(true);
+
+  // Fetch calculator visibility setting
+  useEffect(() => {
+    async function checkCalculatorSetting() {
+      try {
+        const res = await fetch('/api/admin/settings?key=calculator_enabled');
+        const data = await res.json();
+        setCalculatorEnabled(data.value === true || data.value === 'true');
+      } catch {
+        // Default to showing calculator if fetch fails
+        setCalculatorEnabled(true);
+      }
+    }
+    checkCalculatorSetting();
+  }, []);
 
   // Refresh ScrollTrigger on dynamic content load
   useEffect(() => {
@@ -102,11 +118,15 @@ export default function App() {
 
         <div className="section-divider" />
 
-        <Suspense fallback={<SectionLoader />}>
-          <CalculatorSection />
-        </Suspense>
+        {calculatorEnabled && (
+          <>
+            <Suspense fallback={<SectionLoader />}>
+              <CalculatorSection />
+            </Suspense>
 
-        <div className="section-divider" />
+            <div className="section-divider" />
+          </>
+        )}
 
         <Suspense fallback={<SectionLoader />}>
           <AboutSection />

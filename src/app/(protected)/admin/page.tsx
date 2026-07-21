@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createBrowserClient } from '@supabase/ssr';
-import { Users, Briefcase, MessageSquare, IndianRupee } from 'lucide-react';
+import { Users, Briefcase, MessageSquare, IndianRupee, Calculator, Loader2 } from 'lucide-react';
 
 
 
@@ -23,6 +23,8 @@ export default function AdminOverviewPage() {
   const [revenue, setRevenue] = useState(0);
   const [recentClients, setRecentClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
+  const [calculatorEnabled, setCalculatorEnabled] = useState(true);
+  const [calculatorToggling, setCalculatorToggling] = useState(false);
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -62,6 +64,15 @@ export default function AdminOverviewPage() {
         setUnreadCount(uc || 0);
         setRevenue(totalRev);
         if (clients) setRecentClients(clients);
+
+        // Fetch calculator toggle state
+        try {
+          const res = await fetch('/api/admin/settings?key=calculator_enabled');
+          const settingData = await res.json();
+          setCalculatorEnabled(settingData.value === true || settingData.value === 'true');
+        } catch {
+          console.warn('Failed to fetch calculator setting');
+        }
       } catch (e) {
         console.warn('Admin data load error:', e);
       }
@@ -119,6 +130,56 @@ export default function AdminOverviewPage() {
             <p className="text-sm text-[var(--color-text-secondary)] font-medium">Revenue (Est)</p>
           </div>
           <h3 className="text-3xl font-display font-bold text-[var(--color-text-primary)]">₹{revenue.toLocaleString('en-IN')}</h3>
+        </div>
+      </div>
+
+      {/* Site Controls */}
+      <div className="glass-card-strong p-6 rounded-2xl border border-[var(--color-glass-border)]">
+        <h2 className="text-lg font-display font-bold text-[var(--color-text-primary)] mb-5">Site Controls</h2>
+        <div className="flex items-center justify-between p-4 rounded-xl bg-[var(--color-bg-glass)] border border-[var(--color-glass-border)] group hover:border-[var(--color-accent-primary)]/30 transition-all">
+          <div className="flex items-center gap-4">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-300 ${calculatorEnabled ? 'bg-emerald-500/20' : 'bg-red-500/20'}`}>
+              <Calculator className={`w-5 h-5 transition-colors duration-300 ${calculatorEnabled ? 'text-emerald-400' : 'text-red-400'}`} />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-[var(--color-text-primary)]">Pricing Calculator</p>
+              <p className="text-xs text-[var(--color-text-muted)] mt-0.5">
+                {calculatorEnabled ? 'Visible on the public site' : 'Hidden from the public site'}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={async () => {
+              setCalculatorToggling(true);
+              const newValue = !calculatorEnabled;
+              try {
+                const res = await fetch('/api/admin/settings', {
+                  method: 'PATCH',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ key: 'calculator_enabled', value: newValue }),
+                });
+                if (res.ok) {
+                  setCalculatorEnabled(newValue);
+                }
+              } catch (e) {
+                console.error('Toggle failed:', e);
+              }
+              setCalculatorToggling(false);
+            }}
+            disabled={calculatorToggling}
+            className="relative shrink-0 cursor-pointer disabled:cursor-wait"
+            aria-label={calculatorEnabled ? 'Disable pricing calculator' : 'Enable pricing calculator'}
+          >
+            {calculatorToggling ? (
+              <div className="w-[52px] h-[28px] flex items-center justify-center">
+                <Loader2 className="w-5 h-5 animate-spin text-[var(--color-text-muted)]" />
+              </div>
+            ) : (
+              <div className={`w-[52px] h-[28px] rounded-full transition-colors duration-300 ${calculatorEnabled ? 'bg-emerald-500' : 'bg-[var(--color-bg-tertiary)]'}`}>
+                <div className={`w-6 h-6 rounded-full bg-white shadow-lg transform transition-transform duration-300 mt-[2px] ${calculatorEnabled ? 'translate-x-[26px]' : 'translate-x-[2px]'}`} />
+              </div>
+            )}
+          </button>
         </div>
       </div>
 

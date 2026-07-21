@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Sun, Moon, Menu, X, LogOut, Settings, LayoutDashboard } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
@@ -27,6 +27,29 @@ export default function Navbar({ theme, toggleTheme }) {
   const [profile, setProfile] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const [calculatorEnabled, setCalculatorEnabled] = useState(true);
+
+  // Fetch calculator visibility setting
+  useEffect(() => {
+    async function checkCalculatorSetting() {
+      try {
+        const res = await fetch('/api/admin/settings?key=calculator_enabled');
+        const data = await res.json();
+        setCalculatorEnabled(data.value === true || data.value === 'true');
+      } catch {
+        setCalculatorEnabled(true);
+      }
+    }
+    checkCalculatorSetting();
+  }, []);
+
+  // Filter nav links based on settings
+  const filteredNavLinks = useMemo(() => {
+    return NAV_LINKS.filter(link => {
+      if (link.href === '/#calculator' && !calculatorEnabled) return false;
+      return true;
+    });
+  }, [calculatorEnabled]);
 
   const pathname = usePathname();
 
@@ -143,7 +166,7 @@ export default function Navbar({ theme, toggleTheme }) {
           </a>
 
           <div className="navbar__links">
-            {NAV_LINKS.map(link => {
+            {filteredNavLinks.map(link => {
               if (link.href.startsWith('http')) {
                 return (
                   <a
@@ -261,7 +284,7 @@ export default function Navbar({ theme, toggleTheme }) {
         </button>
 
         <div className="navbar__mobile-links">
-          {NAV_LINKS.map(link => {
+          {filteredNavLinks.map(link => {
             if (link.href.startsWith('http')) {
               return (
                 <a
