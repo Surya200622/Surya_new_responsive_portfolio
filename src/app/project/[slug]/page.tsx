@@ -114,9 +114,9 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
              {displayDesc.trim()}
            </p>
 
-           <div style={{ marginTop: '2.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-             {project.tech_array?.map((tech: string) => (
-               <span key={tech} style={{ 
+           <div className="flex flex-wrap gap-2 mb-8">
+            {project.techArray?.map((tech: string) => (
+              <span key={tech} style={{ 
                  background: 'var(--bg-tertiary)', 
                  padding: '0.4rem 1rem', 
                  borderRadius: '2rem', 

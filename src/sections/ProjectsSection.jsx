@@ -148,7 +148,7 @@ export default function ProjectsSection() {
                     onMouseMove={(e) => handleCardMouse(e, e.currentTarget)}
                     onMouseLeave={(e) => handleCardLeave(e.currentTarget)}
                   >
-                    {!project.hide_link ? (
+                    {!project.hideLink ? (
                       <div className="projects__card-inner" style={{ color: 'inherit' }}>
                         <div className="projects__card-image">
                           <img src={project.image} alt={project.title} loading="lazy" />
@@ -159,13 +159,13 @@ export default function ProjectsSection() {
                           <h3 className="projects__card-title">{project.title}</h3>
                           <p className="projects__card-desc">{project.description}</p>
                           <div className="projects__card-tech">
-                            {project.tech_array.map(t => (
+                            {(project.techArray || []).map(t => (
                               <span key={t} className="projects__card-tag">{t}</span>
                             ))}
                           </div>
                           
                           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
-                            <a href={project.view_details_url || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }}>
+                            <a href={project.viewDetailsUrl || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }}>
                               View Details <ArrowRight size={14} />
                             </a>
                             <a href={project.link || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }}>
@@ -174,14 +174,14 @@ export default function ProjectsSection() {
                             {project.buyable && !['Blogsite', 'Porfolio'].includes(project.slug) && (
                               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                 <span className="projects__card-price" style={{ fontWeight: 'bold', color: 'var(--color-accent-primary)' }}>
-                                  ₹{Number(project.project_price || 5000).toLocaleString('en-IN')}
+                                  ₹{Number(project.projectPrice || 5000).toLocaleString('en-IN')}
                                 </span>
                                 <button 
                                   className="projects__card-link"
                                   style={{ color: '#25D366', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
                                   onClick={(e) => {
                                     e.preventDefault();
-                                    setPaymentModalState({ isOpen: true, amount: Number(project.project_price || 5000), projectName: project.title });
+                                    setPaymentModalState({ isOpen: true, amount: Number(project.projectPrice || 5000), projectName: project.title });
                                   }}
                                 >
                                   Buy Project <ArrowRight size={14} />
@@ -203,12 +203,12 @@ export default function ProjectsSection() {
                           <h3 className="projects__card-title">{project.title}</h3>
                           <p className="projects__card-desc">{project.description}</p>
                           <div className="projects__card-tech">
-                            {project.tech_array.map(t => (
+                            {(project.techArray || []).map(t => (
                               <span key={t} className="projects__card-tag">{t}</span>
                             ))}
                           </div>
                           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
-                            <a href={project.view_details_url || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }}>
+                            <a href={project.viewDetailsUrl || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }}>
                               View Details <ArrowRight size={14} />
                             </a>
                             <a href={project.link || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }}>

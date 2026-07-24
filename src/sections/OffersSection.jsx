@@ -68,15 +68,15 @@ function OfferModal({ offer, isOpen, onClose, serviceQuery }) {
 
             {/* Scrollable Content */}
             <div className="offer-modal-body">
-              {offer.image_url && (
+              {offer.imageUrl && (
                 <div className="offer-modal-image">
-                  <img src={offer.image_url} alt={offer.title} />
+                  <img src={offer.imageUrl} alt={offer.title} />
                 </div>
               )}
 
-              {offer.discount_percentage > 0 && (
+              {offer.discountPercentage > 0 && (
                 <div className="offer-modal-badge">
-                  <Tag size={16} /> {offer.discount_percentage}% OFF
+                  <Tag size={16} /> {offer.discountPercentage}% OFF
                 </div>
               )}
 
@@ -91,7 +91,7 @@ function OfferModal({ offer, isOpen, onClose, serviceQuery }) {
               <div className="offer-modal-meta">
                 <div className="offer-modal-meta-item">
                   <Calendar size={16} />
-                  <span>Valid till {formatDate(offer.valid_until)}</span>
+                  <span>Valid till {formatDate(offer.validUntil)}</span>
                 </div>
               </div>
 
@@ -186,15 +186,15 @@ export default function OffersSection() {
               >
                 <div className="offer-card-glow" />
                 
-                {offer.image_url && (
+                {offer.imageUrl && (
                   <div className="offer-image-container">
-                    <img src={offer.image_url} alt={offer.title} className="offer-image" />
+                    <img src={offer.imageUrl} alt={offer.title} className="offer-image" />
                   </div>
                 )}
                 
-                {offer.discount_percentage > 0 && (
+                {offer.discountPercentage > 0 && (
                   <div className="offer-badge">
-                    <Tag size={14} /> {offer.discount_percentage}% OFF
+                    <Tag size={14} /> {offer.discountPercentage}% OFF
                   </div>
                 )}
                 
@@ -204,7 +204,7 @@ export default function OffersSection() {
                 <div className="offer-footer">
                   <div className="offer-expiry">
                     <Calendar size={14} />
-                    <span>Valid till {formatDate(offer.valid_until)}</span>
+                    <span>Valid till {formatDate(offer.validUntil)}</span>
                   </div>
                   
                   <button
