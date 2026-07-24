@@ -5,9 +5,9 @@ export function useTheme() {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('surya-portfolio-theme');
       if (stored) return stored;
-      return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
-    return 'dark';
+    return 'light';
   });
 
   useEffect(() => {
