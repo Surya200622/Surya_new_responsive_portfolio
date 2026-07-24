@@ -1,6 +1,8 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
   Building2, ShoppingCart, Palette, LayoutDashboard, Settings, Rocket,
   Brain, CalendarCheck, BookOpen, Users, Code, Shield, Database,
@@ -14,6 +16,8 @@ import {
 } from '../data/calculatorData';
 import PaymentModal from '../components/payment/PaymentModal';
 import './CalculatorSection.css';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const ICON_MAP = {
   Building2, ShoppingCart, Palette, LayoutDashboard, Settings, Rocket,
@@ -48,6 +52,16 @@ export default function CalculatorSection() {
 
   const [offers, setOffers] = useState([]);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+
+  // Refresh ScrollTrigger when calculator content expands/collapses
+  // so that animations in sections below (About, Timeline, etc.) recalculate correctly
+  useEffect(() => {
+    // Wait for framer-motion layout animations to finish before refreshing
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh(true);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [projectType]);
 
   useEffect(() => {
     async function fetchOffers() {
