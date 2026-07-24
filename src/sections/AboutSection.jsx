@@ -82,6 +82,68 @@ export default function AboutSection() {
     // Image clip-path reveal
     if (revealRef.current) {
       const revealContainer = revealRef.current.querySelector('.about__reveal-container');
+      
+      // Fade in up elements
+      const fadeElements = sectionRef.current?.querySelectorAll('.about__fade-in-up');
+      if (fadeElements) {
+        fadeElements.forEach((el) => {
+          gsap.fromTo(el,
+            { opacity: 0, y: 40 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.8,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: el,
+                start: 'top 85%',
+                toggleActions: 'play none none reverse',
+              },
+            }
+          );
+        });
+      }
+
+      // SVG path draw animations
+      const svgPaths = sectionRef.current?.querySelectorAll('.about__svg-draw path');
+      if (svgPaths) {
+        svgPaths.forEach((path) => {
+          const length = path.getTotalLength() || 300;
+          gsap.set(path, { strokeDasharray: length, strokeDashoffset: length, opacity: 0 });
+          gsap.to(path, {
+            strokeDashoffset: 0,
+            opacity: 1,
+            duration: 1.5,
+            ease: 'power2.inOut',
+            delay: 0.5,
+            scrollTrigger: {
+              trigger: path.closest('svg'),
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          });
+        });
+      }
+
+      // Stats animations
+      const statsElements = sectionRef.current?.querySelectorAll('.about__stat');
+      if (statsElements && statsElements.length > 0) {
+        gsap.fromTo(statsElements,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'power2.out',
+            stagger: 0.1,
+            scrollTrigger: {
+              trigger: statsElements[0].parentNode,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
       const symbolsBg = revealRef.current.querySelector('.about__reveal-symbols');
       
       if (revealContainer) {
@@ -300,44 +362,29 @@ export default function AboutSection() {
       <div className="container">
         {/* Intro */}
         <div className="about__intro">
-          <motion.div
-            className="about__section-label"
-            variants={fadeInUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-          >
+          <div className="about__section-label about__fade-in-up">
             <span className="about__section-label-line" />
             About Me
-          </motion.div>
+          </div>
 
-          <motion.h2
-            className="about__title"
-            variants={fadeInUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-          >
+          <h2 className="about__title about__fade-in-up">
             Crafting the Future of <span className="text-gradient" style={{ position: 'relative' }}>
               Web Experiences
-              <motion.svg 
+              <svg 
+                className="about__svg-draw"
                 width="120%" height="20" viewBox="0 0 200 20" 
                 style={{ position: 'absolute', bottom: '-10px', left: '-10%', zIndex: -1 }}
-                initial={{ pathLength: 0, opacity: 0 }}
-                whileInView={{ pathLength: 1, opacity: 1 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 1.5, ease: 'easeInOut', delay: 0.5 }}
               >
-                <motion.path 
+                <path 
                   d="M5,15 Q100,5 195,15" 
                   fill="none" 
                   stroke="var(--color-accent-primary)" 
                   strokeWidth="4" 
                   strokeLinecap="round" 
                 />
-              </motion.svg>
+              </svg>
             </span>
-          </motion.h2>
+          </h2>
         </div>
 
         {/* Story Grid */}
@@ -375,18 +422,11 @@ export default function AboutSection() {
           {STATS.map((stat, i) => {
             const IconComp = ICON_MAP[stat.icon] || Briefcase;
             return (
-              <motion.div
-                key={stat.label}
-                className="about__stat"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ delay: i * 0.1, duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-              >
+              <div key={stat.label} className="about__stat">
                 <div className="about__stat-icon"><IconComp size={28} /></div>
                 <div className="about__stat-value">{stat.value}</div>
                 <div className="about__stat-label">{stat.label}</div>
-              </motion.div>
+              </div>
             );
           })}
         </div>
@@ -395,16 +435,9 @@ export default function AboutSection() {
 
         {/* Timeline */}
         <div className="about__timeline" ref={timelineRef}>
-          <motion.h2
-            className="about__title"
-            style={{ textAlign: 'center', marginBottom: 'var(--space-3xl)' }}
-            variants={fadeInUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-          >
+          <h2 className="about__title about__fade-in-up" style={{ textAlign: 'center', marginBottom: 'var(--space-3xl)' }}>
             My <span className="text-gradient">Journey</span>
-          </motion.h2>
+          </h2>
 
           <div style={{ position: 'relative' }}>
             <div className="about__timeline-line" aria-hidden="true" />
@@ -433,16 +466,9 @@ export default function AboutSection() {
 
         {/* Skills */}
         <div className="about__skills" ref={skillsRef}>
-          <motion.h2
-            className="about__title"
-            style={{ textAlign: 'center', marginBottom: 'var(--space-3xl)' }}
-            variants={fadeInUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
+          <h2 className="about__title about__fade-in-up" style={{ textAlign: 'center', marginBottom: 'var(--space-3xl)' }}>
             My <span className="text-gradient">Skills</span>
-          </motion.h2>
+          </h2>
 
           <div className="about__skills-marquee">
             <div className="about__skills-track">
