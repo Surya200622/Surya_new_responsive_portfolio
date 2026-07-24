@@ -341,7 +341,7 @@ export default function ProtectedLayout({
       <aside className="w-64 glass-card-strong border-r border-[var(--color-glass-border)] hidden md:flex flex-col">
         <div className="p-6 border-b border-[var(--color-glass-border)]">
           <Link href="/" className="inline-block">
-            <img src="/logo.svg" alt="Surya CS Logo" style={{ height: '32px', width: 'auto' }} />
+            <img src="/logo.svg" alt="Surya CS Logo" className="theme-adaptive-logo" style={{ height: '32px', width: 'auto' }} />
           </Link>
           <div className="mt-2 text-xs text-[var(--color-text-muted)] font-medium tracking-wider uppercase">
             {isAdmin ? 'Admin Portal' : 'Client Portal'}
@@ -384,7 +384,7 @@ export default function ProtectedLayout({
             <div className="p-6 border-b border-[var(--color-glass-border)] flex items-center justify-between">
               <div>
                 <Link href="/" className="inline-block">
-                  <img src="/logo.svg" alt="Surya CS Logo" style={{ height: '32px', width: 'auto' }} />
+                  <img src="/logo.svg" alt="Surya CS Logo" className="theme-adaptive-logo" style={{ height: '32px', width: 'auto' }} />
                 </Link>
                 <div className="mt-2 text-xs text-[var(--color-text-muted)] font-medium tracking-wider uppercase">
                   {isAdmin ? 'Admin Portal' : 'Client Portal'}
@@ -436,7 +436,7 @@ export default function ProtectedLayout({
               <Menu className="w-6 h-6" />
             </button>
             <Link href="/" className="inline-block pt-1">
-              <img src="/logo.svg" alt="Surya CS Logo" style={{ height: '28px', width: 'auto' }} />
+              <img src="/logo.svg" alt="Surya CS Logo" className="theme-adaptive-logo" style={{ height: '28px', width: 'auto' }} />
             </Link>
           </div>
 

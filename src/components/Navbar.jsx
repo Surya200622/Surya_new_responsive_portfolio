@@ -162,7 +162,7 @@ export default function Navbar({ theme, toggleTheme }) {
       <nav className={`navbar${scrolled ? ' navbar--scrolled' : ''}${hidden ? ' navbar--hidden' : ''}`} role="navigation" aria-label="Main navigation">
         <div className="navbar__inner">
           <a className="navbar__logo flex items-center" onClick={() => scrollTo('#hero')} tabIndex={0} style={{ textDecoration: 'none' }}>
-            <img src="/logo.svg" alt="Surya CS Logo" style={{ height: '40px', width: 'auto' }} />
+            <img src="/logo.svg" alt="Surya CS Logo" className="theme-adaptive-logo" style={{ height: '40px', width: 'auto' }} />
           </a>
 
           <div className="navbar__links">

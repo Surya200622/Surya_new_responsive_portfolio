@@ -39,7 +39,7 @@ export default function FooterSection() {
         <div className="footer__content">
           <div className="footer__brand">
             <div className="footer__logo">
-              Surya CS<span className="footer__logo-dot">.</span>
+              <img src="/logo.svg" alt="Surya CS Logo" className="theme-adaptive-logo" style={{ height: '40px', width: 'auto' }} />
             </div>
             <p className="footer__brand-desc">
               Full-Stack Python Developer crafting modern web solutions with Django & React from Coimbatore, India.
