@@ -244,6 +244,10 @@
   animation: hue-shift 8s linear infinite !important;
 }
 
+[data-theme="light"] .theme-adaptive-logo {
+  filter: invert(1) hue-rotate(180deg);
+}
+
 /* ---------- CSS Reset ---------- */
 *,
 *::before,
