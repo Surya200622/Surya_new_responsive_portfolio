@@ -165,8 +165,11 @@ export default function ResumePage() {
               <div className="experience-item">
                 <div className="experience-header">
                   <h4>&quot;A Study on Web-Based Dental Appointment Booking System&quot;</h4>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <a href="https://www.ijsred.com/volume9/issue1/paper-details/IJSRED-V9I1P214.html" target="_blank" rel="noreferrer" className="project-link"><ExternalLink size={14} /></a>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}>
+                    <a href="https://www.ijsred.com/volume9/issue1/paper-details/IJSRED-V9I1P214.html" target="_blank" rel="noreferrer" className="project-link" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', color: 'var(--color-accent-primary)', fontSize: '0.9rem', fontWeight: 500 }}>
+                      <span>View Publication</span>
+                      <ExternalLink size={14} />
+                    </a>
                   </div>
                 </div>
                 <p>Published in IJSRED, Volume 9, Issue 1.</p>
