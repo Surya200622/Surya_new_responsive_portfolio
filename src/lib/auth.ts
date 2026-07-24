@@ -55,12 +55,27 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
         // @ts-ignore
         token.role = user.role;
       }
+
+      // On first sign-in via Google, the user object may not have 'role'
+      // Fetch it from the database to ensure it's always correct
+      if (token.id && !token.role) {
+        try {
+          const dbUsers = await db.select({ role: users.role }).from(users).where(eq(users.id, token.id as string));
+          if (dbUsers[0]) {
+            token.role = dbUsers[0].role || 'client';
+          }
+        } catch (e) {
+          console.error('Error fetching user role for JWT:', e);
+          token.role = 'client';
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {
@@ -68,7 +83,7 @@ export const authOptions: NextAuthOptions = {
         // @ts-ignore
         session.user.id = token.id as string;
         // @ts-ignore
-        session.user.role = token.role as string;
+        session.user.role = (token.role as string) || 'client';
       }
       return session;
     },
