@@ -72,7 +72,6 @@ export default function App() {
       offers: 'Special Offers | Surya CS',
       calculator: 'Project Cost Calculator | Surya CS',
       about: 'About Me | Surya CS',
-      process: 'Process | Surya CS',
       skills: 'Skills | Surya CS',
       testimonials: 'Testimonials | Surya CS',
       contact: 'Contact | Surya CS'
@@ -139,6 +138,8 @@ export default function App() {
         </Suspense>
 
         <div className="section-divider" />
+
+
 
 
 
