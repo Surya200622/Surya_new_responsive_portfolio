@@ -1,41 +1,22 @@
 'use client';
 
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useTheme } from './hooks/useTheme';
 import Navbar from './components/Navbar';
 import HeroSection from './sections/HeroSection';
+import AboutSection from './sections/AboutSection';
+import ProcessSection from './sections/ProcessSection';
+import SkillsSection from './sections/SkillsSection';     
+import ProjectsSection from './sections/ProjectsSection';
+import OffersSection from './sections/OffersSection';
+import CalculatorSection from './sections/CalculatorSection';
+import TestimonialsSection from './sections/TestimonialsSection';
+import ContactSection from './sections/ContactSection';
+import FooterSection from './sections/FooterSection';
 
 gsap.registerPlugin(ScrollTrigger);
-
-// Lazy load below-fold sections for performance
-const AboutSection = lazy(() => import('./sections/AboutSection'));
-const ProcessSection = lazy(() => import('./sections/ProcessSection'));
-const SkillsSection = lazy(() => import('./sections/SkillsSection'));
-const ProjectsSection = lazy(() => import('./sections/ProjectsSection'));
-const OffersSection = lazy(() => import('./sections/OffersSection'));
-const CalculatorSection = lazy(() => import('./sections/CalculatorSection'));
-const TestimonialsSection = lazy(() => import('./sections/TestimonialsSection'));
-const ContactSection = lazy(() => import('./sections/ContactSection'));
-const FooterSection = lazy(() => import('./sections/FooterSection'));
-
-function SectionLoader() {
-  return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '40vh',
-      color: 'var(--color-text-muted)',
-      fontFamily: 'var(--font-display)',
-      fontSize: 'var(--text-sm)',
-      letterSpacing: '0.1em',
-    }}>
-      Loading...
-    </div>
-  );
-}
 
 export default function App() {
   const { theme, toggleTheme } = useTheme();
@@ -105,58 +86,42 @@ export default function App() {
       <main>
         <HeroSection />
 
-        <Suspense fallback={<SectionLoader />}>
-          <ProjectsSection />
-        </Suspense>
+        <ProjectsSection />
 
         <div className="section-divider" />
 
-        <Suspense fallback={<SectionLoader />}>
-          <OffersSection />
-        </Suspense>
+        <OffersSection />
 
         <div className="section-divider" />
 
         {calculatorEnabled && (
           <>
-            <Suspense fallback={<SectionLoader />}>
-              <CalculatorSection />
-            </Suspense>
+            <CalculatorSection />
 
             <div className="section-divider" />
           </>
         )}
 
-        <Suspense fallback={<SectionLoader />}>
-          <AboutSection />
-        </Suspense>
+        <AboutSection />
 
         <div className="section-divider" />
 
-        <Suspense fallback={<SectionLoader />}>
-          <ProcessSection />
-        </Suspense>
+        <SkillsSection />
 
         <div className="section-divider" />
 
-
-
-
-
-        <Suspense fallback={<SectionLoader />}>
-          <TestimonialsSection />
-        </Suspense>
+        <ProcessSection />
 
         <div className="section-divider" />
 
-        <Suspense fallback={<SectionLoader />}>
-          <ContactSection />
-        </Suspense>
+        <TestimonialsSection />
+
+        <div className="section-divider" />
+
+        <ContactSection />
       </main>
 
-      <Suspense fallback={null}>
-        <FooterSection />
-      </Suspense>
+      <FooterSection />
     </>
   );
 }
