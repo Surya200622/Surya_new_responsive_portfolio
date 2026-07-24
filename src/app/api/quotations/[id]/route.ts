@@ -82,7 +82,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
       await resend.emails.send({
         from: `Portfolio System <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs.is-a.dev'}>`,
-        to: process.env.EMAIL_USER as string,
+        to: 'suryacs.is.a.dev@gmail.com',
         subject: `Quotation ${action === 'accept' ? 'Accepted' : 'Rejected'} by ${user.email}`,
         html: getBrandEmailTemplate(`Quotation ${action === 'accept' ? 'Accepted' : 'Rejected'}`, emailContent, 'Client Action Notification'),
       });
