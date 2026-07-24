@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { createBrowserClient } from '@supabase/ssr';
+import { signIn } from 'next-auth/react';
 import { User, Mail, Lock, Loader2, ArrowRight, ShieldAlert, KeyRound, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 
 
@@ -18,11 +18,6 @@ export default function AdminRegisterPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showSecretKey, setShowSecretKey] = useState(false);
-
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,19 +40,26 @@ export default function AdminRegisterPage() {
     }
 
     try {
-      const { error } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            full_name: formData.fullName,
-            role: 'admin', // This tells the updated SQL trigger to make them an admin
-          },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        }
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          email: formData.email,
+          password: formData.password,
+          secretKey: formData.secretKey
+        }),
       });
 
-      if (error) throw error;
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Registration failed');
+
+      // Sign the user in immediately
+      await signIn('credentials', {
+        redirect: false,
+        email: formData.email,
+        password: formData.password,
+      });
       
       setIsSuccess(true);
     } catch (error) {

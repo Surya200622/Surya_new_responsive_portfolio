@@ -1,6 +1,11 @@
-import { createClient } from '@/lib/supabase/server';
 import { Briefcase, Folder, Clock, Calendar } from 'lucide-react';
 import Link from 'next/link';
+import { db } from '@/db';
+import { projects } from '@/db/schema';
+import { eq, desc } from 'drizzle-orm';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 import type { Metadata } from 'next';
 
@@ -8,16 +13,21 @@ export const metadata: Metadata = {
   title: 'Dashboard - Projects | Surya CS',
 };
 
-
 export default async function ClientProjectsPage() {
-  const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const session = await getServerSession(authOptions);
 
-  const { data: projects } = await supabase
-    .from('projects')
-    .select('*')
-    .eq('client_id', user?.id)
-    .order('created_at', { ascending: false });
+  if (!session || !session.user) {
+    redirect('/login');
+  }
+
+  // @ts-ignore
+  const userId = session.user.id;
+
+  const userProjects = await db
+    .select()
+    .from(projects)
+    .where(eq(projects.clientId, userId))
+    .orderBy(desc(projects.createdAt));
 
   const getStatusColor = (status: string) => {
     const s = status.toLowerCase();
@@ -42,8 +52,8 @@ export default async function ClientProjectsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-        {projects && projects.length > 0 ? (
-          projects.map(project => (
+        {userProjects && userProjects.length > 0 ? (
+          userProjects.map(project => (
             <div key={project.id} className="glass-card-strong p-6 rounded-2xl border border-[var(--color-glass-border)] flex flex-col h-full group hover:border-[var(--color-accent-primary)]/50 transition-colors">
               <div className="flex justify-between items-start mb-4">
                 <div className="w-12 h-12 rounded-xl bg-[var(--color-bg-tertiary)] flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -54,21 +64,24 @@ export default async function ClientProjectsPage() {
                 </span>
               </div>
               
-              <h3 className="text-lg font-display font-bold text-[var(--color-text-primary)] mb-2">{project.project_name}</h3>
+              <h3 className="text-lg font-display font-bold text-[var(--color-text-primary)] mb-2">{project.title}</h3>
               <p className="text-sm text-[var(--color-text-secondary)] line-clamp-2 mb-4 flex-1">
                 {project.description || "No description provided."}
               </p>
 
-              {/* Progress Tracking */}
+              {/* Progress Tracking (Dummy for now as it's not in schema) */}
               <div className="mb-4">
                 <div className="flex justify-between items-center mb-1.5">
                   <span className="text-xs font-medium text-[var(--color-text-muted)]">Project Progress</span>
-                  <span className="text-xs font-bold text-[var(--color-accent-primary)]">{project.progress_percentage || 0}%</span>
+                  <span className="text-xs font-bold text-[var(--color-accent-primary)]">
+                    {project.status.toLowerCase().includes('completed') ? 100 : 
+                     project.status.toLowerCase().includes('development') ? 50 : 25}%
+                  </span>
                 </div>
                 <div className="h-2 w-full bg-[var(--color-bg-tertiary)] rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-[var(--color-accent-primary)] rounded-full transition-all duration-1000"
-                    style={{ width: `${project.progress_percentage || 0}%` }}
+                    style={{ width: `${project.status.toLowerCase().includes('completed') ? 100 : project.status.toLowerCase().includes('development') ? 50 : 25}%` }}
                   />
                 </div>
               </div>
@@ -83,7 +96,7 @@ export default async function ClientProjectsPage() {
                 <div className="flex items-center justify-between text-sm text-[var(--color-text-muted)]">
                   <div className="flex items-center gap-3">
                     <Calendar className="w-4 h-4 text-[var(--color-text-secondary)]" />
-                    <span>Created: {new Date(project.created_at).toLocaleDateString()}</span>
+                    <span>Created: {project.createdAt ? new Date(project.createdAt).toLocaleDateString() : 'Unknown'}</span>
                   </div>
                   <Link href={`/dashboard/projects/${project.id}/files`} className="text-[var(--color-accent-primary)] hover:underline text-xs font-medium">
                     View Files

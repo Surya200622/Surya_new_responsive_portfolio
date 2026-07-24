@@ -1,15 +1,17 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
-import { createAdminClient } from '@/lib/supabase/admin';
+import { db } from '@/db';
+import { quotations, projects } from '@/db/schema';
+import { eq } from 'drizzle-orm';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { Resend } from 'resend';
 import { getBrandEmailTemplate } from '@/lib/email-template';
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const session = await getServerSession(authOptions);
 
-    if (!user) {
+    if (!session || !session.user || !session.user.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -20,45 +22,33 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       return NextResponse.json({ error: 'Missing action or projectId' }, { status: 400 });
     }
 
-    const supabaseAdmin = createAdminClient();
-
     const newQuoteStatus = action === 'accept' ? 'accepted' : 'rejected';
 
-    // 1. Update quotation status
-    // Use admin client to bypass RLS, but verify the quotation belongs to this user first
-    const { data: quotation, error: fetchError } = await supabaseAdmin
-      .from('quotations')
-      .select('id, client_id')
-      .eq('id', id)
-      .single();
+    // 1. Fetch quotation to verify ownership
+    const quotationResults = await db.select().from(quotations).where(eq(quotations.id, id));
+    const quotation = quotationResults[0];
 
-    if (fetchError || !quotation) {
+    if (!quotation) {
       return NextResponse.json({ error: 'Quotation not found' }, { status: 404 });
     }
 
     // Verify ownership: the logged-in user must be the client on this quotation
-    if (quotation.client_id !== user.id) {
+    if (quotation.clientId !== session.user.id) {
       return NextResponse.json({ error: 'You do not have permission to modify this quotation' }, { status: 403 });
     }
 
-    const { error: quoteError } = await supabaseAdmin
-      .from('quotations')
-      .update({ status: newQuoteStatus })
-      .eq('id', id);
-
-    if (quoteError) {
-      console.error('Error updating quotation status:', quoteError);
-      return NextResponse.json({ error: `Failed to update quotation: ${quoteError.message}` }, { status: 500 });
-    }
+    // Update quotation status
+    await db.update(quotations)
+      .set({ status: newQuoteStatus })
+      .where(eq(quotations.id, id));
 
     // 2. If accepted, update the linked project status
     if (action === 'accept') {
-      const { error: projectError } = await supabaseAdmin
-        .from('projects')
-        .update({ status: 'Development Phase' })
-        .eq('id', projectId);
-
-      if (projectError) {
+      try {
+        await db.update(projects)
+          .set({ status: 'Development Phase' })
+          .where(eq(projects.id, projectId));
+      } catch (projectError) {
         console.error('Error updating project status:', projectError);
         // Don't fail the whole operation — the quotation was already updated
       }
@@ -66,26 +56,28 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
     // 3. Send notification to admin
     try {
-      const resend = new Resend(process.env.RESEND_API_KEY);
-      const emailContent = `
-        <h2 style="color: ${action === 'accept' ? '#22c55e' : '#ef4444'}; margin-bottom: 10px;">
-          Quotation ${action === 'accept' ? 'Accepted' : 'Rejected'}
-        </h2>
-        <p>The client (<strong>${user.email}</strong>) has ${action === 'accept' ? 'accepted' : 'rejected'} the quotation for Project ID: ${projectId}.</p>
-        
-        <div style="margin: 30px 0; text-align: center;">
-          <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev'}/admin/quotations" class="button">
-            View Quotation Details
-          </a>
-        </div>
-      `;
+      if (session.user.email) {
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        const emailContent = `
+          <h2 style="color: ${action === 'accept' ? '#22c55e' : '#ef4444'}; margin-bottom: 10px;">
+            Quotation ${action === 'accept' ? 'Accepted' : 'Rejected'}
+          </h2>
+          <p>The client (<strong>${session.user.email}</strong>) has ${action === 'accept' ? 'accepted' : 'rejected'} the quotation for Project ID: ${projectId}.</p>
+          
+          <div style="margin: 30px 0; text-align: center;">
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev'}/admin/quotations" class="button">
+              View Quotation Details
+            </a>
+          </div>
+        `;
 
-      await resend.emails.send({
-        from: `Portfolio System <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs.is-a.dev'}>`,
-        to: 'suryacs.is.a.dev@gmail.com',
-        subject: `Quotation ${action === 'accept' ? 'Accepted' : 'Rejected'} by ${user.email}`,
-        html: getBrandEmailTemplate(`Quotation ${action === 'accept' ? 'Accepted' : 'Rejected'}`, emailContent, 'Client Action Notification'),
-      });
+        await resend.emails.send({
+          from: `Portfolio System <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs.is-a.dev'}>`,
+          to: 'suryacs.is.a.dev@gmail.com',
+          subject: `Quotation ${action === 'accept' ? 'Accepted' : 'Rejected'} by ${session.user.email}`,
+          html: getBrandEmailTemplate(`Quotation ${action === 'accept' ? 'Accepted' : 'Rejected'}`, emailContent, 'Client Action Notification'),
+        });
+      }
     } catch (emailErr) {
       console.error('Error sending quotation status email:', emailErr);
     }

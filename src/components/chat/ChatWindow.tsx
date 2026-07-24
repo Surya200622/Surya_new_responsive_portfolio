@@ -43,7 +43,7 @@ export default function ChatWindow({ currentUserId, otherUserId }: ChatWindowPro
             <MessageBubble 
               key={message.id} 
               message={message} 
-              isOwn={message.sender_id === currentUserId} 
+              isOwn={message.senderId === currentUserId} 
             />
           ))
         )}

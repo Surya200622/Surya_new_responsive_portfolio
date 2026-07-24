@@ -3,6 +3,7 @@ import '../index.css';
 import './globals.css';
 import ChatbotWidget from "@/components/ChatbotWidget";
 import MagicCursor from "@/components/MagicCursor";
+import Providers from "@/components/Providers";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://suryacs.is-a.dev'),
@@ -113,9 +114,11 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {children}
-        <ChatbotWidget />
-        <MagicCursor />
+        <Providers>
+          {children}
+          <ChatbotWidget />
+          <MagicCursor />
+        </Providers>
       </body>
     </html>
   );

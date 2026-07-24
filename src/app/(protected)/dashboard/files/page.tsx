@@ -1,11 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { createBrowserClient } from '@supabase/ssr';
 import { FileText, UploadCloud, Download, Trash2, Loader2, File, Image, FileArchive, X } from 'lucide-react';
-
-
-
+import { useSession } from 'next-auth/react';
 
 interface UploadedFile {
   name: string;
@@ -16,50 +13,31 @@ interface UploadedFile {
 }
 
 export default function ClientFilesPage() {
+  const { data: session, status } = useSession();
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
-  const [userId, setUserId] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
   useEffect(() => {
-    loadFiles();
-  }, []);
+    if (status === 'authenticated' && session?.user) {
+      loadFiles();
+    } else if (status === 'unauthenticated') {
+      setLoading(false);
+    }
+  }, [status, session]);
 
   async function loadFiles() {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      setUserId(user.id);
-
-      const folderPath = `${user.id}/`;
-
-      const { data: fileList, error: listError } = await supabase
-        .storage
-        .from('client-files')
-        .list(folderPath, {
-          limit: 100,
-          sortBy: { column: 'created_at', order: 'desc' },
-        });
-
-      if (listError) {
-        console.warn('Storage list error:', listError.message);
-        // Bucket might not exist yet — show empty state
-        setFiles([]);
-        if (listError.message.includes('not found') || listError.message.includes('does not exist')) {
-          setError('storage_not_configured');
-        }
+      const res = await fetch('/api/client-files');
+      if (!res.ok) {
+        if (res.status === 404) setError('storage_not_configured');
+        else throw new Error('Failed to load files');
       } else {
-        // Filter out the .emptyFolderPlaceholder
-        const realFiles = (fileList || []).filter(f => f.name !== '.emptyFolderPlaceholder');
-        setFiles(realFiles.map(f => ({
+        const fileList = await res.json();
+        setFiles(fileList.map((f: any) => ({
           name: f.name,
           id: f.id || f.name,
           size: (f.metadata as any)?.size || 0,
@@ -69,40 +47,33 @@ export default function ClientFilesPage() {
       }
     } catch (e) {
       console.warn('Files load error:', e);
-      setError('storage_not_configured');
+      setError('Failed to load files');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   async function handleUpload(selectedFiles: FileList | null) {
-    if (!selectedFiles || selectedFiles.length === 0 || !userId) return;
+    if (!selectedFiles || selectedFiles.length === 0) return;
     
     setUploading(true);
     setError(null);
 
     try {
       for (const file of Array.from(selectedFiles)) {
-        const filePath = `${userId}/${Date.now()}_${file.name}`;
+        const formData = new FormData();
+        formData.append('file', file);
         
-        const { error: uploadError } = await supabase
-          .storage
-          .from('client-files')
-          .upload(filePath, file, {
-            cacheControl: '3600',
-            upsert: false,
-          });
+        const res = await fetch('/api/client-files', {
+          method: 'POST',
+          body: formData,
+        });
 
-        if (uploadError) {
-          console.error('Upload error:', uploadError);
-          if (uploadError.message.includes('not found') || uploadError.message.includes('does not exist')) {
-            setError('storage_not_configured');
-          } else {
-            setError(uploadError.message);
-          }
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || 'Upload failed');
         }
       }
-
-      // Reload files
       await loadFiles();
     } catch (e: any) {
       setError(e.message || 'Upload failed');
@@ -117,26 +88,34 @@ export default function ClientFilesPage() {
   async function handleDelete(fileName: string) {
     if (!confirm('Are you sure you want to delete this file?')) return;
 
-    const filePath = `${userId}/${fileName}`;
-    const { error: deleteError } = await supabase
-      .storage
-      .from('client-files')
-      .remove([filePath]);
-
-    if (!deleteError) {
+    try {
+      const res = await fetch('/api/client-files', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileName }),
+      });
+      if (!res.ok) throw new Error('Failed to delete');
+      
       setFiles(prev => prev.filter(f => f.name !== fileName));
+    } catch (err) {
+      console.error('Delete error:', err);
+      alert('Error deleting file');
     }
   }
 
   async function handleDownload(fileName: string) {
-    const filePath = `${userId}/${fileName}`;
-    const { data } = await supabase
-      .storage
-      .from('client-files')
-      .createSignedUrl(filePath, 60);
-
-    if (data?.signedUrl) {
-      window.open(data.signedUrl, '_blank');
+    try {
+      const res = await fetch('/api/client-files/download', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileName }),
+      });
+      if (!res.ok) throw new Error('Failed to generate download URL');
+      const { url } = await res.json();
+      window.open(url, '_blank');
+    } catch (err) {
+      console.error('Download error:', err);
+      alert('Error downloading file');
     }
   }
 

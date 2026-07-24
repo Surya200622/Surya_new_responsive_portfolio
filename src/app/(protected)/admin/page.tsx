@@ -2,21 +2,22 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { createBrowserClient } from '@supabase/ssr';
 import { Users, Briefcase, MessageSquare, IndianRupee, Calculator, Loader2 } from 'lucide-react';
-
-
-
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 interface Client {
   id: string;
-  full_name: string;
+  name: string;
   email: string;
-  company_name?: string;
-  created_at: string;
+  companyName?: string;
+  // Fallback if users table doesn't have created_at
 }
 
 export default function AdminOverviewPage() {
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  
   const [clientCount, setClientCount] = useState(0);
   const [projectCount, setProjectCount] = useState(0);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -26,62 +27,49 @@ export default function AdminOverviewPage() {
   const [calculatorEnabled, setCalculatorEnabled] = useState(true);
   const [calculatorToggling, setCalculatorToggling] = useState(false);
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
   useEffect(() => {
     async function loadData() {
+      if (status === 'loading') return;
+      if (status === 'unauthenticated' || !session?.user) {
+        router.push('/login'); 
+        return;
+      }
+      
+      // @ts-ignore
+      if (session.user.role !== 'admin') {
+        router.push('/dashboard'); 
+        return;
+      }
+
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        const userId = session?.user?.id;
-
-        const [
-          { count: cc },
-          { count: pc },
-          { count: uc },
-          { data: revenueData },
-          { data: clients }
-        ] = await Promise.all([
-          supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'client'),
-          supabase.from('projects').select('*', { count: 'exact', head: true })
-            .neq('status', 'Completed')
-            .neq('status', 'Cancelled')
-            .neq('status', 'completed')
-            .neq('status', 'cancelled'),
-          supabase.from('messages').select('*', { count: 'exact', head: true })
-            .eq('is_read', false)
-            .eq('receiver_id', userId || ''),
-          supabase.from('quotations').select('total').in('status', ['accepted', 'advance_paid', 'fully_paid']),
-          supabase.from('profiles').select('*').eq('role', 'client').order('created_at', { ascending: false }).limit(5)
-        ]);
-
-        const totalRev = revenueData?.reduce((sum, q) => sum + (Number(q.total) || 0), 0) || 0;
-
-        setClientCount(cc || 0);
-        setProjectCount(pc || 0);
-        setUnreadCount(uc || 0);
-        setRevenue(totalRev);
-        if (clients) setRecentClients(clients);
+        const res = await fetch('/api/admin/summary');
+        if (res.ok) {
+          const data = await res.json();
+          setClientCount(data.clientCount || 0);
+          setProjectCount(data.projectCount || 0);
+          setUnreadCount(data.unreadCount || 0);
+          setRevenue(data.revenue || 0);
+          setRecentClients(data.recentClients || []);
+        }
 
         // Fetch calculator toggle state
         try {
-          const res = await fetch('/api/admin/settings?key=calculator_enabled');
-          const settingData = await res.json();
+          const resSettings = await fetch('/api/admin/settings?key=calculator_enabled');
+          const settingData = await resSettings.json();
           setCalculatorEnabled(settingData.value === true || settingData.value === 'true');
         } catch {
           console.warn('Failed to fetch calculator setting');
         }
       } catch (e) {
         console.warn('Admin data load error:', e);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
     loadData();
-  }, []);
+  }, [status, session, router]);
 
-  if (loading) {
+  if (loading || status === 'loading') {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="w-8 h-8 border-2 border-[var(--color-accent-primary)] border-t-transparent rounded-full animate-spin" />
@@ -195,7 +183,6 @@ export default function AdminOverviewPage() {
               <tr>
                 <th className="px-6 py-3 rounded-tl-xl">Client</th>
                 <th className="px-6 py-3">Company</th>
-                <th className="px-6 py-3">Joined</th>
                 <th className="px-6 py-3 rounded-tr-xl text-right">Action</th>
               </tr>
             </thead>
@@ -205,13 +192,12 @@ export default function AdminOverviewPage() {
                   <td className="px-6 py-4 font-medium text-[var(--color-text-primary)] flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-[var(--color-accent-primary)] p-0.5">
                       <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center text-xs text-[var(--color-text-primary)]">
-                        {client.full_name?.charAt(0)?.toUpperCase() || 'C'}
+                        {client.name?.charAt(0)?.toUpperCase() || 'C'}
                       </div>
                     </div>
-                    {client.full_name || 'Unnamed Client'}
+                    {client.name || 'Unnamed Client'}
                   </td>
-                  <td className="px-6 py-4 text-[var(--color-text-secondary)]">{client.company_name || '-'}</td>
-                  <td className="px-6 py-4 text-[var(--color-text-secondary)]">{new Date(client.created_at).toLocaleDateString()}</td>
+                  <td className="px-6 py-4 text-[var(--color-text-secondary)]">{client.companyName || '-'}</td>
                   <td className="px-6 py-4 text-right">
                     <Link href={`/admin/clients/${client.id}`} className="text-[var(--color-accent-primary)] hover:text-[var(--color-accent-warm)] font-medium">
                       View Profile

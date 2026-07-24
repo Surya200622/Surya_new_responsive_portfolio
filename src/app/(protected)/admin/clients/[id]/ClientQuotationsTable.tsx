@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
 import { Loader2, FileText } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -17,18 +16,21 @@ const STATUS_OPTIONS = [
 export default function ClientQuotationsTable({ initialQuotations }: { initialQuotations: any[] }) {
   const [quotations, setQuotations] = useState(initialQuotations);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const supabase = createClient();
   const router = useRouter();
 
   const handleStatusChange = async (quoteId: string, newStatus: string) => {
     setUpdatingId(quoteId);
     try {
-      const { error } = await supabase
-        .from('quotations')
-        .update({ status: newStatus })
-        .eq('id', quoteId);
+      const res = await fetch(`/api/quotations/${quoteId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
 
-      if (error) throw error;
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to update status');
+      }
 
       setQuotations(prev => prev.map(q => q.id === quoteId ? { ...q, status: newStatus } : q));
       router.refresh();
@@ -84,7 +86,7 @@ export default function ClientQuotationsTable({ initialQuotations }: { initialQu
                 </div>
               </td>
               <td className="px-6 py-4 font-semibold text-[var(--color-accent-primary)]">
-                ₹{(quote.total || 0).toLocaleString('en-IN')}
+                ₹{(quote.amount || 0).toLocaleString('en-IN')}
               </td>
               <td className="px-6 py-4">
                 <div className="flex items-center gap-2">
@@ -104,7 +106,7 @@ export default function ClientQuotationsTable({ initialQuotations }: { initialQu
                 </div>
               </td>
               <td className="px-6 py-4 text-[var(--color-text-secondary)]">
-                {new Date(quote.created_at).toLocaleDateString()}
+                {new Date(quote.createdAt || quote.created_at || new Date()).toLocaleDateString()}
               </td>
             </tr>
           ))}

@@ -1,63 +1,43 @@
-import { updateSession } from '@/lib/supabase/middleware';
-import { NextResponse, type NextRequest } from 'next/server';
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { withAuth } from 'next-auth/middleware';
+import { NextResponse } from 'next/server';
 
-export async function middleware(request: NextRequest) {
-  // Update session and get the base response
-  const response = await updateSession(request);
+export default withAuth(
+  function middleware(request) {
+    const isAuthRoute = request.nextUrl.pathname.startsWith('/login') || 
+                        request.nextUrl.pathname.startsWith('/register') ||
+                        request.nextUrl.pathname.startsWith('/forgot-password') ||
+                        request.nextUrl.pathname.startsWith('/admin/login') ||
+                        request.nextUrl.pathname.startsWith('/admin/register');
+                        
+    const isProtectedRoute = request.nextUrl.pathname.startsWith('/dashboard') || 
+                             (request.nextUrl.pathname.startsWith('/admin') && !isAuthRoute);
 
-  // Add SEO Link header to help search engines easily find the sitemap
-  response.headers.set('Link', '<https://suryacs.is-a.dev/sitemap.xml>; rel="sitemap"');
+    const token = request.nextauth.token;
 
-  // Simple auth check for route protection
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value;
-        },
-        set(name: string, value: string, options: CookieOptions) {
-          // Handled by updateSession
-        },
-        remove(name: string, options: CookieOptions) {
-          // Handled by updateSession
-        },
-      },
+    // Redirect unauthenticated users from protected routes to login
+    if (isProtectedRoute && !token) {
+      return NextResponse.redirect(new URL('/login', request.url));
     }
-  );
 
-  const { data: { user } } = await supabase.auth.getUser();
+    // Redirect authenticated users from auth routes to dashboard
+    if (isAuthRoute && token) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
 
-  const isAuthRoute = request.nextUrl.pathname.startsWith('/login') || 
-                      request.nextUrl.pathname.startsWith('/register') ||
-                      request.nextUrl.pathname.startsWith('/forgot-password') ||
-                      request.nextUrl.pathname.startsWith('/admin/login') ||
-                      request.nextUrl.pathname.startsWith('/admin/register');
-                      
-  const isProtectedRoute = request.nextUrl.pathname.startsWith('/dashboard') || 
-                           (request.nextUrl.pathname.startsWith('/admin') && !isAuthRoute);
-
-  // Redirect unauthenticated users from protected routes to login
-  if (isProtectedRoute && !user) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    // Add SEO Link header
+    const response = NextResponse.next();
+    response.headers.set('Link', '<https://suryacs.is-a.dev/sitemap.xml>; rel="sitemap"');
+    return response;
+  },
+  {
+    callbacks: {
+      authorized: () => true, // We handle the redirect logic in the middleware function above
+    },
   }
-
-  // Redirect authenticated users from auth routes to dashboard
-  if (isAuthRoute && user) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
-  }
-
-  // Admin route protection is handled in the server components
-  // since they can securely query the profiles table.
-
-  return response;
-}
+);
 
 export const config = {
   matcher: [
-    // Ignore api, _next/static, _next/image, favicon.ico, sitemap.xml, robots.txt and all static images
     '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp|pdf)$).*)',
   ],
 };

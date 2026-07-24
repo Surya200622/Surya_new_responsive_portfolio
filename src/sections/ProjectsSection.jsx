@@ -4,7 +4,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { ArrowRight, Loader2 } from 'lucide-react';
-import { createBrowserClient } from '@supabase/ssr';
 import PaymentModal from '../components/payment/PaymentModal';
 import './ProjectsSection.css';
 
@@ -19,20 +18,14 @@ export default function ProjectsSection() {
   const [paymentModalState, setPaymentModalState] = useState({ isOpen: false, amount: 0, projectName: '' });
   const sectionRef = useRef(null);
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  );
+
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const { data, error } = await supabase
-          .from('portfolio_projects')
-          .select('*')
-          .order('created_at', { ascending: true });
-          
-        if (error) throw error;
+        const res = await fetch('/api/portfolio-projects');
+        if (!res.ok) throw new Error('Failed to fetch projects');
+        const data = await res.json();
         if (data) {
           setProjects(data);
           setCategories(['All', ...new Set(data.map(p => p.category))]);

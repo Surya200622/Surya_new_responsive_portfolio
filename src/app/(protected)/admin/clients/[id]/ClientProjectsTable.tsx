@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
 import { Loader2, Briefcase } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -11,8 +10,8 @@ interface Project {
   name?: string;
   title?: string;
   status: string;
-  created_at: string;
-  budget?: string;
+  createdAt: Date | string;
+  budget?: string | number;
 }
 
 const STATUS_OPTIONS = [
@@ -30,18 +29,21 @@ const STATUS_OPTIONS = [
 export default function ClientProjectsTable({ initialProjects }: { initialProjects: Project[] }) {
   const [projects, setProjects] = useState<Project[]>(initialProjects);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const supabase = createClient();
   const router = useRouter();
 
   const handleStatusChange = async (projectId: string, newStatus: string) => {
     setUpdatingId(projectId);
     try {
-      const { error } = await supabase
-        .from('projects')
-        .update({ status: newStatus })
-        .eq('id', projectId);
+      const res = await fetch(`/api/projects/${projectId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
 
-      if (error) throw error;
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to update status');
+      }
 
       // Update local state
       setProjects(prev => prev.map(p => p.id === projectId ? { ...p, status: newStatus } : p));
@@ -108,7 +110,7 @@ export default function ClientProjectsTable({ initialProjects }: { initialProjec
                 </div>
               </td>
               <td className="px-6 py-4 text-[var(--color-text-secondary)]">
-                {new Date(project.created_at).toLocaleDateString()}
+                {new Date(project.createdAt).toLocaleDateString()}
               </td>
               <td className="px-6 py-4 text-right text-[var(--color-text-secondary)]">
                 {project.budget ? `₹${Number(project.budget).toLocaleString()}` : '-'}

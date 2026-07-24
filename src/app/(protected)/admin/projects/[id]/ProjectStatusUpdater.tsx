@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createBrowserClient } from '@supabase/ssr';
 import { Check, Loader2, ChevronDown } from 'lucide-react';
 
 interface ProjectStatusUpdaterProps {
@@ -26,11 +25,6 @@ export default function ProjectStatusUpdater({ projectId, currentStatus }: Proje
   const [isUpdating, setIsUpdating] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
 
   const handleUpdateStatus = async (newStatus: string) => {
     if (newStatus === currentStatus) {
@@ -40,12 +34,16 @@ export default function ProjectStatusUpdater({ projectId, currentStatus }: Proje
     
     setIsUpdating(true);
     try {
-      const { error } = await supabase
-        .from('projects')
-        .update({ status: newStatus })
-        .eq('id', projectId);
+      const res = await fetch(`/api/projects/${projectId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
 
-      if (error) throw error;
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to update status');
+      }
       
       router.refresh();
       setIsOpen(false);

@@ -1,12 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createBrowserClient } from '@supabase/ssr';
 import { Plus, Edit2, Trash2, Loader2, Save, X, ExternalLink, Image as ImageIcon } from 'lucide-react';
 import { z } from 'zod';
-
-
-
 
 const projectSchema = z.object({
   slug: z.string().min(1, 'Slug is required'),
@@ -30,14 +26,14 @@ type Project = {
   category: string;
   description: string;
   image: string;
-  tech_array: string[];
+  techArray: string[];
   year: string;
   link?: string;
-  view_details_url?: string;
-  project_price?: string | number;
+  viewDetailsUrl?: string;
+  projectPrice?: string | number;
   buyable: boolean;
-  hide_link: boolean;
-  created_at: string;
+  hideLink: boolean;
+  createdAt: string;
 };
 
 export default function AdminProjectsPage() {
@@ -64,19 +60,11 @@ export default function AdminProjectsPage() {
     hide_link: false,
   });
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
   const fetchProjects = async () => {
     try {
-      const { data, error } = await supabase
-        .from('portfolio_projects')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (error) throw error;
+      const res = await fetch('/api/portfolio-projects');
+      if (!res.ok) throw new Error('Failed to fetch projects');
+      const data = await res.json();
       setProjects(data || []);
     } catch (err) {
       console.error('Error fetching projects:', err);
@@ -99,17 +87,22 @@ export default function AdminProjectsPage() {
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
       
-      const { error: uploadError } = await supabase.storage
-        .from('project-images')
-        .upload(fileName, file);
+      const uploadData = new FormData();
+      uploadData.append('file', file);
+      uploadData.append('bucket', 'project-images');
+      uploadData.append('path', fileName);
 
-      if (uploadError) throw uploadError;
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadData
+      });
 
-      const { data } = supabase.storage
-        .from('project-images')
-        .getPublicUrl(fileName);
+      if (!uploadRes.ok) {
+        throw new Error('Image upload failed');
+      }
 
-      setFormData(prev => ({ ...prev, image: data.publicUrl }));
+      const uploadResult = await uploadRes.json();
+      setFormData(prev => ({ ...prev, image: uploadResult.url }));
     } catch (err: any) {
       console.error('Error uploading image:', err);
       setError('Error uploading image: ' + err.message);
@@ -127,14 +120,14 @@ export default function AdminProjectsPage() {
         title: project.title,
         category: project.category,
         description: project.description,
-        image: project.image,
-        tech_array: project.tech_array.join(', '),
-        year: project.year,
+        image: project.image || '',
+        tech_array: project.techArray ? project.techArray.join(', ') : '',
+        year: project.year || new Date().getFullYear().toString(),
         link: project.link || '',
-        view_details_url: project.view_details_url || '',
-        project_price: project.project_price?.toString() || '',
+        view_details_url: project.viewDetailsUrl || '',
+        project_price: project.projectPrice?.toString() || '',
         buyable: project.buyable || false,
-        hide_link: project.hide_link || false,
+        hide_link: project.hideLink || false,
       });
     } else {
       setEditingId(null);
@@ -156,26 +149,24 @@ export default function AdminProjectsPage() {
       const techArray = validData.tech_array.split(',').map(s => s.trim()).filter(Boolean);
 
       const dbData = {
-        slug: validData.slug,
-        title: validData.title,
-        category: validData.category,
-        description: validData.description,
-        image: validData.image,
+        ...validData,
         tech_array: techArray,
-        year: validData.year,
-        link: validData.link,
-        view_details_url: validData.view_details_url,
-        project_price: validData.project_price,
-        buyable: validData.buyable,
-        hide_link: validData.hide_link,
       };
 
       if (editingId) {
-        const { error } = await supabase.from('portfolio_projects').update(dbData).eq('id', editingId);
-        if (error) throw error;
+        const res = await fetch(`/api/portfolio-projects/${editingId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dbData)
+        });
+        if (!res.ok) throw new Error('Failed to update');
       } else {
-        const { error } = await supabase.from('portfolio_projects').insert([dbData]);
-        if (error) throw error;
+        const res = await fetch('/api/portfolio-projects', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dbData)
+        });
+        if (!res.ok) throw new Error('Failed to create');
       }
 
       setShowModal(false);
@@ -194,8 +185,10 @@ export default function AdminProjectsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this project?')) return;
     try {
-      const { error } = await supabase.from('portfolio_projects').delete().eq('id', id);
-      if (error) throw error;
+      const res = await fetch(`/api/portfolio-projects/${id}`, {
+        method: 'DELETE'
+      });
+      if (!res.ok) throw new Error('Failed to delete');
       setProjects(prev => prev.filter(p => p.id !== id));
     } catch (err) {
       console.error('Error deleting project:', err);
@@ -258,14 +251,14 @@ export default function AdminProjectsPage() {
               </p>
               
               <div className="flex flex-wrap gap-1.5 mb-4">
-                {project.tech_array.slice(0, 3).map((t, i) => (
+                {(project.techArray || []).slice(0, 3).map((t, i) => (
                   <span key={i} className="text-[10px] bg-[var(--color-bg-glass)] border border-[var(--color-glass-border)] text-[var(--color-text-muted)] px-1.5 py-0.5 rounded">
                     {t}
                   </span>
                 ))}
-                {project.tech_array.length > 3 && (
+                {(project.techArray || []).length > 3 && (
                   <span className="text-[10px] bg-[var(--color-bg-glass)] border border-[var(--color-glass-border)] text-[var(--color-text-muted)] px-1.5 py-0.5 rounded">
-                    +{project.tech_array.length - 3} more
+                    +{(project.techArray || []).length - 3} more
                   </span>
                 )}
               </div>
@@ -273,9 +266,9 @@ export default function AdminProjectsPage() {
               <div className="flex items-center justify-between pt-4 border-t border-[var(--color-glass-border)] mt-auto">
                 <div className="flex items-center gap-2 text-xs">
                   {project.buyable && <span className="w-2 h-2 rounded-full bg-green-500" title="Buyable"></span>}
-                  {project.hide_link && <span className="w-2 h-2 rounded-full bg-orange-500" title="Link Hidden"></span>}
+                  {project.hideLink && <span className="w-2 h-2 rounded-full bg-orange-500" title="Link Hidden"></span>}
                 </div>
-                {project.link && !project.hide_link && (
+                {project.link && !project.hideLink && (
                   <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-accent-primary)] flex items-center gap-1 transition-colors">
                     Visit Link <ExternalLink className="w-3 h-3" />
                   </a>

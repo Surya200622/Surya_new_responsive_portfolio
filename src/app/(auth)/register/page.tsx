@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { createBrowserClient } from '@supabase/ssr';
+import { signIn } from 'next-auth/react';
 import { User, Mail, Building, Phone, Lock, Loader2, ArrowRight, CheckCircle2, Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 import { registerSchema, type RegisterInput } from '@/lib/validations/auth';
@@ -21,11 +21,6 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -35,20 +30,14 @@ export default function RegisterPage() {
     try {
       const validData = registerSchema.parse(formData);
 
-      const { data, error } = await supabase.auth.signUp({
-        email: validData.email,
-        password: validData.password,
-        options: {
-          data: {
-            full_name: validData.fullName,
-            company_name: validData.companyName,
-            phone: validData.phone,
-          },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        }
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(validData),
       });
 
-      if (error) throw error;
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Registration failed');
 
       // Send credentials via email asynchronously
       fetch('/api/send-credentials', {
@@ -61,13 +50,15 @@ export default function RegisterPage() {
         })
       }).catch(err => console.error('Failed to send credentials:', err));
 
-      // If the user was auto-confirmed (Supabase setting), sign them in directly
-      if (data.user && data.session) {
-        window.location.href = '/dashboard';
-        return;
-      }
-      
-      setIsSuccess(true);
+      // Sign the user in
+      await signIn('credentials', {
+        redirect: false,
+        email: validData.email,
+        password: validData.password,
+      });
+
+      window.location.href = '/dashboard';
+      return;
     } catch (error) {
       if (error instanceof z.ZodError) {
         const newErrors: Record<string, string> = {};
@@ -122,11 +113,7 @@ export default function RegisterPage() {
               setIsLoading(true);
               setServerError('');
               try {
-                const { error } = await supabase.auth.signInWithOAuth({
-                  provider: 'google',
-                  options: { redirectTo: `${window.location.origin}/auth/callback` },
-                });
-                if (error) throw error;
+                await signIn('google', { callbackUrl: '/dashboard' });
               } catch (error) {
                 if (error instanceof Error) setServerError(error.message);
                 setIsLoading(false);

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Sun, Moon, Menu, X, LogOut, Settings, LayoutDashboard } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
-import { createBrowserClient } from '@supabase/ssr';
+import { useSession, signOut } from 'next-auth/react';
 import { motion } from 'framer-motion';
 import './Navbar.css';
 
@@ -23,8 +23,9 @@ export default function Navbar({ theme, toggleTheme }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const lastScrollRef = useRef(0);
   const [mounted, setMounted] = useState(false);
-  const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
+  const { data: session } = useSession();
+  const user = session?.user;
+  const profile = session?.user;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const [calculatorEnabled, setCalculatorEnabled] = useState(true);
@@ -53,37 +54,7 @@ export default function Navbar({ theme, toggleTheme }) {
 
   const pathname = usePathname();
 
-  useEffect(() => {
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    );
 
-    const getUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        setUser(session.user);
-        const { data } = await supabase
-          .from('profiles')
-          .select('avatar_url, full_name, role')
-          .eq('id', session.user.id)
-          .single();
-        if (data) setProfile(data);
-      }
-    };
-    getUser();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        setUser(session.user);
-      } else {
-        setUser(null);
-        setProfile(null);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   const handleScroll = useCallback(() => {
     const current = window.scrollY;
@@ -224,9 +195,7 @@ export default function Navbar({ theme, toggleTheme }) {
                   </a>
                   <button 
                     onClick={async () => {
-                      const supabase = createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
-                      await supabase.auth.signOut();
-                      window.location.reload();
+                      await signOut();
                     }} 
                     className="flex items-center gap-2 px-4 py-3 hover:bg-red-500/10 text-red-500 hover:text-red-400 text-sm text-left transition-colors"
                   >
@@ -318,9 +287,7 @@ export default function Navbar({ theme, toggleTheme }) {
               </a>
               <button 
                 onClick={async () => {
-                  const supabase = createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
-                  await supabase.auth.signOut();
-                  window.location.reload();
+                  await signOut();
                 }} 
                 className="navbar__mobile-link text-red-500 flex items-center gap-2 mt-4 text-left w-full"
               >

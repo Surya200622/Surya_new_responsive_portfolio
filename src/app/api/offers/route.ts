@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { db } from '@/db';
+import { offers, users } from '@/db/schema';
+import { eq, desc, and, gt } from 'drizzle-orm';
 import { Resend } from 'resend';
 import { getBrandEmailTemplate } from '@/lib/email-template';
 import { PROJECT_TYPES } from '@/data/calculatorData';
@@ -13,41 +15,31 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Use service role key to bypass RLS for admin operations
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    // 1. Insert offer into Turso
+    const newOffer = {
+      id: crypto.randomUUID(),
+      title,
+      description,
+      discountPercentage: discount_percentage || 0,
+      validUntil: valid_until,
+      imageUrl: image_url || null,
+      isActive: true,
+    };
 
-    // 1. Insert offer into Supabase
-    const { data: offer, error: insertError } = await supabaseAdmin
-      .from('offers')
-      .insert([
-        {
-          title,
-          description,
-          discount_percentage: discount_percentage || 0,
-          valid_until,
-          image_url: image_url || null,
-          is_active: true
-        }
-      ])
-      .select()
-      .single();
-
-    if (insertError) {
-      return NextResponse.json({ error: insertError.message }, { status: 500 });
-    }
+    await db.insert(offers).values(newOffer);
 
     // 2. Broadcast via Email if requested
     if (send_email) {
       // Fetch all clients
-      const { data: clients, error: clientError } = await supabaseAdmin
-        .from('profiles')
-        .select('email, full_name')
-        .eq('role', 'client');
+      const clients = await db
+        .select({
+          email: users.email,
+          name: users.name,
+        })
+        .from(users)
+        .where(eq(users.role, 'client'));
 
-      if (!clientError && clients && clients.length > 0) {
+      if (clients && clients.length > 0) {
         const resend = new Resend(process.env.RESEND_API_KEY);
 
         // Determine if there is a specific project type associated with this offer
@@ -99,7 +91,7 @@ export async function POST(req: Request) {
       }
     }
 
-    return NextResponse.json({ success: true, offer });
+    return NextResponse.json({ success: true, offer: newOffer });
   } catch (error: any) {
     console.error('Offers API error:', error);
     return NextResponse.json({ error: error.message || 'Failed to process request' }, { status: 500 });
@@ -109,23 +101,18 @@ export async function POST(req: Request) {
 // GET: Fetch active offers (public)
 export async function GET() {
   try {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const fetchedOffers = await db
+      .select()
+      .from(offers)
+      .where(
+        and(
+          eq(offers.isActive, true),
+          gt(offers.validUntil, new Date().toISOString())
+        )
+      )
+      .orderBy(desc(offers.createdAt));
 
-    const { data: offers, error } = await supabase
-      .from('offers')
-      .select('*')
-      .eq('is_active', true)
-      .gt('valid_until', new Date().toISOString())
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ offers });
+    return NextResponse.json({ offers: fetchedOffers });
   } catch (error: any) {
     console.error('Fetch offers error:', error);
     return NextResponse.json({ error: 'Failed to fetch offers' }, { status: 500 });

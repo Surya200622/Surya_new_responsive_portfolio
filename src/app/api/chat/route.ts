@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
-import { createClient } from '@/lib/supabase/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || '' });
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || '';
@@ -40,21 +41,11 @@ HOWEVER, you still represent Surya CS. If they ask about "Surya" or "your servic
 
 export async function POST(req: Request) {
   try {
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
+    const session = await getServerSession(authOptions);
     let isAdmin = false;
     
-    if (user) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single();
-        
-      if (profile && profile.role === 'admin') {
-        isAdmin = true;
-      }
+    if (session && session.user && session.user.role === 'admin') {
+      isAdmin = true;
     }
 
     const { message } = await req.json();

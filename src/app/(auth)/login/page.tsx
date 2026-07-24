@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { createBrowserClient } from '@supabase/ssr';
+import { signIn } from 'next-auth/react';
 import { Mail, Lock, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 import { loginSchema, type LoginInput } from '@/lib/validations/auth';
@@ -19,11 +19,6 @@ export default function LoginPage() {
   const [serverError, setServerError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -34,13 +29,13 @@ export default function LoginPage() {
       // Validate input
       const validData = loginSchema.parse(formData);
 
-      // Attempt login
-      const { error } = await supabase.auth.signInWithPassword({
+      const result = await signIn('credentials', {
+        redirect: false,
         email: validData.email,
         password: validData.password,
       });
 
-      if (error) throw error;
+      if (result?.error) throw new Error(result.error);
 
       router.push('/dashboard');
       router.refresh();
@@ -65,13 +60,7 @@ export default function LoginPage() {
       setIsLoading(true);
       setServerError('');
       try {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: `${window.location.origin}/auth/callback`,
-          },
-        });
-        if (error) throw error;
+        await signIn('google', { callbackUrl: '/dashboard' });
       } catch (error) {
         if (error instanceof Error) setServerError(error.message);
         setIsLoading(false);

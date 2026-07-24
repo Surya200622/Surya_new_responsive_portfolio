@@ -1,10 +1,14 @@
-import { createClient } from '@/lib/supabase/server';
-import { createAdminClient } from '@/lib/supabase/admin';
 import { ArrowLeft, Folder, Calendar, Clock, FileText, User } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ProjectStatusUpdater from './ProjectStatusUpdater';
 import DownloadQuotationButton from '@/components/pdf/DownloadQuotationButton';
+import { db } from '@/db';
+import { projects, users, quotations } from '@/db/schema';
+import { eq, desc } from 'drizzle-orm';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 import type { Metadata } from 'next';
 
@@ -12,35 +16,41 @@ export const metadata: Metadata = {
   title: 'Admin - Projects | Surya CS',
 };
 
-
 interface ProjectDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
 export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
   const { id } = await params;
-  const supabaseAdmin = createAdminClient();
+  const session = await getServerSession(authOptions);
+
+  if (!session || !session.user || session.user.role !== 'admin') {
+    redirect('/admin/login');
+  }
 
   // Fetch project with client details
-  const { data: project, error } = await supabaseAdmin
-    .from('projects')
-    .select(`
-      *,
-      client:profiles(id, full_name, company_name, email)
-    `)
-    .eq('id', id)
-    .single();
+  const projectData = await db
+    .select({
+      project: projects,
+      client: users
+    })
+    .from(projects)
+    .leftJoin(users, eq(projects.clientId, users.id))
+    .where(eq(projects.id, id))
+    .limit(1);
 
-  if (error || !project) {
+  if (!projectData || projectData.length === 0) {
     notFound();
   }
 
+  const { project, client: clientInfo } = projectData[0];
+
   // Fetch quotations for this project
-  const { data: quotations } = await supabaseAdmin
-    .from('quotations')
-    .select('*')
-    .eq('project_id', project.id)
-    .order('created_at', { ascending: false });
+  const projectQuotations = await db
+    .select()
+    .from(quotations)
+    .where(eq(quotations.projectId, id))
+    .orderBy(desc(quotations.createdAt));
 
   const getStatusBadge = (status: string) => {
     const s = status?.toLowerCase() || '';
@@ -52,8 +62,6 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
     if (s.includes('payment') || s.includes('gathering')) return 'bg-orange-500/10 border-orange-500/20 text-orange-400';
     return 'bg-orange-500/10 border-orange-500/20 text-orange-400';
   };
-
-  const clientInfo = project.client as any;
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -78,7 +86,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           <div className="flex-1 min-w-0">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-3">
               <h1 className="text-2xl font-display font-bold text-[var(--color-text-primary)]">
-                {project.project_name}
+                {project.title}
               </h1>
               <ProjectStatusUpdater projectId={project.id} currentStatus={project.status} />
             </div>
@@ -104,7 +112,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                 <p className="text-xs text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Created</p>
                 <p className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-[var(--color-text-muted)]" />
-                  {new Date(project.created_at).toLocaleDateString()}
+                  {new Date(project.createdAt).toLocaleDateString()}
                 </p>
               </div>
             </div>
@@ -124,13 +132,13 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
               <div>
                 <p className="text-xs text-[var(--color-text-muted)] mb-1">Name</p>
                 <Link href={`/admin/clients/${clientInfo.id}`} className="font-semibold text-[var(--color-text-primary)] hover:text-[var(--color-accent-primary)] transition-colors">
-                  {clientInfo.full_name || 'Unnamed'}
+                  {clientInfo.name || 'Unnamed'}
                 </Link>
               </div>
-              {clientInfo.company_name && (
+              {clientInfo.companyName && (
                 <div>
                   <p className="text-xs text-[var(--color-text-muted)] mb-1">Company</p>
-                  <p className="text-[var(--color-text-secondary)]">{clientInfo.company_name}</p>
+                  <p className="text-[var(--color-text-secondary)]">{clientInfo.companyName}</p>
                 </div>
               )}
               {clientInfo.email && (
@@ -154,14 +162,14 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
             Quotations
           </h2>
           
-          {quotations && quotations.length > 0 ? (
+          {projectQuotations && projectQuotations.length > 0 ? (
             <div className="space-y-3">
-              {quotations.map((quote) => (
+              {projectQuotations.map((quote) => (
                 <div key={quote.id} className="p-4 rounded-xl border border-[var(--color-glass-border)] bg-[var(--color-bg-glass)] flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-semibold text-[var(--color-text-primary)]">
-                        ₹{(quote.total || 0).toLocaleString('en-IN')}
+                        ₹{(quote.amount || 0).toLocaleString('en-IN')}
                       </span>
                       <span className={`px-2 py-0.5 rounded-full text-[10px] uppercase font-bold tracking-wider ${
                         quote.status === 'fully_paid' ? 'bg-green-500/10 text-green-400' :
@@ -175,12 +183,12 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                       </span>
                     </div>
                     <p className="text-xs text-[var(--color-text-muted)]">
-                      Generated on {new Date(quote.created_at).toLocaleDateString()}
+                      Generated on {new Date(quote.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                   <DownloadQuotationButton 
-                    quote={quote} 
-                    clientName={clientInfo?.full_name || 'Client'} 
+                    quote={quote as any} 
+                    clientName={clientInfo?.name || 'Client'} 
                   />
                 </div>
               ))}

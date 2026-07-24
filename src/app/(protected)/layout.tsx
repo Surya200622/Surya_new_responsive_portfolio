@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { LogOut, Home, MessageSquare, Briefcase, Folder, FileText, Bell, User, Settings, X, ChevronDown, Menu, Trash2, CheckSquare, Square, Camera, Loader2, Lock, Tag, Star } from 'lucide-react';
-import { createBrowserClient } from '@supabase/ssr';
 import { useEffect, useState, useRef } from 'react';
 import PendingQuotationHandler from './dashboard/quotations/PendingQuotationHandler';
+import { useSession, signOut } from 'next-auth/react';
 
 interface Profile {
   id: string;
@@ -22,9 +22,9 @@ interface Notification {
   type: string;
   title: string;
   message: string;
-  is_read: boolean;
+  isRead: boolean;
   link?: string;
-  created_at: string;
+  createdAt: string;
 }
 
 export default function ProtectedLayout({
@@ -34,6 +34,8 @@ export default function ProtectedLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const { data: session, status } = useSession();
+  
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -52,30 +54,21 @@ export default function ProtectedLayout({
   const profileRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
   useEffect(() => {
     async function loadProfile() {
+      if (status === 'loading') return;
+      if (status === 'unauthenticated' || !session?.user) {
+        router.push('/login');
+        return;
+      }
+
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-          router.push('/login');
-          return;
-        }
-
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-
-        if (profileData) {
+        const res = await fetch('/api/user/profile');
+        if (res.ok) {
+          const profileData = await res.json();
           setProfile(profileData);
           setIsAdmin(profileData.role === 'admin');
-            setSettingsForm({
+          setSettingsForm({
             full_name: profileData.full_name || '',
             company_name: profileData.company_name || '',
             phone: profileData.phone || '',
@@ -87,59 +80,51 @@ export default function ProtectedLayout({
             router.push('/admin');
           }
         } else {
-          // Fallback: use auth user metadata when profile query fails (e.g. RLS recursion)
-          console.warn('Profile fetch failed:', profileError?.message);
-          const meta = user.user_metadata;
-          const fallbackRole = meta?.role || 'client';
+          // Fallback to session
+          // @ts-ignore
+          const fallbackRole = session.user.role || 'client';
           const fallbackProfile: Profile = {
-            id: user.id,
-            full_name: meta?.full_name || user.email?.split('@')[0] || 'User',
-            email: user.email || '',
-            company_name: meta?.company_name || '',
-            phone: meta?.phone || '',
+            // @ts-ignore
+            id: session.user.id,
+            full_name: session.user.name || session.user.email?.split('@')[0] || 'User',
+            email: session.user.email || '',
             role: fallbackRole,
           };
           setProfile(fallbackProfile);
           setIsAdmin(fallbackRole === 'admin');
           setSettingsForm({
             full_name: fallbackProfile.full_name,
-            company_name: fallbackProfile.company_name || '',
-            phone: fallbackProfile.phone || '',
+            company_name: '',
+            phone: '',
             new_password: '',
           });
-
           if (fallbackRole === 'admin' && pathname?.startsWith('/dashboard')) {
             router.push('/admin');
           }
         }
 
-        // Fetch notifications (silently fail if table has issues)
+        // Fetch notifications
         try {
-          const { data: notifs } = await supabase
-            .from('notifications')
-            .select('*')
-            .eq('user_id', user.id)
-            .order('created_at', { ascending: false })
-            .limit(10);
-
-          if (notifs) {
-            setNotifications(notifs);
-            setUnreadCount(notifs.filter(n => !n.is_read).length);
+          const notifRes = await fetch('/api/notifications');
+          if (notifRes.ok) {
+            const notifs = await notifRes.json();
+            // descending sort
+            const sortedNotifs = notifs.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            setNotifications(sortedNotifs.slice(0, 10));
+            setUnreadCount(sortedNotifs.filter((n: any) => !n.isRead).length);
           }
         } catch (e) {
           console.warn('Notifications fetch failed:', e);
         }
       } catch (e) {
         console.error('Layout load error:', e);
-        router.push('/login');
-        return;
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     }
 
     loadProfile();
-  }, []);
+  }, [status, session]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -156,22 +141,17 @@ export default function ProtectedLayout({
   }, []);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.push('/');
-    router.refresh();
+    await signOut({ redirect: true, callbackUrl: '/' });
   };
 
   const handleMarkAllRead = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
     await fetch('/api/notifications', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ markAllRead: true }),
     });
 
-    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+    setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
     setUnreadCount(0);
   };
 
@@ -198,9 +178,7 @@ export default function ProtectedLayout({
   const handleClearSelected = async () => {
     if (selectedNotifIds.size === 0) return;
     setClearingNotifs(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setClearingNotifs(false); return; }
-
+    
     const ids = Array.from(selectedNotifIds);
     await fetch('/api/notifications', {
       method: 'DELETE',
@@ -210,7 +188,7 @@ export default function ProtectedLayout({
 
     setNotifications(prev => {
       const remaining = prev.filter(n => !selectedNotifIds.has(n.id));
-      setUnreadCount(remaining.filter(n => !n.is_read).length);
+      setUnreadCount(remaining.filter(n => !n.isRead).length);
       return remaining;
     });
     setSelectedNotifIds(new Set());
@@ -219,9 +197,7 @@ export default function ProtectedLayout({
 
   const handleClearAll = async () => {
     setClearingNotifs(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setClearingNotifs(false); return; }
-
+    
     await fetch('/api/notifications', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
@@ -236,35 +212,40 @@ export default function ProtectedLayout({
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
-      if (!e.target.files || e.target.files.length === 0) return;
+      if (!e.target.files || e.target.files.length === 0 || !session?.user) return;
       const file = e.target.files[0];
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      // @ts-ignore
+      const userId = session.user.id;
 
       setAvatarUploading(true);
       
       const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}-${Math.random()}.${fileExt}`;
-      const filePath = `${fileName}`;
+      const fileName = `${userId}-${Math.random()}.${fileExt}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, file);
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('bucket', 'avatars');
+      formData.append('path', fileName);
 
-      if (uploadError) throw uploadError;
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
 
-      const { data } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
-        
-      const avatarUrl = data.publicUrl;
+      if (!uploadRes.ok) {
+        throw new Error('Avatar upload failed');
+      }
 
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ avatar_url: avatarUrl })
-        .eq('id', user.id);
+      const uploadResult = await uploadRes.json();
+      const avatarUrl = uploadResult.url;
 
-      if (updateError) throw updateError;
+      // Update in our Turso DB via our new profile endpoint
+      const res = await fetch('/api/user/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ avatar_url: avatarUrl })
+      });
+      if (!res.ok) throw new Error('Failed to update profile');
 
       setProfile(prev => prev ? { ...prev, avatar_url: avatarUrl } : prev);
     } catch (error) {
@@ -278,37 +259,20 @@ export default function ProtectedLayout({
   const handleSaveSettings = async () => {
     setSaving(true);
     setSaveSuccess(false);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    
+    const res = await fetch('/api/user/profile', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settingsForm)
+    });
 
-    let success = true;
-
-    if (settingsForm.new_password) {
-      const { error: authError } = await supabase.auth.updateUser({
-        password: settingsForm.new_password,
-      });
-      if (authError) {
-        success = false;
-        console.error('Password update failed:', authError);
-      }
-    }
-
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .update({
-        full_name: settingsForm.full_name,
-        company_name: settingsForm.company_name || null,
-        phone: settingsForm.phone || null,
-      })
-      .eq('id', user.id);
-
-    if (profileError) success = false;
-
-    if (success) {
+    if (res.ok) {
       setProfile(prev => prev ? { ...prev, ...settingsForm } : prev);
       setSettingsForm(prev => ({ ...prev, new_password: '' })); // clear password field
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
+    } else {
+      console.error('Failed to update profile');
     }
     setSaving(false);
   };
@@ -327,7 +291,7 @@ export default function ProtectedLayout({
     { label: 'Review', href: '/dashboard/reviews', icon: Star },
   ];
 
-  if (loading) {
+  if (loading || status === 'loading') {
     return (
       <div className="min-h-screen bg-[var(--color-bg-primary)] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-[var(--color-accent-primary)] border-t-transparent rounded-full animate-spin" />
@@ -519,7 +483,7 @@ export default function ProtectedLayout({
                         <div
                           key={notif.id}
                           className={`p-4 border-b border-[var(--color-glass-border)] last:border-0 hover:bg-[var(--color-bg-glass)] transition-colors cursor-pointer ${
-                            !notif.is_read ? 'bg-[var(--color-accent-primary)]/5' : ''
+                            !notif.isRead ? 'bg-[var(--color-accent-primary)]/5' : ''
                           } ${selectedNotifIds.has(notif.id) ? 'bg-[var(--color-accent-primary)]/10' : ''}`}
                           onClick={() => toggleNotifSelection(notif.id)}
                         >
@@ -533,11 +497,11 @@ export default function ProtectedLayout({
                               )}
                             </div>
                             {/* Unread dot */}
-                            {!notif.is_read && <div className="w-2 h-2 rounded-full bg-[var(--color-accent-primary)] mt-1.5 shrink-0" />}
+                            {!notif.isRead && <div className="w-2 h-2 rounded-full bg-[var(--color-accent-primary)] mt-1.5 shrink-0" />}
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium text-[var(--color-text-primary)]">{notif.title}</p>
                               <p className="text-xs text-[var(--color-text-secondary)] mt-1 line-clamp-2">{notif.message}</p>
-                              <p className="text-[10px] text-[var(--color-text-muted)] mt-2">{new Date(notif.created_at).toLocaleString()}</p>
+                              <p className="text-[10px] text-[var(--color-text-muted)] mt-2">{new Date(notif.createdAt).toLocaleString()}</p>
                             </div>
                           </div>
                         </div>

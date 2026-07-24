@@ -1,17 +1,16 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { createBrowserClient } from '@supabase/ssr';
 
 export type Message = {
   id: string;
-  sender_id: string;
-  receiver_id: string;
+  senderId: string;
+  receiverId: string;
   content: string;
-  file_url?: string;
-  file_name?: string;
-  is_read: boolean;
-  created_at: string;
+  fileUrl?: string;
+  fileName?: string;
+  isRead: boolean;
+  createdAt: string;
 };
 
 export function useRealtimeMessages(currentUserId: string, otherUserId: string) {
@@ -19,117 +18,89 @@ export function useRealtimeMessages(currentUserId: string, otherUserId: string) 
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
+  const fetchedIdsRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     if (!currentUserId || !otherUserId) return;
 
-    // 1. Fetch initial messages
     const fetchMessages = async () => {
-      const { data, error } = await supabase
-        .from('messages')
-        .select('*')
-        .or(`and(sender_id.eq.${currentUserId},receiver_id.eq.${otherUserId}),and(sender_id.eq.${otherUserId},receiver_id.eq.${currentUserId})`)
-        .order('created_at', { ascending: true });
+      try {
+        const res = await fetch(`/api/chat/messages?otherUserId=${otherUserId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setMessages(data);
+          
+          // Mark unread messages as read
+          const unreadIds = data
+            .filter((m: Message) => m.receiverId === currentUserId && !m.isRead)
+            .map((m: Message) => m.id);
 
-      if (!error && data) {
-        setMessages(data as Message[]);
-        // Mark as read
-        const unreadIds = data.filter(m => m.receiver_id === currentUserId && !m.is_read).map(m => m.id);
-        if (unreadIds.length > 0) {
-          await supabase.from('messages').update({ is_read: true }).in('id', unreadIds);
+          if (unreadIds.length > 0) {
+            await fetch('/api/chat/messages/read', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ unreadIds })
+            });
+            
+            setMessages(prev => prev.map(m => 
+              unreadIds.includes(m.id) ? { ...m, isRead: true } : m
+            ));
+          }
         }
+      } catch (err) {
+        console.error('Failed to fetch messages:', err);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     fetchMessages();
 
-    // 2. Subscribe to new messages
-    const messageChannel = supabase.channel(`messages:${currentUserId}:${otherUserId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'messages',
-          filter: `receiver_id=eq.${currentUserId}`, // Only listen to incoming messages to avoid duplicates
-        },
-        async (payload) => {
-          const newMessage = payload.new as Message;
-          // Check if it belongs to this conversation
-          if (newMessage.sender_id === otherUserId) {
-            setMessages((prev) => [...prev, newMessage]);
-            // Auto mark as read if we are in this conversation
-            await supabase.from('messages').update({ is_read: true }).eq('id', newMessage.id);
-          }
-        }
-      )
-      .subscribe();
-
-    // 3. Subscribe to typing indicator via Broadcast
-    const typingChannel = supabase.channel(`typing:${otherUserId}:${currentUserId}`)
-      .on('broadcast', { event: 'typing' }, (payload) => {
-        if (payload.payload.isTyping) {
-          setIsTyping(true);
-          if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-          typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 3000);
-        } else {
-          setIsTyping(false);
-        }
-      })
-      .subscribe();
+    // Poll for new messages every 3 seconds
+    const intervalId = setInterval(fetchMessages, 3000);
 
     return () => {
-      supabase.removeChannel(messageChannel);
-      supabase.removeChannel(typingChannel);
+      clearInterval(intervalId);
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     };
-  }, [currentUserId, otherUserId, supabase]);
+  }, [currentUserId, otherUserId]);
 
   const sendMessage = async (content: string, fileData?: { url: string; name: string }) => {
-    const tempId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const tempId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `temp-${Date.now()}`;
     const tempMessage: Message = {
       id: tempId,
-      sender_id: currentUserId,
-      receiver_id: otherUserId,
+      senderId: currentUserId,
+      receiverId: otherUserId,
       content,
-      file_url: fileData?.url,
-      file_name: fileData?.name,
-      is_read: false,
-      created_at: new Date().toISOString(),
+      fileUrl: fileData?.url,
+      fileName: fileData?.name,
+      isRead: false,
+      createdAt: new Date().toISOString(),
     };
 
-    // Optimistic UI update
+    // Optimistic update
     setMessages((prev) => [...prev, tempMessage]);
 
-    const { data, error } = await supabase
-      .from('messages')
-      .insert({
-        sender_id: currentUserId,
-        receiver_id: otherUserId,
-        content,
-        file_url: fileData?.url,
-        file_name: fileData?.name,
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Error sending message:', error);
-      // Remove temp message on failure
-      setMessages((prev) => prev.filter(m => m.id !== tempId));
-      throw error;
-    }
-
-    // Send a notification to the receiver
     try {
-      // Need user's name for notification title (optional, could fetch from profile context, but generic is fine for now)
+      const res = await fetch('/api/chat/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          receiverId: otherUserId,
+          content,
+          fileUrl: fileData?.url,
+          fileName: fileData?.name,
+        })
+      });
+
+      if (!res.ok) throw new Error('Failed to send');
+      const data = await res.json();
+
+      // Replace temp with real
+      setMessages((prev) => prev.map(m => m.id === tempId ? data : m));
+
+      // Send a notification
       await fetch('/api/notifications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -138,24 +109,19 @@ export function useRealtimeMessages(currentUserId: string, otherUserId: string) 
           title: 'New Message',
           message: content.length > 50 ? content.substring(0, 50) + '...' : content,
           type: 'message',
-          link: '/dashboard/messages' // or /admin/messages
+          link: '/dashboard/messages'
         })
-      });
-    } catch (notifError) {
-      console.warn('Failed to send message notification:', notifError);
+      }).catch(e => console.warn('Notification failed:', e));
+    } catch (error) {
+      console.error('Error sending message:', error);
+      setMessages((prev) => prev.filter(m => m.id !== tempId));
+      throw error;
     }
-
-    // Replace temp message with actual message
-    setMessages((prev) => prev.map(m => m.id === tempId ? (data as Message) : m));
   };
 
   const setTyping = async () => {
-    const channel = supabase.channel(`typing:${currentUserId}:${otherUserId}`);
-    await channel.send({
-      type: 'broadcast',
-      event: 'typing',
-      payload: { isTyping: true }
-    });
+    // Polling handles new messages. We can skip typing indicator or simulate it.
+    // Realtime typing requires websockets. We can mock it or omit it for polling.
   };
 
   return { messages, isTyping, isLoading, sendMessage, setTyping };

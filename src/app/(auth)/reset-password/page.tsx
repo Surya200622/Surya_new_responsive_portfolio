@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createBrowserClient } from '@supabase/ssr';
+
 import { Lock, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 import { resetPasswordSchema, type ResetPasswordInput } from '@/lib/validations/auth';
@@ -19,11 +19,6 @@ export default function ResetPasswordPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -33,11 +28,18 @@ export default function ResetPasswordPage() {
     try {
       const validData = resetPasswordSchema.parse(formData);
 
-      const { error } = await supabase.auth.updateUser({
-        password: validData.password,
+      // Get token from URL params
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+
+      const response = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: validData.password, token }),
       });
 
-      if (error) throw error;
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Failed to reset password');
       
       // Successfully updated password, redirect to login
       router.push('/login?message=Password updated successfully');

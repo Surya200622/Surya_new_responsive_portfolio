@@ -3,75 +3,63 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { createBrowserClient } from '@supabase/ssr';
 import { ArrowRight, Briefcase, Clock, CheckCircle2, MessageSquare, Folder } from 'lucide-react';
-
-
-
+import { useSession } from 'next-auth/react';
 
 interface Project {
   id: string;
-  project_name: string;
+  title: string;
   status: string;
-  updated_at: string;
+  createdAt: string;
 }
 
 interface Message {
   id: string;
   content: string;
-  created_at: string;
-  is_read: boolean;
-  sender_id: string;
+  createdAt: string;
+  isRead: boolean;
+  senderId: string;
 }
 
 export default function DashboardOverview() {
   const router = useRouter();
+  const { data: session, status } = useSession();
+  
   const [projects, setProjects] = useState<Project[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
-  const [profileName, setProfileName] = useState('');
-
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
 
   useEffect(() => {
     async function loadData() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.push('/login'); return; }
+      if (status === 'loading') return;
+      if (status === 'unauthenticated' || !session?.user) {
+        router.push('/login'); 
+        return;
+      }
+      
+      // @ts-ignore
+      if (session.user.role === 'admin') {
+        router.push('/admin'); 
+        return;
+      }
 
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role, full_name')
-        .eq('id', user.id)
-        .single();
-
-      if (profile?.role === 'admin') { router.push('/admin'); return; }
-      if (profile?.full_name) setProfileName(profile.full_name);
-
-      const { data: projectData } = await supabase
-        .from('projects')
-        .select('*')
-        .eq('client_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(3);
-
-      const { data: messageData } = await supabase
-        .from('messages')
-        .select('id, content, created_at, is_read, sender_id')
-        .eq('receiver_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(3);
-
-      if (projectData) setProjects(projectData);
-      if (messageData) setMessages(messageData);
-      setLoading(false);
+      try {
+        const res = await fetch('/api/dashboard/summary');
+        if (res.ok) {
+          const data = await res.json();
+          setProjects(data.projects || []);
+          setMessages(data.messages || []);
+        }
+      } catch (error) {
+        console.error('Failed to load dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
     }
     loadData();
-  }, []);
+  }, [status, session, router]);
 
-  if (loading) {
+  if (loading || status === 'loading') {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="w-8 h-8 border-2 border-[var(--color-accent-primary)] border-t-transparent rounded-full animate-spin" />
@@ -139,9 +127,9 @@ export default function DashboardOverview() {
                         <Folder className="w-5 h-5 text-[var(--color-text-secondary)] group-hover:text-[var(--color-accent-primary)] transition-colors" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-semibold text-[var(--color-text-primary)]">{project.project_name}</h4>
+                        <h4 className="text-sm font-semibold text-[var(--color-text-primary)]">{project.title}</h4>
                         <p className="text-xs text-[var(--color-text-muted)] mt-1 flex items-center gap-1">
-                          <Clock className="w-3 h-3" /> Updated {new Date(project.updated_at).toLocaleDateString()}
+                          <Clock className="w-3 h-3" /> Updated {new Date(project.createdAt).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
@@ -178,7 +166,7 @@ export default function DashboardOverview() {
               <div className="space-y-2">
                 {messages.map(msg => (
                   <Link href="/dashboard/messages" key={msg.id} className="flex items-start gap-4 p-4 rounded-xl hover:bg-[var(--color-bg-glass-strong)] transition-colors group relative">
-                    {!msg.is_read && (
+                    {!msg.isRead && (
                       <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-[var(--color-accent-primary)] animate-pulse" />
                     )}
                     <div className="w-10 h-10 rounded-full bg-[var(--color-accent-primary)] p-[1px] shrink-0">
@@ -190,7 +178,7 @@ export default function DashboardOverview() {
                       <h4 className="text-sm font-semibold text-[var(--color-text-primary)]">Surya CS</h4>
                       <p className="text-sm text-[var(--color-text-secondary)] mt-1 line-clamp-1">{msg.content}</p>
                       <p className="text-xs text-[var(--color-text-muted)] mt-2">
-                        {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </p>
                     </div>
                   </Link>

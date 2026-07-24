@@ -1,9 +1,14 @@
-import { createAdminClient } from '@/lib/supabase/admin';
 import { ArrowLeft, Mail, Phone, Building2, Calendar, Briefcase, MessageSquare, File, Download, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ClientProjectsTable from './ClientProjectsTable';
 import ClientQuotationsTable from './ClientQuotationsTable';
+import { db } from '@/db';
+import { users, projects, messages, quotations, projectFiles } from '@/db/schema';
+import { eq, or, desc, inArray } from 'drizzle-orm';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 import type { Metadata } from 'next';
 
@@ -11,61 +16,72 @@ export const metadata: Metadata = {
   title: 'Admin - Clients | Surya CS',
 };
 
-
 interface ClientDetailPageProps {
   params: Promise<{ id: string }>;
 }
 
 export default async function ClientDetailPage({ params }: ClientDetailPageProps) {
   const { id } = await params;
-  const supabaseAdmin = createAdminClient();
+  const session = await getServerSession(authOptions);
+
+  if (!session || !session.user || session.user.role !== 'admin') {
+    redirect('/admin/login');
+  }
 
   // Fetch client profile
-  const { data: client, error } = await supabaseAdmin
-    .from('profiles')
-    .select('*')
-    .eq('id', id)
-    .eq('role', 'client')
-    .single();
+  const clientData = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, id))
+    .limit(1);
+    
+  const client = clientData[0];
 
-  if (error || !client) {
+  if (!client || client.role !== 'client') {
     notFound();
   }
 
   // Fetch client's projects
-  const { data: projects } = await supabaseAdmin
-    .from('projects')
-    .select('*')
-    .eq('client_id', id)
-    .order('created_at', { ascending: false });
+  const clientProjects = await db
+    .select()
+    .from(projects)
+    .where(eq(projects.clientId, id))
+    .orderBy(desc(projects.createdAt));
 
   // Fetch message count
-  const { count: messageCount } = await supabaseAdmin
-    .from('messages')
-    .select('*', { count: 'exact', head: true })
-    .or(`sender_id.eq.${id},receiver_id.eq.${id}`);
+  const allMessages = await db
+    .select({ id: messages.id })
+    .from(messages)
+    .where(or(eq(messages.senderId, id), eq(messages.receiverId, id)));
+  const messageCount = allMessages.length;
 
   // Fetch client quotations
-  const { data: quotations } = await supabaseAdmin
-    .from('quotations')
-    .select('*, projects(project_name)')
-    .eq('client_id', id)
-    .order('created_at', { ascending: false });
+  const clientQuotations = await db
+    .select({
+      quotation: quotations,
+      project: projects
+    })
+    .from(quotations)
+    .innerJoin(projects, eq(quotations.projectId, projects.id))
+    .where(eq(quotations.clientId, id))
+    .orderBy(desc(quotations.createdAt));
 
   // Fetch client's uploaded files
-  const projectIds = projects?.map(p => p.id) || [];
+  const projectIds = clientProjects.map(p => p.id);
   let files: any[] = [];
+  
   if (projectIds.length > 0) {
-    const { data: projectFiles, error: fetchFilesError } = await supabaseAdmin
-      .from('project_files')
-      .select('*, projects(project_name)')
-      .in('project_id', projectIds)
-      .order('created_at', { ascending: false });
-    
-    if (fetchFilesError) {
-      console.error('Error fetching project files:', fetchFilesError);
-    }
-    files = projectFiles || [];
+    const projectFilesData = await db
+      .select({
+        file: projectFiles,
+        project: projects
+      })
+      .from(projectFiles)
+      .innerJoin(projects, eq(projectFiles.projectId, projects.id))
+      .where(inArray(projectFiles.projectId, projectIds))
+      .orderBy(desc(projectFiles.createdAt));
+      
+    files = projectFilesData;
   }
 
   return (
@@ -85,17 +101,17 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
           {/* Avatar */}
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] p-0.5 shrink-0">
             <div className="w-full h-full rounded-2xl bg-[var(--color-bg-primary)] flex items-center justify-center font-display font-bold text-3xl text-[var(--color-text-primary)]">
-              {client.full_name?.charAt(0)?.toUpperCase() || 'C'}
+              {client.name?.charAt(0)?.toUpperCase() || 'C'}
             </div>
           </div>
 
           {/* Info */}
           <div className="flex-1 min-w-0">
             <h1 className="text-2xl font-display font-bold text-[var(--color-text-primary)] mb-1">
-              {client.full_name || 'Unnamed Client'}
+              {client.name || 'Unnamed Client'}
             </h1>
             <p className="text-sm text-[var(--color-text-muted)] mb-4">
-              {client.company_name || 'Individual Client'}
+              {client.companyName || 'Individual Client'}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -113,16 +129,18 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
                   </a>
                 </div>
               )}
-              {client.company_name && (
+              {client.companyName && (
                 <div className="flex items-center gap-3 text-sm text-[var(--color-text-secondary)]">
                   <Building2 className="w-4 h-4 text-[var(--color-text-muted)] shrink-0" />
-                  <span>{client.company_name}</span>
+                  <span>{client.companyName}</span>
                 </div>
               )}
-              <div className="flex items-center gap-3 text-sm text-[var(--color-text-secondary)]">
-                <Calendar className="w-4 h-4 text-[var(--color-text-muted)] shrink-0" />
-                <span>Joined {new Date(client.created_at).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-              </div>
+              {client.emailVerified && (
+                <div className="flex items-center gap-3 text-sm text-[var(--color-text-secondary)]">
+                  <Calendar className="w-4 h-4 text-[var(--color-text-muted)] shrink-0" />
+                  <span>Joined {new Date(client.emailVerified).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -149,7 +167,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
             <span className="text-sm text-[var(--color-text-secondary)]">Projects</span>
           </div>
           <p className="text-2xl font-display font-bold text-[var(--color-text-primary)] ml-11">
-            {projects?.length || 0}
+            {clientProjects.length}
           </p>
         </div>
         <div className="glass-card-strong p-5 rounded-2xl border border-[var(--color-glass-border)]">
@@ -160,7 +178,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
             <span className="text-sm text-[var(--color-text-secondary)]">Messages</span>
           </div>
           <p className="text-2xl font-display font-bold text-[var(--color-text-primary)] ml-11">
-            {messageCount || 0}
+            {messageCount}
           </p>
         </div>
         <div className="glass-card-strong p-5 rounded-2xl border border-[var(--color-glass-border)]">
@@ -168,10 +186,10 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
             <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
               <Calendar className="w-4 h-4 text-green-400" />
             </div>
-            <span className="text-sm text-[var(--color-text-secondary)]">Member Since</span>
+            <span className="text-sm text-[var(--color-text-secondary)]">Verified</span>
           </div>
           <p className="text-lg font-display font-bold text-[var(--color-text-primary)] ml-11">
-            {new Date(client.created_at).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}
+            {client.emailVerified ? new Date(client.emailVerified).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) : 'No'}
           </p>
         </div>
       </div>
@@ -179,50 +197,50 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
       {/* Projects Table */}
       <div className="glass-card-strong p-6 rounded-2xl border border-[var(--color-glass-border)]">
         <h2 className="text-xl font-display font-bold text-[var(--color-text-primary)] mb-6">Projects</h2>
-        <ClientProjectsTable initialProjects={projects || []} />
+        <ClientProjectsTable initialProjects={clientProjects} />
       </div>
 
       {/* Quotations & Payments Table */}
       <div className="glass-card-strong p-6 rounded-2xl border border-[var(--color-glass-border)]">
         <h2 className="text-xl font-display font-bold text-[var(--color-text-primary)] mb-6">Quotations & Payments</h2>
-        <ClientQuotationsTable initialQuotations={quotations || []} />
+        <ClientQuotationsTable initialQuotations={clientQuotations.map(q => ({ ...q.quotation, projects: { project_name: q.project.title } }))} />
       </div>
 
       {/* Uploaded Files Section */}
       <div className="glass-card-strong p-6 rounded-2xl border border-[var(--color-glass-border)]">
         <h2 className="text-xl font-display font-bold text-[var(--color-text-primary)] mb-6">Client Uploaded Files</h2>
 
-        {files && files.length > 0 ? (
+        {files.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {files.map(file => (
+            {files.map(({ file, project }) => (
               <div key={file.id} className="glass-card-strong p-4 rounded-xl border border-[var(--color-glass-border)] flex items-center justify-between group bg-[var(--color-bg-glass)]">
                 <div className="flex items-center gap-3 overflow-hidden">
                   <div className="w-10 h-10 rounded-lg bg-[var(--color-bg-tertiary)] flex items-center justify-center shrink-0">
-                    {file.file_type?.startsWith('image/') ? (
+                    {file.fileType?.startsWith('image/') ? (
                       <ImageIcon className="w-5 h-5 text-[var(--color-accent-secondary)]" />
                     ) : (
                       <File className="w-5 h-5 text-[var(--color-accent-primary)]" />
                     )}
                   </div>
                   <div className="min-w-0">
-                    <a href={file.file_url} target="_blank" rel="noopener noreferrer" className="font-medium text-sm text-[var(--color-text-primary)] hover:text-[var(--color-accent-primary)] truncate block">
-                      {file.file_name}
+                    <a href={file.fileUrl} target="_blank" rel="noopener noreferrer" className="font-medium text-sm text-[var(--color-text-primary)] hover:text-[var(--color-accent-primary)] truncate block">
+                      {file.fileName}
                     </a>
                     <div className="flex flex-col gap-1 mt-1">
                       <div className="flex items-center gap-2 text-[10px] text-[var(--color-text-muted)]">
                         <span className="uppercase px-1.5 py-0.5 bg-[var(--color-bg-tertiary)] rounded-sm">
                           {file.category?.replace('_', ' ')}
                         </span>
-                        <span>{(file.file_size / 1024).toFixed(1)} KB</span>
+                        <span>{(file.fileSize / 1024).toFixed(1)} KB</span>
                       </div>
                       <span className="text-[10px] text-[var(--color-text-secondary)] truncate">
-                        Project: {file.projects?.project_name || 'Unknown Project'}
+                        Project: {project.title}
                       </span>
                     </div>
                   </div>
                 </div>
                 <a 
-                  href={`${file.file_url}?download=`}
+                  href={`${file.fileUrl}?download=`}
                   download
                   target="_blank"
                   rel="noopener noreferrer"

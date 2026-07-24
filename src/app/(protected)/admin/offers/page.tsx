@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createBrowserClient } from '@supabase/ssr';
 import { Tag, Send, Upload, Loader2, X, Edit2, Trash2 } from 'lucide-react';
 
 import { PROJECT_TYPES } from '@/data/calculatorData';
@@ -37,11 +36,6 @@ export default function AdminOffersPage() {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [fetchingOffers, setFetchingOffers] = useState(true);
   const [editingOfferId, setEditingOfferId] = useState<string | null>(null);
-
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
 
   useEffect(() => {
     fetchOffers();
@@ -138,20 +132,21 @@ export default function AdminOffersPage() {
 
       // 1. Upload image if a new file is selected
       if (imageFile) {
-        const fileExt = imageFile.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random()}.${fileExt}`;
-        const filePath = `${fileName}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from('offers')
-          .upload(filePath, imageFile);
-
-        if (uploadError) {
-          throw new Error(`Image upload failed: ${uploadError.message}`);
+        const uploadData = new FormData();
+        uploadData.append('file', imageFile);
+        
+        const uploadRes = await fetch('/api/offers/upload', {
+          method: 'POST',
+          body: uploadData
+        });
+        
+        if (!uploadRes.ok) {
+          const err = await uploadRes.json();
+          throw new Error(`Image upload failed: ${err.error || 'Unknown error'}`);
         }
-
-        const { data } = supabase.storage.from('offers').getPublicUrl(filePath);
-        image_url = data.publicUrl;
+        
+        const uploadResult = await uploadRes.json();
+        image_url = uploadResult.url;
       }
 
       // 2. Submit to API (PUT if editing, POST if new)

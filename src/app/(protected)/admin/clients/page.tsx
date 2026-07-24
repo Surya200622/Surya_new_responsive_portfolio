@@ -1,7 +1,12 @@
-import { createClient } from '@/lib/supabase/server';
 import { Search, Mail, Phone } from 'lucide-react';
 import Link from 'next/link';
 import ClientActionsMenu from './ClientActionsMenu';
+import { db } from '@/db';
+import { users, projects } from '@/db/schema';
+import { eq, desc } from 'drizzle-orm';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 import type { Metadata } from 'next';
 
@@ -9,18 +14,34 @@ export const metadata: Metadata = {
   title: 'Admin - Clients | Surya CS',
 };
 
-
 export default async function AdminClientsPage() {
-  const supabase = createClient();
+  const session = await getServerSession(authOptions);
 
-  const { data: clients } = await supabase
-    .from('profiles')
-    .select(`
-      *,
-      projects (id)
-    `)
-    .eq('role', 'client')
-    .order('created_at', { ascending: false });
+  if (!session || !session.user || session.user.role !== 'admin') {
+    redirect('/admin/login');
+  }
+
+  // Fetch clients and count their projects
+  // We'll fetch clients, then fetch projects to group them
+  const clientsData = await db
+    .select()
+    .from(users)
+    .where(eq(users.role, 'client'))
+    .orderBy(desc(users.emailVerified));
+    
+  const allProjects = await db
+    .select({
+      id: projects.id,
+      clientId: projects.clientId
+    })
+    .from(projects);
+    
+  const clientsWithProjects = clientsData.map(client => {
+    return {
+      ...client,
+      projectsCount: allProjects.filter(p => p.clientId === client.id).length
+    };
+  });
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -43,18 +64,18 @@ export default async function AdminClientsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-        {clients?.map((client) => (
+        {clientsWithProjects?.map((client) => (
           <div key={client.id} className="glass-card-strong p-6 rounded-2xl border border-[var(--color-glass-border)] group">
             <div className="flex justify-between items-start mb-4">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--color-accent-primary)] to-[var(--color-accent-warm)] p-0.5">
                   <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center font-display font-bold text-lg text-[var(--color-text-primary)]">
-                    {client.full_name?.charAt(0)?.toUpperCase() || 'C'}
+                    {client.name?.charAt(0)?.toUpperCase() || 'C'}
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-lg font-display font-bold text-[var(--color-text-primary)]">{client.full_name}</h3>
-                  <p className="text-xs text-[var(--color-text-muted)]">{client.company_name || 'Individual'}</p>
+                  <h3 className="text-lg font-display font-bold text-[var(--color-text-primary)]">{client.name}</h3>
+                  <p className="text-xs text-[var(--color-text-muted)]">{client.companyName || 'Individual'}</p>
                 </div>
               </div>
               <ClientActionsMenu clientId={client.id} />
@@ -75,7 +96,7 @@ export default async function AdminClientsPage() {
 
             <div className="flex items-center justify-between pt-4 border-t border-[var(--color-glass-border)]">
               <div className="text-xs text-[var(--color-text-muted)]">
-                <span className="font-semibold text-[var(--color-text-primary)]">{client.projects?.length || 0}</span> Projects
+                <span className="font-semibold text-[var(--color-text-primary)]">{client.projectsCount}</span> Projects
               </div>
               <Link href={`/admin/clients/${client.id}`} className="text-xs font-semibold text-[var(--color-accent-primary)] hover:text-[var(--color-accent-warm)] transition-colors">
                 View Details

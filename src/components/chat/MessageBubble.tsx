@@ -21,9 +21,9 @@ export default function MessageBubble({ message, isOwn }: MessageBubbleProps) {
       }`}>
         
         {/* File Attachment */}
-        {message.file_url && (
+        {message.fileUrl && (
           <a 
-            href={message.file_url} 
+            href={message.fileUrl} 
             target="_blank" 
             rel="noopener noreferrer"
             className={`flex items-center gap-2 p-2 rounded-lg mb-2 text-sm font-medium ${
@@ -31,7 +31,7 @@ export default function MessageBubble({ message, isOwn }: MessageBubbleProps) {
             } transition-colors`}
           >
             <Paperclip className="w-4 h-4" />
-            <span className="truncate">{message.file_name || 'Attachment'}</span>
+            <span className="truncate">{message.fileName || 'Attachment'}</span>
           </a>
         )}
 
@@ -40,9 +40,9 @@ export default function MessageBubble({ message, isOwn }: MessageBubbleProps) {
         <div className={`flex items-center justify-end gap-1.5 mt-1 text-[10px] font-medium ${
           isOwn ? 'text-black/60' : 'text-[var(--color-text-muted)]'
         }`}>
-          <span>{new Date(message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          <span>{new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
           {isOwn && (
-            message.is_read ? <CheckCheck className="w-3 h-3 text-blue-700" /> : <Check className="w-3 h-3" />
+            message.isRead ? <CheckCheck className="w-3 h-3 text-blue-700" /> : <Check className="w-3 h-3" />
           )}
         </div>
       </div>

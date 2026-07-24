@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { getBrandEmailTemplate } from '@/lib/email-template';
-import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { db } from '@/db';
+import { users, messages } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 
 export async function POST(request: Request) {
   try {
@@ -57,32 +59,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message || 'Failed to send email' }, { status: 500 });
     }
 
-    // Save message to Supabase
+    // Save message to Turso database
     try {
-      const supabaseAdmin = createSupabaseClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
-      );
-
       // Find the admin user
-      const { data: adminUser } = await supabaseAdmin
-        .from('profiles')
-        .select('id')
-        .eq('role', 'admin')
-        .limit(1)
-        .single();
+      const adminUsers = await db.select({ id: users.id }).from(users).where(eq(users.role, 'admin')).limit(1);
 
-      if (adminUser) {
-        await supabaseAdmin
-          .from('messages')
-          .insert({
-            receiver_id: adminUser.id,
-            content: `From: ${name} (${email})\nPhone: ${phone || 'N/A'}\nProject: ${project || 'N/A'}\n\nMessage: ${message}`,
-            is_read: false
-          });
+      if (adminUsers.length > 0) {
+        await db.insert(messages).values({
+          id: crypto.randomUUID(),
+          receiverId: adminUsers[0].id,
+          content: `From: ${name} (${email})\nPhone: ${phone || 'N/A'}\nProject: ${project || 'N/A'}\n\nMessage: ${message}`,
+          createdAt: new Date(),
+        });
       }
     } catch (dbError) {
-      console.error('Failed to save to Supabase:', dbError);
+      console.error('Failed to save to Turso:', dbError);
       // We don't fail the request if the email was sent successfully
     }
 

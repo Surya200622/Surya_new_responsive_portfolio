@@ -4,46 +4,56 @@ export const metadata: Metadata = {
   title: 'Dashboard - Quotations | Surya CS',
 };
 
-
- import { FileText, Download, CheckCircle, Clock } from 'lucide-react';
-import { createClient } from '@/lib/supabase/server';
-import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { FileText, Download, CheckCircle, Clock } from 'lucide-react';
 import QuotationActions from './QuotationActions';
 import DownloadQuotationButton from '@/components/pdf/DownloadQuotationButton';
 import PayUPIButton from './PayUPIButton';
 
-export default async function ClientQuotationsPage() {
-  const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+import { db } from '@/db';
+import { quotations, projects, users } from '@/db/schema';
+import { eq, desc } from 'drizzle-orm';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
-  // Use admin client to bypass missing RLS SELECT policies on quotations table
-  const supabaseAdmin = createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+export default async function ClientQuotationsPage() {
+  const session = await getServerSession(authOptions);
+  
+  if (!session || !session.user) {
+    redirect('/login');
+  }
+
+  // @ts-ignore
+  const userId = session.user.id;
 
   // Fetch quotations and their linked project names
-  const { data: quotations } = await supabaseAdmin
-    .from('quotations')
-    .select('*, projects(project_name, reference_code)')
-    .eq('client_id', user?.id)
-    .order('created_at', { ascending: false });
+  const userQuotationsData = await db
+    .select({
+      quotation: quotations,
+      project: projects,
+    })
+    .from(quotations)
+    .leftJoin(projects, eq(quotations.projectId, projects.id))
+    .where(eq(quotations.clientId, userId))
+    .orderBy(desc(quotations.createdAt));
+
+  // Transform to match existing interface
+  const userQuotations = userQuotationsData.map(row => ({
+    ...row.quotation,
+    projects: row.project ? { 
+      project_name: row.project.title, // mapped from projects.title 
+      reference_code: `PRJ-${row.project.id.substring(0, 8).toUpperCase()}` 
+    } : null,
+  }));
 
   // Fetch admin id for notifications
-  const { data: adminData } = await supabaseAdmin
-    .from('profiles')
-    .select('id')
-    .eq('role', 'admin')
-    .limit(1)
-    .single();
-  const adminId = adminData?.id || null;
+  const adminData = await db.select({ id: users.id }).from(users).where(eq(users.role, 'admin')).limit(1);
+  const adminId = adminData[0]?.id || null;
 
-  // Fetch client profile for notifications
-  const { data: userProfile } = await supabaseAdmin
-    .from('profiles')
-    .select('full_name')
-    .eq('id', user?.id)
-    .single();
+  // Client profile info
+  const userProfile = {
+    full_name: session.user.name || session.user.email?.split('@')[0] || 'Client'
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -63,9 +73,9 @@ export default async function ClientQuotationsPage() {
         <p className="text-sm text-[var(--color-text-muted)]">Review and accept project proposals.</p>
       </div>
 
-      {quotations && quotations.length > 0 ? (
+      {userQuotations && userQuotations.length > 0 ? (
         <div className="grid gap-4">
-          {quotations.map((quote) => (
+          {userQuotations.map((quote) => (
             <div key={quote.id} className="glass-card-strong p-6 rounded-2xl border border-[var(--color-glass-border)] flex flex-col md:flex-row md:items-center justify-between gap-4 group hover:border-[var(--color-accent-primary)]/50 transition-colors">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-xl bg-[var(--color-bg-tertiary)] flex items-center justify-center shrink-0">
@@ -82,37 +92,41 @@ export default async function ClientQuotationsPage() {
                   </div>
                   <p className="text-sm text-[var(--color-text-secondary)] flex items-center gap-2">
                     <Clock className="w-3.5 h-3.5" />
-                    Generated on {new Date(quote.created_at).toLocaleDateString()}
+                    Generated on {new Date(quote.createdAt!).toLocaleDateString()}
                   </p>
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 border-t border-[var(--color-glass-border)]">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 border-t border-[var(--color-glass-border)] md:border-t-0 md:pt-0">
                 <div>
                   <p className="text-xs text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Total Estimated Cost</p>
                   <p className="text-xl font-display font-bold text-[var(--color-text-primary)]">
-                    ₹{(quote.total || 0).toLocaleString()}
+                    ₹{(quote.amount || 0).toLocaleString()}
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full sm:w-auto">
                   {quote.status !== 'rejected' && quote.status !== 'fully_paid' && (
                     <PayUPIButton 
-                      amount={quote.total || 0} 
+                      amount={quote.amount || 0} 
                       projectName={quote.projects?.project_name || 'Project Quotation'}
-                      projectId={quote.project_id}
+                      projectId={quote.projectId!}
                       quotationId={quote.id}
-                      referenceCode={quote.reference_code || quote.projects?.reference_code || `QUOTE-${quote.id.substring(0, 8).toUpperCase()}`}
+                      referenceCode={quote.projects?.reference_code || `QUOTE-${quote.id.substring(0, 8).toUpperCase()}`}
                     />
                   )}
                   <DownloadQuotationButton 
-                    quote={quote} 
+                    quote={{
+                      ...quote,
+                      created_at: quote.createdAt,
+                      total: quote.amount,
+                    }} 
                     clientName={userProfile?.full_name || 'Client'} 
                   />
                   {quote.status !== 'accepted' && quote.status !== 'rejected' && (
                     <QuotationActions 
                       quoteId={quote.id} 
-                      projectId={quote.project_id}
-                      adminId={adminId}
+                      projectId={quote.projectId!}
+                      adminId={adminId!}
                       clientName={userProfile?.full_name || 'A client'}
                       projectName={quote.projects?.project_name || 'Project Quotation'}
                     />

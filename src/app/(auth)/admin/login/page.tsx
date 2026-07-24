@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { createBrowserClient } from '@supabase/ssr';
+import { signIn } from 'next-auth/react';
 import { Mail, Lock, Loader2, ArrowRight, ShieldAlert, Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 import { loginSchema, type LoginInput } from '@/lib/validations/auth';
@@ -22,11 +22,6 @@ export default function AdminLoginPage() {
   const [serverError, setServerError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -34,21 +29,19 @@ export default function AdminLoginPage() {
     setServerError('');
 
     try {
-      // Validate input
       const validData = loginSchema.parse(formData);
 
-      // Enforce the specific admin email
       if (validData.email !== 'suryacs.is.a.dev@gmail.com') {
         throw new Error('Unauthorized admin email. Only the master admin can log in here.');
       }
 
-      // Attempt login
-      const { error } = await supabase.auth.signInWithPassword({
+      const result = await signIn('credentials', {
+        redirect: false,
         email: validData.email,
         password: validData.password,
       });
 
-      if (error) throw error;
+      if (result?.error) throw new Error(result.error);
 
       router.push('/admin');
       router.refresh();

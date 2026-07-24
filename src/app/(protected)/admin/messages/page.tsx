@@ -2,12 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { createBrowserClient } from '@supabase/ssr';
 import ChatWindow from '@/components/chat/ChatWindow';
-import { MessageSquare, Search, ArrowLeft } from 'lucide-react';
-
-
-
+import { MessageSquare, Search, ArrowLeft, Loader2 } from 'lucide-react';
 
 interface ClientProfile {
   id: string;
@@ -15,13 +11,11 @@ interface ClientProfile {
   email: string;
   company_name?: string;
   avatar_url?: string;
-}
-
-interface LastMessage {
-  client_id: string;
-  content: string;
-  created_at: string;
-  unread_count: number;
+  lastMessage?: {
+    content: string;
+    created_at: string;
+    unread_count: number;
+  } | null;
 }
 
 export default function AdminMessagesPage() {
@@ -31,84 +25,35 @@ export default function AdminMessagesPage() {
   const [currentUserId, setCurrentUserId] = useState('');
   const [clients, setClients] = useState<ClientProfile[]>([]);
   const [selectedClient, setSelectedClient] = useState<string>(preselectedClientId || '');
-  const [lastMessages, setLastMessages] = useState<Map<string, LastMessage>>(new Map());
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
-
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
 
   useEffect(() => {
     async function loadData() {
       try {
-        // Get current admin user
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
-        setCurrentUserId(user.id);
+        const res = await fetch('/api/admin/chat/clients');
+        if (res.ok) {
+          const data = await res.json();
+          setCurrentUserId(data.currentUserId);
+          setClients(data.clients);
 
-        // Fetch all clients
-        const { data: clientsData } = await supabase
-          .from('profiles')
-          .select('id, full_name, email, company_name, avatar_url')
-          .eq('role', 'client')
-          .order('full_name', { ascending: true });
-
-        if (clientsData) {
-          setClients(clientsData);
-
-          // If we have a preselected client from URL, use it
-          if (preselectedClientId && clientsData.find(c => c.id === preselectedClientId)) {
+          if (preselectedClientId && data.clients.find((c: ClientProfile) => c.id === preselectedClientId)) {
             setSelectedClient(preselectedClientId);
           }
-
-          // Fetch last messages for each client
-          const messageMap = new Map<string, LastMessage>();
-
-          for (const client of clientsData) {
-            const { data: lastMsg } = await supabase
-              .from('messages')
-              .select('content, created_at, sender_id, receiver_id')
-              .or(`and(sender_id.eq.${user.id},receiver_id.eq.${client.id}),and(sender_id.eq.${client.id},receiver_id.eq.${user.id})`)
-              .order('created_at', { ascending: false })
-              .limit(1)
-              .maybeSingle();
-
-            const { count: unreadCount } = await supabase
-              .from('messages')
-              .select('*', { count: 'exact', head: true })
-              .eq('sender_id', client.id)
-              .eq('receiver_id', user.id)
-              .eq('is_read', false);
-
-            if (lastMsg) {
-              messageMap.set(client.id, {
-                client_id: client.id,
-                content: lastMsg.content,
-                created_at: lastMsg.created_at,
-                unread_count: unreadCount || 0,
-              });
-            } else {
-              messageMap.set(client.id, {
-                client_id: client.id,
-                content: '',
-                created_at: '',
-                unread_count: unreadCount || 0,
-              });
-            }
-          }
-
-          setLastMessages(messageMap);
         }
       } catch (e) {
         console.warn('Admin messages load error:', e);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
 
     loadData();
-  }, []);
+
+    // Poll for new clients/unread counts every 10 seconds
+    const intervalId = setInterval(loadData, 10000);
+    return () => clearInterval(intervalId);
+  }, [preselectedClientId]);
 
   const filteredClients = clients.filter(client =>
     client.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -118,8 +63,8 @@ export default function AdminMessagesPage() {
 
   // Sort clients: those with recent messages first, then alphabetical
   const sortedClients = [...filteredClients].sort((a, b) => {
-    const aMsg = lastMessages.get(a.id);
-    const bMsg = lastMessages.get(b.id);
+    const aMsg = a.lastMessage;
+    const bMsg = b.lastMessage;
     if (aMsg?.created_at && bMsg?.created_at) {
       return new Date(bMsg.created_at).getTime() - new Date(aMsg.created_at).getTime();
     }
@@ -133,7 +78,7 @@ export default function AdminMessagesPage() {
   if (loading) {
     return (
       <div className="h-[calc(100dvh-8rem)] flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[var(--color-accent-primary)] border-t-transparent rounded-full animate-spin" />
+        <Loader2 className="w-8 h-8 text-[var(--color-accent-primary)] animate-spin" />
       </div>
     );
   }
@@ -161,7 +106,7 @@ export default function AdminMessagesPage() {
         <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-0.5">
           {sortedClients.length > 0 ? (
             sortedClients.map(client => {
-              const lastMsg = lastMessages.get(client.id);
+              const lastMsg = client.lastMessage;
               const isSelected = selectedClient === client.id;
               const hasUnread = (lastMsg?.unread_count || 0) > 0;
 

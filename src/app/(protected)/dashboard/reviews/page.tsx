@@ -2,14 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { createBrowserClient } from '@supabase/ssr';
+import { useSession } from 'next-auth/react';
 import { Star, Save, AlertCircle } from 'lucide-react';
-
-
-
 
 export default function ReviewsPage() {
   const router = useRouter();
+  const { data: session, status } = useSession();
+  
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [reviewId, setReviewId] = useState<string | null>(null);
@@ -23,47 +22,36 @@ export default function ReviewsPage() {
 
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-
   useEffect(() => {
     async function loadData() {
+      if (status === 'loading') return;
+      if (status === 'unauthenticated' || !session?.user) {
+        router.push('/login');
+        return;
+      }
+
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-          router.push('/login');
-          return;
-        }
-
-        // Get user profile name
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('full_name')
-          .eq('id', user.id)
-          .single();
-
-        if (profile?.full_name) {
-          setProfileName(profile.full_name);
+        // Get user profile to get display name
+        const resProfile = await fetch('/api/user/profile');
+        if (resProfile.ok) {
+          const profile = await resProfile.json();
+          setProfileName(profile.full_name || session.user.name || session.user.email?.split('@')[0] || 'User');
         } else {
-          setProfileName(user.email?.split('@')[0] || 'User');
+          setProfileName(session.user.name || session.user.email?.split('@')[0] || 'User');
         }
 
         // Get existing review
-        const { data: review } = await supabase
-          .from('reviews')
-          .select('*')
-          .eq('client_id', user.id)
-          .maybeSingle();
-
-        if (review) {
-          setReviewId(review.id);
-          setForm({
-            role: review.role || '',
-            content: review.content || '',
-            rating: review.rating || 5,
-          });
+        const resReview = await fetch('/api/reviews/me');
+        if (resReview.ok) {
+          const review = await resReview.json();
+          if (review && review.id) {
+            setReviewId(review.id);
+            setForm({
+              role: review.role || '',
+              content: review.content || '',
+              rating: review.rating || 5,
+            });
+          }
         }
       } catch (err) {
         console.error('Failed to load review data:', err);
@@ -73,7 +61,7 @@ export default function ReviewsPage() {
     }
 
     loadData();
-  }, [router, supabase]);
+  }, [status, session, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,15 +69,11 @@ export default function ReviewsPage() {
     setMessage(null);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
-
       if (!form.content.trim() || !form.role.trim()) {
         throw new Error('Please fill out all fields.');
       }
 
       const reviewData = {
-        client_id: user.id,
         name: profileName,
         role: form.role,
         content: form.content,
@@ -98,32 +82,40 @@ export default function ReviewsPage() {
 
       if (reviewId) {
         // Update
-        const { error } = await supabase
-          .from('reviews')
-          .update(reviewData)
-          .eq('id', reviewId);
-        if (error) throw error;
+        const res = await fetch(`/api/reviews/${reviewId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(reviewData)
+        });
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || 'Failed to update review');
+        }
         setMessage({ type: 'success', text: 'Review updated successfully! It is now live on the portfolio.' });
       } else {
         // Insert
-        const { data, error } = await supabase
-          .from('reviews')
-          .insert([reviewData])
-          .select()
-          .single();
-        if (error) throw error;
-        if (data) setReviewId(data.id);
+        const res = await fetch('/api/reviews', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(reviewData)
+        });
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || 'Failed to publish review');
+        }
+        const data = await res.json();
+        if (data.review) setReviewId(data.review.id);
         setMessage({ type: 'success', text: 'Review published successfully! It is now live on the portfolio.' });
       }
     } catch (err: any) {
       console.error('Save review error:', err);
-      setMessage({ type: 'error', text: err.message || 'Failed to save review. Ensure the database table is created.' });
+      setMessage({ type: 'error', text: err.message || 'Failed to save review.' });
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) {
+  if (loading || status === 'loading') {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="w-8 h-8 border-2 border-[var(--color-accent-primary)] border-t-transparent rounded-full animate-spin" />
@@ -214,12 +206,8 @@ export default function ReviewsPage() {
                   if (!confirm('Are you sure you want to delete your review?')) return;
                   setSaving(true);
                   try {
-                    const { data: { session } } = await supabase.auth.getSession();
-                    const res = await fetch('/api/reviews', {
-                      method: 'DELETE',
-                      headers: {
-                        'Authorization': `Bearer ${session?.access_token}`
-                      }
+                    const res = await fetch(`/api/reviews/${reviewId}`, {
+                      method: 'DELETE'
                     });
                     
                     if (!res.ok) {
