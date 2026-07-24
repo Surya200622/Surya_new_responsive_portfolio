@@ -130,7 +130,7 @@ export async function POST(req: Request) {
             </div>
             <div class="data-row">
               <div class="data-label">Estimated Total</div>
-              <div class="data-value" style="color: #f97316; font-weight: bold;">$${data.pricing?.total || 0}</div>
+              <div class="data-value" style="color: #a855f7; font-weight: bold;">₹${data.pricing?.total || 0}</div>
             </div>
           </div>
           

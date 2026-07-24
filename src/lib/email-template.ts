@@ -11,8 +11,8 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
       margin: 0;
       padding: 0;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background-color: #0a0a0f;
-      color: #faf8f5;
+      background-color: #ffffff;
+      color: #1a1a1a;
       -webkit-font-smoothing: antialiased;
     }
     .container {
@@ -28,43 +28,43 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
       font-size: 28px;
       font-weight: 800;
       letter-spacing: -0.5px;
-      color: #faf8f5;
+      color: #1a1a1a;
       text-decoration: none;
     }
     .logo-dot {
-      color: #f97316;
+      color: #a855f7; /* Neon purple */
     }
     .card {
-      background-color: #13131a;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      background-color: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.1);
       border-radius: 16px;
       padding: 40px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
     }
     .title {
       font-size: 20px;
       font-weight: 600;
       margin-top: 0;
       margin-bottom: 24px;
-      color: #faf8f5;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: #a855f7; /* Neon purple */
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       padding-bottom: 16px;
     }
     .content {
       font-size: 15px;
       line-height: 1.6;
-      color: #a1a1aa;
+      color: #4b5563;
     }
     .content p {
       margin-top: 0;
       margin-bottom: 16px;
     }
     .content strong {
-      color: #faf8f5;
+      color: #1a1a1a;
     }
     .button {
       display: inline-block;
-      background: linear-gradient(to right, #f97316, #f59e0b);
+      background: linear-gradient(to right, #a855f7, #3b82f6); /* Neon purple to neon blue */
       color: #ffffff !important;
       font-weight: 600;
       font-size: 15px;
@@ -73,10 +73,11 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
       border-radius: 8px;
       margin: 24px 0;
       text-align: center;
+      box-shadow: 0 4px 14px 0 rgba(168, 85, 247, 0.39);
     }
     .data-box {
-      background-color: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      background-color: #f3f4f6;
+      border: 1px solid rgba(0, 0, 0, 0.05);
       border-radius: 8px;
       padding: 20px;
       margin: 24px 0;
@@ -91,22 +92,22 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: #71717a;
+      color: #6b7280;
       margin-bottom: 4px;
     }
     .data-value {
       font-size: 16px;
       font-weight: 500;
-      color: #faf8f5;
+      color: #1a1a1a;
     }
     .footer {
       text-align: center;
       margin-top: 40px;
       font-size: 13px;
-      color: #71717a;
+      color: #6b7280;
     }
     .footer a {
-      color: #a1a1aa;
+      color: #a855f7;
       text-decoration: none;
     }
     /* Preheader text (hidden) */
@@ -119,15 +120,15 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
 </head>
 <body>
   ${preheader ? `<div class="preheader">${preheader}</div>` : ''}
-  <div class="container" style="background-color: #0a0a0f; width: 100%; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
-    <div class="header" style="text-align: center; margin-bottom: 40px; background-color: #13131a; padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);">
+  <div class="container" style="background-color: #ffffff; width: 100%; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+    <div class="header" style="text-align: center; margin-bottom: 40px; background-color: #ffffff; padding: 20px; border-radius: 12px; border: 1px solid rgba(0, 0, 0, 0.05); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
       <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev'}" style="text-decoration: none; display: inline-block;">
         <img src="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev'}/logo.svg" alt="Surya CS Logo" width="200" style="display: block; margin: 0 auto; max-width: 100%; height: auto; border: 0;" />
       </a>
     </div>
     
     <div class="card">
-      <h2 class="title">${title}</h2>
+      <h2 class="title" style="color: #a855f7;">${title}</h2>
       
       <div class="content">
         ${contentHtml}
@@ -136,7 +137,7 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
     
     <div class="footer">
       <p>&copy; ${new Date().getFullYear()} Surya CS. All rights reserved.</p>
-      <p><a href="https://suryacs.is-a.dev">suryacs.is-a.dev</a></p>
+      <p><a href="https://suryacs.is-a.dev" style="color: #a855f7;">suryacs.is-a.dev</a></p>
     </div>
   </div>
 </body>
