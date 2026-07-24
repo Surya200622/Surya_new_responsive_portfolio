@@ -39,7 +39,7 @@ export default function AuthLayout({
         <div className="relative z-20 flex flex-col h-full justify-between p-8 md:p-12 lg:p-16">
           {/* Logo */}
           <Link href="/" className="w-fit inline-block">
-            <img src="/logo.svg" alt="Surya CS Logo" className="theme-adaptive-logo" style={{ height: '40px', width: 'auto' }} />
+            <img src="/logo.svg" alt="Surya CS Logo" className="theme-adaptive-logo" style={{ height: '52px', width: 'auto' }} />
           </Link>
 
           {/* Value Prop */}

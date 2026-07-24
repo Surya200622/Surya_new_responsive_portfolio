@@ -79,17 +79,17 @@ export const TIMELINE_DATA = [
   },
   {
     year: '2025',
-    title: 'Launched DentalExperts, CipherApparel & Portfolio',
-    description:
-      'Built a dental clinic management system with appointment booking & patient records, a fashion e-commerce platform with Django, and a cinematic personal portfolio with React & Vite — establishing my freelance web development practice.',
-    type: 'project',
-  },
-  {
-    year: '2025',
     title: 'Indra Institute of Education — Full-Stack Python',
     description:
       'Full-Stack Python Developer training at Indra Institute of Education, 100 Feet Road. Intensive program from July 09, 2025 to December 15, 2025, deepening expertise in Python full-stack development.',
     type: 'education',
+  },
+  {
+    year: '2025',
+    title: 'Launched DentalExperts, CipherApparel & Portfolio',
+    description:
+      'Built a dental clinic management system with appointment booking & patient records, a fashion e-commerce platform with Django, and a cinematic personal portfolio with React & Vite — establishing my freelance web development practice.',
+    type: 'project',
   },
   {
     year: '2026',
@@ -101,7 +101,7 @@ export const TIMELINE_DATA = [
 ];
 
 export const STATS = [
-  { value: '2+', label: 'Projects Delivered', icon: 'Briefcase' },
+  { value: '1+', label: 'Projects Delivered', icon: 'Briefcase' },
   { value: '2+', label: 'Certifications', icon: 'Award' },
   { value: '10+', label: 'Technologies', icon: 'Code' },
   { value: '1+', label: 'Years Experience', icon: 'Heart' },
