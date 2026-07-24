@@ -340,8 +340,8 @@ export default function ProtectedLayout({
       {/* Sidebar Navigation */}
       <aside className="w-64 glass-card-strong border-r border-[var(--color-glass-border)] hidden md:flex flex-col">
         <div className="p-6 border-b border-[var(--color-glass-border)]">
-          <Link href="/" className="text-xl font-display font-bold text-[var(--color-text-primary)] tracking-wide hover:text-[var(--color-accent-primary)] transition-colors">
-            Surya CS<span className="text-[var(--color-accent-primary)]">.</span>
+          <Link href="/" className="inline-block">
+            <img src="/logo.svg" alt="Surya CS Logo" style={{ height: '32px', width: 'auto' }} />
           </Link>
           <div className="mt-2 text-xs text-[var(--color-text-muted)] font-medium tracking-wider uppercase">
             {isAdmin ? 'Admin Portal' : 'Client Portal'}
@@ -383,8 +383,8 @@ export default function ProtectedLayout({
           <aside className="relative w-64 max-w-[80%] bg-[var(--color-bg-primary)] border-r border-[var(--color-glass-border)] flex flex-col h-full shadow-2xl animate-in slide-in-from-left duration-300">
             <div className="p-6 border-b border-[var(--color-glass-border)] flex items-center justify-between">
               <div>
-                <Link href="/" className="text-xl font-display font-bold text-[var(--color-text-primary)] tracking-wide">
-                  Surya CS<span className="text-[var(--color-accent-primary)]">.</span>
+                <Link href="/" className="inline-block">
+                  <img src="/logo.svg" alt="Surya CS Logo" style={{ height: '32px', width: 'auto' }} />
                 </Link>
                 <div className="mt-2 text-xs text-[var(--color-text-muted)] font-medium tracking-wider uppercase">
                   {isAdmin ? 'Admin Portal' : 'Client Portal'}
@@ -435,8 +435,8 @@ export default function ProtectedLayout({
             >
               <Menu className="w-6 h-6" />
             </button>
-            <Link href="/" className="text-lg font-display font-bold text-[var(--color-text-primary)] tracking-wide truncate">
-              Surya CS<span className="text-[var(--color-accent-primary)]">.</span>
+            <Link href="/" className="inline-block pt-1">
+              <img src="/logo.svg" alt="Surya CS Logo" style={{ height: '28px', width: 'auto' }} />
             </Link>
           </div>
 

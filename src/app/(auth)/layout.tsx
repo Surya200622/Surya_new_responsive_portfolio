@@ -38,8 +38,8 @@ export default function AuthLayout({
         {/* Foreground Content */}
         <div className="relative z-20 flex flex-col h-full justify-between p-8 md:p-12 lg:p-16">
           {/* Logo */}
-          <Link href="/" className="text-2xl font-display font-bold text-white tracking-wide w-fit">
-            Surya CS<span className="text-[var(--color-accent-primary)]">.</span>
+          <Link href="/" className="w-fit inline-block">
+            <img src="/logo.svg" alt="Surya CS Logo" style={{ height: '40px', width: 'auto' }} />
           </Link>
 
           {/* Value Prop */}
