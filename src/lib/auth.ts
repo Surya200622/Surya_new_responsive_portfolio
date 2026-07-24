@@ -56,24 +56,41 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async signIn({ user, account }) {
+      // Automatically sync Google profile picture if the user's DB image is null
+      if (account?.provider === 'google' && user?.image) {
+        try {
+          const existingUser = await db.select({ image: users.image }).from(users).where(eq(users.email, user.email as string));
+          
+          if (existingUser.length > 0 && !existingUser[0].image) {
+            await db.update(users).set({ image: user.image }).where(eq(users.email, user.email as string));
+          }
+        } catch (error) {
+          console.error('Error syncing Google profile picture:', error);
+        }
+      }
+      return true;
+    },
     async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
         // @ts-ignore
         token.role = user.role;
+        // @ts-ignore
+        token.picture = user.image || token.picture;
       }
 
-      // On first sign-in via Google, the user object may not have 'role'
-      // Fetch it from the database to ensure it's always correct
-      if (token.id && !token.role) {
+      // Ensure we have the latest role and image from the DB
+      if (token.id) {
         try {
-          const dbUsers = await db.select({ role: users.role }).from(users).where(eq(users.id, token.id as string));
+          const dbUsers = await db.select({ role: users.role, image: users.image }).from(users).where(eq(users.id, token.id as string));
           if (dbUsers[0]) {
             token.role = dbUsers[0].role || 'client';
+            token.picture = dbUsers[0].image || token.picture;
           }
         } catch (e) {
-          console.error('Error fetching user role for JWT:', e);
-          token.role = 'client';
+          console.error('Error fetching user data for JWT:', e);
+          if (!token.role) token.role = 'client';
         }
       }
 
@@ -85,6 +102,8 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         // @ts-ignore
         session.user.role = (token.role as string) || 'client';
+        // @ts-ignore
+        session.user.image = token.picture as string;
       }
       return session;
     },
