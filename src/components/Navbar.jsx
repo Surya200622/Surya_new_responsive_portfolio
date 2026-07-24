@@ -178,11 +178,11 @@ export default function Navbar({ theme, toggleTheme }) {
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 shrink-0 rounded-full border border-[var(--color-border)] overflow-hidden bg-[var(--color-bg-secondary)] hover:border-[var(--color-accent-primary)] transition-colors"
                 >
-                  {profile?.avatar_url ? (
-                    <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                  {profile?.image || profile?.avatar_url ? (
+                    <img src={profile.image || profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-xs sm:text-sm font-bold text-[var(--color-text-primary)]">
-                      {profile?.full_name?.charAt(0) || user.email?.charAt(0).toUpperCase()}
+                      {(profile?.name || profile?.full_name)?.charAt(0)?.toUpperCase() || user.email?.charAt(0).toUpperCase()}
                     </span>
                   )}
                 </button>

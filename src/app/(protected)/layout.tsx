@@ -34,7 +34,7 @@ export default function ProtectedLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -248,6 +248,7 @@ export default function ProtectedLayout({
       if (!res.ok) throw new Error('Failed to update profile');
 
       setProfile(prev => prev ? { ...prev, avatar_url: avatarUrl } : prev);
+      await update();
     } catch (error) {
       console.error('Error uploading avatar:', error);
       alert('Error uploading avatar');
@@ -269,6 +270,7 @@ export default function ProtectedLayout({
     if (res.ok) {
       setProfile(prev => prev ? { ...prev, ...settingsForm } : prev);
       setSettingsForm(prev => ({ ...prev, new_password: '' })); // clear password field
+      await update();
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } else {
