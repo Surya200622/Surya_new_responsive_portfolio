@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { getBrandEmailTemplate } from '@/lib/email-template';
 
 export async function POST(request: Request) {
@@ -10,15 +10,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: process.env.SMTP_PORT === '465',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     const emailContent = `
       <p>Your client account has been successfully created. Here are your registration details and secure login credentials:</p>
@@ -51,16 +43,21 @@ export async function POST(request: Request) {
       </p>
     `;
 
-    await transporter.sendMail({
-      from: `"Portfolio Admin" <${process.env.EMAIL_USER}>`,
+    const { data, error } = await resend.emails.send({
+      from: `Portfolio Admin <${process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'}>`,
       to: email, // Directly to the user
       subject: `Welcome to Your Client Portal${name ? `, ${name}` : ''}`,
       html: getBrandEmailTemplate('Welcome to Your Client Portal', emailContent, 'Your account details and login credentials'),
     });
 
+    if (error) {
+      console.error('Resend error:', error);
+      return NextResponse.json({ error: error.message || 'Failed to send email' }, { status: 500 });
+    }
+
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    console.error('Nodemailer error:', error);
+    console.error('Email API error:', error);
     return NextResponse.json({ error: error.message || 'Failed to send email' }, { status: 500 });
   }
 }

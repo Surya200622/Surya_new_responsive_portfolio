@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { Resend } from 'resend';
+import { getBrandEmailTemplate } from '@/lib/email-template';
 
 export async function POST(req: Request) {
   try {
@@ -106,6 +108,57 @@ export async function POST(req: Request) {
         error: `Failed to create quotation: ${quoteError.message}`,
         details: quoteError
       }, { status: 500 });
+    }
+
+    // 3. Send Quotation via Email
+    if (user.email) {
+      try {
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        
+        const emailContent = `
+          <h2 style="color: #f97316; margin-bottom: 10px;">Your Project Quotation</h2>
+          <p>Thank you for requesting a quotation for your <strong>${projectName}</strong>.</p>
+          
+          <div class="data-box" style="margin-top: 20px;">
+            <div class="data-row">
+              <div class="data-label">Project</div>
+              <div class="data-value">${projectName}</div>
+            </div>
+            <div class="data-row">
+              <div class="data-label">Estimated Timeline</div>
+              <div class="data-value">${data.pricing?.timeline || 0} Days</div>
+            </div>
+            <div class="data-row">
+              <div class="data-label">Estimated Total</div>
+              <div class="data-value" style="color: #f97316; font-weight: bold;">$${data.pricing?.total || 0}</div>
+            </div>
+          </div>
+          
+          <p style="margin-top: 20px;">We have outlined the details in your client dashboard. You can review the full breakdown, make adjustments, and approve the quotation when you are ready.</p>
+          
+          <div style="margin: 30px 0; text-align: center;">
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev'}/dashboard/quotations" class="button">
+              View Full Quotation
+            </a>
+          </div>
+        `;
+
+        const htmlTemplate = getBrandEmailTemplate(
+          `Your Quotation: ${projectName}`, 
+          emailContent, 
+          'Review your personalized project quotation'
+        );
+
+        await resend.emails.send({
+          from: `Surya CS <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs.is-a.dev'}>`,
+          to: user.email,
+          subject: `Your Project Quotation: ${projectName}`,
+          html: htmlTemplate,
+        });
+      } catch (emailErr) {
+        console.error('Error sending quotation email:', emailErr);
+        // Continue even if email fails
+      }
     }
 
     return NextResponse.json({ success: true, quotation });

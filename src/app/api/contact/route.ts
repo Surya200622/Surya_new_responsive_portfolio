@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { getBrandEmailTemplate } from '@/lib/email-template';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
@@ -11,15 +11,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: process.env.SMTP_PORT === '465',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     const emailContent = `
       <p>You have received a new message from your portfolio contact form.</p>
@@ -52,13 +44,18 @@ export async function POST(request: Request) {
       </div>
     `;
 
-    await transporter.sendMail({
-      from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER,
+    const { data, error } = await resend.emails.send({
+      from: `Portfolio Contact <${process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'}>`,
+      to: process.env.EMAIL_USER as string,
       replyTo: email,
       subject: `New Portfolio Inquiry from ${name}`,
       html: getBrandEmailTemplate('New Contact Form Submission', emailContent, `Inquiry from ${name}`),
     });
+
+    if (error) {
+      console.error('Resend error:', error);
+      return NextResponse.json({ error: error.message || 'Failed to send email' }, { status: 500 });
+    }
 
     // Save message to Supabase
     try {
@@ -91,7 +88,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    console.error('Nodemailer error:', error);
+    console.error('Email API error:', error);
     return NextResponse.json({ error: error.message || 'Failed to send email' }, { status: 500 });
   }
 }

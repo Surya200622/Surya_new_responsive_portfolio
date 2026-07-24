@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { Resend } from 'resend';
+import { getBrandEmailTemplate } from '@/lib/email-template';
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -60,6 +62,32 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         console.error('Error updating project status:', projectError);
         // Don't fail the whole operation — the quotation was already updated
       }
+    }
+
+    // 3. Send notification to admin
+    try {
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      const emailContent = `
+        <h2 style="color: ${action === 'accept' ? '#22c55e' : '#ef4444'}; margin-bottom: 10px;">
+          Quotation ${action === 'accept' ? 'Accepted' : 'Rejected'}
+        </h2>
+        <p>The client (<strong>${user.email}</strong>) has ${action === 'accept' ? 'accepted' : 'rejected'} the quotation for Project ID: ${projectId}.</p>
+        
+        <div style="margin: 30px 0; text-align: center;">
+          <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev'}/admin/quotations" class="button">
+            View Quotation Details
+          </a>
+        </div>
+      `;
+
+      await resend.emails.send({
+        from: `Portfolio System <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs.is-a.dev'}>`,
+        to: process.env.EMAIL_USER as string,
+        subject: `Quotation ${action === 'accept' ? 'Accepted' : 'Rejected'} by ${user.email}`,
+        html: getBrandEmailTemplate(`Quotation ${action === 'accept' ? 'Accepted' : 'Rejected'}`, emailContent, 'Client Action Notification'),
+      });
+    } catch (emailErr) {
+      console.error('Error sending quotation status email:', emailErr);
     }
 
     return NextResponse.json({ success: true, status: newQuoteStatus });
