@@ -8,7 +8,6 @@ import Navbar from './components/Navbar';
 import HeroSection from './sections/HeroSection';
 import AboutSection from './sections/AboutSection';
 import ProcessSection from './sections/ProcessSection';
-import SkillsSection from './sections/SkillsSection';     
 import ProjectsSection from './sections/ProjectsSection';
 import OffersSection from './sections/OffersSection';
 import CalculatorSection from './sections/CalculatorSection';
@@ -53,7 +52,6 @@ export default function App() {
       offers: 'Special Offers | Surya CS',
       calculator: 'Project Cost Calculator | Surya CS',
       about: 'About Me | Surya CS',
-      skills: 'Skills | Surya CS',
       testimonials: 'Testimonials | Surya CS',
       contact: 'Contact | Surya CS'
     };
@@ -103,10 +101,6 @@ export default function App() {
         )}
 
         <AboutSection />
-
-        <div className="section-divider" />
-
-        <SkillsSection />
 
         <div className="section-divider" />
 

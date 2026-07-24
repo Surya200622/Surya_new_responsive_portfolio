@@ -305,7 +305,7 @@ export default function AboutSection() {
             variants={fadeInUp}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.5 }}
+            viewport={{ once: true, amount: 0.2 }}
           >
             <span className="about__section-label-line" />
             About Me
@@ -316,7 +316,7 @@ export default function AboutSection() {
             variants={fadeInUp}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.5 }}
+            viewport={{ once: true, amount: 0.2 }}
           >
             Crafting the Future of <span className="text-gradient" style={{ position: 'relative' }}>
               Web Experiences
@@ -325,7 +325,7 @@ export default function AboutSection() {
                 style={{ position: 'absolute', bottom: '-10px', left: '-10%', zIndex: -1 }}
                 initial={{ pathLength: 0, opacity: 0 }}
                 whileInView={{ pathLength: 1, opacity: 1 }}
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 1.5, ease: 'easeInOut', delay: 0.5 }}
               >
                 <motion.path 
@@ -380,7 +380,7 @@ export default function AboutSection() {
                 className="about__stat"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
+                viewport={{ once: true, amount: 0.2 }}
                 transition={{ delay: i * 0.1, duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
               >
                 <div className="about__stat-icon"><IconComp size={28} /></div>
@@ -401,7 +401,7 @@ export default function AboutSection() {
             variants={fadeInUp}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.2 }}
           >
             My <span className="text-gradient">Journey</span>
           </motion.h2>
