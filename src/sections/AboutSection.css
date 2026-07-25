@@ -530,21 +530,34 @@
   }
 
   .about__timeline-item {
-    grid-template-columns: auto 1fr;
-    gap: var(--space-md);
+    display: block;
+    position: relative;
+    padding-left: 56px;
+    margin-bottom: var(--space-2xl);
+    transform: translateY(30px);
   }
 
   .about__timeline-center {
-    grid-column: 1;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 40px; /* Center of this is 20px */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
   }
 
   .about__timeline-content--left,
   .about__timeline-content--right {
-    grid-column: 2;
+    width: 100%;
   }
 
   .about__timeline-year {
-    text-align: left;
+    text-align: center;
+    font-size: 11px;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
   }
 }
 

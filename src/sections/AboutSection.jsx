@@ -79,71 +79,9 @@ export default function AboutSection() {
       });
     }
 
-    // Image clip-path reveal
+    // Image clip-path reveal (only runs if the element exists)
     if (revealRef.current) {
       const revealContainer = revealRef.current.querySelector('.about__reveal-container');
-      
-      // Fade in up elements
-      const fadeElements = sectionRef.current?.querySelectorAll('.about__fade-in-up');
-      if (fadeElements) {
-        fadeElements.forEach((el) => {
-          gsap.fromTo(el,
-            { opacity: 0, y: 40 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.8,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: el,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse',
-              },
-            }
-          );
-        });
-      }
-
-      // SVG path draw animations
-      const svgPaths = sectionRef.current?.querySelectorAll('.about__svg-draw path');
-      if (svgPaths) {
-        svgPaths.forEach((path) => {
-          const length = path.getTotalLength() || 300;
-          gsap.set(path, { strokeDasharray: length, strokeDashoffset: length, opacity: 0 });
-          gsap.to(path, {
-            strokeDashoffset: 0,
-            opacity: 1,
-            duration: 1.5,
-            ease: 'power2.inOut',
-            delay: 0.5,
-            scrollTrigger: {
-              trigger: path.closest('svg'),
-              start: 'top 85%',
-              toggleActions: 'play none none reverse',
-            },
-          });
-        });
-      }
-
-      // Stats animations
-      const statsElements = sectionRef.current?.querySelectorAll('.about__stat');
-      if (statsElements && statsElements.length > 0) {
-        gsap.fromTo(statsElements,
-          { opacity: 0, y: 30 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            ease: 'power2.out',
-            stagger: 0.1,
-            scrollTrigger: {
-              trigger: statsElements[0].parentNode,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse',
-            },
-          }
-        );
-      }
       const symbolsBg = revealRef.current.querySelector('.about__reveal-symbols');
       
       if (revealContainer) {
@@ -177,6 +115,68 @@ export default function AboutSection() {
           });
         });
       }
+    }
+
+    // Fade in up elements
+    const fadeElements = sectionRef.current?.querySelectorAll('.about__fade-in-up');
+    if (fadeElements) {
+      fadeElements.forEach((el) => {
+        gsap.fromTo(el,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      });
+    }
+
+    // SVG path draw animations
+    const svgPaths = sectionRef.current?.querySelectorAll('.about__svg-draw path');
+    if (svgPaths) {
+      svgPaths.forEach((path) => {
+        const length = path.getTotalLength() || 300;
+        gsap.set(path, { strokeDasharray: length, strokeDashoffset: length, opacity: 0 });
+        gsap.to(path, {
+          strokeDashoffset: 0,
+          opacity: 1,
+          duration: 1.5,
+          ease: 'power2.inOut',
+          delay: 0.5,
+          scrollTrigger: {
+            trigger: path.closest('svg'),
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        });
+      });
+    }
+
+    // Stats animations
+    const statsElements = sectionRef.current?.querySelectorAll('.about__stat');
+    if (statsElements && statsElements.length > 0) {
+      gsap.fromTo(statsElements,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power2.out',
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: statsElements[0].parentNode,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
     }
 
     // Timeline items — parallax + scroll effects for desktop
@@ -290,9 +290,10 @@ export default function AboutSection() {
 
           // Parent item itself fades in
           gsap.fromTo(item,
-            { opacity: 0 },
+            { opacity: 0, y: 30 },
             {
               opacity: 1,
+              y: 0,
               duration: 0.3,
               scrollTrigger: {
                 trigger: item,
