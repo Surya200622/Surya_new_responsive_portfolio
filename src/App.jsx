@@ -36,12 +36,30 @@ export default function App() {
     checkCalculatorSetting();
   }, []);
 
-  // Refresh ScrollTrigger on dynamic content load & when calculator visibility changes
+  // Refresh ScrollTrigger when any dynamic content loads or changes height
   useEffect(() => {
-    const timer = setTimeout(() => {
-      ScrollTrigger.refresh(true);
-    }, 600);
-    return () => clearTimeout(timer);
+    const mainElement = document.querySelector('main');
+    if (!mainElement) return;
+
+    let timeoutId;
+    const resizeObserver = new ResizeObserver(() => {
+      // Debounce to prevent excessive refreshing
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 250);
+    });
+
+    resizeObserver.observe(mainElement);
+    
+    // Initial refresh just in case
+    const initialTimer = setTimeout(() => ScrollTrigger.refresh(true), 600);
+
+    return () => {
+      resizeObserver.disconnect();
+      clearTimeout(timeoutId);
+      clearTimeout(initialTimer);
+    };
   }, [calculatorEnabled]);
 
   // Update document title based on visible section
