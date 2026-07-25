@@ -46,7 +46,7 @@ export default async function ClientProjectsPage() {
           <h1 className="text-2xl font-display font-bold text-[var(--color-text-primary)] mb-1">Your Projects</h1>
           <p className="text-sm text-[var(--color-text-muted)]">Track the status and details of your requested projects.</p>
         </div>
-        <Link href="/dashboard/messages" className="btn bg-[var(--color-accent-primary)] hover:brightness-110 text-[#0a0a0f] text-sm py-2">
+        <Link href="/#calculator" className="btn bg-[var(--color-accent-primary)] hover:brightness-110 text-[#0a0a0f] text-sm py-2">
           Request New Project
         </Link>
       </div>
@@ -98,8 +98,8 @@ export default async function ClientProjectsPage() {
                     <Calendar className="w-4 h-4 text-[var(--color-text-secondary)]" />
                     <span>Created: {project.createdAt ? new Date(project.createdAt).toLocaleDateString() : 'Unknown'}</span>
                   </div>
-                  <Link href={`/dashboard/projects/${project.id}/files`} className="text-[var(--color-accent-primary)] hover:underline text-xs font-medium">
-                    View Files
+                  <Link href="/dashboard/quotations" className="text-[var(--color-accent-primary)] hover:underline text-xs font-medium">
+                    View Quotation
                   </Link>
                 </div>
               </div>

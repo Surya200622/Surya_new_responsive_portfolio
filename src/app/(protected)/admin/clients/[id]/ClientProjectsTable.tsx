@@ -110,7 +110,7 @@ export default function ClientProjectsTable({ initialProjects }: { initialProjec
                 </div>
               </td>
               <td className="px-6 py-4 text-[var(--color-text-secondary)]">
-                {new Date(project.createdAt).toLocaleDateString()}
+                {new Date(project.createdAt || Date.now()).toLocaleDateString()}
               </td>
               <td className="px-6 py-4 text-right text-[var(--color-text-secondary)]">
                 {project.budget ? `₹${Number(project.budget).toLocaleString()}` : '-'}

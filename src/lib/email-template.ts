@@ -122,8 +122,24 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
   ${preheader ? `<div class="preheader">${preheader}</div>` : ''}
   <div class="container" style="background-color: #ffffff; width: 100%; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
     <div class="header" style="text-align: center; margin-bottom: 40px; background-color: #ffffff; padding: 20px; border-radius: 12px; border: 1px solid rgba(0, 0, 0, 0.05); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-      <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev'}" style="text-decoration: none; display: inline-block;">
-        <img src="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev'}/logo.svg" alt="Surya CS Logo" width="200" style="display: block; margin: 0 auto; max-width: 100%; height: auto; border: 0;" />
+      <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev'}" style="text-decoration: none; display: inline-block; font-family: system-ui, -apple-system, sans-serif;">
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
+          <tr>
+            <td style="padding-right: 12px; vertical-align: middle;">
+              <div style="width: 46px; height: 46px; background-color: #fdf4ff; border: 3px solid #e879f9; border-radius: 12px; text-align: center; line-height: 46px;">
+                <span style="font-size: 28px; font-weight: bold; color: #1e293b; font-family: cursive, sans-serif;">S</span>
+              </div>
+            </td>
+            <td style="text-align: left; vertical-align: middle;">
+              <div style="line-height: 1;">
+                <span style="font-size: 28px; font-weight: 900; color: #1e293b; letter-spacing: 0.5px;">SURYA</span><span style="font-size: 28px; font-weight: 900; color: #a855f7; letter-spacing: 0.5px;">CS</span>
+              </div>
+              <div style="font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: 1px; margin-top: 4px; text-transform: capitalize;">
+                Full Stack Web Developer
+              </div>
+            </td>
+          </tr>
+        </table>
       </a>
     </div>
     

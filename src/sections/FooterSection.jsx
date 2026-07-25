@@ -31,9 +31,9 @@ export default function FooterSection() {
           <h3 className="footer__cta-text">
             Let's work <span className="text-gradient">together</span>
           </h3>
-          <button className="btn btn--primary" onClick={() => scrollTo('#contact')}>
+          <a className="btn btn--primary" href="/#contact" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
             Start a Project
-          </button>
+          </a>
         </div>
 
         <div className="footer__content">
@@ -63,10 +63,12 @@ export default function FooterSection() {
                   </a>
                 );
               }
+              // Prepend with / so it redirects to the home page sections correctly from any route
+              const hrefPath = link.href.startsWith('#') ? `/${link.href}` : link.href;
               return (
-                <span key={link.href} className="footer__link" onClick={() => scrollTo(link.href)}>
+                <a key={link.href} className="footer__link" href={hrefPath} style={{ textDecoration: 'none' }}>
                   {link.label}
-                </span>
+                </a>
               );
             })}
           </div>

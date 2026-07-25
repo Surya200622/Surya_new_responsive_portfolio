@@ -88,3 +88,35 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
+
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user || session.user.role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id } = await params;
+    const body = await request.json();
+
+    if (!body.status) {
+      return NextResponse.json({ error: 'Missing status' }, { status: 400 });
+    }
+
+    await db.update(quotations)
+      .set({ status: body.status })
+      .where(eq(quotations.id, id));
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error('Error updating quotation:', error);
+    return NextResponse.json(
+      { error: 'Failed to update quotation' },
+      { status: 500 }
+    );
+  }
+}
