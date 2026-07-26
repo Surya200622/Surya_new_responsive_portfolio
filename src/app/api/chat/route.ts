@@ -11,7 +11,16 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || '' });
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || '';
 
 const getDynamicPrompt = (dbPortfolioProjects: any[], dbOffers: any[], dbReviews: any[]) => {
-  const projectsText = PROJECTS.map(p => `- ${p.title} (${p.year}) [${p.category}]: ${p.description} Tech: ${p.tech.join(', ')}`).join('\n  ');
+  // Combine projects and remove duplicates
+  const allProjects = [...PROJECTS];
+  dbPortfolioProjects.forEach(dbProj => {
+    const exists = allProjects.find(p => p.title.toLowerCase() === dbProj.title.toLowerCase());
+    if (!exists) {
+      allProjects.push(dbProj);
+    }
+  });
+
+  const combinedProjectsText = allProjects.map(p => `- ${p.title} (${p.year || 'N/A'}) [${p.category || 'Portfolio'}]: ${p.description}`).join('\n  ');
   const skillsText = SKILLS.map(s => `${s.name}`).join(', ');
   const timelineText = TIMELINE_DATA.map(t => `- ${t.year}: ${t.title} - ${t.description}`).join('\n  ');
   
@@ -38,11 +47,8 @@ CONTACT INFO:
 SKILLS & TECH STACK:
   ${skillsText}
 
-PORTFOLIO PROJECTS (Current):
-  ${projectsText}
-
-PORTFOLIO PROJECTS (From Database):
-  ${dbPortfolioProjects.length > 0 ? dbPortfolioProjects.map(p => `- ${p.title} (${p.year || 'N/A'}) [${p.category}]: ${p.description}`).join('\n  ') : 'No additional projects.'}
+PORTFOLIO PROJECTS:
+  ${combinedProjectsText}
 
 CURRENT OFFERS:
   ${dbOffers.length > 0 ? dbOffers.map(o => `- ${o.title}: ${o.description} (${o.discountPercentage}% off until ${o.validUntil})`).join('\n  ') : 'No active offers.'}
@@ -54,17 +60,10 @@ SURYA'S JOURNEY (TIMELINE):
   ${timelineText}
 
 INSTRUCTIONS FOR ANSWERING ACCURATELY:
-- When a client asks about your projects, seamlessly combine the "Current" and "From Database" projects to give a complete answer.
 - If a client asks for discounts, promotions, or pricing reductions, accurately provide the details from CURRENT OFFERS.
 - If a client asks about credibility, past work, or testimonials, share the exact CLIENT REVIEWS provided above.
 - If a client asks about your experience or background, use the TIMELINE and SKILLS sections.
 - Always use the specific details provided above to answer client questions accurately. Do not invent information. Do not mention "database" or "hardcoded" data to the user.
-
-CRITICAL FORMATTING RULE:
-- NEVER use markdown symbols like asterisks (** or *) for bolding, italics, or headers.
-- The chat interface DOES NOT support markdown rendering.
-- Use plain text formatting only. Use line breaks (newlines), empty lines for spacing, and simple dashes (-) or numbers (1., 2.) for lists.
-- Present your answers in an extremely neat, clear, and readable plain-text structure.
 `;
 };
 
@@ -111,7 +110,16 @@ export async function POST(req: Request) {
 
     // Pass the BASE_PROMPT to BOTH clients and admins, just swap the restriction/admin instructions at the end!
     const BASE_PROMPT = getDynamicPrompt(dbPortfolioProjects, dbOffers, dbReviews);
-    const systemInstruction = isAdmin ? `${BASE_PROMPT}\n\n${ADMIN_PROMPT}${adminDataText}` : `${BASE_PROMPT}\n\n${CLIENT_RESTRICTION}`;
+    
+    // Add formatting rule to the very end of the prompt so the AI prioritizes it heavily.
+    const formattingRule = `
+CRITICAL FORMATTING RULE:
+- ABSOLUTELY NO MARKDOWN. NEVER use asterisks (** or *) for bolding, italics, or headers. 
+- The chat interface DOES NOT support markdown.
+- YOU MUST Use plain text formatting only. Use simple newlines and dashes (-) for lists.
+- Present your answers in an extremely neat, clear, and readable format.`;
+
+    const systemInstruction = isAdmin ? `${BASE_PROMPT}\n\n${ADMIN_PROMPT}${adminDataText}\n${formattingRule}` : `${BASE_PROMPT}\n\n${CLIENT_RESTRICTION}\n${formattingRule}`;
     
     let responseText = '';
 
