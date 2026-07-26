@@ -12,10 +12,10 @@ interface Offer {
   id: string;
   title: string;
   description: string;
-  discount_percentage: number;
-  valid_until: string;
-  image_url: string | null;
-  is_active: boolean;
+  discountPercentage: number;
+  validUntil: string;
+  imageUrl: string | null;
+  isActive: boolean;
 }
 
 export default function AdminOffersPage() {
@@ -74,11 +74,11 @@ export default function AdminOffersPage() {
     setFormData({
       title: offer.title,
       description: offer.description,
-      discount_percentage: offer.discount_percentage ? offer.discount_percentage.toString() : '',
-      valid_until: offer.valid_until ? offer.valid_until.split('T')[0] : '',
+      discount_percentage: offer.discountPercentage ? offer.discountPercentage.toString() : '',
+      valid_until: offer.validUntil ? offer.validUntil.split('T')[0] : '',
       send_email: false // Default to false when editing so we don't spam clients
     });
-    setImagePreview(offer.image_url);
+    setImagePreview(offer.imageUrl);
     setImageFile(null);
     setSuccess('');
     setError('');
@@ -394,9 +394,9 @@ export default function AdminOffersPage() {
                   }`}
                 >
                   <div className="flex gap-4">
-                    {offer.image_url && (
+                    {offer.imageUrl && (
                       <div className="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-black/20 border border-[var(--color-glass-border)]">
-                        <img src={offer.image_url} alt={offer.title} className="w-full h-full object-cover" />
+                        <img src={offer.imageUrl} alt={offer.title} className="w-full h-full object-cover" />
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
@@ -404,9 +404,9 @@ export default function AdminOffersPage() {
                         <h3 className="font-semibold text-[var(--color-text-primary)] truncate text-lg">
                           {offer.title}
                         </h3>
-                        {offer.discount_percentage > 0 && (
+                        {offer.discountPercentage > 0 && (
                           <span className="shrink-0 bg-orange-500/20 text-orange-400 text-xs font-bold px-2 py-0.5 rounded-full border border-orange-500/30">
-                            {offer.discount_percentage}% OFF
+                            {offer.discountPercentage}% OFF
                           </span>
                         )}
                       </div>
@@ -417,7 +417,7 @@ export default function AdminOffersPage() {
                       
                       <div className="flex items-center justify-between mt-auto">
                         <div className="text-xs text-[var(--color-text-muted)]">
-                          Valid until: <span className="text-[var(--color-text-primary)]">{new Date(offer.valid_until).toLocaleDateString()}</span>
+                          Valid until: <span className="text-[var(--color-text-primary)]">{new Date(offer.validUntil).toLocaleDateString()}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <button
