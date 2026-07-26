@@ -126,6 +126,14 @@ export default function ProtectedLayout({
     loadProfile();
   }, [status, session]);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.search.includes('settings=true')) {
+      setShowSettingsModal(true);
+      // Remove query param to clean up URL
+      router.replace(pathname);
+    }
+  }, [pathname, router]);
+
   // Close dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -657,20 +665,7 @@ export default function ProtectedLayout({
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[var(--color-glass-border)]">
-                <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Change Password</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><Lock className="h-4 w-4 text-[var(--color-text-muted)]" /></div>
-                  <input 
-                    type="password" 
-                    className="auth-input pl-11" 
-                    placeholder="Enter new password (optional)" 
-                    value={settingsForm.new_password}
-                    onChange={e => setSettingsForm({ ...settingsForm, new_password: e.target.value })}
-                  />
-                </div>
-                <p className="mt-1.5 text-[10px] text-[var(--color-text-muted)]">Leave blank if you don't want to change your password.</p>
-              </div>
+
             </div>
 
             <div className="flex items-center justify-between p-6 border-t border-[var(--color-glass-border)]">

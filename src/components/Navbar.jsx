@@ -190,7 +190,7 @@ export default function Navbar({ theme, toggleTheme }) {
                   <a href={profile?.role === 'admin' ? '/admin' : '/dashboard'} className="flex items-center gap-2 px-4 py-3 hover:bg-gray-50 text-gray-800 font-medium text-sm transition-colors border-b border-gray-100">
                     <LayoutDashboard size={16} /> Dashboard
                   </a>
-                  <a href="/dashboard/settings" className="flex items-center gap-2 px-4 py-3 hover:bg-gray-50 text-gray-800 font-medium text-sm transition-colors border-b border-gray-100">
+                  <a href="/dashboard?settings=true" className="flex items-center gap-2 px-4 py-3 hover:bg-gray-50 text-gray-800 font-medium text-sm transition-colors border-b border-gray-100">
                     <Settings size={16} /> Account Settings
                   </a>
                   <button 
@@ -282,7 +282,7 @@ export default function Navbar({ theme, toggleTheme }) {
               <a href={profile?.role === 'admin' ? '/admin' : '/dashboard'} className="navbar__mobile-link text-[var(--color-accent-primary)] flex items-center gap-2">
                 <LayoutDashboard size={18} /> Dashboard
               </a>
-              <a href="/dashboard/settings" className="navbar__mobile-link text-[var(--color-text-primary)] flex items-center gap-2">
+              <a href="/dashboard?settings=true" className="navbar__mobile-link text-[var(--color-text-primary)] flex items-center gap-2">
                 <Settings size={18} /> Account Settings
               </a>
               <button 
