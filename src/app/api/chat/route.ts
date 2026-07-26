@@ -2,17 +2,25 @@ import { NextResponse } from 'next/server';
 import Groq from 'groq-sdk';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { PROJECTS, SKILLS, TIMELINE_DATA, CONTACT_INFO, SOCIAL_LINKS } from '@/data/projectsData';
+import { db } from '@/db';
+import { portfolioProjects, offers, reviews, projects } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || '' });
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || '';
 
-const BASE_PROMPT = `
+const getDynamicPrompt = (dbPortfolioProjects: any[], dbOffers: any[], dbReviews: any[]) => {
+  const projectsText = PROJECTS.map(p => `- ${p.title} (${p.year}) [${p.category}]: ${p.description} Tech: ${p.tech.join(', ')}`).join('\n  ');
+  const skillsText = SKILLS.map(s => `${s.name}`).join(', ');
+  const timelineText = TIMELINE_DATA.map(t => `- ${t.year}: ${t.title} - ${t.description}`).join('\n  ');
+  
+  return `
 You are the official, friendly AI assistant exclusively representing Surya CS on his personal portfolio website.
 Surya is a Full-Stack Python Developer based in Coimbatore, India.
 
 CRITICAL FACTS ABOUT SURYA:
 - Education: B.COM.CA from Sri Ramakrishna College of Arts & Science.
-- Tech Stack: Django, Python, MySQL, HTML, CSS, JavaScript, React.js, and Node.js.
 - Current Status: Looking for freelance opportunities and full-time roles in IT.
 - Services Offered: 
   1. Full-Stack Web Development (Frontend & Backend)
@@ -21,8 +29,38 @@ CRITICAL FACTS ABOUT SURYA:
   4. Database Design (MySQL)
   5. API Development & Integration
 
-Contact info: suryacs.is.a.dev@gmail.com
+CONTACT INFO:
+- Email: ${CONTACT_INFO.email}
+- WhatsApp: ${CONTACT_INFO.whatsapp}
+- Location: ${CONTACT_INFO.location}
+- Socials: ${SOCIAL_LINKS.map(l => `${l.name} (${l.url})`).join(', ')}
+
+SKILLS & TECH STACK:
+  ${skillsText}
+
+PORTFOLIO PROJECTS (Current):
+  ${projectsText}
+
+PORTFOLIO PROJECTS (From Database):
+  ${dbPortfolioProjects.length > 0 ? dbPortfolioProjects.map(p => `- ${p.title} (${p.year || 'N/A'}) [${p.category}]: ${p.description}`).join('\n  ') : 'No additional projects.'}
+
+CURRENT OFFERS:
+  ${dbOffers.length > 0 ? dbOffers.map(o => `- ${o.title}: ${o.description} (${o.discountPercentage}% off until ${o.validUntil})`).join('\n  ') : 'No active offers.'}
+
+CLIENT REVIEWS:
+  ${dbReviews.length > 0 ? dbReviews.map(r => `- "${r.content}" - ${r.name} [Rating: ${r.rating}/5]`).join('\n  ') : 'No reviews yet.'}
+
+SURYA'S JOURNEY (TIMELINE):
+  ${timelineText}
+
+INSTRUCTIONS FOR ANSWERING ACCURATELY:
+- When a client asks about your projects, seamlessly combine the "Current" and "From Database" projects to give a complete answer.
+- If a client asks for discounts, promotions, or pricing reductions, accurately provide the details from CURRENT OFFERS.
+- If a client asks about credibility, past work, or testimonials, share the exact CLIENT REVIEWS provided above.
+- If a client asks about your experience or background, use the TIMELINE and SKILLS sections.
+- Always use the specific details provided above to answer client questions accurately. Do not invent information. Do not mention "database" or "hardcoded" data to the user.
 `;
+};
 
 const CLIENT_RESTRICTION = `
 CRITICAL INSTRUCTION: You are speaking to a regular user/client on Surya's portfolio. 
@@ -54,8 +92,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
 
+    // Fetch DB data safely (excluding users table)
+    const dbPortfolioProjects = await db.select().from(portfolioProjects);
+    const dbOffers = await db.select().from(offers).where(eq(offers.isActive, true));
+    const dbReviews = await db.select().from(reviews);
+
+    let adminDataText = '';
+    if (isAdmin) {
+      const dbProjects = await db.select().from(projects);
+      adminDataText = '\n\nINTERNAL ADMIN DATA (Active Client Projects):\n' + (dbProjects.length > 0 ? dbProjects.map(p => `- [${p.status.toUpperCase()}] ${p.title} (Budget: $${p.budget || 0})`).join('\n') : 'No active client projects.');
+    }
+
     // Pass the BASE_PROMPT to BOTH clients and admins, just swap the restriction/admin instructions at the end!
-    const systemInstruction = isAdmin ? `${BASE_PROMPT}\n\n${ADMIN_PROMPT}` : `${BASE_PROMPT}\n\n${CLIENT_RESTRICTION}`;
+    const BASE_PROMPT = getDynamicPrompt(dbPortfolioProjects, dbOffers, dbReviews);
+    const systemInstruction = isAdmin ? `${BASE_PROMPT}\n\n${ADMIN_PROMPT}${adminDataText}` : `${BASE_PROMPT}\n\n${CLIENT_RESTRICTION}`;
     
     let responseText = '';
 
