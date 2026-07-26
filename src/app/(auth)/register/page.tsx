@@ -20,6 +20,7 @@ export default function RegisterPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,6 +132,9 @@ export default function RegisterPage() {
             </svg>
             Continue with Google
           </button>
+          <p className="text-center text-[10px] text-[var(--color-text-muted)] mt-3">
+            By continuing with Google, you agree to our <Link href="/terms-of-service" className="hover:text-[var(--color-text-primary)] underline">Terms of Service</Link> and <Link href="/privacy-policy" className="hover:text-[var(--color-text-primary)] underline">Privacy Policy</Link>.
+          </p>
         </div>
 
         <div className="mb-6 relative">
@@ -208,7 +212,25 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        <button type="submit" disabled={isLoading} className="gradient-btn w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 mt-4">
+        <div className="flex items-start pt-2">
+          <div className="flex items-center h-5">
+            <input
+              id="terms"
+              type="checkbox"
+              required
+              checked={acceptTerms}
+              onChange={(e) => setAcceptTerms(e.target.checked)}
+              className="w-4 h-4 bg-[var(--color-bg-card)] border-[var(--color-border)] rounded focus:ring-2 focus:ring-[var(--color-accent-primary)] accent-[var(--color-accent-primary)] cursor-pointer"
+            />
+          </div>
+          <div className="ml-3 text-xs">
+            <label htmlFor="terms" className="text-[var(--color-text-muted)] cursor-pointer select-none">
+              I agree to the <Link href="/terms-of-service" className="text-[var(--color-accent-primary)] hover:underline">Terms of Service</Link> and <Link href="/privacy-policy" className="text-[var(--color-accent-primary)] hover:underline">Privacy Policy</Link>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" disabled={isLoading || !acceptTerms} className="gradient-btn w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 mt-4">
           {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Create Account <ArrowRight className="h-4 w-4" /></>}
         </button>
       </form>

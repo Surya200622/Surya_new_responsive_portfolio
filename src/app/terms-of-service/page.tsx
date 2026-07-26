@@ -307,6 +307,16 @@ export default function TermsOfServicePage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">13</span>
+              Payments, Purchases, and Refunds
+            </h2>
+            <p>
+              All payments made for full-stack web development services, freelance work, and digital project purchases are final and non-refundable. Once a payment is processed or a project is purchased, no refunds will be issued under any circumstances. By proceeding with a purchase or engaging our services, you expressly agree to this strict no-refund policy.
+            </p>
+          </section>
+
+          <section className="legal-section">
+            <h2 className="legal-section-title">
+              <span className="legal-section-number">14</span>
               Contact Us
             </h2>
             <p>

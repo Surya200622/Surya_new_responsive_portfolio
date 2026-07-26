@@ -203,4 +203,8 @@
   .contact__grid {
     grid-template-columns: 1fr;
   }
+  
+  .contact__form {
+    padding: var(--space-lg);
+  }
 }

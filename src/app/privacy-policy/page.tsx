@@ -268,6 +268,16 @@ export default function PrivacyPolicyPage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">10</span>
+              Payments and Refunds
+            </h2>
+            <p>
+              Any payments made for full-stack web development services, project purchases, or related digital products are strictly non-refundable once given. By engaging in our services or purchasing projects, you acknowledge and agree to this no-refund policy.
+            </p>
+          </section>
+
+          <section className="legal-section">
+            <h2 className="legal-section-title">
+              <span className="legal-section-number">11</span>
               Contact Us
             </h2>
             <p>

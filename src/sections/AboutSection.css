@@ -555,9 +555,7 @@
 
   .about__timeline-year {
     text-align: center;
-    font-size: 11px;
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
+    font-size: 14px;
   }
 }
 
