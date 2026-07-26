@@ -159,8 +159,22 @@ export default function PrivacyPolicyPage() {
                 .
               </li>
               <li>
-                <strong>Supabase:</strong> Used as our backend service for
-                data storage and authentication. See{' '}
+                <strong>Turso:</strong> Used as our primary database for storing application data. See{' '}
+                <a
+                  href="https://turso.tech/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="legal-link"
+                >
+                  Turso&apos;s Privacy Policy
+                </a>
+                .
+              </li>
+              <li>
+                <strong>NextAuth:</strong> Used for secure user authentication and session management.
+              </li>
+              <li>
+                <strong>Supabase:</strong> Used exclusively for storing user-uploaded files related to projects. See{' '}
                 <a
                   href="https://supabase.com/privacy"
                   target="_blank"
