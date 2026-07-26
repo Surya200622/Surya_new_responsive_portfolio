@@ -16,6 +16,10 @@ export default function PendingQuotationHandler() {
     try {
       setIsProcessing(true);
       setError(null);
+      
+      // Remove immediately to prevent React StrictMode double-firing
+      localStorage.removeItem('pendingQuote');
+      
       const quoteData = JSON.parse(pendingQuoteStr);
       
       const response = await fetch('/api/quotations', {
@@ -27,20 +31,16 @@ export default function PendingQuotationHandler() {
       });
 
       if (response.ok) {
-        // Clear it so we don't process it again
-        localStorage.removeItem('pendingQuote');
         window.location.reload(); // Hard reload to guarantee data shows up
       } else {
         const errorData = await response.json();
         console.error('Failed to create quotation:', errorData);
         const errorMsg = errorData.error || 'Unknown error occurred while generating quotation.';
         setError(errorMsg);
-        localStorage.removeItem('pendingQuote'); // Remove it so we don't get stuck
       }
     } catch (err: any) {
       console.error('Error processing pending quote:', err);
       setError(err.message || 'Network error while processing quotation.');
-      localStorage.removeItem('pendingQuote');
     } finally {
       setIsProcessing(false);
     }
