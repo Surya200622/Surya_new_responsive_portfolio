@@ -46,7 +46,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     if (action === 'accept') {
       try {
         await db.update(projects)
-          .set({ status: 'Development Phase' })
+          .set({ status: 'pending' })
           .where(eq(projects.id, projectId));
       } catch (projectError) {
         console.error('Error updating project status:', projectError);

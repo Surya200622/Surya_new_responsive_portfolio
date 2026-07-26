@@ -45,20 +45,13 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
         const ctx = canvas.getContext('2d');
         if (ctx) {
           ctx.drawImage(img, 0, 0);
-          const imgData = canvas.toDataURL('image/jpeg');
-          doc.addImage(imgData, 'JPEG', margin, startY, 12, 12);
+          const imgData = canvas.toDataURL('image/png');
+          // Scale to 40x9.6 to maintain 250:60 aspect ratio
+          doc.addImage(imgData, 'PNG', margin, startY, 40, 9.6);
         }
       } catch (e) {
         console.warn('Could not load logo for PDF', e);
       }
-
-      // Logo text
-      doc.setFontSize(24);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
-      doc.text('Surya CS', margin + 15, startY + 10);
-      doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-      doc.text('.', margin + 53, startY + 10);
 
       // Add a stylish divider line
       doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
