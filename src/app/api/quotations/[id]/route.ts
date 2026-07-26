@@ -16,13 +16,22 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     }
 
     const { id } = await params;
-    const { action, projectId } = await req.json(); // action can be 'accept' or 'reject'
+    const body = await req.json();
+    const { action, projectId, paymentType, transactionId } = body; // action can be 'accept', 'reject', or 'pay'
 
     if (!action || !projectId) {
       return NextResponse.json({ error: 'Missing action or projectId' }, { status: 400 });
     }
 
-    const newQuoteStatus = action === 'accept' ? 'accepted' : 'rejected';
+    let newQuoteStatus = 'pending';
+    if (action === 'accept') newQuoteStatus = 'accepted';
+    if (action === 'reject') newQuoteStatus = 'rejected';
+    
+    // Auto-update logic for payments
+    if (action === 'pay') {
+      newQuoteStatus = 'advance_paid';
+      if (paymentType === 'full' || paymentType === 'remaining') newQuoteStatus = 'fully_paid';
+    }
 
     // 1. Fetch quotation to verify ownership
     const quotationResults = await db.select().from(quotations).where(eq(quotations.id, id));
@@ -42,11 +51,17 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       .set({ status: newQuoteStatus })
       .where(eq(quotations.id, id));
 
-    // 2. If accepted, update the linked project status
-    if (action === 'accept') {
+    // 2. If accepted or paid, update the linked project status
+    if (action === 'accept' || action === 'pay') {
       try {
+        let newProjStatus = 'pending';
+        // If they pay advance or full, it's time to start development
+        if (action === 'pay' && (paymentType === 'advance' || paymentType === 'full' || paymentType === 'remaining')) {
+          newProjStatus = 'Development Phase';
+        }
+
         await db.update(projects)
-          .set({ status: 'pending' })
+          .set({ status: newProjStatus })
           .where(eq(projects.id, projectId));
       } catch (projectError) {
         console.error('Error updating project status:', projectError);
@@ -58,11 +73,20 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     try {
       if (session.user.email) {
         const resend = new Resend(process.env.RESEND_API_KEY);
+        
+        let actionTitle = `Quotation ${action === 'accept' ? 'Accepted' : 'Rejected'}`;
+        let actionBody = `The client (<strong>${session.user.email}</strong>) has ${action === 'accept' ? 'accepted' : 'rejected'} the quotation for Project ID: ${projectId}.`;
+        
+        if (action === 'pay') {
+          actionTitle = `Payment Submitted (${paymentType})`;
+          actionBody = `The client (<strong>${session.user.email}</strong>) has submitted a ${paymentType} payment for Project ID: ${projectId}. Transaction ID: ${transactionId || 'Not provided'}`;
+        }
+        
         const emailContent = `
-          <h2 style="color: ${action === 'accept' ? '#22c55e' : '#ef4444'}; margin-bottom: 10px;">
-            Quotation ${action === 'accept' ? 'Accepted' : 'Rejected'}
+          <h2 style="color: ${action === 'reject' ? '#ef4444' : '#22c55e'}; margin-bottom: 10px;">
+            ${actionTitle}
           </h2>
-          <p>The client (<strong>${session.user.email}</strong>) has ${action === 'accept' ? 'accepted' : 'rejected'} the quotation for Project ID: ${projectId}.</p>
+          <p>${actionBody}</p>
           
           <div style="margin: 30px 0; text-align: center;">
             <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev'}/admin/quotations" class="button">
@@ -74,8 +98,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         await resend.emails.send({
           from: `Portfolio System <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs.is-a.dev'}>`,
           to: 'suryacs.is.a.dev@gmail.com',
-          subject: `Quotation ${action === 'accept' ? 'Accepted' : 'Rejected'} by ${session.user.email}`,
-          html: getBrandEmailTemplate(`Quotation ${action === 'accept' ? 'Accepted' : 'Rejected'}`, emailContent, 'Client Action Notification'),
+          subject: `${actionTitle} by ${session.user.email}`,
+          html: getBrandEmailTemplate(actionTitle, emailContent, 'Client Action Notification'),
         });
       }
     } catch (emailErr) {

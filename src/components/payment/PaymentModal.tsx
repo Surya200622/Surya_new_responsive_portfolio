@@ -105,14 +105,31 @@ export default function PaymentModal({
     setStep('confirm');
   };
 
-  const handleSubmitTransaction = () => {
+  const handleSubmitTransaction = async () => {
     // Save to local storage
     const newPayments = [...completedPayments, paymentType];
     setCompletedPayments(newPayments);
     localStorage.setItem(`payment_${projectName}`, JSON.stringify(newPayments));
     
-    // Here we would normally save to database (Supabase payments table)
-    // For now, we will open WhatsApp
+    // Automatically update the database if we have a quotation ID
+    if (quotationId && projectId) {
+      try {
+        await fetch(`/api/quotations/${quotationId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'pay',
+            paymentType,
+            transactionId,
+            projectId
+          }),
+        });
+      } catch (err) {
+        console.error('Failed to update payment status automatically:', err);
+      }
+    }
+    
+    // Open WhatsApp for verification
     
     const msg = `Hi Surya,
     
