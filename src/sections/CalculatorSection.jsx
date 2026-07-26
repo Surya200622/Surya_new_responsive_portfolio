@@ -104,10 +104,18 @@ export default function CalculatorSection() {
     const currentProject = PROJECT_TYPES.find(p => p.id === projectType);
     if (!currentProject) return null;
     
-    return offers.find(offer => 
-      offer.title.toLowerCase().includes(currentProject.name.toLowerCase()) && 
-      offer.discount_percentage > 0
-    );
+    return offers.find(offer => {
+      const offerTitleLower = offer.title.toLowerCase();
+      const nameLower = currentProject.name.toLowerCase();
+      const idLower = currentProject.id.toLowerCase();
+      const firstWord = nameLower.split(' ')[0];
+      
+      const matchesProject = offerTitleLower.includes(nameLower) || 
+                             offerTitleLower.includes(idLower) || 
+                             offerTitleLower.includes(firstWord);
+                             
+      return matchesProject && offer.discountPercentage > 0;
+    });
   }, [projectType, offers]);
 
   const pricing = useMemo(() => {
@@ -116,8 +124,8 @@ export default function CalculatorSection() {
       return {
         ...basePricing,
         originalTotal: basePricing.total,
-        total: Math.round(basePricing.total * (1 - applicableOffer.discount_percentage / 100)),
-        discountPercentage: applicableOffer.discount_percentage
+        total: Math.round(basePricing.total * (1 - applicableOffer.discountPercentage / 100)),
+        discountPercentage: applicableOffer.discountPercentage
       };
     }
     return basePricing;

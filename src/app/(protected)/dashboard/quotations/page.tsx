@@ -8,6 +8,7 @@ import { FileText, Download, CheckCircle, Clock } from 'lucide-react';
 import QuotationActions from './QuotationActions';
 import DownloadQuotationButton from '@/components/pdf/DownloadQuotationButton';
 import PayUPIButton from './PayUPIButton';
+import PendingQuotationHandler from './PendingQuotationHandler';
 
 import { db } from '@/db';
 import { quotations, projects, users } from '@/db/schema';
@@ -72,6 +73,8 @@ export default async function ClientQuotationsPage() {
         <h1 className="text-2xl font-display font-bold text-[var(--color-text-primary)] mb-1">Quotations & Invoices</h1>
         <p className="text-sm text-[var(--color-text-muted)]">Review and accept project proposals.</p>
       </div>
+
+      <PendingQuotationHandler />
 
       {userQuotations && userQuotations.length > 0 ? (
         <div className="grid gap-4">
