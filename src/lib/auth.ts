@@ -6,6 +6,7 @@ import { db } from '@/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
+import { checkRateLimit, getIp } from '@/lib/rate-limit';
 
 export const authOptions: NextAuthOptions = {
   // @ts-ignore - The adapter types might have a slight mismatch, but this works at runtime
@@ -28,7 +29,14 @@ export const authOptions: NextAuthOptions = {
         email: { label: 'Email', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
+        const ip = getIp(req);
+        const rateLimit = checkRateLimit(ip, 5, 5 * 60 * 1000); // 5 attempts per 5 minutes
+        
+        if (!rateLimit.success) {
+          throw new Error('Too many login attempts. Please try again later.');
+        }
+
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Email and password required');
         }

@@ -6,6 +6,7 @@ import { PROJECTS, SKILLS, TIMELINE_DATA, CONTACT_INFO, SOCIAL_LINKS } from '@/d
 import { db } from '@/db';
 import { portfolioProjects, offers, reviews, projects } from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import { checkRateLimit, getIp } from '@/lib/rate-limit';
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || '' });
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || '';
@@ -95,6 +96,13 @@ export async function POST(req: Request) {
 
     if (!message) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
+    }
+
+    const ip = getIp(req);
+    const rateLimit = checkRateLimit(ip, 20, 60 * 1000); // 20 requests per minute
+    
+    if (!rateLimit.success) {
+      return NextResponse.json({ error: 'Too many requests. Please wait a minute before sending another message.' }, { status: 429 });
     }
 
     // Fetch DB data safely (excluding users table)

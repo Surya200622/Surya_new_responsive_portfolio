@@ -3,9 +3,17 @@ import { db } from '@/db';
 import { users, verificationTokens } from '@/db/schema';
 import { eq, and, gt } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
+import { checkRateLimit, getIp } from '@/lib/rate-limit';
 
 export async function POST(req: Request) {
   try {
+    const ip = getIp(req);
+    const rateLimit = checkRateLimit(ip, 3, 10 * 60 * 1000); // 3 requests per 10 minutes
+    
+    if (!rateLimit.success) {
+      return NextResponse.json({ error: 'Too many password reset attempts. Please try again later.' }, { status: 429 });
+    }
+
     const { token, password } = await req.json();
 
     if (!token || !password) {

@@ -4,9 +4,17 @@ import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import { registerSchema } from '@/lib/validations/auth';
+import { checkRateLimit, getIp } from '@/lib/rate-limit';
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = getIp(req);
+    const rateLimit = checkRateLimit(ip, 3, 60 * 60 * 1000); // 3 registrations per hour
+    
+    if (!rateLimit.success) {
+      return NextResponse.json({ error: 'Too many registration attempts. Please try again later.' }, { status: 429 });
+    }
+
     const body = await req.json();
     const validData = registerSchema.parse(body);
 

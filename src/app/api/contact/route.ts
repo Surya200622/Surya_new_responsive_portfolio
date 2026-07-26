@@ -4,9 +4,17 @@ import { getBrandEmailTemplate } from '@/lib/email-template';
 import { db } from '@/db';
 import { users, messages } from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import { checkRateLimit, getIp } from '@/lib/rate-limit';
 
 export async function POST(request: Request) {
   try {
+    const ip = getIp(request);
+    const rateLimit = checkRateLimit(ip, 3, 10 * 60 * 1000); // 3 requests per 10 minutes
+    
+    if (!rateLimit.success) {
+      return NextResponse.json({ error: 'Too many contact requests. Please try again later.' }, { status: 429 });
+    }
+
     const { name, email, phone, project, message } = await request.json();
 
     if (!name || !email || !message) {
