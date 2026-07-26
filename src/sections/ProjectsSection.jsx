@@ -231,6 +231,8 @@ export default function ProjectsSection() {
         onClose={() => setPaymentModalState({ ...paymentModalState, isOpen: false })}
         amount={paymentModalState.amount}
         projectName={paymentModalState.projectName}
+        allowAdvance={false}
+        allowRemaining={false}
       />
     </section>
   );

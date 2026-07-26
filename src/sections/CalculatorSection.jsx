@@ -445,6 +445,7 @@ export default function CalculatorSection() {
           amount={pricing.total}
           projectName={projectType ? PROJECT_TYPES.find(p => p.id === projectType)?.name || 'Custom Project' : 'Custom Project'}
           referenceCode={`QUOTE-${new Date().getFullYear()}-${Math.floor(Math.random() * 9000 + 1000)}`}
+          allowRemaining={false}
         />
       </div>
     </section>

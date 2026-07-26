@@ -14,6 +14,8 @@ interface PaymentModalProps {
   projectId?: string;
   quotationId?: string;
   referenceCode?: string;
+  allowAdvance?: boolean;
+  allowRemaining?: boolean;
 }
 
 export default function PaymentModal({
@@ -23,17 +25,42 @@ export default function PaymentModal({
   projectName,
   projectId,
   quotationId,
-  referenceCode = 'PENDING-REF'
+  referenceCode = 'PENDING-REF',
+  allowAdvance = true,
+  allowRemaining = true
 }: PaymentModalProps) {
   const [paymentType, setPaymentType] = useState<'advance' | 'remaining' | 'full'>('full');
   const [step, setStep] = useState<'options' | 'qr' | 'confirm'>('options');
   const [transactionId, setTransactionId] = useState('');
   const [copied, setCopied] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [completedPayments, setCompletedPayments] = useState<string[]>([]);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (isOpen && projectName) {
+      setStep('options');
+      setTransactionId('');
+      const saved = localStorage.getItem(`payment_${projectName}`);
+      if (saved) {
+        const parsed = JSON.parse(saved) as string[];
+        setCompletedPayments(parsed);
+        if (parsed.includes('full') || parsed.includes('remaining') || (parsed.includes('advance') && !allowRemaining)) {
+          // No default needed, will show completed state
+        } else if (parsed.includes('advance') && allowRemaining) {
+          setPaymentType('remaining');
+        } else {
+          setPaymentType(allowAdvance ? 'advance' : 'full');
+        }
+      } else {
+        setCompletedPayments([]);
+        setPaymentType(allowAdvance ? 'advance' : 'full');
+      }
+    }
+  }, [isOpen, projectName]);
 
   // Calculate amounts
   const advanceAmount = Math.round(amount * 0.2); // 20% advance
@@ -79,6 +106,11 @@ export default function PaymentModal({
   };
 
   const handleSubmitTransaction = () => {
+    // Save to local storage
+    const newPayments = [...completedPayments, paymentType];
+    setCompletedPayments(newPayments);
+    localStorage.setItem(`payment_${projectName}`, JSON.stringify(newPayments));
+    
     // Here we would normally save to database (Supabase payments table)
     // For now, we will open WhatsApp
     
@@ -143,67 +175,83 @@ Please verify the payment.`;
               <div>
                 <p className="text-sm text-[var(--color-text-secondary)] mb-4">Select your payment preference for <strong>{projectName}</strong></p>
                 
-                <div className="space-y-3">
-                  <label className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 gap-3 sm:gap-0 rounded-xl border cursor-pointer transition-all ${paymentType === 'advance' ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10' : 'border-[var(--color-glass-border)] hover:border-[var(--color-text-muted)]'}`}>
-                    <div className="flex items-start sm:items-center gap-3">
-                      <input 
-                        type="radio" 
-                        name="paymentType" 
-                        checked={paymentType === 'advance'}
-                        onChange={() => setPaymentType('advance')}
-                        className="w-4 h-4 mt-1 sm:mt-0 accent-[var(--color-accent-primary)] shrink-0"
-                      />
-                      <div>
-                        <p className="font-medium text-[var(--color-text-primary)]">Pay Advance (20%)</p>
-                        <p className="text-xs text-[var(--color-text-muted)]">To start the project</p>
-                      </div>
-                    </div>
-                    <span className="font-bold text-[var(--color-text-primary)] sm:text-right w-full sm:w-auto ml-7 sm:ml-0">₹{advanceAmount.toLocaleString('en-IN')}</span>
-                  </label>
+                {(completedPayments.includes('full') || completedPayments.includes('remaining') || (completedPayments.includes('advance') && !allowRemaining)) ? (
+                  <div className="p-6 text-center border border-green-500/20 bg-green-500/10 rounded-xl">
+                    <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-3" />
+                    <h3 className="text-lg font-bold text-green-500">Payment Processed</h3>
+                    <p className="text-sm text-[var(--color-text-secondary)] mt-2">Your payment request is being processed. Please wait for admin verification or manage your project from your dashboard.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {allowAdvance && !completedPayments.includes('advance') && (
+                      <label className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 gap-3 sm:gap-0 rounded-xl border cursor-pointer transition-all ${paymentType === 'advance' ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10' : 'border-[var(--color-glass-border)] hover:border-[var(--color-text-muted)]'}`}>
+                        <div className="flex items-start sm:items-center gap-3">
+                          <input 
+                            type="radio" 
+                            name="paymentType" 
+                            checked={paymentType === 'advance'}
+                            onChange={() => setPaymentType('advance')}
+                            className="w-4 h-4 mt-1 sm:mt-0 accent-[var(--color-accent-primary)] shrink-0"
+                          />
+                          <div>
+                            <p className="font-medium text-[var(--color-text-primary)]">Pay Advance (20%)</p>
+                            <p className="text-xs text-[var(--color-text-muted)]">To start the project</p>
+                          </div>
+                        </div>
+                        <span className="font-bold text-[var(--color-text-primary)] sm:text-right w-full sm:w-auto ml-7 sm:ml-0">₹{advanceAmount.toLocaleString('en-IN')}</span>
+                      </label>
+                    )}
 
-                  <label className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 gap-3 sm:gap-0 rounded-xl border cursor-pointer transition-all ${paymentType === 'remaining' ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10' : 'border-[var(--color-glass-border)] hover:border-[var(--color-text-muted)]'}`}>
-                    <div className="flex items-start sm:items-center gap-3">
-                      <input 
-                        type="radio" 
-                        name="paymentType" 
-                        checked={paymentType === 'remaining'}
-                        onChange={() => setPaymentType('remaining')}
-                        className="w-4 h-4 mt-1 sm:mt-0 accent-[var(--color-accent-primary)] shrink-0"
-                      />
-                      <div>
-                        <p className="font-medium text-[var(--color-text-primary)]">Pay Remaining (80%)</p>
-                        <p className="text-xs text-[var(--color-text-muted)]">If advance is already paid</p>
-                      </div>
-                    </div>
-                    <span className="font-bold text-[var(--color-text-primary)] sm:text-right w-full sm:w-auto ml-7 sm:ml-0">₹{remainingAmount.toLocaleString('en-IN')}</span>
-                  </label>
+                    {allowRemaining && completedPayments.includes('advance') && (
+                      <label className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 gap-3 sm:gap-0 rounded-xl border cursor-pointer transition-all ${paymentType === 'remaining' ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10' : 'border-[var(--color-glass-border)] hover:border-[var(--color-text-muted)]'}`}>
+                        <div className="flex items-start sm:items-center gap-3">
+                          <input 
+                            type="radio" 
+                            name="paymentType" 
+                            checked={paymentType === 'remaining'}
+                            onChange={() => setPaymentType('remaining')}
+                            className="w-4 h-4 mt-1 sm:mt-0 accent-[var(--color-accent-primary)] shrink-0"
+                          />
+                          <div>
+                            <p className="font-medium text-[var(--color-text-primary)]">Pay Remaining (80%)</p>
+                            <p className="text-xs text-[var(--color-text-muted)]">If advance is already paid</p>
+                          </div>
+                        </div>
+                        <span className="font-bold text-[var(--color-text-primary)] sm:text-right w-full sm:w-auto ml-7 sm:ml-0">₹{remainingAmount.toLocaleString('en-IN')}</span>
+                      </label>
+                    )}
 
-                  <label className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 gap-3 sm:gap-0 rounded-xl border cursor-pointer transition-all ${paymentType === 'full' ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10' : 'border-[var(--color-glass-border)] hover:border-[var(--color-text-muted)]'}`}>
-                    <div className="flex items-start sm:items-center gap-3">
-                      <input 
-                        type="radio" 
-                        name="paymentType" 
-                        checked={paymentType === 'full'}
-                        onChange={() => setPaymentType('full')}
-                        className="w-4 h-4 mt-1 sm:mt-0 accent-[var(--color-accent-primary)] shrink-0"
-                      />
-                      <div>
-                        <p className="font-medium text-[var(--color-text-primary)]">Pay Full Amount (100%)</p>
-                        <p className="text-xs text-[var(--color-text-muted)]">Clear all dues at once</p>
-                      </div>
-                    </div>
-                    <span className="font-bold text-[var(--color-text-primary)] sm:text-right w-full sm:w-auto ml-7 sm:ml-0">₹{fullAmount.toLocaleString('en-IN')}</span>
-                  </label>
-                </div>
+                    {!completedPayments.includes('advance') && (
+                      <label className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 gap-3 sm:gap-0 rounded-xl border cursor-pointer transition-all ${paymentType === 'full' ? 'border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10' : 'border-[var(--color-glass-border)] hover:border-[var(--color-text-muted)]'}`}>
+                        <div className="flex items-start sm:items-center gap-3">
+                          <input 
+                            type="radio" 
+                            name="paymentType" 
+                            checked={paymentType === 'full'}
+                            onChange={() => setPaymentType('full')}
+                            className="w-4 h-4 mt-1 sm:mt-0 accent-[var(--color-accent-primary)] shrink-0"
+                          />
+                          <div>
+                            <p className="font-medium text-[var(--color-text-primary)]">Pay Full Amount (100%)</p>
+                            <p className="text-xs text-[var(--color-text-muted)]">Clear all dues at once</p>
+                          </div>
+                        </div>
+                        <span className="font-bold text-[var(--color-text-primary)] sm:text-right w-full sm:w-auto ml-7 sm:ml-0">₹{fullAmount.toLocaleString('en-IN')}</span>
+                      </label>
+                    )}
+                  </div>
+                )}
               </div>
 
-              <button 
-                onClick={handleContinueToPay}
-                className="w-full py-3 rounded-xl font-bold text-white shadow-lg transition-transform active:scale-95"
-                style={{ background: 'linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary))' }}
-              >
-                Continue to Pay ₹{payAmount.toLocaleString('en-IN')}
-              </button>
+              {!(completedPayments.includes('full') || completedPayments.includes('remaining') || (completedPayments.includes('advance') && !allowRemaining)) && (
+                <button 
+                  onClick={handleContinueToPay}
+                  className="w-full py-3 rounded-xl font-bold text-white shadow-lg transition-transform active:scale-95"
+                  style={{ background: 'linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary))' }}
+                >
+                  Continue to Pay ₹{payAmount.toLocaleString('en-IN')}
+                </button>
+              )}
             </div>
           )}
 
