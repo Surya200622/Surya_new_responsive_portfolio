@@ -92,7 +92,11 @@ export default async function ClientQuotationsPage() {
                   </div>
                   <p className="text-sm text-[var(--color-text-secondary)] flex items-center gap-2">
                     <Clock className="w-3.5 h-3.5" />
-                    Generated on {new Date(quote.createdAt!).toLocaleDateString()}
+                    Generated on {(() => {
+                      let d = quote.createdAt ? new Date(quote.createdAt) : new Date();
+                      if (isNaN(d.getTime()) || d.getFullYear() === 1970) d = new Date();
+                      return d.toLocaleDateString();
+                    })()}
                   </p>
                 </div>
               </div>

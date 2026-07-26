@@ -30,6 +30,7 @@ export async function POST(req: Request) {
       budget: data.pricing?.total || 0,
       timeline: `${data.pricing?.timeline || 0} Days`,
       status: 'Pending',
+      createdAt: new Date(),
     };
 
     await db.insert(projects).values(newProject);
@@ -48,10 +49,11 @@ export async function POST(req: Request) {
       id: crypto.randomUUID(),
       projectId: newProject.id,
       clientId: session.user.id,
-      items: JSON.stringify(lineItems),
+      items: lineItems,
       amount: data.pricing?.total || 0,
       status: 'sent', // Auto-sent to client
-      notes: `Raw Configuration:\n${JSON.stringify(data, null, 2)}`
+      notes: `Raw Configuration:\n${JSON.stringify(data, null, 2)}`,
+      createdAt: new Date(),
     };
 
     await db.insert(quotations).values(newQuotation);

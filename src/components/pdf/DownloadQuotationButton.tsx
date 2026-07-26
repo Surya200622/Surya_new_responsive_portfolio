@@ -33,7 +33,7 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       // Add Logo
       try {
         const img = new Image();
-        img.src = '/images/surya-portrait.jpg'; // Using JPG instead of SVG for reliable canvas drawing
+        img.src = '/logo-email.svg'; // Using the new SVG logo
         await new Promise((resolve, reject) => {
           img.onload = resolve;
           img.onerror = reject;
@@ -84,8 +84,12 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(100, 100, 100);
       
-      const quoteDate = new Date(quote.created_at).toLocaleDateString();
-      const quoteId = quote.id.split('-')[0].toUpperCase();
+      let qDate = quote.created_at ? new Date(quote.created_at) : new Date();
+      if (isNaN(qDate.getTime()) || qDate.getFullYear() === 1970) {
+        qDate = new Date();
+      }
+      const quoteDate = qDate.toLocaleDateString();
+      const quoteId = quote.id ? quote.id.split('-')[0].toUpperCase() : 'PENDING';
       
       doc.text(`Date: ${quoteDate}`, pageWidth - margin, startY - 5, { align: 'right' });
       doc.text(`Quote #: QT-${quoteId}`, pageWidth - margin, startY + 1, { align: 'right' });
@@ -118,7 +122,14 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       // === TABLE ===
       startY += 25;
       
-      const tableData = (quote.items || []).map((item: any) => [
+      let parsedItems = [];
+      if (typeof quote.items === 'string') {
+        try { parsedItems = JSON.parse(quote.items); } catch(e) {}
+      } else if (Array.isArray(quote.items)) {
+        parsedItems = quote.items;
+      }
+      
+      const tableData = parsedItems.map((item: any) => [
         item.name || 'Item',
         item.description || item.value || '-',
         `Rs. ${(item.price || item.cost || 0).toLocaleString()}`
