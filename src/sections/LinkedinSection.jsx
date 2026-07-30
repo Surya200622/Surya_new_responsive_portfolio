@@ -1,37 +1,20 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import './LinkedinSection.css';
-import { useTheme } from '../hooks/useTheme';
 
 const LinkedinSection = () => {
-  const { theme } = useTheme();
-  const containerRef = useRef(null);
-
   useEffect(() => {
-    // Force the LinkedIn script to re-execute by removing the old script
-    // and clearing its global state (window.LI) before injecting a new one.
+    // Only inject the script once
     const scriptId = 'linkedin-badge-script';
-    const oldScript = document.getElementById(scriptId);
-    
-    if (oldScript) {
-      oldScript.remove();
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement('script');
+      script.id = scriptId;
+      script.src = 'https://platform.linkedin.com/badges/js/profile.js';
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
     }
+  }, []);
 
-    // LinkedIn uses the LI global variable. Deleting it ensures the new script runs cleanly.
-    if (typeof window !== 'undefined' && window.LI) {
-      delete window.LI;
-    }
-
-    const script = document.createElement('script');
-    script.id = scriptId;
-    script.src = 'https://platform.linkedin.com/badges/js/profile.js';
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
-  }, [theme]);
-
-  // We use CSS to handle responsiveness so we don't have to re-render in React on every resize
-  // We'll render all 4 sizes for the current theme, and CSS will hide the ones that don't match the breakpoint.
-  
   return (
     <section id="linkedin" className="linkedin-section">
       <div className="container">
@@ -42,84 +25,56 @@ const LinkedinSection = () => {
           <p className="section-subtitle">Find me on LinkedIn</p>
         </div>
 
-        <div className="badge-container" ref={containerRef} key={theme}>
-          {/* Small Badge (Mobile) */}
-          <div className="badge-wrapper badge-small">
-            <div
-              className="badge-base LI-profile-badge"
-              data-locale="en_US"
-              data-size="medium"
-              data-theme={theme}
-              data-type="VERTICAL"
-              data-vanity="suryacs22"
-              data-version="v1"
-            >
-              <a
-                className="badge-base__link LI-simple-link"
-                href="https://in.linkedin.com/in/suryacs22?trk=profile-badge"
-              >
-                Surya CS
-              </a>
+        <div className="badge-container">
+          {/* Small Badge (Mobile) - Light */}
+          <div className="badge-wrapper badge-small theme-light">
+            <div className="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="light" data-type="VERTICAL" data-vanity="suryacs22" data-version="v1">
+              <a className="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/suryacs22?trk=profile-badge">Surya CS</a>
+            </div>
+          </div>
+          {/* Small Badge (Mobile) - Dark */}
+          <div className="badge-wrapper badge-small theme-dark">
+            <div className="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="dark" data-type="VERTICAL" data-vanity="suryacs22" data-version="v1">
+              <a className="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/suryacs22?trk=profile-badge">Surya CS</a>
             </div>
           </div>
 
-          {/* Medium Badge (Tablet) */}
-          <div className="badge-wrapper badge-medium">
-            <div
-              className="badge-base LI-profile-badge"
-              data-locale="en_US"
-              data-size="medium"
-              data-theme={theme}
-              data-type="HORIZONTAL"
-              data-vanity="suryacs22"
-              data-version="v1"
-            >
-              <a
-                className="badge-base__link LI-simple-link"
-                href="https://in.linkedin.com/in/suryacs22?trk=profile-badge"
-              >
-                Surya CS
-              </a>
+          {/* Medium Badge (Tablet) - Light */}
+          <div className="badge-wrapper badge-medium theme-light">
+            <div className="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="light" data-type="HORIZONTAL" data-vanity="suryacs22" data-version="v1">
+              <a className="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/suryacs22?trk=profile-badge">Surya CS</a>
+            </div>
+          </div>
+          {/* Medium Badge (Tablet) - Dark */}
+          <div className="badge-wrapper badge-medium theme-dark">
+            <div className="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="dark" data-type="HORIZONTAL" data-vanity="suryacs22" data-version="v1">
+              <a className="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/suryacs22?trk=profile-badge">Surya CS</a>
             </div>
           </div>
 
-          {/* Large Badge (Desktop) */}
-          <div className="badge-wrapper badge-large">
-            <div
-              className="badge-base LI-profile-badge"
-              data-locale="en_US"
-              data-size="large"
-              data-theme={theme}
-              data-type="VERTICAL"
-              data-vanity="suryacs22"
-              data-version="v1"
-            >
-              <a
-                className="badge-base__link LI-simple-link"
-                href="https://in.linkedin.com/in/suryacs22?trk=profile-badge"
-              >
-                Surya CS
-              </a>
+          {/* Large Badge (Desktop) - Light */}
+          <div className="badge-wrapper badge-large theme-light">
+            <div className="badge-base LI-profile-badge" data-locale="en_US" data-size="large" data-theme="light" data-type="VERTICAL" data-vanity="suryacs22" data-version="v1">
+              <a className="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/suryacs22?trk=profile-badge">Surya CS</a>
+            </div>
+          </div>
+          {/* Large Badge (Desktop) - Dark */}
+          <div className="badge-wrapper badge-large theme-dark">
+            <div className="badge-base LI-profile-badge" data-locale="en_US" data-size="large" data-theme="dark" data-type="VERTICAL" data-vanity="suryacs22" data-version="v1">
+              <a className="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/suryacs22?trk=profile-badge">Surya CS</a>
             </div>
           </div>
 
-          {/* Extra-Large Badge (Large Desktop) */}
-          <div className="badge-wrapper badge-xlarge">
-            <div
-              className="badge-base LI-profile-badge"
-              data-locale="en_US"
-              data-size="large"
-              data-theme={theme}
-              data-type="HORIZONTAL"
-              data-vanity="suryacs22"
-              data-version="v1"
-            >
-              <a
-                className="badge-base__link LI-simple-link"
-                href="https://in.linkedin.com/in/suryacs22?trk=profile-badge"
-              >
-                Surya CS
-              </a>
+          {/* Extra-Large Badge (Large Desktop) - Light */}
+          <div className="badge-wrapper badge-xlarge theme-light">
+            <div className="badge-base LI-profile-badge" data-locale="en_US" data-size="large" data-theme="light" data-type="HORIZONTAL" data-vanity="suryacs22" data-version="v1">
+              <a className="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/suryacs22?trk=profile-badge">Surya CS</a>
+            </div>
+          </div>
+          {/* Extra-Large Badge (Large Desktop) - Dark */}
+          <div className="badge-wrapper badge-xlarge theme-dark">
+            <div className="badge-base LI-profile-badge" data-locale="en_US" data-size="large" data-theme="dark" data-type="HORIZONTAL" data-vanity="suryacs22" data-version="v1">
+              <a className="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/suryacs22?trk=profile-badge">Surya CS</a>
             </div>
           </div>
         </div>
