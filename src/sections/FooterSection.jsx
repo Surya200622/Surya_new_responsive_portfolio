@@ -1,8 +1,8 @@
-import { Globe, ExternalLink, Link2, Heart, Shield, FileText } from 'lucide-react';
+import { Globe, ExternalLink, Link2, Heart, Shield, FileText, Github, Linkedin, Instagram } from 'lucide-react';
 import { SOCIAL_LINKS } from '../data/projectsData';
 import './FooterSection.css';
 
-const ICON_MAP = { Github: Globe, Linkedin: ExternalLink, Instagram: Link2, Twitter: Globe };
+const ICON_MAP = { Github, Linkedin, Instagram };
 
 const NAV_LINKS = [
   { label: 'Home', href: '#hero' },

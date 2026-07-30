@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, MessageSquare, MapPin, Globe, ExternalLink, Link2, Send, CheckCircle } from 'lucide-react';
+import { Mail, MessageSquare, MapPin, Github, Linkedin, Instagram, Send, CheckCircle, Globe } from 'lucide-react';
 import { SOCIAL_LINKS, CONTACT_INFO } from '../data/projectsData';
 import './ContactSection.css';
 
-const ICON_MAP = { Github: Globe, Linkedin: ExternalLink, Instagram: Link2, Twitter: Globe };
+const ICON_MAP = { Github, Linkedin, Instagram };
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', project: '', message: '' });
