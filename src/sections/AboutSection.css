@@ -456,7 +456,7 @@
 .about__skills-track {
   display: flex;
   width: max-content;
-  animation: scroll-marquee 25s linear infinite;
+  animation: scroll-marquee 45s linear infinite;
 }
 
 .about__skills-track:hover {

@@ -183,6 +183,7 @@ export default function HeroSection() {
         {/* Text */}
         <div className="hero__text">
           <motion.div className="hero__label" variants={itemVariants}>
+            <div className="hero__label-line" aria-hidden="true" />
             <span className="hero__typing-text">Full-Stack Python Developer</span>
           </motion.div>
 

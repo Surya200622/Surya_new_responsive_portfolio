@@ -146,10 +146,10 @@
   --color-text-tertiary: #8a857e;
   --color-text-muted: #b0aba4;
 
-  --color-accent-primary: #2563eb;
-  --color-accent-secondary: #00d2ff;
-  --color-accent-tertiary: #5c4f8e;
-  --color-accent-warm: #ff8c00;
+  --color-accent-primary: #f97316;
+  --color-accent-secondary: #fb923c;
+  --color-accent-tertiary: #ea580c;
+  --color-accent-warm: #fdba74;
 
   --color-border: rgba(0, 0, 0, 0.08);
   --color-border-subtle: rgba(0, 0, 0, 0.04);
@@ -169,7 +169,7 @@
   --color-success: #16a34a;
   --color-warning: #ca8a04;
   --color-error: #dc2626;
-  --color-info: #2563eb;
+  --color-info: #f97316;
 
   --scrollbar-track: #f2efe9;
   --scrollbar-thumb: rgba(158, 126, 46, 0.3);

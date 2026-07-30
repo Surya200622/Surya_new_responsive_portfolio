@@ -3,14 +3,18 @@ import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { Briefcase, Heart, Award, Code, Coffee, Zap, Globe2, Layers } from 'lucide-react';
+import { Briefcase, Heart, Award, Code, Coffee, Zap, Globe2, Layers, Database, Server, MonitorSmartphone, ShieldCheck, Brain, MessageCircle, RefreshCw, Lightbulb, Users } from 'lucide-react';
 import { SKILLS, TIMELINE_DATA, STATS } from '../data/projectsData';
 import GithubStats from '../components/GithubStats';
 import './AboutSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const ICON_MAP = { Briefcase, Heart, Award, Code };
+const ICON_MAP = { 
+  Briefcase, Heart, Award, Code,
+  Database, Server, MonitorSmartphone, ShieldCheck, Layers,
+  Brain, MessageCircle, RefreshCw, Lightbulb, Users
+};
 
 const STORY_BLOCKS = [
   {
@@ -475,21 +479,39 @@ export default function AboutSection() {
             <div className="about__skills-track">
               {/* Group 1 */}
               <div className="about__skills-group">
-                {SKILLS.map((skill) => (
-                  <div key={`g1-${skill.name}`} className="about__skill-card">
-                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: skill.category === 'Frontend' ? 'var(--color-accent-primary)' : 'var(--color-accent-secondary)' }} />
-                    <div className="about__skill-name">{skill.name}</div>
-                  </div>
-                ))}
+                {SKILLS.map((skill) => {
+                  const LucideIcon = skill.iconType === 'lucide' ? ICON_MAP[skill.icon] : null;
+                  return (
+                    <div key={`g1-${skill.name}`} className="about__skill-card">
+                      <div className="about__skill-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', flexShrink: 0 }}>
+                        {skill.iconType === 'lucide' && LucideIcon ? (
+                          <LucideIcon size={18} color="var(--color-accent-primary)" />
+                        ) : (
+                          <img src={skill.icon} alt={skill.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} loading="lazy" />
+                        )}
+                      </div>
+                      <div className="about__skill-name">{skill.name}</div>
+                    </div>
+                  );
+                })}
               </div>
               {/* Group 2 */}
               <div className="about__skills-group">
-                {SKILLS.map((skill) => (
-                  <div key={`g2-${skill.name}`} className="about__skill-card">
-                    <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: skill.category === 'Frontend' ? 'var(--color-accent-primary)' : 'var(--color-accent-secondary)' }} />
-                    <div className="about__skill-name">{skill.name}</div>
-                  </div>
-                ))}
+                {SKILLS.map((skill) => {
+                  const LucideIcon = skill.iconType === 'lucide' ? ICON_MAP[skill.icon] : null;
+                  return (
+                    <div key={`g2-${skill.name}`} className="about__skill-card">
+                      <div className="about__skill-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', flexShrink: 0 }}>
+                        {skill.iconType === 'lucide' && LucideIcon ? (
+                          <LucideIcon size={18} color="var(--color-accent-primary)" />
+                        ) : (
+                          <img src={skill.icon} alt={skill.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} loading="lazy" />
+                        )}
+                      </div>
+                      <div className="about__skill-name">{skill.name}</div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>

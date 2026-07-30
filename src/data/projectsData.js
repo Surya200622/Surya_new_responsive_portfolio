@@ -51,15 +51,43 @@ export const PROJECTS = [
 ];
 
 export const SKILLS = [
-  { name: 'Python', level: 90, category: 'Backend' },
-  { name: 'Django', level: 88, category: 'Backend' },
-  { name: 'React.js', level: 82, category: 'Frontend' },
-  { name: 'JavaScript', level: 80, category: 'Frontend' },
-  { name: 'HTML5', level: 95, category: 'Frontend' },
-  { name: 'CSS3', level: 92, category: 'Frontend' },
-  { name: 'Bootstrap', level: 88, category: 'Frontend' },
-  { name: 'SQLite', level: 78, category: 'Backend' },
+  // Languages
+  { name: 'Python', category: 'Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg', iconType: 'image' },
+  { name: 'JavaScript', category: 'Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg', iconType: 'image' },
+  { name: 'HTML', category: 'Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg', iconType: 'image' },
+  { name: 'CSS', category: 'Language', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg', iconType: 'image' },
 
+  // Frameworks & Libraries
+  { name: 'Django', category: 'Framework', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/django/django-plain.svg', iconType: 'image' },
+  { name: 'Django REST', category: 'Framework', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/django/django-plain.svg', iconType: 'image' },
+  { name: 'React.js', category: 'Framework', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg', iconType: 'image' },
+  { name: 'Next.js', category: 'Framework', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg', iconType: 'image' },
+  { name: 'Bootstrap', category: 'Framework', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg', iconType: 'image' },
+
+  // Databases
+  { name: 'MySQL', category: 'Database', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg', iconType: 'image' },
+  { name: 'SQLite', category: 'Database', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg', iconType: 'image' },
+  { name: 'Supabase', category: 'Database', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg', iconType: 'image' },
+  { name: 'Turso', category: 'Database', icon: 'Database', iconType: 'lucide' },
+
+  // Tools & Platforms
+  { name: 'GitHub', category: 'Tool', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg', iconType: 'image' },
+  { name: 'PythonAnywhere', category: 'Platform', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg', iconType: 'image' },
+  { name: 'Vercel', category: 'Platform', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vercel/vercel-original.svg', iconType: 'image' },
+  { name: 'VS Code', category: 'Tool', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg', iconType: 'image' },
+
+  // Core Concepts
+  { name: 'REST APIs', category: 'Concept', icon: 'Server', iconType: 'lucide' },
+  { name: 'Responsive Web Design', category: 'Concept', icon: 'MonitorSmartphone', iconType: 'lucide' },
+  { name: 'Auth & Auth', category: 'Concept', icon: 'ShieldCheck', iconType: 'lucide' },
+  { name: 'MVC/MVT', category: 'Concept', icon: 'Layers', iconType: 'lucide' },
+
+  // Soft Skills
+  { name: 'Problem Solving', category: 'Soft Skill', icon: 'Brain', iconType: 'lucide' },
+  { name: 'Communication', category: 'Soft Skill', icon: 'MessageCircle', iconType: 'lucide' },
+  { name: 'Adaptability', category: 'Soft Skill', icon: 'RefreshCw', iconType: 'lucide' },
+  { name: 'Creativity', category: 'Soft Skill', icon: 'Lightbulb', iconType: 'lucide' },
+  { name: 'Team Collaboration', category: 'Soft Skill', icon: 'Users', iconType: 'lucide' },
 ];
 
 export const TIMELINE_DATA = [
