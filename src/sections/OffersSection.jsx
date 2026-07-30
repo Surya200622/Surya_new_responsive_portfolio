@@ -167,8 +167,8 @@ export default function OffersSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="section-title">Special <span className="text-gradient">Offers</span></h2>
-          <p className="section-subtitle">Exclusive weekly deals for freelance web development and Python projects.</p>
+          <h2 className="offers-title">Special <span className="text-gradient">Offers</span></h2>
+          <p className="offers-subtitle">Exclusive weekly deals for freelance web development and Python projects.</p>
         </motion.div>
 
         <div className="offers-grid">
