@@ -19,9 +19,6 @@
       0% { filter: hue-rotate(0deg); }
       100% { filter: hue-rotate(360deg); }
     }
-    .animated-color {
-      animation: hue-shift 8s linear infinite;
-    }
   </style>
 
   <!-- Logo Mark -->

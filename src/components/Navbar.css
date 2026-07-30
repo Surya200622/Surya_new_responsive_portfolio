@@ -40,7 +40,8 @@
 }
 
 .navbar__logo:hover {
-  opacity: 0.8;
+  opacity: 1;
+  animation: hue-shift 4s linear infinite;
 }
 
 .navbar__logo-dot {

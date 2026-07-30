@@ -32,7 +32,7 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
       text-decoration: none;
     }
     .logo-dot {
-      color: #a855f7; /* Neon purple */
+      color: #f97316; /* Brand orange */
     }
     .card {
       background-color: #ffffff;
@@ -46,7 +46,7 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
       font-weight: 600;
       margin-top: 0;
       margin-bottom: 24px;
-      color: #a855f7; /* Neon purple */
+      color: #f97316; /* Brand orange */
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       padding-bottom: 16px;
     }
@@ -64,7 +64,7 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
     }
     .button {
       display: inline-block;
-      background: linear-gradient(to right, #a855f7, #3b82f6); /* Neon purple to neon blue */
+      background: linear-gradient(to right, #f97316, #fb923c); /* Brand orange gradient */
       color: #ffffff !important;
       font-weight: 600;
       font-size: 15px;
@@ -73,7 +73,7 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
       border-radius: 8px;
       margin: 24px 0;
       text-align: center;
-      box-shadow: 0 4px 14px 0 rgba(168, 85, 247, 0.39);
+      box-shadow: 0 4px 14px 0 rgba(249, 115, 22, 0.39);
     }
     .data-box {
       background-color: #f3f4f6;
@@ -107,7 +107,7 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
       color: #6b7280;
     }
     .footer a {
-      color: #a855f7;
+      color: #f97316;
       text-decoration: none;
     }
     /* Preheader text (hidden) */
@@ -128,7 +128,7 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
     </div>
     
     <div class="card">
-      <h2 class="title" style="color: #a855f7;">${title}</h2>
+      <h2 class="title" style="color: #f97316;">${title}</h2>
       
       <div class="content">
         ${contentHtml}
@@ -137,7 +137,7 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
     
     <div class="footer">
       <p>&copy; ${new Date().getFullYear()} Surya CS. All rights reserved.</p>
-      <p><a href="https://suryacs.is-a.dev" style="color: #a855f7;">suryacs.is-a.dev</a></p>
+      <p><a href="https://suryacs.is-a.dev" style="color: #f97316;">suryacs.is-a.dev</a></p>
     </div>
   </div>
 </body>
