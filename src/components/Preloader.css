@@ -5,43 +5,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: transparent;
+  background-color: var(--color-bg-primary);
+  transition: opacity 0.8s ease, visibility 0.8s ease;
   pointer-events: all;
 }
 
 .preloader.fade-out {
+  opacity: 0;
+  visibility: hidden;
   pointer-events: none;
 }
 
-/* Background overlay split screen effect */
-.preloader-bg-overlay {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 50%;
-  background-color: #0a0a0f;
-  z-index: 1;
-  transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
-}
-
-.preloader-bg-overlay.left {
-  left: 0;
-  transform-origin: left;
-}
-
-.preloader-bg-overlay.right {
-  right: 0;
-  transform-origin: right;
-}
-
-/* On fade-out, the overlays slide apart */
-.preloader.fade-out .preloader-bg-overlay.left {
-  transform: scaleX(0);
-}
-
-.preloader.fade-out .preloader-bg-overlay.right {
-  transform: scaleX(0);
-}
+/* Background overlays removed for a seamless fade transition */
 
 .preloader-content {
   position: relative;
@@ -50,12 +25,11 @@
   flex-direction: column;
   align-items: center;
   gap: 2rem;
-  transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+  transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
 }
 
-/* On fade-out, the logo scales up and fades out */
+/* On fade-out, the logo scales up smoothly */
 .preloader.fade-out .preloader-content {
-  opacity: 0;
   transform: scale(1.1);
 }
 
@@ -68,7 +42,7 @@
 }
 
 .preloader-logo {
-  width: 200px;
+  width: clamp(160px, 20vw, 280px);
   max-width: 80vw;
 }
 
@@ -84,7 +58,7 @@
 }
 
 .preloader-bar-container {
-  width: 150px;
+  width: clamp(120px, 15vw, 220px);
   height: 4px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;

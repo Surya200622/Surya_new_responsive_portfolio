@@ -26,9 +26,6 @@ const Preloader = () => {
 
   return (
     <div className={`preloader ${isFadingOut ? 'fade-out' : ''}`}>
-      <div className="preloader-bg-overlay left"></div>
-      <div className="preloader-bg-overlay right"></div>
-      
       <div className="preloader-content">
         <div className="preloader-logo-pulse">
           <div className="preloader-logo-hue">
