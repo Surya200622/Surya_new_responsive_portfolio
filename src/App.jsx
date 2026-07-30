@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useTheme } from './hooks/useTheme';
+import Preloader from './components/Preloader';
 import Navbar from './components/Navbar';
 import HeroSection from './sections/HeroSection';
 import AboutSection from './sections/AboutSection';
@@ -98,6 +99,8 @@ export default function App() {
 
   return (
     <>
+      <Preloader />
+      
       <Navbar theme={theme} toggleTheme={toggleTheme} />
 
       <main>

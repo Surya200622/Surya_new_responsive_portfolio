@@ -1,0 +1,113 @@
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  pointer-events: all;
+}
+
+.preloader.fade-out {
+  pointer-events: none;
+}
+
+/* Background overlay split screen effect */
+.preloader-bg-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background-color: #0a0a0f;
+  z-index: 1;
+  transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.preloader-bg-overlay.left {
+  left: 0;
+  transform-origin: left;
+}
+
+.preloader-bg-overlay.right {
+  right: 0;
+  transform-origin: right;
+}
+
+/* On fade-out, the overlays slide apart */
+.preloader.fade-out .preloader-bg-overlay.left {
+  transform: scaleX(0);
+}
+
+.preloader.fade-out .preloader-bg-overlay.right {
+  transform: scaleX(0);
+}
+
+.preloader-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* On fade-out, the logo scales up and fades out */
+.preloader.fade-out .preloader-content {
+  opacity: 0;
+  transform: scale(1.1);
+}
+
+.preloader-logo-pulse {
+  animation: pulse-logo 1.5s ease-in-out infinite alternate;
+}
+
+.preloader-logo-hue {
+  animation: hue-shift 8s linear infinite;
+}
+
+.preloader-logo {
+  width: 200px;
+  max-width: 80vw;
+}
+
+@keyframes pulse-logo {
+  0% { 
+    transform: scale(0.95); 
+    filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.2)); 
+  }
+  100% { 
+    transform: scale(1.05); 
+    filter: drop-shadow(0 0 25px rgba(249, 115, 22, 0.6)); 
+  }
+}
+
+.preloader-bar-container {
+  width: 150px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.2);
+  animation: hue-shift 8s linear infinite;
+}
+
+.preloader-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #f97316, #fb923c);
+  border-radius: 4px;
+  animation: load-bar 1.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+@keyframes load-bar {
+  0% { width: 0%; }
+  30% { width: 40%; }
+  70% { width: 80%; }
+  100% { width: 100%; }
+}
