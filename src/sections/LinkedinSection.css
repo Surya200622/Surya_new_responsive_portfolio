@@ -1,0 +1,55 @@
+.linkedin-section {
+  padding: 5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.linkedin-section .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.linkedin-section .section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.linkedin-section .badge-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 250px;
+}
+
+.badge-wrapper {
+  display: none;
+}
+
+/* Mobile: Small Badge */
+@media (max-width: 640px) {
+  .badge-wrapper.badge-small {
+    display: block;
+  }
+}
+
+/* Tablet: Medium Badge */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .badge-wrapper.badge-medium {
+    display: block;
+  }
+}
+
+/* Desktop: Large Badge */
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .badge-wrapper.badge-large {
+    display: block;
+  }
+}
+
+/* Large Desktop: Extra-Large Badge */
+@media (min-width: 1281px) {
+  .badge-wrapper.badge-xlarge {
+    display: block;
+  }
+}

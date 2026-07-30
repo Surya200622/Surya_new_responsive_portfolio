@@ -12,6 +12,7 @@ import ProjectsSection from './sections/ProjectsSection';
 import OffersSection from './sections/OffersSection';
 import CalculatorSection from './sections/CalculatorSection';
 import TestimonialsSection from './sections/TestimonialsSection';
+import LinkedinSection from './sections/LinkedinSection';
 import ContactSection from './sections/ContactSection';
 import FooterSection from './sections/FooterSection';
 
@@ -127,6 +128,10 @@ export default function App() {
         <div className="section-divider" />
 
         <TestimonialsSection />
+
+        <div className="section-divider" />
+
+        <LinkedinSection />
 
         <div className="section-divider" />
 
