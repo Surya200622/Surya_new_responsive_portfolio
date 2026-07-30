@@ -1,8 +1,9 @@
-import { Globe, ExternalLink, Link2, Heart, Shield, FileText, Github, Linkedin, Instagram } from 'lucide-react';
+import { Globe, ExternalLink, Link2, Heart, Shield, FileText } from 'lucide-react';
+import { FaGithub, FaLinkedin, FaInstagram } from 'react-icons/fa';
 import { SOCIAL_LINKS } from '../data/projectsData';
 import './FooterSection.css';
 
-const ICON_MAP = { Github, Linkedin, Instagram };
+const ICON_MAP = { Github: FaGithub, Linkedin: FaLinkedin, Instagram: FaInstagram };
 
 const NAV_LINKS = [
   { label: 'Home', href: '#hero' },
