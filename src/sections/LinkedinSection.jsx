@@ -7,24 +7,26 @@ const LinkedinSection = () => {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    // We want to force the LinkedIn script to re-parse when theme or component mounts
-    // One way is to append the script dynamically if it's not there,
-    // or if it is there, we can try to find if IN.parse exists
+    // Force the LinkedIn script to re-execute by removing the old script
+    // and clearing its global state (window.LI) before injecting a new one.
     const scriptId = 'linkedin-badge-script';
-    let script = document.getElementById(scriptId);
-
-    if (!script) {
-      script = document.createElement('script');
-      script.id = scriptId;
-      script.src = 'https://platform.linkedin.com/badges/js/profile.js';
-      script.async = true;
-      script.defer = true;
-      document.body.appendChild(script);
-    } else {
-      // If script is already loaded, we might need to tell LinkedIn to re-parse.
-      // LinkedIn exposes window.IN, but for badges it's often automatic on DOM insert if we re-append it, or we can just rely on standard React key to recreate the div.
-      // To be safe, we can just replace the script tag to force it to re-execute, though it's hacky.
+    const oldScript = document.getElementById(scriptId);
+    
+    if (oldScript) {
+      oldScript.remove();
     }
+
+    // LinkedIn uses the LI global variable. Deleting it ensures the new script runs cleanly.
+    if (typeof window !== 'undefined' && window.LI) {
+      delete window.LI;
+    }
+
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.src = 'https://platform.linkedin.com/badges/js/profile.js';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
   }, [theme]);
 
   // We use CSS to handle responsiveness so we don't have to re-render in React on every resize
