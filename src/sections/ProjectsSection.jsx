@@ -129,6 +129,7 @@ export default function ProjectsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
+              style={{ alignItems: 'center', rowGap: '1rem' }}
             >
               {categories.map(cat => (
                 <button
@@ -139,33 +140,26 @@ export default function ProjectsSection() {
                   {cat}
                 </button>
               ))}
-            </motion.div>
 
-            <motion.div
-              className="projects__filters"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              style={{ marginTop: '1rem' }}
-            >
+              <div style={{ width: '1px', height: '24px', background: 'var(--color-border)', margin: '0 4px' }} className="hidden sm:block" />
+
               <button
                 className={`projects__filter-btn${buyableFilter === 'All' ? ' projects__filter-btn--active' : ''}`}
                 onClick={() => setBuyableFilter('All')}
               >
-                All Projects
+                All Status
               </button>
               <button
                 className={`projects__filter-btn${buyableFilter === 'Available' ? ' projects__filter-btn--active' : ''}`}
                 onClick={() => setBuyableFilter('Available')}
               >
-                Available for Buying
+                For Sale
               </button>
               <button
                 className={`projects__filter-btn${buyableFilter === 'Unavailable' ? ' projects__filter-btn--active' : ''}`}
                 onClick={() => setBuyableFilter('Unavailable')}
               >
-                Not Available for Buying
+                Not For Sale
               </button>
             </motion.div>
 

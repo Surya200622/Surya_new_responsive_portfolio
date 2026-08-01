@@ -79,8 +79,27 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
     if (matchedType) projectPrice = `Starting at ₹${matchedType.basePrice}`;
   }
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: project.title,
+    description: displayDesc.trim() || project.description || 'Custom Web Development Project',
+    image: project.image ? (project.image.startsWith('http') ? project.image : `https://suryacs.is-a.dev${project.image}`) : 'https://suryacs.is-a.dev/logo.png',
+    offers: {
+      '@type': 'Offer',
+      price: projectPrice ? projectPrice.replace(/[^0-9]/g, '') : '5000',
+      priceCurrency: 'INR',
+      availability: project.buyable ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      url: `https://suryacs.is-a.dev/project/${project.slug}`,
+    }
+  };
+
   return (
     <main className="pt-32 pb-16 min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
         <Link href="/#projects" className="inline-flex items-center gap-2 mb-8" style={{ color: 'var(--text-secondary)' }}>
           <ArrowLeft size={18} /> Back to Portfolio

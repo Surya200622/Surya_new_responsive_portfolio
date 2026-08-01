@@ -90,7 +90,7 @@ export default function Navbar({ theme, toggleTheme }) {
           }
         });
       },
-      { threshold: 0.5 }
+      { threshold: 0.1, rootMargin: '-20% 0px -40% 0px' }
     );
 
     setTimeout(() => {
@@ -121,7 +121,13 @@ export default function Navbar({ theme, toggleTheme }) {
     // On home page, just scroll to the section
     const selector = href.startsWith('/#') ? href.substring(1) : href;
     const el = document.querySelector(selector);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+      
+      // Update active section immediately for better UX
+      const sectionName = href.replace('/', '').replace('#', '');
+      setActiveSection(sectionName || 'home');
+    }
   };
 
   return (
