@@ -1,3 +1,4 @@
+'use client';
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
@@ -14,6 +15,7 @@ export default function ProjectsSection() {
   const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState(['All']);
   const [activeFilter, setActiveFilter] = useState('All');
+  const [buyableFilter, setBuyableFilter] = useState('All');
   const [loading, setLoading] = useState(true);
   const [paymentModalState, setPaymentModalState] = useState({ isOpen: false, amount: 0, projectName: '' });
   const sectionRef = useRef(null);
@@ -39,9 +41,15 @@ export default function ProjectsSection() {
     fetchProjects();
   }, []);
 
-  const filtered = activeFilter === 'All'
-    ? projects
-    : projects.filter(p => p.category === activeFilter);
+  const filtered = projects.filter(p => {
+    const categoryMatch = activeFilter === 'All' || p.category === activeFilter;
+    const buyableMatch = buyableFilter === 'All' 
+      ? true 
+      : buyableFilter === 'Available' 
+        ? p.buyable && !['Blogsite', 'Porfolio'].includes(p.slug)
+        : !(p.buyable && !['Blogsite', 'Porfolio'].includes(p.slug));
+    return categoryMatch && buyableMatch;
+  });
 
   useGSAP(() => {
     if (loading || projects.length === 0) return;
@@ -65,7 +73,7 @@ export default function ProjectsSection() {
         );
       });
     }
-  }, { scope: sectionRef, dependencies: [activeFilter, loading, projects], revertOnUpdate: true });
+  }, { scope: sectionRef, dependencies: [activeFilter, buyableFilter, loading, projects], revertOnUpdate: true });
 
   const handleCardMouse = useCallback((e, cardEl) => {
     const rect = cardEl.getBoundingClientRect();
@@ -131,6 +139,34 @@ export default function ProjectsSection() {
                   {cat}
                 </button>
               ))}
+            </motion.div>
+
+            <motion.div
+              className="projects__filters"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              style={{ marginTop: '1rem' }}
+            >
+              <button
+                className={`projects__filter-btn${buyableFilter === 'All' ? ' projects__filter-btn--active' : ''}`}
+                onClick={() => setBuyableFilter('All')}
+              >
+                All Projects
+              </button>
+              <button
+                className={`projects__filter-btn${buyableFilter === 'Available' ? ' projects__filter-btn--active' : ''}`}
+                onClick={() => setBuyableFilter('Available')}
+              >
+                Available for Buying
+              </button>
+              <button
+                className={`projects__filter-btn${buyableFilter === 'Unavailable' ? ' projects__filter-btn--active' : ''}`}
+                onClick={() => setBuyableFilter('Unavailable')}
+              >
+                Not Available for Buying
+              </button>
             </motion.div>
 
             {/* Grid */}

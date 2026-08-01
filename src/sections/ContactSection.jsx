@@ -1,3 +1,4 @@
+'use client';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, MessageSquare, MapPin, Send, CheckCircle, Globe, ExternalLink, Link2 } from 'lucide-react';

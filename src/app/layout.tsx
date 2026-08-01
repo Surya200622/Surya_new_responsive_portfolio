@@ -4,6 +4,7 @@ import './globals.css';
 import ChatbotWidget from "@/components/ChatbotWidget";
 import MagicCursor from "@/components/MagicCursor";
 import Providers from "@/components/Providers";
+import { PROJECTS } from '../data/projectsData';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://suryacs.is-a.dev'),
@@ -76,7 +77,7 @@ export default function RootLayout({
                 '@type': 'WebSite',
                 '@id': 'https://suryacs.is-a.dev/#website',
                 name: 'Surya CS',
-                alternateName: ['Suryacs', 'Surya CS', 'Cssurya'],
+                alternateName: ['suryacs', 'SuryaCS', 'Surya.CS', 'Cssurya'],
                 url: 'https://suryacs.is-a.dev/'
               },
               {
@@ -85,10 +86,10 @@ export default function RootLayout({
                 '@id': 'https://suryacs.is-a.dev/#person',
                 name: 'Surya CS',
                 url: 'https://suryacs.is-a.dev',
-                image: 'https://suryacs.is-a.dev/images/surya-portrait.jpg',
+                image: 'https://suryacs.is-a.dev/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png',
                 jobTitle: 'Full-Stack Python Developer',
                 description:
-                  'B.COM.CA graduate from Sri Ramakrishna College of Arts & Science. IBM & ITC trained in Python Pandas & NumPy. Django & React Specialist.',
+                  'B.Com.CA graduate from Sri Ramakrishna College of Arts & Science. IBM & ITC trained in Python Pandas & NumPy. Django & React Specialist.',
                 email: 'suryacs.is.a.dev@gmail.com',
                 telephone: '+918220443165',
                 address: {
@@ -106,9 +107,18 @@ export default function RootLayout({
                   'https://github.com/Surya200622',
                   'https://linkedin.com/in/suryacs22/',
                   'https://suryacs.is-a.dev',
-                  'https://www.instagram.com/surya_codes_/'
+                  'https://www.instagram.com/suryacs.is_a.dev/'
                 ],
-              }
+              },
+              ...PROJECTS.map((project) => ({
+                '@context': 'https://schema.org',
+                '@type': 'Product',
+                name: project.title,
+                description: project.description,
+                image: `https://suryacs.is-a.dev${project.image}`,
+                url: project.link || 'https://suryacs.is-a.dev/projects',
+                category: project.category,
+              }))
             ]),
           }}
         />

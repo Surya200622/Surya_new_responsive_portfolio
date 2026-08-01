@@ -83,7 +83,8 @@
   color: var(--color-text-primary);
 }
 
-.navbar__link:hover::after {
+.navbar__link:hover::after,
+.navbar__link--active::after {
   width: 100%;
 }
 

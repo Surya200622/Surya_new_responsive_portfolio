@@ -1,3 +1,4 @@
+'use client';
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Search, PenTool, Code2, Rocket } from 'lucide-react';

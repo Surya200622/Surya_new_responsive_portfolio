@@ -1,3 +1,4 @@
+'use client';
 import { Globe, ExternalLink, Link2, Heart, Shield, FileText } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaInstagram } from 'react-icons/fa';
 import { SOCIAL_LINKS } from '../data/projectsData';

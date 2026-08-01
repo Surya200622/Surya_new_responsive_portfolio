@@ -6,11 +6,10 @@ import { motion } from 'framer-motion';
 import './Navbar.css';
 
 const NAV_LINKS = [
-  { label: 'Home', href: '/#hero' },
+  { label: 'Home', href: '/' },
   { label: 'About', href: '/#about' },
-  { label: 'Projects', href: '/#projects' },
-  { label: 'Jarvis AI', href: 'https://jarvis-official.vercel.app/' },
   { label: 'Resume', href: '/resume' },
+  { label: 'Projects', href: '/#projects' },
   { label: 'Calculator', href: '/#calculator' },
   { label: 'Reviews', href: '/#testimonials' },
   { label: 'Blog', href: 'https://blogcraft.pythonanywhere.com' },
@@ -65,11 +64,8 @@ export default function Navbar({ theme, toggleTheme }) {
       return prev;
     });
     
-    if (current > lastScrollRef.current && current > 300) {
-      setHidden(true); // Scrolling down past 300px
-    } else if (current < lastScrollRef.current) {
-      setHidden(false); // Scrolling up
-    }
+    // The navbar should always remain fixed and visible
+    setHidden(false);
     
     lastScrollRef.current = current;
   }, []);
@@ -132,7 +128,7 @@ export default function Navbar({ theme, toggleTheme }) {
     <>
       <nav className={`navbar${scrolled ? ' navbar--scrolled' : ''}${hidden ? ' navbar--hidden' : ''}`} role="navigation" aria-label="Main navigation">
         <div className="navbar__inner">
-          <a className="navbar__logo flex items-center" onClick={() => scrollTo('#hero')} tabIndex={0} style={{ textDecoration: 'none' }}>
+          <a className="navbar__logo flex items-center" onClick={() => scrollTo('/')} tabIndex={0} style={{ textDecoration: 'none', cursor: 'pointer' }}>
             <img src="/logo.svg" alt="Surya CS Logo" className="theme-adaptive-logo" style={{ height: '52px', width: 'auto', marginTop: '4px' }} />
           </a>
 
@@ -152,15 +148,20 @@ export default function Navbar({ theme, toggleTheme }) {
                   </a>
                 );
               }
-              const isHash = link.href.startsWith('/#');
-              const isActive = isHash 
-                ? (pathname === '/' && activeSection === link.href.substring(2))
-                : pathname === link.href;
+              // Extract the section name (e.g., '/projects' -> 'projects')
+              const sectionName = link.href.replace('/', '').replace('#', '');
+              
+              let isActive = false;
+              if (link.href === '/') {
+                isActive = pathname === '/' && (!activeSection || ['home', 'hero'].includes(activeSection));
+              } else {
+                isActive = pathname === link.href || (pathname === '/' && activeSection === sectionName);
+              }
 
               return (
                 <a
                   key={link.href}
-                  className="navbar__link"
+                  className={`navbar__link ${isActive ? 'navbar__link--active' : ''}`}
                   onClick={() => scrollTo(link.href)}
                   tabIndex={0}
                   style={{ position: 'relative' }}
@@ -261,16 +262,22 @@ export default function Navbar({ theme, toggleTheme }) {
                 </a>
               );
             }
-            const isHash = link.href.startsWith('/#');
-            const isActive = isHash 
-              ? (pathname === '/' && activeSection === link.href.substring(2))
-              : pathname === link.href;
+            // Extract the section name
+            const sectionName = link.href.replace('/', '').replace('#', '');
+            
+            let isActive = false;
+            if (link.href === '/') {
+              isActive = pathname === '/' && (!activeSection || ['home', 'hero'].includes(activeSection));
+            } else {
+              isActive = pathname === link.href || (pathname === '/' && activeSection === sectionName);
+            }
 
             return (
               <a
                 key={link.href}
-                className={`navbar__mobile-link ${isActive ? 'navbar__link--active' : ''}`}
+                className={`navbar__mobile-link ${isActive ? 'navbar__mobile-link--active' : ''}`}
                 onClick={() => scrollTo(link.href)}
+                style={isActive ? { color: 'var(--color-accent-primary)' } : {}}
                 tabIndex={0}
               >
                 {link.label}

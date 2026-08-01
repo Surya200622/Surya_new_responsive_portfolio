@@ -1,3 +1,4 @@
+'use client';
 import { useRef, useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Code2, Database, PenTool, Wrench } from 'lucide-react';
