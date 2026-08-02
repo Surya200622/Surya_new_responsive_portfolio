@@ -15,8 +15,6 @@
     "@libsql/client": "^0.17.4",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
-    "@supabase/ssr": "^0.3.0",
-    "@supabase/supabase-js": "^2.43.4",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.10.0",
     "drizzle-orm": "^0.45.2",

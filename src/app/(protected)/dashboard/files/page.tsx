@@ -198,7 +198,7 @@ export default function ClientFilesPage() {
           </div>
           <h3 className="text-xl font-display font-bold text-[var(--color-text-primary)] mb-2">Storage Setup Required</h3>
           <p className="text-[var(--color-text-secondary)] mb-6 max-w-md mx-auto">
-            The file storage bucket needs to be configured in Supabase. Please create a storage bucket named <code className="text-[var(--color-accent-primary)] bg-[var(--color-bg-tertiary)] px-1.5 py-0.5 rounded text-xs">client-files</code> in your Supabase dashboard.
+            The file storage needs to be configured in Cloudinary. Please add your Cloudinary API keys to your environment variables to enable file uploads.
           </p>
         </div>
       ) : files.length === 0 ? (

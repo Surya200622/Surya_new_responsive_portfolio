@@ -174,14 +174,14 @@ export default function PrivacyPolicyPage() {
                 <strong>NextAuth:</strong> Used for secure user authentication and session management.
               </li>
               <li>
-                <strong>Supabase:</strong> Used exclusively for storing user-uploaded files related to projects. See{' '}
+                <strong>Cloudinary:</strong> Used exclusively for storing user-uploaded files related to projects. See{' '}
                 <a
-                  href="https://supabase.com/privacy"
+                  href="https://cloudinary.com/privacy"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="legal-link"
                 >
-                  Supabase&apos;s Privacy Policy
+                  Cloudinary&apos;s Privacy Policy
                 </a>
                 .
               </li>
