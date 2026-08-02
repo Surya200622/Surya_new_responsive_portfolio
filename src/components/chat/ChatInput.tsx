@@ -19,19 +19,18 @@ export default function ChatInput({ onSendMessage, onTyping, projects = [], isAd
     projects.length === 1 ? projects[0].id : ''
   );
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if ((!content.trim() && !file) || isSending) return;
+  const executeSend = async (textToSend: string, fileToSend: File | null) => {
+    if ((!textToSend.trim() && !fileToSend) || isSending) return;
 
     setIsSending(true);
     try {
       let fileData;
       
-      if (file) {
+      if (fileToSend) {
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('file', fileToSend);
         formData.append('bucket', 'chat_attachments');
-        formData.append('path', `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`);
+        formData.append('path', `${Date.now()}_${fileToSend.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`);
         
         const uploadRes = await fetch('/api/upload', {
           method: 'POST',
@@ -44,10 +43,10 @@ export default function ChatInput({ onSendMessage, onTyping, projects = [], isAd
         }
         
         const { url } = await uploadRes.json();
-        fileData = { url, name: file.name };
+        fileData = { url, name: fileToSend.name };
       }
 
-      await onSendMessage(content, fileData, selectedProjectId);
+      await onSendMessage(textToSend, fileData, selectedProjectId);
       setContent('');
       setFile(null);
     } catch (error) {
@@ -56,6 +55,12 @@ export default function ChatInput({ onSendMessage, onTyping, projects = [], isAd
       setIsSending(false);
     }
   };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await executeSend(content, file);
+  };
+
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -96,7 +101,14 @@ export default function ChatInput({ onSendMessage, onTyping, projects = [], isAd
           type="file" 
           ref={fileInputRef} 
           className="hidden" 
-          onChange={(e) => setFile(e.target.files?.[0] || null)}
+          onChange={(e) => {
+            const selectedFile = e.target.files?.[0] || null;
+            if (selectedFile) {
+              setFile(selectedFile);
+              // Auto-send the file when selected
+              executeSend(content, selectedFile);
+            }
+          }}
         />
         
         {/* Project Selector for clients with multiple projects */}
