@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const { data: project } = await supabase
     .from('portfolio_projects')
     .select('title, description')
-    .eq('slug', decodedSlug)
+    .ilike('slug', decodedSlug)
     .single()
 
   if (!project) {
@@ -61,7 +61,7 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
   const { data: project } = await supabase
     .from('portfolio_projects')
     .select('*')
-    .eq('slug', decodedSlug)
+    .ilike('slug', decodedSlug)
     .single()
 
   if (!project) {
