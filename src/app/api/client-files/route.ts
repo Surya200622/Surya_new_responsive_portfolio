@@ -51,12 +51,16 @@ export async function POST(request: Request) {
     const buffer = await file.arrayBuffer();
     const fileBytes = Buffer.from(buffer);
 
+    const isImage = file.type.startsWith('image/');
+    const resourceType = isImage ? 'image' : 'raw';
+    const publicId = isImage ? `${Date.now()}_${file.name.split('.')[0]}` : `${Date.now()}_${file.name}`;
+
     const uploadResult = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder: `client-files/${userId}`,
-          public_id: `${Date.now()}_${file.name.split('.')[0]}`,
-          resource_type: 'auto',
+          public_id: publicId,
+          resource_type: resourceType,
         },
         (error, result) => {
           if (error) reject(error);

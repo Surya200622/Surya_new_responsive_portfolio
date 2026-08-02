@@ -22,13 +22,17 @@ export async function POST(request: Request) {
     const buffer = await file.arrayBuffer();
     const fileBytes = Buffer.from(buffer);
 
+    const isImage = file.type.startsWith('image/');
+    const resourceType = isImage ? 'image' : 'raw';
+    const publicId = isImage ? path.split('.')[0] : path;
+
     // Using Cloudinary upload stream
     const uploadResult = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder: `${bucket}`, // Use the bucket name as the folder
-          public_id: path.split('.')[0], // The path without extension as public_id
-          resource_type: 'auto', // Automatically detect if it's an image, video, or raw file
+          public_id: publicId,
+          resource_type: resourceType,
         },
         (error, result) => {
           if (error) reject(error);
