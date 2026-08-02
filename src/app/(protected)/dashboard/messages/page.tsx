@@ -1,7 +1,7 @@
 import ChatWindow from '@/components/chat/ChatWindow';
 import { db } from '@/db';
-import { users } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { users, projects } from '@/db/schema';
+import { eq, desc } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
@@ -31,6 +31,12 @@ export default async function ClientMessagesPage() {
   const adminName = adminProfile?.name || 'Surya CS';
   const adminAvatar = adminProfile?.image || '/images/surya-portrait.jpg';
 
+  // Fetch client projects
+  const clientProjectsData = await db.select({
+    id: projects.id,
+    title: projects.title
+  }).from(projects).where(eq(projects.clientId, session.user.id)).orderBy(desc(projects.createdAt));
+
   return (
     <div className="h-[calc(100dvh-8rem)] md:h-[calc(100dvh-8rem)] flex flex-col glass-card-strong rounded-2xl border border-[var(--color-glass-border)] overflow-hidden min-h-0">
       <div className="p-3 md:p-4 border-b border-[var(--color-glass-border)] bg-[var(--color-bg-glass)] flex items-center gap-3 md:gap-4 shrink-0">
@@ -51,7 +57,7 @@ export default async function ClientMessagesPage() {
       <div className="flex-1 overflow-hidden">
         {adminId ? (
           // @ts-ignore
-          <ChatWindow currentUserId={session.user.id} otherUserId={adminId} />
+          <ChatWindow currentUserId={session.user.id} otherUserId={adminId} projects={clientProjectsData} isAdmin={false} />
         ) : (
           <div className="h-full flex items-center justify-center text-center p-6">
             <div>

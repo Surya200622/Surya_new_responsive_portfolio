@@ -1,8 +1,10 @@
 import { ArrowLeft, Mail, Phone, Building2, Calendar, Briefcase, MessageSquare, File, Download, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ClientProjectsTable from './ClientProjectsTable';
 import ClientQuotationsTable from './ClientQuotationsTable';
+import DeleteFileButton from '@/components/admin/DeleteFileButton';
 import { db } from '@/db';
 import { users, projects, messages, quotations, projectFiles } from '@/db/schema';
 import { eq, or, and, desc, inArray, isNotNull } from 'drizzle-orm';
@@ -107,12 +109,17 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
 
   // Fetch client's uploaded files (from Messages)
   const messageFilesData = await db
-    .select()
+    .select({
+      message: messages,
+      project: projects
+    })
     .from(messages)
+    .leftJoin(projects, eq(messages.projectId, projects.id))
     .where(and(eq(messages.senderId, id), isNotNull(messages.fileUrl)))
     .orderBy(desc(messages.createdAt));
 
-  const mappedMessageFiles = messageFilesData.map(m => {
+  const mappedMessageFiles = messageFilesData.map(d => {
+    const m = d.message;
     // Infer file type from extension
     const ext = m.fileName?.split('.').pop()?.toLowerCase() || '';
     const isImage = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(ext);
@@ -125,7 +132,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
       fileType: isImage ? `image/${ext}` : 'application/octet-stream',
       category: 'chat_attachment',
       createdAt: m.createdAt,
-      projectName: 'Sent in Chat',
+      projectName: d.project?.title || 'Sent in Chat',
     };
   });
 
@@ -302,6 +309,7 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
                 >
                   <Download className="w-4 h-4" />
                 </a>
+                <DeleteFileButton id={file.id} type={file.category === 'chat_attachment' ? 'chat_attachment' : 'project_file'} />
               </div>
             ))}
           </div>

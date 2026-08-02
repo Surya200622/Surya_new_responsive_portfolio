@@ -107,6 +107,7 @@ export const messages = sqliteTable('messages', {
   id: text('id').notNull().primaryKey(),
   senderId: text('sender_id').references(() => users.id),
   receiverId: text('receiver_id').references(() => users.id),
+  projectId: text('project_id').references(() => projects.id),
   content: text('content').notNull(),
   fileUrl: text('file_url'),
   fileName: text('file_name'),

@@ -9,9 +9,11 @@ import { Loader2 } from 'lucide-react';
 interface ChatWindowProps {
   currentUserId: string;
   otherUserId: string;
+  projects?: { id: string, title: string }[];
+  isAdmin?: boolean;
 }
 
-export default function ChatWindow({ currentUserId, otherUserId }: ChatWindowProps) {
+export default function ChatWindow({ currentUserId, otherUserId, projects = [], isAdmin = false }: ChatWindowProps) {
   const { messages, isTyping, isLoading, sendMessage, setTyping } = useRealtimeMessages(currentUserId, otherUserId);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -51,6 +53,7 @@ export default function ChatWindow({ currentUserId, otherUserId }: ChatWindowPro
               key={message.id} 
               message={message} 
               isOwn={message.senderId === currentUserId} 
+              isAdmin={isAdmin}
             />
           ))
         )}
@@ -66,7 +69,7 @@ export default function ChatWindow({ currentUserId, otherUserId }: ChatWindowPro
         )}
       </div>
 
-      <ChatInput onSendMessage={sendMessage} onTyping={setTyping} />
+      <ChatInput onSendMessage={sendMessage} onTyping={setTyping} projects={projects} isAdmin={isAdmin} />
     </div>
   );
 }

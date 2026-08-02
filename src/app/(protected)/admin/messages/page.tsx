@@ -195,6 +195,7 @@ export default function AdminMessagesPage() {
                 key={selectedClient}
                 currentUserId={currentUserId}
                 otherUserId={selectedClient}
+                isAdmin={true}
               />
             </div>
           </>

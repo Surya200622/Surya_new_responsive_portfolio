@@ -70,7 +70,7 @@ export function useRealtimeMessages(currentUserId: string, otherUserId: string) 
     };
   }, [currentUserId, otherUserId]);
 
-  const sendMessage = async (content: string, fileData?: { url: string; name: string }) => {
+  const sendMessage = async (content: string, fileData?: { url: string; name: string }, projectId?: string) => {
     const tempId = 'temp-' + (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Date.now());
     const tempMessage: Message = {
       id: tempId,
@@ -95,6 +95,7 @@ export function useRealtimeMessages(currentUserId: string, otherUserId: string) 
           content,
           fileUrl: fileData?.url,
           fileName: fileData?.name,
+          projectId: projectId || undefined,
         })
       });
 

@@ -2,15 +2,22 @@ import { useState, useRef } from 'react';
 import { Send, Paperclip, Loader2, X } from 'lucide-react';
 
 interface ChatInputProps {
-  onSendMessage: (content: string, fileData?: { url: string; name: string }) => Promise<void>;
+  onSendMessage: (content: string, fileData?: { url: string; name: string }, projectId?: string) => Promise<void>;
   onTyping: () => void;
+  projects?: { id: string, title: string }[];
+  isAdmin?: boolean;
 }
 
-export default function ChatInput({ onSendMessage, onTyping }: ChatInputProps) {
+export default function ChatInput({ onSendMessage, onTyping, projects = [], isAdmin = false }: ChatInputProps) {
   const [content, setContent] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Default to the first project if there's exactly 1
+  const [selectedProjectId, setSelectedProjectId] = useState<string>(
+    projects.length === 1 ? projects[0].id : ''
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +47,7 @@ export default function ChatInput({ onSendMessage, onTyping }: ChatInputProps) {
         fileData = { url, name: file.name };
       }
 
-      await onSendMessage(content, fileData);
+      await onSendMessage(content, fileData, selectedProjectId);
       setContent('');
       setFile(null);
     } catch (error) {
@@ -91,6 +98,20 @@ export default function ChatInput({ onSendMessage, onTyping }: ChatInputProps) {
           className="hidden" 
           onChange={(e) => setFile(e.target.files?.[0] || null)}
         />
+        
+        {/* Project Selector for clients with multiple projects */}
+        {!isAdmin && projects.length >= 2 && (
+          <select 
+            value={selectedProjectId}
+            onChange={(e) => setSelectedProjectId(e.target.value)}
+            className="p-3 bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)] text-sm border border-[var(--color-glass-border)] rounded-xl outline-none focus:border-[var(--color-accent-primary)] max-w-[120px] shrink-0"
+          >
+            <option value="">No Project</option>
+            {projects.map(p => (
+              <option key={p.id} value={p.id}>{p.title}</option>
+            ))}
+          </select>
+        )}
 
         <div className="flex-1 bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-xl relative focus-within:border-[var(--color-accent-primary)] transition-colors">
           <textarea
