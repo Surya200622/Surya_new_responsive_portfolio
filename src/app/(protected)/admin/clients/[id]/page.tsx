@@ -5,7 +5,7 @@ import ClientProjectsTable from './ClientProjectsTable';
 import ClientQuotationsTable from './ClientQuotationsTable';
 import { db } from '@/db';
 import { users, projects, messages, quotations, projectFiles } from '@/db/schema';
-import { eq, or, desc, inArray } from 'drizzle-orm';
+import { eq, or, and, desc, inArray, isNotNull } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
@@ -66,9 +66,19 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
     .where(eq(quotations.clientId, id))
     .orderBy(desc(quotations.createdAt));
 
-  // Fetch client's uploaded files
+  // Fetch client's uploaded files (from Projects)
   const projectIds = clientProjects.map(p => p.id);
-  let files: any[] = [];
+  
+  let unifiedFiles: Array<{
+    id: string;
+    fileName: string;
+    fileUrl: string;
+    fileSize?: number;
+    fileType?: string;
+    category: string;
+    createdAt: Date | null;
+    projectName: string;
+  }> = [];
   
   if (projectIds.length > 0) {
     const projectFilesData = await db
@@ -81,8 +91,49 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
       .where(inArray(projectFiles.projectId, projectIds))
       .orderBy(desc(projectFiles.createdAt));
       
-    files = projectFilesData;
+    const mappedProjectFiles = projectFilesData.map(d => ({
+      id: d.file.id,
+      fileName: d.file.fileName,
+      fileUrl: d.file.fileUrl,
+      fileSize: d.file.fileSize,
+      fileType: d.file.fileType,
+      category: d.file.category || 'project_file',
+      createdAt: d.file.createdAt,
+      projectName: d.project.title,
+    }));
+    
+    unifiedFiles = [...unifiedFiles, ...mappedProjectFiles];
   }
+
+  // Fetch client's uploaded files (from Messages)
+  const messageFilesData = await db
+    .select()
+    .from(messages)
+    .where(and(eq(messages.senderId, id), isNotNull(messages.fileUrl)))
+    .orderBy(desc(messages.createdAt));
+
+  const mappedMessageFiles = messageFilesData.map(m => {
+    // Infer file type from extension
+    const ext = m.fileName?.split('.').pop()?.toLowerCase() || '';
+    const isImage = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(ext);
+    
+    return {
+      id: m.id,
+      fileName: m.fileName || 'Chat Attachment',
+      fileUrl: m.fileUrl!,
+      fileSize: undefined, // Unknown from chat
+      fileType: isImage ? `image/${ext}` : 'application/octet-stream',
+      category: 'chat_attachment',
+      createdAt: m.createdAt,
+      projectName: 'Sent in Chat',
+    };
+  });
+
+  unifiedFiles = [...unifiedFiles, ...mappedMessageFiles].sort((a, b) => {
+    const timeA = a.createdAt?.getTime() || 0;
+    const timeB = b.createdAt?.getTime() || 0;
+    return timeB - timeA; // Descending
+  });
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -210,9 +261,9 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
       <div className="glass-card-strong p-6 rounded-2xl border border-[var(--color-glass-border)]">
         <h2 className="text-xl font-display font-bold text-[var(--color-text-primary)] mb-6">Client Uploaded Files</h2>
 
-        {files.length > 0 ? (
+        {unifiedFiles.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {files.map(({ file, project }) => (
+            {unifiedFiles.map((file) => (
               <div key={file.id} className="glass-card-strong p-4 rounded-xl border border-[var(--color-glass-border)] flex items-center justify-between group bg-[var(--color-bg-glass)]">
                 <div className="flex items-center gap-3 overflow-hidden">
                   <div className="w-10 h-10 rounded-lg bg-[var(--color-bg-tertiary)] flex items-center justify-center shrink-0">
@@ -231,10 +282,12 @@ export default async function ClientDetailPage({ params }: ClientDetailPageProps
                         <span className="uppercase px-1.5 py-0.5 bg-[var(--color-bg-tertiary)] rounded-sm">
                           {file.category?.replace('_', ' ')}
                         </span>
-                        <span>{(file.fileSize / 1024).toFixed(1)} KB</span>
+                        {file.fileSize !== undefined && (
+                          <span>{(file.fileSize / 1024).toFixed(1)} KB</span>
+                        )}
                       </div>
                       <span className="text-[10px] text-[var(--color-text-secondary)] truncate">
-                        Project: {project.title}
+                        {file.category === 'chat_attachment' ? file.projectName : `Project: ${file.projectName}`}
                       </span>
                     </div>
                   </div>

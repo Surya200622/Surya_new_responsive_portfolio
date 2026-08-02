@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { createAdminClient } from '@/lib/supabase/admin';
+import cloudinary from '@/lib/cloudinary';
 
 export async function GET(request: Request) {
   try {
@@ -11,21 +11,22 @@ export async function GET(request: Request) {
     }
 
     const userId = session.user.id;
-    const supabaseAdmin = createAdminClient();
-    const folderPath = `${userId}/`;
+    const folderPath = `client-files/${userId}`;
 
-    const { data: fileList, error: listError } = await supabaseAdmin.storage
-      .from('client-files')
-      .list(folderPath, {
-        limit: 100,
-        sortBy: { column: 'created_at', order: 'desc' },
-      });
+    // Note: Cloudinary Admin API has rate limits, this is fine for a small dashboard
+    const searchResult = await cloudinary.search
+      .expression(`folder:${folderPath}`)
+      .sort_by('created_at', 'desc')
+      .max_results(100)
+      .execute();
 
-    if (listError) {
-      return NextResponse.json({ error: listError.message }, { status: 500 });
-    }
+    const realFiles = searchResult.resources.map((f: any) => ({
+      name: f.filename,
+      public_id: f.public_id,
+      created_at: f.created_at,
+      metadata: { size: f.bytes, mimetype: `${f.resource_type}/${f.format}` }
+    }));
 
-    const realFiles = (fileList || []).filter(f => f.name !== '.emptyFolderPlaceholder');
     return NextResponse.json(realFiles);
   } catch (error: any) {
     console.error('Error fetching client files:', error);
@@ -47,19 +48,25 @@ export async function POST(request: Request) {
     }
 
     const userId = session.user.id;
-    const filePath = `${userId}/${Date.now()}_${file.name}`;
-    const supabaseAdmin = createAdminClient();
+    const buffer = await file.arrayBuffer();
+    const fileBytes = Buffer.from(buffer);
 
-    const { error: uploadError } = await supabaseAdmin.storage
-      .from('client-files')
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false,
-      });
+    const uploadResult = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: `client-files/${userId}`,
+          public_id: `${Date.now()}_${file.name.split('.')[0]}`,
+          resource_type: 'auto',
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+      uploadStream.end(fileBytes);
+    });
 
-    if (uploadError) throw uploadError;
-
-    return NextResponse.json({ success: true, filePath });
+    return NextResponse.json({ success: true, filePath: (uploadResult as any).public_id });
   } catch (error: any) {
     console.error('Error uploading client file:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -79,14 +86,14 @@ export async function DELETE(request: Request) {
     }
 
     const userId = session.user.id;
-    const filePath = `${userId}/${fileName}`;
-    const supabaseAdmin = createAdminClient();
-
-    const { error } = await supabaseAdmin.storage
-      .from('client-files')
-      .remove([filePath]);
-
-    if (error) throw error;
+    // For Cloudinary, fileName passed here is actually the public_id or filename
+    // If they pass public_id, we can destroy directly.
+    // Wait, the client might just pass the filename. If so, public_id is `client-files/${userId}/${fileName}`.
+    // Actually the POST returns `filePath: public_id`. So fileName in DELETE is likely the public_id.
+    const publicId = fileName.includes('client-files/') ? fileName : `client-files/${userId}/${fileName.split('.')[0]}`;
+    
+    await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
+    await cloudinary.uploader.destroy(publicId); // also try default (image)
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

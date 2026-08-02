@@ -15,9 +15,16 @@ export default function ChatWindow({ currentUserId, otherUserId }: ChatWindowPro
   const { messages, isTyping, isLoading, sendMessage, setTyping } = useRealtimeMessages(currentUserId, otherUserId);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const prevMessagesLength = useRef(-1);
+
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      // Only force scroll on initial load, when a new message arrives, or when typing starts.
+      // This prevents the 3-second polling from snapping the user to the bottom if they are reading old messages.
+      if (messages.length > prevMessagesLength.current || isTyping) {
+        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      }
+      prevMessagesLength.current = messages.length;
     }
   }, [messages, isTyping]);
 

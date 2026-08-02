@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { createAdminClient } from '@/lib/supabase/admin';
+import cloudinary from '@/lib/cloudinary';
 
 export async function POST(request: Request) {
   try {
@@ -16,16 +16,13 @@ export async function POST(request: Request) {
     }
 
     const userId = session.user.id;
-    const filePath = `${userId}/${fileName}`;
-    const supabaseAdmin = createAdminClient();
+    const publicId = fileName.includes('client-files/') ? fileName : `client-files/${userId}/${fileName.split('.')[0]}`;
+    
+    const url = cloudinary.url(publicId, {
+      flags: 'attachment',
+    });
 
-    const { data, error } = await supabaseAdmin.storage
-      .from('client-files')
-      .createSignedUrl(filePath, 60);
-
-    if (error) throw error;
-
-    return NextResponse.json({ url: data.signedUrl });
+    return NextResponse.json({ url });
   } catch (error: any) {
     console.error('Error generating signed URL:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });

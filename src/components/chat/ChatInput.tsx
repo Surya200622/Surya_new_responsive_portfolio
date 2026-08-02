@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react';
 import { Send, Paperclip, Loader2, X } from 'lucide-react';
-import { createClient } from '@/lib/supabase/client';
 
 interface ChatInputProps {
   onSendMessage: (content: string, fileData?: { url: string; name: string }) => Promise<void>;
@@ -22,21 +21,23 @@ export default function ChatInput({ onSendMessage, onTyping }: ChatInputProps) {
       let fileData;
       
       if (file) {
-        const supabase = createClient();
-        // Sanitize file name to avoid upload errors with special characters
-        const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-        const filePath = `chat_attachments/${Date.now()}_${sanitizedName}`;
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('bucket', 'chat_attachments');
+        formData.append('path', `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`);
         
-        const { error: uploadError } = await supabase.storage.from('project-files').upload(filePath, file);
+        const uploadRes = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
         
-        if (uploadError) {
-          console.error('File upload error:', uploadError);
-          // Still throw an error to prevent sending a broken message
+        if (!uploadRes.ok) {
+          console.error('File upload error');
           throw new Error('Failed to upload attachment');
         }
         
-        const { data } = supabase.storage.from('project-files').getPublicUrl(filePath);
-        fileData = { url: data.publicUrl, name: file.name };
+        const { url } = await uploadRes.json();
+        fileData = { url, name: file.name };
       }
 
       await onSendMessage(content, fileData);

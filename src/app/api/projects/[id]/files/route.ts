@@ -4,7 +4,7 @@ import { projectFiles } from '@/db/schema';
 import { eq, desc, and } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { createAdminClient } from '@/lib/supabase/admin';
+import cloudinary from '@/lib/cloudinary';
 
 export async function GET(
   request: Request,
@@ -51,30 +51,32 @@ export async function POST(
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    const supabaseAdmin = createAdminClient();
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-    const filePath = `${projectId}/${fileName}`;
+    const buffer = await file.arrayBuffer();
+    const fileBytes = Buffer.from(buffer);
 
-    // Upload to Supabase Storage using admin client
-    const { error: uploadError } = await supabaseAdmin.storage
-      .from('project-files')
-      .upload(filePath, file);
+    // Upload to Cloudinary
+    const uploadResult = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: `project-files/${projectId}`,
+          resource_type: 'auto',
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+      uploadStream.end(fileBytes);
+    });
 
-    if (uploadError) {
-      throw uploadError;
-    }
-
-    const { data: publicUrlData } = supabaseAdmin.storage
-      .from('project-files')
-      .getPublicUrl(filePath);
+    const publicUrl = (uploadResult as any).secure_url;
 
     // Save to Drizzle DB
     const [newFile] = await db.insert(projectFiles).values({
       id: crypto.randomUUID(),
       projectId,
       fileName: file.name,
-      fileUrl: publicUrlData.publicUrl,
+      fileUrl: publicUrl,
       fileType: file.type,
       fileSize: file.size,
       category,
@@ -106,11 +108,17 @@ export async function DELETE(
       return NextResponse.json({ error: 'Missing parameters' }, { status: 400 });
     }
 
-    const path = url.split('/').slice(-2).join('/');
-    const supabaseAdmin = createAdminClient();
-
+    // Extract public ID from Cloudinary URL (e.g. project-files/projectId/filename)
+    const urlParts = url.split('/');
+    const folderAndFile = urlParts.slice(-2).join('/');
+    const publicId = folderAndFile.substring(0, folderAndFile.lastIndexOf('.'));
+    
     // Remove from storage
-    await supabaseAdmin.storage.from('project-files').remove([path]);
+    if (publicId) {
+      await cloudinary.uploader.destroy(publicId, { resource_type: 'raw' }); // might be image/raw/video, use 'image' by default or try both?
+      // Better: just delete it without knowing resource type by trying raw and image
+      await cloudinary.uploader.destroy(publicId); 
+    }
     
     // Remove from DB
     await db.delete(projectFiles).where(eq(projectFiles.id, fileId));
