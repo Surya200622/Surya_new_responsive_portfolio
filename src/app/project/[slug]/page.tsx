@@ -2,7 +2,8 @@ import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { PROJECT_TYPES } from '../../../data/calculatorData'
-import { ArrowLeft, ExternalLink, Calendar, Tag } from 'lucide-react'
+import { ShieldCheck, Calendar, Tag, ExternalLink, ArrowLeft, CheckCircle } from 'lucide-react'
+import BuyProjectButton from '@/components/payment/BuyProjectButton'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 
@@ -20,10 +21,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     }
   )
 
+  const decodedSlug = decodeURIComponent(params.slug)
+
   const { data: project } = await supabase
     .from('portfolio_projects')
     .select('title, description')
-    .eq('slug', params.slug)
+    .eq('slug', decodedSlug)
     .single()
 
   if (!project) {
@@ -53,10 +56,12 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
     }
   )
 
+  const decodedSlug = decodeURIComponent(params.slug)
+
   const { data: project } = await supabase
     .from('portfolio_projects')
     .select('*')
-    .eq('slug', params.slug)
+    .eq('slug', decodedSlug)
     .single()
 
   if (!project) {
@@ -65,18 +70,33 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
 
   // Parse custom info from description appended by sync script
   let displayDesc = project.description || '';
-  const readMoreMatch = displayDesc.match(/Read more details:\s*(https?:\/\/[^\s]+)/i);
-  let blogLink = readMoreMatch ? readMoreMatch[1] : null;
-  if (blogLink) displayDesc = displayDesc.replace(/Read more details:\s*(https?:\/\/[^\s]+)/i, '');
+  let blogLink = project.view_details_url || project.viewDetailsUrl || null;
+  
+  if (!blogLink) {
+    const readMoreMatch = displayDesc.match(/Read more details:\s*(https?:\/\/[^\s]+)/i);
+    blogLink = readMoreMatch ? readMoreMatch[1] : null;
+  }
+  
+  if (displayDesc.match(/Read more details:\s*(https?:\/\/[^\s]+)/i)) {
+    displayDesc = displayDesc.replace(/Read more details:\s*(https?:\/\/[^\s]+)/i, '');
+  }
+
+  let projectPrice = project.project_price ? String(project.project_price) : null;
 
   const priceMatch = displayDesc.match(/Price:\s*(.*)/i);
-  let projectPrice = priceMatch ? priceMatch[1] : null;
-  if (priceMatch) displayDesc = displayDesc.replace(/Price:\s*(.*)/i, '');
+  if (priceMatch) {
+    if (!projectPrice) {
+      projectPrice = priceMatch[1];
+    }
+    displayDesc = displayDesc.replace(/Price:\s*(.*)/i, '');
+  }
 
   // fallback to calculatorData if no explicit price
   if (!projectPrice || projectPrice.trim() === 'N/A') {
     const matchedType = PROJECT_TYPES.find(p => p.name.toLowerCase().includes(project.category.toLowerCase()) || project.category.toLowerCase().includes(p.name.split(' ')[0].toLowerCase()));
     if (matchedType) projectPrice = `Starting at ₹${matchedType.basePrice}`;
+  } else if (!projectPrice.startsWith('₹') && !projectPrice.toLowerCase().includes('starting') && !projectPrice.toLowerCase().includes('custom')) {
+    projectPrice = `₹${projectPrice}`;
   }
 
   const jsonLd = {
@@ -95,81 +115,61 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
   };
 
   return (
-    <main className="pt-32 pb-16 min-h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
+    <main className="pt-24 md:pt-32 pb-16 min-h-screen bg-[var(--bg-primary)]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
-        <Link href="/#projects" className="inline-flex items-center gap-2 mb-8" style={{ color: 'var(--text-secondary)' }}>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Link href="/#projects" className="inline-flex items-center gap-2 mb-8 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
           <ArrowLeft size={18} /> Back to Portfolio
         </Link>
         
-        <div style={{ marginBottom: '2rem' }}>
-           <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 800, marginBottom: '1rem', color: 'var(--text-primary)' }}>
+        <div className="mb-8 md:mb-10">
+           <h1 className="text-3xl md:text-5xl lg:text-[3.5rem] font-extrabold mb-4 text-[var(--text-primary)] leading-tight">
              {project.title}
            </h1>
-           <div className="flex flex-wrap gap-4" style={{ color: 'var(--text-tertiary)', fontSize: '0.9rem' }}>
-             <span className="flex items-center gap-1"><Calendar size={16} /> {project.year}</span>
-             <span className="flex items-center gap-1"><Tag size={16} /> {project.category}</span>
+           <div className="flex flex-wrap gap-4 text-sm md:text-base text-[var(--text-tertiary)]">
+             <span className="flex items-center gap-1.5"><Calendar size={18} /> {project.year}</span>
+             <span className="flex items-center gap-1.5"><Tag size={18} /> {project.category}</span>
            </div>
         </div>
 
         {project.image && (
-          <div style={{ borderRadius: '1rem', overflow: 'hidden', marginBottom: '3rem', border: '1px solid var(--border-color)' }}>
-            <img src={project.image} alt={project.title} style={{ width: '100%', height: 'auto', display: 'block', maxHeight: '500px', objectFit: 'cover' }} />
+          <div className="rounded-2xl overflow-hidden mb-10 md:mb-12 border border-[var(--border-color)]">
+            <img src={project.image} alt={project.title} className="w-full h-auto max-h-[400px] md:max-h-[600px] object-cover block" />
           </div>
         )}
 
-        <div style={{ 
-          background: 'var(--bg-secondary)', 
-          padding: '2.5rem', 
-          borderRadius: '1.5rem', 
-          marginBottom: '3rem',
-          border: '1px solid var(--border-color)'
-        }}>
-           <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: 'var(--text-primary)', fontWeight: 700 }}>Project Details</h3>
-           <p style={{ color: 'var(--text-secondary)', lineHeight: 1.8, whiteSpace: 'pre-wrap', fontSize: '1.05rem' }}>
+        <div className="bg-[var(--bg-secondary)] p-6 md:p-10 rounded-3xl mb-10 md:mb-12 border border-[var(--border-color)]">
+           <h3 className="text-2xl font-bold mb-4 text-[var(--text-primary)]">Project Details</h3>
+           <p className="text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap text-base md:text-lg mb-8">
              {displayDesc.trim()}
            </p>
 
-           <div className="flex flex-wrap gap-2 mb-8">
+           <div className="flex flex-wrap gap-2 md:gap-3">
             {project.techArray?.map((tech: string) => (
-              <span key={tech} style={{ 
-                 background: 'var(--bg-tertiary)', 
-                 padding: '0.4rem 1rem', 
-                 borderRadius: '2rem', 
-                 fontSize: '0.85rem',
-                 color: 'var(--text-primary)',
-                 border: '1px solid var(--border-color)'
-               }}>{tech}</span>
+              <span key={tech} className="bg-[var(--bg-tertiary)] px-4 py-1.5 rounded-full text-sm md:text-base text-[var(--text-primary)] border border-[var(--border-color)]">
+                 {tech}
+              </span>
              ))}
            </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-          <div style={{ background: 'var(--bg-secondary)', padding: '2.5rem', borderRadius: '1.5rem', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column' }}>
-            <h4 style={{ color: 'var(--text-secondary)', fontSize: '1rem', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Estimated Pricing</h4>
-            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--accent)', marginBottom: '2rem' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          <div className="bg-[var(--bg-secondary)] p-6 md:p-10 rounded-3xl border border-[var(--border-color)] flex flex-col">
+            <h4 className="text-[var(--text-secondary)] text-sm font-semibold mb-2 uppercase tracking-wider">Estimated Pricing</h4>
+            <div className="text-3xl md:text-4xl font-bold text-[var(--color-accent-primary)] mb-8">
               {projectPrice || 'Custom Quote'}
             </div>
             
-            <div style={{ marginTop: 'auto' }}>
+            <div className="mt-auto">
               {project.buyable ? (
-                 <button 
-                   onClick={() => window.open(`https://wa.me/919994566325?text=Hi%20Surya,%20I'm%20interested%20in%20buying%20the%20project:%20${encodeURIComponent(project.title)}`, '_blank')}
-                   style={{ background: '#25D366', color: 'white', padding: '1rem 1.5rem', borderRadius: '0.75rem', fontWeight: 600, width: '100%', fontSize: '1.1rem', cursor: 'pointer', border: 'none', transition: 'transform 0.2s' }}
-                   onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
-                   onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                 >
-                   Buy this project
-                 </button>
+                 <BuyProjectButton projectTitle={project.title} projectPrice={projectPrice || '5000'} />
               ) : (
                 <a 
                   href="/#contact"
-                  style={{ display: 'block', textAlign: 'center', background: 'var(--accent)', color: 'white', padding: '1rem 1.5rem', borderRadius: '0.75rem', fontWeight: 600, width: '100%', fontSize: '1.1rem', cursor: 'pointer', textDecoration: 'none', transition: 'transform 0.2s' }}
-                  onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
-                  onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                  className="block text-center bg-[var(--color-accent-primary)] text-white py-4 px-6 rounded-xl font-semibold w-full text-lg hover:opacity-90 transition-opacity"
                 >
                   Start Similar Project
                 </a>
@@ -177,29 +177,29 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
             </div>
           </div>
 
-          <div style={{ background: 'var(--bg-secondary)', padding: '2.5rem', borderRadius: '1.5rem', border: '1px solid var(--border-color)' }}>
-            <h4 style={{ color: 'var(--text-secondary)', fontSize: '1rem', marginBottom: '1.5rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Explore More</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div className="bg-[var(--bg-secondary)] p-6 md:p-10 rounded-3xl border border-[var(--border-color)] flex flex-col">
+            <h4 className="text-[var(--text-secondary)] text-sm font-semibold mb-6 uppercase tracking-wider">Explore More</h4>
+            <div className="flex flex-col gap-5">
                {project.link && (
-                 <a href={project.link} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-primary)', fontWeight: 500, fontSize: '1.1rem', textDecoration: 'none' }}>
-                   <div style={{ padding: '0.5rem', background: 'var(--bg-tertiary)', borderRadius: '0.5rem', color: 'var(--text-secondary)' }}>
-                     <ExternalLink size={20} />
+                 <a href={project.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-[var(--text-primary)] font-medium text-lg hover:opacity-80 transition-opacity">
+                   <div className="p-3 bg-[var(--bg-tertiary)] rounded-xl text-[var(--text-secondary)] flex-shrink-0">
+                     <ExternalLink size={24} />
                    </div>
                    Visit Live Project
                  </a>
                )}
                {blogLink && (
-                 <a href={blogLink} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--accent)', fontWeight: 500, fontSize: '1.1rem', textDecoration: 'none' }}>
-                   <div style={{ padding: '0.5rem', background: 'var(--bg-tertiary)', borderRadius: '0.5rem', color: 'var(--accent)' }}>
-                     <ExternalLink size={20} />
+                 <a href={blogLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-[var(--color-accent-primary)] font-medium text-lg hover:opacity-80 transition-opacity">
+                   <div className="p-3 bg-[var(--bg-tertiary)] rounded-xl text-[var(--color-accent-primary)] flex-shrink-0">
+                     <ExternalLink size={24} />
                    </div>
                    Read Full Blog Post
                  </a>
                )}
                {!blogLink && (
-                 <a href="https://blogcraft.pythonanywhere.com/" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--accent)', fontWeight: 500, fontSize: '1.1rem', textDecoration: 'none' }}>
-                   <div style={{ padding: '0.5rem', background: 'var(--bg-tertiary)', borderRadius: '0.5rem', color: 'var(--accent)' }}>
-                     <ExternalLink size={20} />
+                 <a href="https://blogcraft.pythonanywhere.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-[var(--color-accent-primary)] font-medium text-lg hover:opacity-80 transition-opacity">
+                   <div className="p-3 bg-[var(--bg-tertiary)] rounded-xl text-[var(--color-accent-primary)] flex-shrink-0">
+                     <ExternalLink size={24} />
                    </div>
                    Read My Blog
                  </a>
@@ -207,7 +207,6 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
             </div>
           </div>
         </div>
-
       </div>
     </main>
   )

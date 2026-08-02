@@ -87,7 +87,7 @@ export default function ProjectsSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="projects section" id="projects">
+    <section ref={sectionRef} className="projects section" id="projects" style={{ minHeight: '100vh' }}>
       <div className="container">
         <div className="projects__header">
           <motion.div
@@ -113,7 +113,7 @@ export default function ProjectsSection() {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center h-64">
+          <div className="flex items-center justify-center" style={{ minHeight: '50vh' }}>
             <Loader2 className="w-8 h-8 animate-spin text-[var(--color-accent-primary)]" />
           </div>
         ) : projects.length === 0 ? (
@@ -180,11 +180,11 @@ export default function ProjectsSection() {
                   >
                     {!project.hideLink ? (
                       <div className="projects__card-inner" style={{ color: 'inherit' }}>
-                        <div className="projects__card-image">
+                        <a href={`/project/${project.slug}`} className="projects__card-image" style={{ display: 'block', textDecoration: 'none' }}>
                           <img src={project.image} alt={project.title} loading="lazy" />
                           <span className="projects__card-year">{project.year}</span>
                           <span className="projects__card-category">{project.category}</span>
-                        </div>
+                        </a>
                         <div className="projects__card-body">
                           <h3 className="projects__card-title">{project.title}</h3>
                           <p className="projects__card-desc">{project.description}</p>
@@ -208,7 +208,7 @@ export default function ProjectsSection() {
                                 </span>
                                 <button 
                                   className="projects__card-link"
-                                  style={{ color: '#25D366', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
+                                  style={{ color: 'var(--color-accent-primary)', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
                                   onClick={(e) => {
                                     e.preventDefault();
                                     setPaymentModalState({ isOpen: true, amount: Number(project.projectPrice || 5000), projectName: project.title });
@@ -224,11 +224,11 @@ export default function ProjectsSection() {
                       </div>
                     ) : (
                       <div className="projects__card-inner" style={{ color: 'inherit' }}>
-                        <div className="projects__card-image">
+                        <a href={`/project/${project.slug}`} className="projects__card-image" style={{ display: 'block', textDecoration: 'none' }}>
                           <img src={project.image} alt={project.title} loading="lazy" />
                           <span className="projects__card-year">{project.year}</span>
                           <span className="projects__card-category">{project.category}</span>
-                        </div>
+                        </a>
                         <div className="projects__card-body">
                           <h3 className="projects__card-title">{project.title}</h3>
                           <p className="projects__card-desc">{project.description}</p>
