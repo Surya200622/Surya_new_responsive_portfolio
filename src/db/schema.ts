@@ -4,6 +4,7 @@ import {
   text,
   primaryKey,
 } from 'drizzle-orm/sqlite-core';
+import { sql } from 'drizzle-orm';
 import type { AdapterAccount } from '@auth/core/adapters';
 
 export const users = sqliteTable('user', {
@@ -16,6 +17,7 @@ export const users = sqliteTable('user', {
   role: text('role').default('client'), // 'client' | 'admin'
   companyName: text('company_name'),
   phone: text('phone'),
+  createdAt: integer('created_at', { mode: 'timestamp_ms' }),
 });
 
 export const accounts = sqliteTable(

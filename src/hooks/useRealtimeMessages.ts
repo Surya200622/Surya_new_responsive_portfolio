@@ -29,7 +29,11 @@ export function useRealtimeMessages(currentUserId: string, otherUserId: string) 
         const res = await fetch(`/api/chat/messages?otherUserId=${otherUserId}`);
         if (res.ok) {
           const data = await res.json();
-          setMessages(data);
+          setMessages(prev => {
+            const dataIds = new Set(data.map((m: Message) => m.id));
+            const optimisticMessages = prev.filter(m => m.id.startsWith('temp-') && !dataIds.has(m.id));
+            return [...data, ...optimisticMessages];
+          });
           
           // Mark unread messages as read
           const unreadIds = data
@@ -67,7 +71,7 @@ export function useRealtimeMessages(currentUserId: string, otherUserId: string) 
   }, [currentUserId, otherUserId]);
 
   const sendMessage = async (content: string, fileData?: { url: string; name: string }) => {
-    const tempId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `temp-${Date.now()}`;
+    const tempId = 'temp-' + (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Date.now());
     const tempMessage: Message = {
       id: tempId,
       senderId: currentUserId,

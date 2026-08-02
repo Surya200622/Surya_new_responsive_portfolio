@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
       phone: validData.phone || null,
       password: hashedPassword,
       role: role,
+      createdAt: new Date(),
     };
 
     await db.insert(users).values(newUser);

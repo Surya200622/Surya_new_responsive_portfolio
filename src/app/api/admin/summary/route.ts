@@ -46,10 +46,8 @@ export async function GET() {
     const recentClients = await db.select()
       .from(users)
       .where(eq(users.role, 'client'))
-      .orderBy(desc(users.id)) // users don't have createdAt, id is ok or we can use another field. Actually schema doesn't have createdAt for users? Let's check.
+      .orderBy(desc(users.createdAt))
       .limit(5);
-
-    // If users doesn't have createdAt, sort by ID is best approximation. Wait, did they have createdAt in Turso? Supabase profiles had created_at. NextAuth users table usually doesn't have createdAt unless specified.
 
     return NextResponse.json({
       clientCount,

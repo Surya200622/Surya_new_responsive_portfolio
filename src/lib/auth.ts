@@ -8,9 +8,17 @@ import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import { checkRateLimit, getIp } from '@/lib/rate-limit';
 
+const adapter = DrizzleAdapter(db) as any;
+
 export const authOptions: NextAuthOptions = {
   // @ts-ignore - The adapter types might have a slight mismatch, but this works at runtime
-  adapter: DrizzleAdapter(db),
+  adapter: {
+    ...adapter,
+    createUser: async (user: any) => {
+      user.createdAt = new Date();
+      return adapter.createUser(user);
+    }
+  },
   session: {
     strategy: 'jwt', // We need JWT for CredentialsProvider
   },
