@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Paperclip, Check, CheckCheck } from 'lucide-react';
+import { Check, CheckCheck, FileText, FileArchive, File as FileIcon, Image as ImageIcon } from 'lucide-react';
 import type { Message } from '@/hooks/useRealtimeMessages';
 
 interface MessageBubbleProps {
@@ -7,7 +7,31 @@ interface MessageBubbleProps {
   isOwn: boolean;
 }
 
+const getFileIcon = (fileName: string) => {
+  const ext = fileName.split('.').pop()?.toLowerCase();
+  switch (ext) {
+    case 'pdf': return <FileText className="w-5 h-5" />;
+    case 'zip':
+    case 'rar':
+    case '7z': return <FileArchive className="w-5 h-5" />;
+    case 'png':
+    case 'jpg':
+    case 'jpeg':
+    case 'gif':
+    case 'webp':
+    case 'svg': return <ImageIcon className="w-5 h-5" />;
+    default: return <FileIcon className="w-5 h-5" />;
+  }
+};
+
+const isImageFile = (fileName: string) => {
+  return /\.(jpeg|jpg|gif|png|webp|svg)$/i.test(fileName);
+};
+
 export default function MessageBubble({ message, isOwn }: MessageBubbleProps) {
+  const hasAttachment = Boolean(message.fileUrl);
+  const isImg = hasAttachment && message.fileName ? isImageFile(message.fileName) : false;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -21,21 +45,31 @@ export default function MessageBubble({ message, isOwn }: MessageBubbleProps) {
       }`}>
         
         {/* File Attachment */}
-        {message.fileUrl && (
-          <a 
-            href={message.fileUrl} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className={`flex items-center gap-2 p-2 rounded-lg mb-2 text-sm font-medium ${
-              isOwn ? 'bg-black/10 hover:bg-black/20' : 'bg-[var(--color-bg-primary)] hover:bg-[var(--color-bg-primary)]/80'
-            } transition-colors`}
-          >
-            <Paperclip className="w-4 h-4" />
-            <span className="truncate">{message.fileName || 'Attachment'}</span>
-          </a>
+        {hasAttachment && (
+          <div className="mb-2">
+            {isImg ? (
+              <a href={message.fileUrl} target="_blank" rel="noopener noreferrer" className="block rounded-lg overflow-hidden border border-black/10 hover:opacity-90 transition-opacity">
+                <img src={message.fileUrl} alt={message.fileName || 'Attachment'} className="max-w-full h-auto max-h-[250px] object-cover" />
+              </a>
+            ) : (
+              <a 
+                href={message.fileUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className={`flex items-center gap-3 p-3 rounded-xl text-sm font-medium shadow-sm ${
+                  isOwn ? 'bg-black/10 hover:bg-black/20 text-[#0a0a0f]' : 'bg-[var(--color-bg-primary)] hover:brightness-95 text-[var(--color-text-primary)] border border-[var(--color-glass-border)]'
+                } transition-all`}
+              >
+                {getFileIcon(message.fileName || '')}
+                <span className="truncate max-w-[200px]">{message.fileName || 'Attachment'}</span>
+              </a>
+            )}
+          </div>
         )}
 
-        <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+        {message.content && (
+          <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+        )}
 
         <div className={`flex items-center justify-end gap-1.5 mt-1 text-[10px] font-medium ${
           isOwn ? 'text-black/60' : 'text-[var(--color-text-muted)]'
