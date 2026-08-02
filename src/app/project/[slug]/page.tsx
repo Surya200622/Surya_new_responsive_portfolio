@@ -1,5 +1,6 @@
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { db } from '@/db'
+import { portfolioProjects } from '@/db/schema'
+import { like } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import { PROJECT_TYPES } from '../../../data/calculatorData'
 import { ShieldCheck, Calendar, Tag, ExternalLink, ArrowLeft, CheckCircle } from 'lucide-react'
@@ -8,26 +9,12 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const cookieStore = cookies()
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value
-        },
-      },
-    }
-  )
-
   const decodedSlug = decodeURIComponent(params.slug)
 
-  const { data: project } = await supabase
-    .from('portfolio_projects')
-    .select('title, description')
-    .ilike('slug', decodedSlug)
-    .single()
+  const project = await db.select({ title: portfolioProjects.title, description: portfolioProjects.description })
+    .from(portfolioProjects)
+    .where(like(portfolioProjects.slug, decodedSlug))
+    .get()
 
   if (!project) {
     return {
@@ -43,26 +30,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 
 export default async function ProjectDetailPage({ params }: { params: { slug: string } }) {
-  const cookieStore = cookies()
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value
-        },
-      },
-    }
-  )
-
   const decodedSlug = decodeURIComponent(params.slug)
 
-  const { data: project } = await supabase
-    .from('portfolio_projects')
-    .select('*')
-    .ilike('slug', decodedSlug)
-    .single()
+  const project = await db.select()
+    .from(portfolioProjects)
+    .where(like(portfolioProjects.slug, decodedSlug))
+    .get()
 
   if (!project) {
     notFound()
@@ -70,7 +43,7 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
 
   // Parse custom info from description appended by sync script
   let displayDesc = project.description || '';
-  let blogLink = project.view_details_url || project.viewDetailsUrl || null;
+  let blogLink = project.viewDetailsUrl || null;
   
   if (!blogLink) {
     const readMoreMatch = displayDesc.match(/Read more details:\s*(https?:\/\/[^\s]+)/i);
@@ -81,7 +54,7 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
     displayDesc = displayDesc.replace(/Read more details:\s*(https?:\/\/[^\s]+)/i, '');
   }
 
-  let projectPrice = project.project_price ? String(project.project_price) : null;
+  let projectPrice = project.projectPrice ? String(project.projectPrice) : null;
 
   const priceMatch = displayDesc.match(/Price:\s*(.*)/i);
   if (priceMatch) {
