@@ -48,7 +48,7 @@ export async function POST(request: Request) {
     const currentUserId = session.user.id;
     const { receiverId, content, fileUrl, fileName } = await request.json();
 
-    if (!receiverId || !content) {
+    if (!receiverId || (!content && !fileUrl)) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -56,7 +56,9 @@ export async function POST(request: Request) {
       id: crypto.randomUUID(),
       senderId: currentUserId,
       receiverId,
-      content,
+      content: content || "",
+      fileUrl,
+      fileName,
       createdAt: new Date(),
     }).returning();
 

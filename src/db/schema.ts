@@ -106,6 +106,8 @@ export const messages = sqliteTable('messages', {
   senderId: text('sender_id').references(() => users.id),
   receiverId: text('receiver_id').references(() => users.id),
   content: text('content').notNull(),
+  fileUrl: text('file_url'),
+  fileName: text('file_name'),
   readAt: integer('read_at', { mode: 'timestamp_ms' }),
   createdAt: integer('created_at', { mode: 'timestamp_ms' }),
 });
