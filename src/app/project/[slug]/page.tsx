@@ -121,7 +121,7 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
            </p>
 
            <div className="flex flex-wrap gap-2 md:gap-3">
-            {project.techArray?.map((tech: string) => (
+            {(project.techArray as string[])?.map((tech: string) => (
               <span key={tech} className="bg-[var(--bg-tertiary)] px-4 py-1.5 rounded-full text-sm md:text-base text-[var(--text-primary)] border border-[var(--border-color)]">
                  {tech}
               </span>
