@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://suryacs.is-a.dev'
-  const lastModified = new Date('2026-05-28T03:24:56.786Z')
+  const lastModified = new Date()
 
   return [
     {
@@ -10,6 +10,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: 'monthly',
       priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/resume`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/about`,
