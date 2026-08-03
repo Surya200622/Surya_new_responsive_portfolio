@@ -12,6 +12,25 @@ const QUICK_REPLIES = [
   "Tell me about your tech stack"
 ];
 
+const renderMessage = (content) => {
+  if (!content) return null;
+  const lines = content.split('\n');
+  return lines.map((line, i) => {
+    const parts = line.split(/(\*\*.*?\*\*)/g);
+    return (
+      <span key={i}>
+        {parts.map((part, j) => {
+          if (part.startsWith('**') && part.endsWith('**')) {
+            return <strong key={j}>{part.slice(2, -2)}</strong>;
+          }
+          return <span key={j}>{part}</span>;
+        })}
+        {i < lines.length - 1 && <br />}
+      </span>
+    );
+  });
+};
+
 export default function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([INITIAL_MESSAGE]);
@@ -43,10 +62,8 @@ export default function ChatbotWidget() {
   }, [messages, isLoading]);
 
   const clearHistory = () => {
-    if (window.confirm("Are you sure you want to clear the chat history?")) {
-      setMessages([INITIAL_MESSAGE]);
-      localStorage.removeItem('surya-chatbot-history');
-    }
+    setMessages([INITIAL_MESSAGE]);
+    localStorage.removeItem('surya-chatbot-history');
   };
 
   const sendToBot = async (userMsg) => {
@@ -64,17 +81,38 @@ export default function ChatbotWidget() {
         }),
       });
 
-      const data = await res.json();
-      
-      if (res.ok) {
-        setMessages(prev => [...prev, { role: 'assistant', content: data.reply }]);
-      } else {
-        const errorMsg = data.error || 'Glitch occurred. Please check API keys.';
+      if (!res.ok) {
+        let errorMsg = 'Glitch occurred. Please try again.';
+        try {
+          const data = await res.json();
+          errorMsg = data.error || errorMsg;
+        } catch(e) {}
         setMessages(prev => [...prev, { role: 'assistant', content: `Error: ${errorMsg}` }]);
+        setIsLoading(false);
+        return;
+      }
+
+      // Remove typing indicator when streaming starts
+      setIsLoading(false);
+      setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let assistantMessage = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        assistantMessage += decoder.decode(value, { stream: true });
+        
+        setMessages(prev => {
+          const newMessages = [...prev];
+          newMessages[newMessages.length - 1].content = assistantMessage;
+          return newMessages;
+        });
       }
     } catch (error) {
       setMessages(prev => [...prev, { role: 'assistant', content: `Connection error: ${error.message}` }]);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -139,7 +177,7 @@ export default function ChatbotWidget() {
                     {msg.role === 'user' ? <User size={14} /> : <Bot size={14} />}
                   </div>
                   <div className={`chat-bubble ${msg.role === 'user' ? 'bubble-user' : 'bubble-assistant'}`}>
-                    {msg.content}
+                    {renderMessage(msg.content)}
                   </div>
                 </div>
               ))}

@@ -151,91 +151,79 @@ export async function POST(req: Request) {
     const BASE_PROMPT = getDynamicPrompt(dbPortfolioProjects, dbOffers, dbReviews);
     
     // Add formatting rule to the very end of the prompt so the AI prioritizes it heavily.
+    // Remove restrictive markdown rule so the AI generates natural formatting with line breaks
     const formattingRule = `
 CRITICAL FORMATTING RULE:
-- ABSOLUTELY NO MARKDOWN. NEVER use asterisks (** or *) for bolding, italics, or headers. 
-- The chat interface DOES NOT support markdown.
-- YOU MUST Use plain text formatting only. Use simple newlines and dashes (-) for lists.
-- Present your answers in an extremely neat, clear, and readable format.`;
+- Use markdown generously to format your answer.
+- Use bolding (**text**) for emphasis and headers.
+- Separate paragraphs and list items with blank lines (double newlines) so it is easy to read.`;
 
     const systemInstruction = isAdmin ? `${BASE_PROMPT}\n\n${ADMIN_PROMPT}${adminDataText}\n${pageContextText}\n${formattingRule}` : `${BASE_PROMPT}\n\n${CLIENT_RESTRICTION}${clientProjectsText}\n${pageContextText}\n${formattingRule}`;
     
-    let responseText = '';
-
+    // We will attempt NVIDIA first, then fallback to Groq if it fails immediately.
+    let responseStream: any = null;
+    let isNvidia = true;
+    
     try {
-      // First try NVIDIA (GLM-5.2)
-      const completion = await openai.chat.completions.create({
+      responseStream = await openai.chat.completions.create({
         model: "z-ai/glm-5.2",
         messages: [
           { role: 'system', content: systemInstruction },
           { role: 'user', content: message }
         ],
-        temperature: 1,
+        temperature: 0.7,
         top_p: 1,
-        max_tokens: 16384,
+        max_tokens: 4000,
+        stream: true
       });
-      
-      responseText = completion.choices[0]?.message?.content || '';
     } catch (nvidiaError: any) {
-      console.warn('NVIDIA API failed, falling back to OpenRouter:', nvidiaError.message);
+      console.warn('NVIDIA API failed, falling back to Groq:', nvidiaError.message);
+      isNvidia = false;
       
       try {
-        // Fallback to OpenRouter API
-        const openRouterRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://suryacs.is-a.dev/",
-            "X-Title": "Surya Portfolio Chatbot",
-          },
-          body: JSON.stringify({
-            "model": "meta-llama/llama-3.1-8b-instruct:free",
-            "messages": [
-              { role: 'system', content: systemInstruction },
-              { role: 'user', content: message }
-            ]
-          })
+        if (!process.env.GROQ_API_KEY) throw new Error('Groq API Key not configured');
+        responseStream = await groq.chat.completions.create({
+          messages: [
+            { role: 'system', content: systemInstruction },
+            { role: 'user', content: message }
+          ],
+          model: 'llama-3.1-8b-instant',
+          stream: true
         });
-        
-        if (!openRouterRes.ok) {
-          const errText = await openRouterRes.text();
-          console.error('OpenRouter API Error:', errText);
-          throw new Error(`OpenRouter API failed with status ${openRouterRes.status}`);
-        }
-
-        const openRouterData = await openRouterRes.json();
-        responseText = openRouterData.choices?.[0]?.message?.content || '';
-        
-      } catch (openRouterError: any) {
-        console.warn('OpenRouter failed, falling back to Groq:', openRouterError.message);
-        
-        // Fallback to Groq API
-        try {
-          if (!process.env.GROQ_API_KEY) throw new Error('Groq API Key not configured and OpenRouter failed');
-          
-          const chatCompletion = await groq.chat.completions.create({
-            messages: [
-              { role: 'system', content: systemInstruction },
-              { role: 'user', content: message }
-            ],
-            model: 'llama-3.1-8b-instant',
-          });
-          
-          responseText = chatCompletion.choices[0]?.message?.content || '';
-        } catch (groqError: any) {
-          console.error('Groq API Error:', groqError.message);
-          
-          if (groqError.message && groqError.message.includes('429')) {
-            return NextResponse.json({ error: 'The AI is currently experiencing high demand. Please try again in a few moments.' }, { status: 429 });
-          }
-          
-          throw groqError;
-        }
+      } catch (groqError: any) {
+        console.error('Groq API Error:', groqError.message);
+        return NextResponse.json({ error: 'The AI is currently experiencing high demand. Please try again in a few moments.' }, { status: 429 });
       }
     }
 
-    return NextResponse.json({ reply: responseText });
+    const encoder = new TextEncoder();
+    
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of responseStream) {
+            // Both OpenAI and Groq format their streaming chunks identically
+            const content = chunk.choices[0]?.delta?.content || '';
+            if (content) {
+              controller.enqueue(encoder.encode(content));
+            }
+          }
+        } catch (e) {
+          console.error('Streaming error:', e);
+          controller.enqueue(encoder.encode('\n\n[Connection interrupted]'));
+        } finally {
+          controller.close();
+        }
+      }
+    });
+
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-cache',
+      }
+    });
+    
   } catch (error: any) {
     console.error('Chat API Error:', error);
     return NextResponse.json({ error: error.message || 'Failed to generate response' }, { status: 500 });
