@@ -2,14 +2,19 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Send, Bot, User } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, User, Trash2 } from 'lucide-react';
 import './ChatbotWidget.css';
+
+const INITIAL_MESSAGE = { role: 'assistant', content: 'Hi! I am Surya\'s AI assistant. Ask me anything about his full-stack web development services, experience, or request a quote!' };
+const QUICK_REPLIES = [
+  "What services do you offer?",
+  "How much for a custom website?",
+  "Tell me about your tech stack"
+];
 
 export default function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'Hi! I am Surya\'s AI assistant. Ask me anything about his skills, experience, or availability!' }
-  ]);
+  const [messages, setMessages] = useState([INITIAL_MESSAGE]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
@@ -19,16 +24,32 @@ export default function ChatbotWidget() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Load history from local storage on mount
   useEffect(() => {
+    const saved = localStorage.getItem('surya-chatbot-history');
+    if (saved) {
+      try {
+        setMessages(JSON.parse(saved));
+      } catch (e) {
+        setMessages([INITIAL_MESSAGE]);
+      }
+    }
+  }, []);
+
+  // Save history to local storage whenever messages change
+  useEffect(() => {
+    localStorage.setItem('surya-chatbot-history', JSON.stringify(messages));
     scrollToBottom();
   }, [messages, isLoading]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
+  const clearHistory = () => {
+    if (window.confirm("Are you sure you want to clear the chat history?")) {
+      setMessages([INITIAL_MESSAGE]);
+      localStorage.removeItem('surya-chatbot-history');
+    }
+  };
 
-    const userMsg = input.trim();
-    setInput('');
+  const sendToBot = async (userMsg) => {
     setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
     setIsLoading(true);
 
@@ -36,7 +57,11 @@ export default function ChatbotWidget() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMsg }),
+        body: JSON.stringify({ 
+          message: userMsg,
+          currentPath: window.location.pathname,
+          currentUrl: window.location.href
+        }),
       });
 
       const data = await res.json();
@@ -44,7 +69,6 @@ export default function ChatbotWidget() {
       if (res.ok) {
         setMessages(prev => [...prev, { role: 'assistant', content: data.reply }]);
       } else {
-        // Use the exact error message from the backend if provided, avoiding confusing appended strings for standard overloaded errors
         const errorMsg = data.error || 'Glitch occurred. Please check API keys.';
         setMessages(prev => [...prev, { role: 'assistant', content: `Error: ${errorMsg}` }]);
       }
@@ -53,6 +77,19 @@ export default function ChatbotWidget() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+    const userMsg = input.trim();
+    setInput('');
+    await sendToBot(userMsg);
+  };
+
+  const handleQuickReply = (text) => {
+    if (isLoading) return;
+    sendToBot(text);
   };
 
   return (
@@ -83,11 +120,16 @@ export default function ChatbotWidget() {
             <div className="chatbot-header">
               <div className="chatbot-title">
                 <Bot size={20} className="text-accent" />
-                <span>Surya's AI</span>
+                <span>Surya's AI Assistant</span>
               </div>
-              <button className="chatbot-close" onClick={() => setIsOpen(false)}>
-                <X size={18} />
-              </button>
+              <div className="chatbot-actions">
+                <button className="chatbot-icon-btn" onClick={clearHistory} title="Clear Chat">
+                  <Trash2 size={16} />
+                </button>
+                <button className="chatbot-icon-btn" onClick={() => setIsOpen(false)}>
+                  <X size={18} />
+                </button>
+              </div>
             </div>
 
             <div className="chatbot-messages">
@@ -101,6 +143,21 @@ export default function ChatbotWidget() {
                   </div>
                 </div>
               ))}
+              
+              {messages.length === 1 && (
+                <div className="chat-quick-replies">
+                  {QUICK_REPLIES.map((reply, idx) => (
+                    <button 
+                      key={idx} 
+                      className="chat-quick-reply-btn" 
+                      onClick={() => handleQuickReply(reply)}
+                    >
+                      {reply}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               {isLoading && (
                 <div className="chat-bubble-wrapper chat-left">
                   <div className="chat-avatar"><Bot size={14} /></div>

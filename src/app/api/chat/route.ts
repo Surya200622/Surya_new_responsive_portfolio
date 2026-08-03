@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import OpenAI from 'openai';
 import Groq from 'groq-sdk';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
@@ -7,6 +8,11 @@ import { db } from '@/db';
 import { portfolioProjects, offers, reviews, projects } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { checkRateLimit, getIp } from '@/lib/rate-limit';
+
+const openai = new OpenAI({
+  apiKey: process.env.NVIDIA_API_KEY || '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',
+  baseURL: 'https://integrate.api.nvidia.com/v1',
+});
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || '' });
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || '';
@@ -26,18 +32,21 @@ const getDynamicPrompt = (dbPortfolioProjects: any[], dbOffers: any[], dbReviews
   const timelineText = TIMELINE_DATA.map(t => `- ${t.year}: ${t.title} - ${t.description}`).join('\n  ');
   
   return `
-You are the official, friendly AI assistant exclusively representing Surya CS on his personal portfolio website.
-Surya is a Full-Stack Python Developer based in Coimbatore, India.
+You are the official, friendly, and highly intelligent AI business assistant representing Surya CS, a premium Full-Stack Python Developer and IT Consultant based in Coimbatore, India.
+Your goal is to impress potential clients, showcase Surya's technical expertise, and confidently pitch his web development services. 
+Act as a knowledgeable technical consultant. If a user asks about complex technical concepts, explain them clearly while highlighting how Surya's skills in Python, Django, React, and modern web architectures can solve their specific problems.
 
 CRITICAL FACTS ABOUT SURYA:
 - Education: B.COM.CA from Sri Ramakrishna College of Arts & Science.
-- Current Status: Looking for freelance opportunities and full-time roles in IT.
+- Current Status: Available for freelance opportunities, full-time IT roles, and contract work.
+- Business Value & Approach: Focuses on delivering scalable, secure, and modern web applications. End-to-end development from UI/UX implementation to solid backend architectures.
 - Services Offered: 
   1. Full-Stack Web Development (Frontend & Backend)
-  2. Custom Python & Django Web Applications
-  3. React.js Frontend Development
-  4. Database Design (MySQL)
-  5. API Development & Integration
+  2. Custom Python & Django Web Applications (SaaS, E-commerce, Booking Systems)
+  3. React.js & Next.js Frontend Development
+  4. Database Design & Optimization (MySQL, PostgreSQL, SQLite, Supabase)
+  5. API Development & Third-Party Integration
+  6. AI & Tech Consulting for Businesses
 
 CONTACT INFO:
 - Email: ${CONTACT_INFO.email}
@@ -61,10 +70,12 @@ SURYA'S JOURNEY (TIMELINE):
   ${timelineText}
 
 INSTRUCTIONS FOR ANSWERING ACCURATELY:
+- Actively promote Surya's services. If a client has a project idea, explain how Surya can build it efficiently using his tech stack.
 - If a client asks for discounts, promotions, or pricing reductions, accurately provide the details from CURRENT OFFERS.
 - If a client asks about credibility, past work, or testimonials, share the exact CLIENT REVIEWS provided above.
 - If a client asks about your experience or background, use the TIMELINE and SKILLS sections.
 - Always use the specific details provided above to answer client questions accurately. Do not invent information. Do not mention "database" or "hardcoded" data to the user.
+- End your responses by naturally encouraging the client to reach out via WhatsApp or Email if they are interested in starting a project.
 `;
 };
 
@@ -87,12 +98,17 @@ export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
     let isAdmin = false;
+    let userId = null;
     
-    if (session && session.user && session.user.role === 'admin') {
-      isAdmin = true;
+    if (session && session.user) {
+      if (session.user.role === 'admin') {
+        isAdmin = true;
+      } else {
+        userId = session.user.id;
+      }
     }
 
-    const { message } = await req.json();
+    const { message, currentPath, currentUrl } = await req.json();
 
     if (!message) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
@@ -116,6 +132,21 @@ export async function POST(req: Request) {
       adminDataText = '\n\nINTERNAL ADMIN DATA (Active Client Projects):\n' + (dbProjects.length > 0 ? dbProjects.map(p => `- [${p.status.toUpperCase()}] ${p.title} (Budget: $${p.budget || 0})`).join('\n') : 'No active client projects.');
     }
 
+    let clientProjectsText = '';
+    if (userId && !isAdmin) {
+      const clientProjects = await db.select().from(projects).where(eq(projects.clientId, userId));
+      if (clientProjects.length > 0) {
+        clientProjectsText = `\n\nCLIENT'S ACTIVE PROJECTS:\nThe user you are speaking to is a logged-in client. They currently have the following active projects with Surya:\n` + 
+          clientProjects.map(p => `- Project: ${p.title}\n  Status: ${p.status}\n  Description: ${p.description || 'N/A'}\n  Timeline: ${p.timeline || 'N/A'}\n  Budget: ${p.budget || 'N/A'}`).join('\n\n') +
+          `\nIf the client asks about their project, use this information to provide an update or answer their questions.`;
+      }
+    }
+
+    let pageContextText = '';
+    if (currentPath) {
+      pageContextText = `\n\nCURRENT PAGE CONTEXT:\nThe user is currently viewing this page/URL on the portfolio: ${currentUrl || currentPath}\nIf they ask a question like "what is this?" or refer to the current page, use this URL path to understand what they are looking at and assist them accordingly.`;
+    }
+
     // Pass the BASE_PROMPT to BOTH clients and admins, just swap the restriction/admin instructions at the end!
     const BASE_PROMPT = getDynamicPrompt(dbPortfolioProjects, dbOffers, dbReviews);
     
@@ -127,62 +158,80 @@ CRITICAL FORMATTING RULE:
 - YOU MUST Use plain text formatting only. Use simple newlines and dashes (-) for lists.
 - Present your answers in an extremely neat, clear, and readable format.`;
 
-    const systemInstruction = isAdmin ? `${BASE_PROMPT}\n\n${ADMIN_PROMPT}${adminDataText}\n${formattingRule}` : `${BASE_PROMPT}\n\n${CLIENT_RESTRICTION}\n${formattingRule}`;
+    const systemInstruction = isAdmin ? `${BASE_PROMPT}\n\n${ADMIN_PROMPT}${adminDataText}\n${pageContextText}\n${formattingRule}` : `${BASE_PROMPT}\n\n${CLIENT_RESTRICTION}${clientProjectsText}\n${pageContextText}\n${formattingRule}`;
     
     let responseText = '';
 
     try {
-      // First try OpenRouter API
-      const openRouterRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json",
-          "HTTP-Referer": "https://suryacs.is-a.dev/", // Optional
-          "X-Title": "Surya Portfolio Chatbot", // Optional
-        },
-        body: JSON.stringify({
-          "model": "meta-llama/llama-3.1-8b-instruct:free",
-          "messages": [
-            { role: 'system', content: systemInstruction },
-            { role: 'user', content: message }
-          ]
-        })
+      // First try NVIDIA (GLM-5.2)
+      const completion = await openai.chat.completions.create({
+        model: "z-ai/glm-5.2",
+        messages: [
+          { role: 'system', content: systemInstruction },
+          { role: 'user', content: message }
+        ],
+        temperature: 1,
+        top_p: 1,
+        max_tokens: 16384,
       });
       
-      if (!openRouterRes.ok) {
-        const errText = await openRouterRes.text();
-        console.error('OpenRouter API Error:', errText);
-        throw new Error(`OpenRouter API failed with status ${openRouterRes.status}`);
-      }
-
-      const openRouterData = await openRouterRes.json();
-      responseText = openRouterData.choices?.[0]?.message?.content || '';
+      responseText = completion.choices[0]?.message?.content || '';
+    } catch (nvidiaError: any) {
+      console.warn('NVIDIA API failed, falling back to OpenRouter:', nvidiaError.message);
       
-    } catch (openRouterError: any) {
-      console.warn('OpenRouter failed, falling back to Groq:', openRouterError.message);
-      
-      // Fallback to Groq API
       try {
-        if (!process.env.GROQ_API_KEY) throw new Error('Groq API Key not configured and OpenRouter failed');
-        
-        const chatCompletion = await groq.chat.completions.create({
-          messages: [
-            { role: 'system', content: systemInstruction },
-            { role: 'user', content: message }
-          ],
-          model: 'llama-3.1-8b-instant',
+        // Fallback to OpenRouter API
+        const openRouterRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://suryacs.is-a.dev/",
+            "X-Title": "Surya Portfolio Chatbot",
+          },
+          body: JSON.stringify({
+            "model": "meta-llama/llama-3.1-8b-instruct:free",
+            "messages": [
+              { role: 'system', content: systemInstruction },
+              { role: 'user', content: message }
+            ]
+          })
         });
         
-        responseText = chatCompletion.choices[0]?.message?.content || '';
-      } catch (groqError: any) {
-        console.error('Groq API Error:', groqError.message);
-        
-        if (groqError.message && groqError.message.includes('429')) {
-          return NextResponse.json({ error: 'The AI is currently experiencing high demand. Please try again in a few moments.' }, { status: 429 });
+        if (!openRouterRes.ok) {
+          const errText = await openRouterRes.text();
+          console.error('OpenRouter API Error:', errText);
+          throw new Error(`OpenRouter API failed with status ${openRouterRes.status}`);
         }
+
+        const openRouterData = await openRouterRes.json();
+        responseText = openRouterData.choices?.[0]?.message?.content || '';
         
-        throw groqError;
+      } catch (openRouterError: any) {
+        console.warn('OpenRouter failed, falling back to Groq:', openRouterError.message);
+        
+        // Fallback to Groq API
+        try {
+          if (!process.env.GROQ_API_KEY) throw new Error('Groq API Key not configured and OpenRouter failed');
+          
+          const chatCompletion = await groq.chat.completions.create({
+            messages: [
+              { role: 'system', content: systemInstruction },
+              { role: 'user', content: message }
+            ],
+            model: 'llama-3.1-8b-instant',
+          });
+          
+          responseText = chatCompletion.choices[0]?.message?.content || '';
+        } catch (groqError: any) {
+          console.error('Groq API Error:', groqError.message);
+          
+          if (groqError.message && groqError.message.includes('429')) {
+            return NextResponse.json({ error: 'The AI is currently experiencing high demand. Please try again in a few moments.' }, { status: 429 });
+          }
+          
+          throw groqError;
+        }
       }
     }
 
