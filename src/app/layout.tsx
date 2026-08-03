@@ -112,12 +112,12 @@ export default function RootLayout({
               },
               ...PROJECTS.map((project) => ({
                 '@context': 'https://schema.org',
-                '@type': 'Product',
+                '@type': 'CreativeWork',
                 name: project.title,
                 description: project.description,
                 image: `https://suryacs.is-a.dev${project.image}`,
                 url: project.link || 'https://suryacs.is-a.dev/projects',
-                category: project.category,
+                genre: project.category,
               }))
             ]),
           }}
