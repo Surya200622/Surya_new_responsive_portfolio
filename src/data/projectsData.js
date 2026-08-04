@@ -138,7 +138,7 @@ export const SOCIAL_LINKS = [
   { name: 'GitHub', icon: 'Github', url: 'https://github.com/Surya200622' },
   { name: 'LinkedIn', icon: 'Linkedin', url: 'https://linkedin.com/in/suryacs22/' },
   { name: 'Instagram', icon: 'Instagram', url: 'https://www.instagram.com/suryacs.is_a.dev/' },
-  { name: 'Facebook', icon: 'Facebook', url: 'https://www.facebook.com/suryacswebdev' },
+  { name: 'Facebook', icon: 'Facebook', url: 'https://www.facebook.com/suryacswebsolutions' },
   { name: 'YouTube', icon: 'Youtube', url: 'https://www.youtube.com/@suryacs.is-a.dev1' },
 ];
 
