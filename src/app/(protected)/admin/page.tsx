@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Users, Briefcase, MessageSquare, IndianRupee, Calculator, Loader2 } from 'lucide-react';
+import { Users, Briefcase, MessageSquare, IndianRupee, Calculator, Loader2, Megaphone, Save } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
@@ -26,6 +26,13 @@ export default function AdminOverviewPage() {
   const [loading, setLoading] = useState(true);
   const [calculatorEnabled, setCalculatorEnabled] = useState(true);
   const [calculatorToggling, setCalculatorToggling] = useState(false);
+
+  const [bannerSettings, setBannerSettings] = useState({ 
+    text: 'Meet Jarvis AI — Experience the next generation of AI assistance. Boost your productivity and streamline your workflow with Jarvis!', 
+    url: 'https://surya-cs.itch.io/jarvis', 
+    active: true 
+  });
+  const [bannerSaving, setBannerSaving] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -59,6 +66,17 @@ export default function AdminOverviewPage() {
           setCalculatorEnabled(settingData.value === true || settingData.value === 'true');
         } catch {
           console.warn('Failed to fetch calculator setting');
+        }
+
+        // Fetch banner settings
+        try {
+          const resSettings = await fetch('/api/admin/settings?key=banner_settings');
+          const settingData = await resSettings.json();
+          if (settingData.value && typeof settingData.value === 'object') {
+            setBannerSettings(settingData.value);
+          }
+        } catch {
+          console.warn('Failed to fetch banner setting');
         }
       } catch (e) {
         console.warn('Admin data load error:', e);
@@ -168,6 +186,68 @@ export default function AdminOverviewPage() {
               </div>
             )}
           </button>
+        </div>
+
+        <div className="flex flex-col gap-4 p-4 rounded-xl bg-[var(--color-bg-glass)] border border-[var(--color-glass-border)] mt-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-300 ${bannerSettings.active ? 'bg-purple-500/20' : 'bg-[var(--color-bg-tertiary)]'}`}>
+                <Megaphone className={`w-5 h-5 transition-colors duration-300 ${bannerSettings.active ? 'text-purple-400' : 'text-[var(--color-text-muted)]'}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-[var(--color-text-primary)]">Global Ad Banner</p>
+                <p className="text-xs text-[var(--color-text-muted)] mt-0.5">Scrolling banner displayed on top</p>
+              </div>
+            </div>
+            
+            <button
+              onClick={() => setBannerSettings(s => ({ ...s, active: !s.active }))}
+              className="relative shrink-0 cursor-pointer"
+            >
+              <div className={`w-[52px] h-[28px] rounded-full transition-colors duration-300 ${bannerSettings.active ? 'bg-emerald-500' : 'bg-[var(--color-bg-tertiary)]'}`}>
+                <div className={`w-6 h-6 rounded-full bg-white shadow-lg transform transition-transform duration-300 mt-[2px] ${bannerSettings.active ? 'translate-x-[26px]' : 'translate-x-[2px]'}`} />
+              </div>
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-3 mt-2">
+            <input 
+              type="text" 
+              value={bannerSettings.text}
+              onChange={(e) => setBannerSettings(s => ({ ...s, text: e.target.value }))}
+              className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg px-4 py-2 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] outline-none focus:border-[var(--color-accent-primary)] transition-colors"
+              placeholder="Banner Text"
+            />
+            <div className="flex gap-3">
+              <input 
+                type="text" 
+                value={bannerSettings.url}
+                onChange={(e) => setBannerSettings(s => ({ ...s, url: e.target.value }))}
+                className="flex-1 bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg px-4 py-2 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] outline-none focus:border-[var(--color-accent-primary)] transition-colors"
+                placeholder="Banner Link URL (e.g. https://... or /offers)"
+              />
+              <button
+                onClick={async () => {
+                  setBannerSaving(true);
+                  try {
+                    await fetch('/api/admin/settings', {
+                      method: 'PATCH',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ key: 'banner_settings', value: bannerSettings }),
+                    });
+                  } catch (e) {
+                    console.error('Banner save failed:', e);
+                  }
+                  setBannerSaving(false);
+                }}
+                disabled={bannerSaving}
+                className="bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-primary)]/90 text-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-colors disabled:opacity-70 disabled:cursor-wait"
+              >
+                {bannerSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                Save
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Tag, Calendar, ArrowRight, X, Eye } from 'lucide-react';
+import { Tag, Calendar, ArrowRight, X, Eye, Link, Check } from 'lucide-react';
 import { PROJECT_TYPES } from '../data/calculatorData';
 import './OffersSection.css';
 
@@ -121,6 +121,15 @@ export default function OffersSection() {
   const [loading, setLoading] = useState(true);
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [selectedServiceQuery, setSelectedServiceQuery] = useState('');
+  const [copiedId, setCopiedId] = useState(null);
+
+  const copyToClipboard = (id) => {
+    const url = `${window.location.origin}/offers/${id}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    });
+  };
 
   useEffect(() => {
     async function fetchOffers() {
@@ -207,15 +216,26 @@ export default function OffersSection() {
                     <span>Valid till {formatDate(offer.validUntil)}</span>
                   </div>
                   
-                  <button
-                    className="offer-view-btn"
-                    onClick={() => {
-                      setSelectedOffer(offer);
-                      setSelectedServiceQuery(serviceQuery);
-                    }}
-                  >
-                    <Eye size={15} /> View Full Offer
-                  </button>
+                  <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
+                    <button
+                      className="offer-view-btn"
+                      style={{ flex: 1 }}
+                      onClick={() => {
+                        setSelectedOffer(offer);
+                        setSelectedServiceQuery(serviceQuery);
+                      }}
+                    >
+                      <Eye size={15} /> View
+                    </button>
+                    <button
+                      className="offer-view-btn"
+                      style={{ flex: 1, backgroundColor: copiedId === offer.id ? 'var(--color-accent-primary)' : 'rgba(255, 255, 255, 0.05)' }}
+                      onClick={() => copyToClipboard(offer.id)}
+                    >
+                      {copiedId === offer.id ? <Check size={15} /> : <Link size={15} />}
+                      {copiedId === offer.id ? ' Copied' : ' Copy Link'}
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             );

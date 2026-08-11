@@ -57,3 +57,24 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     return NextResponse.json({ error: error.message || 'Failed to update offer' }, { status: 500 });
   }
 }
+
+// GET: Fetch a single offer by id
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await params;
+    if (!id) {
+      return NextResponse.json({ error: 'Missing offer id' }, { status: 400 });
+    }
+
+    const fetchedOffers = await db.select().from(offers).where(eq(offers.id, id));
+
+    if (fetchedOffers.length === 0) {
+      return NextResponse.json({ error: 'Offer not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ offer: fetchedOffers[0] });
+  } catch (error: any) {
+    console.error('Fetch single offer error:', error);
+    return NextResponse.json({ error: 'Failed to fetch offer' }, { status: 500 });
+  }
+}
