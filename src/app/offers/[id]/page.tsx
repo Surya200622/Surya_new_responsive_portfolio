@@ -5,6 +5,7 @@ import { eq } from 'drizzle-orm';
 import PortfolioLayout from '@/components/PortfolioLayout';
 import { Tag, Calendar, ArrowRight } from 'lucide-react';
 import { PROJECT_TYPES } from '@/data/calculatorData';
+import Link from 'next/link';
 
 export const revalidate = 0; // Disable static rendering for this dynamic route
 
@@ -77,12 +78,12 @@ export default async function SingleOfferPage({ params }: { params: { id: string
             </div>
 
             <div className="mt-8">
-              <a
+              <Link
                 href={`/${serviceQuery}#calculator`}
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-[#f97316] to-[#d4956a] text-white px-8 py-4 rounded-xl font-bold hover:-translate-y-1 transition-transform shadow-lg shadow-[#f97316]/20 w-full sm:w-auto justify-center text-lg"
               >
                 Claim This Offer <ArrowRight size={20} />
-              </a>
+              </Link>
             </div>
           </div>
         </div>

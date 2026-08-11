@@ -79,17 +79,30 @@ export default function CalculatorSection() {
     fetchOffers();
   }, []);
 
-  // Listen to searchParams changes to dynamically select projectType and scroll
+  // Listen to searchParams and hash changes to dynamically select projectType and scroll
   useEffect(() => {
-    if (searchParams) {
-      const serviceParam = searchParams.get('service');
-      if (serviceParam) {
-        setProjectType(serviceParam);
+    const handleScroll = () => {
+      let shouldScroll = false;
+      if (searchParams) {
+        const serviceParam = searchParams.get('service');
+        if (serviceParam) {
+          setProjectType(serviceParam);
+          shouldScroll = true;
+        }
+      }
+      
+      if (typeof window !== 'undefined' && window.location.hash === '#calculator') {
+        shouldScroll = true;
+      }
+
+      if (shouldScroll) {
         setTimeout(() => {
           document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
         }, 100);
       }
-    }
+    };
+
+    handleScroll();
   }, [searchParams]);
 
   const toggleFeature = (key) => {
