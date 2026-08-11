@@ -15,6 +15,7 @@ const projectSchema = z.object({
   link: z.string().optional(),
   view_details_url: z.string().optional(),
   project_price: z.union([z.string(), z.number()]).optional(),
+  offers_discount_price: z.union([z.string(), z.number()]).optional(),
   buyable: z.boolean(),
   hide_link: z.boolean(),
 });
@@ -31,6 +32,7 @@ type Project = {
   link?: string;
   viewDetailsUrl?: string;
   projectPrice?: string | number;
+  offersDiscountPrice?: string | number;
   buyable: boolean;
   hideLink: boolean;
   createdAt: string;
@@ -56,6 +58,7 @@ export default function AdminProjectsPage() {
     link: '',
     view_details_url: '',
     project_price: '',
+    offers_discount_price: '',
     buyable: false,
     hide_link: false,
   });
@@ -126,6 +129,7 @@ export default function AdminProjectsPage() {
         link: project.link || '',
         view_details_url: project.viewDetailsUrl || '',
         project_price: project.projectPrice?.toString() || '',
+        offers_discount_price: project.offersDiscountPrice?.toString() || '',
         buyable: project.buyable || false,
         hide_link: project.hideLink || false,
       });
@@ -133,7 +137,7 @@ export default function AdminProjectsPage() {
       setEditingId(null);
       setFormData({
         slug: '', title: '', category: '', description: '', image: '', tech_array: '', 
-        year: new Date().getFullYear().toString(), link: '', view_details_url: '', project_price: '', buyable: false, hide_link: false
+        year: new Date().getFullYear().toString(), link: '', view_details_url: '', project_price: '', offers_discount_price: '', buyable: false, hide_link: false
       });
     }
     setShowModal(true);
@@ -267,6 +271,7 @@ export default function AdminProjectsPage() {
                 <div className="flex items-center gap-2 text-xs">
                   {project.buyable && <span className="w-2 h-2 rounded-full bg-green-500" title="Buyable"></span>}
                   {project.hideLink && <span className="w-2 h-2 rounded-full bg-orange-500" title="Link Hidden"></span>}
+                  {project.offersDiscountPrice && <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-sm font-bold ml-1">OFFER: {project.offersDiscountPrice}</span>}
                 </div>
                 {project.link && !project.hideLink && (
                   <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-accent-primary)] flex items-center gap-1 transition-colors">
@@ -408,7 +413,7 @@ export default function AdminProjectsPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                   <div>
                     <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">View Details URLs</label>
                     <input
@@ -427,6 +432,16 @@ export default function AdminProjectsPage() {
                       value={formData.project_price}
                       onChange={e => setFormData({ ...formData, project_price: e.target.value })}
                       placeholder="e.g. 5000"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">Offers Discount Price</label>
+                    <input
+                      type="number"
+                      className="auth-input px-4"
+                      value={formData.offers_discount_price}
+                      onChange={e => setFormData({ ...formData, offers_discount_price: e.target.value })}
+                      placeholder="e.g. 4000 (Optional)"
                     />
                   </div>
                 </div>

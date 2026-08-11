@@ -160,6 +160,7 @@ export const portfolioProjects = sqliteTable('portfolio_projects', {
   buyable: integer('buyable', { mode: 'boolean' }).default(false),
   hideLink: integer('hide_link', { mode: 'boolean' }).default(false),
   projectPrice: text('project_price'),
+  offersDiscountPrice: text('offers_discount_price'),
   viewDetailsUrl: text('view_details_url'),
   createdAt: integer('created_at', { mode: 'timestamp_ms' }),
 });
@@ -173,5 +174,16 @@ export const projectFiles = sqliteTable('project_files', {
   fileType: text('file_type').notNull(),
   category: text('category').notNull(),
   createdAt: integer('created_at', { mode: 'timestamp_ms' }),
+});
+
+export const pendingRegistrations = sqliteTable('pending_registrations', {
+  email: text('email').notNull().primaryKey(),
+  name: text('name').notNull(),
+  companyName: text('company_name'),
+  phone: text('phone'),
+  password: text('password').notNull(),
+  role: text('role').notNull().default('client'),
+  otp: text('otp').notNull(),
+  expiresAt: integer('expires_at', { mode: 'timestamp_ms' }).notNull(),
 });
 

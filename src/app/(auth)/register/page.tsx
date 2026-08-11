@@ -18,6 +18,8 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
+  const [showOtp, setShowOtp] = useState(false);
+  const [otp, setOtp] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -31,7 +33,7 @@ export default function RegisterPage() {
     try {
       const validData = registerSchema.parse(formData);
 
-      const res = await fetch('/api/auth/register', {
+      const res = await fetch('/api/auth/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(validData),
@@ -40,26 +42,7 @@ export default function RegisterPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Registration failed');
 
-      // Send credentials via email asynchronously
-      fetch('/api/send-credentials', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: validData.email,
-          password: validData.password,
-          name: validData.fullName
-        })
-      }).catch(err => console.error('Failed to send credentials:', err));
-
-      // Sign the user in
-      await signIn('credentials', {
-        redirect: false,
-        email: validData.email,
-        password: validData.password,
-      });
-
-      window.location.href = '/dashboard';
-      return;
+      setShowOtp(true);
     } catch (error) {
       if (error instanceof z.ZodError) {
         const newErrors: Record<string, string> = {};
@@ -75,20 +58,94 @@ export default function RegisterPage() {
     }
   };
 
-  if (isSuccess) {
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setServerError('');
+
+    try {
+      const res = await fetch('/api/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email, otp }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Verification failed');
+
+      // Send credentials via email asynchronously
+      fetch('/api/send-credentials', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          name: formData.fullName
+        })
+      }).catch(err => console.error('Failed to send credentials:', err));
+
+      // Sign the user in
+      await signIn('credentials', {
+        redirect: false,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      window.location.href = '/dashboard';
+    } catch (error) {
+      if (error instanceof Error) {
+        setServerError(error.message);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (showOtp) {
     return (
       <div className="w-full text-center py-8">
-        <div className="w-16 h-16 bg-green-500/10 border border-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-          <CheckCircle2 className="h-8 w-8 text-green-500" />
+        <div className="w-16 h-16 bg-[var(--color-bg-secondary)] border border-[var(--color-glass-border)] rounded-full flex items-center justify-center mx-auto mb-6">
+          <Mail className="h-8 w-8 text-[var(--color-accent-primary)]" />
         </div>
-        <h2 className="text-2xl font-display font-bold text-white mb-3">Check your email</h2>
+        <h2 className="text-2xl font-display font-bold text-[var(--color-text-primary)] mb-3">Verify your email</h2>
         <p className="text-[var(--color-text-muted)] text-sm mb-8 leading-relaxed">
-          We've sent a verification link to <span className="text-white font-medium">{formData.email}</span>. 
-          Please verify your email to access the client portal.
+          We've sent a 4-digit PIN to <span className="text-[var(--color-text-primary)] font-medium">{formData.email}</span>. 
+          Please enter it below to complete your registration.
         </p>
-        <Link href="/login" className="btn btn--primary w-full justify-center">
-          Return to sign in
-        </Link>
+
+        {serverError && (
+          <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            {serverError}
+          </div>
+        )}
+
+        <form onSubmit={handleVerifyOtp} className="space-y-6">
+          <div>
+            <label className="block text-[10px] font-medium text-[var(--color-text-secondary)] mb-1 uppercase tracking-wider text-left">4-Digit PIN</label>
+            <input 
+              type="text" 
+              maxLength={4}
+              className="auth-input px-4 py-3 text-center text-2xl tracking-widest" 
+              placeholder="••••" 
+              value={otp} 
+              onChange={e => setOtp(e.target.value.replace(/[^0-9]/g, ''))} 
+              disabled={isLoading}
+              required
+            />
+          </div>
+
+          <button type="submit" disabled={isLoading || otp.length !== 4} className="gradient-btn w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2">
+            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Verify & Create Account <CheckCircle2 className="h-4 w-4" /></>}
+          </button>
+        </form>
+
+        <button 
+          onClick={handleSubmit} 
+          disabled={isLoading}
+          className="mt-6 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent-primary)] transition-colors"
+        >
+          Didn't receive the email? Resend PIN
+        </button>
       </div>
     );
   }

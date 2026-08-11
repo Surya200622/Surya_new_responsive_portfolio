@@ -30,6 +30,7 @@ export async function PATCH(
         link: body.link,
         viewDetailsUrl: body.view_details_url,
         projectPrice: body.project_price?.toString(),
+        offersDiscountPrice: body.offers_discount_price?.toString(),
         buyable: body.buyable,
         hideLink: body.hide_link,
       })

@@ -16,6 +16,8 @@ export default function AdminRegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
+  const [showOtp, setShowOtp] = useState(false);
+  const [otp, setOtp] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showSecretKey, setShowSecretKey] = useState(false);
 
@@ -40,7 +42,7 @@ export default function AdminRegisterPage() {
     }
 
     try {
-      const res = await fetch('/api/auth/register', {
+      const res = await fetch('/api/auth/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -53,6 +55,31 @@ export default function AdminRegisterPage() {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Registration failed');
+
+      setShowOtp(true);
+    } catch (error) {
+      if (error instanceof Error) {
+        setServerError(error.message);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setServerError('');
+
+    try {
+      const res = await fetch('/api/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email, otp }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Verification failed');
 
       // Sign the user in immediately
       await signIn('credentials', {
@@ -71,20 +98,69 @@ export default function AdminRegisterPage() {
     }
   };
 
-  if (isSuccess) {
-    return (
-      <div className="glass-card-strong p-8 rounded-2xl w-full text-center border border-purple-500/20">
-        <div className="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-purple-500/20">
-          <CheckCircle2 className="h-8 w-8 text-purple-400" />
+  if (showOtp) {
+    if (isSuccess) {
+      return (
+        <div className="glass-card-strong p-8 rounded-2xl w-full text-center border border-purple-500/20">
+          <div className="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-purple-500/20">
+            <CheckCircle2 className="h-8 w-8 text-purple-400" />
+          </div>
+          <h2 className="text-2xl font-display font-bold text-white mb-3">Admin Account Created</h2>
+          <p className="text-[var(--color-text-muted)] text-sm mb-6">
+            Your admin account for <span className="text-white font-medium">{formData.email}</span> has been created.
+          </p>
+          <Link href="/admin/login" className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
+            Proceed to Admin Login
+          </Link>
         </div>
-        <h2 className="text-2xl font-display font-bold text-white mb-3">Admin Account Created</h2>
-        <p className="text-[var(--color-text-muted)] text-sm mb-6">
-          Your admin account for <span className="text-white font-medium">{formData.email}</span> has been created.
-          If email confirmation is enabled, please check your inbox.
+      );
+    }
+
+    return (
+      <div className="glass-card-strong p-8 rounded-2xl w-full text-center border border-purple-500/20 relative">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-t-2xl" />
+        <div className="w-16 h-16 bg-purple-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-purple-500/20">
+          <Mail className="h-8 w-8 text-purple-400" />
+        </div>
+        <h2 className="text-2xl font-display font-bold text-white mb-3">Verify your email</h2>
+        <p className="text-[var(--color-text-muted)] text-sm mb-8 leading-relaxed">
+          We've sent a 4-digit PIN to <span className="text-white font-medium">{formData.email}</span>. 
+          Please enter it below to complete your setup.
         </p>
-        <Link href="/admin/login" className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
-          Proceed to Admin Login
-        </Link>
+
+        {serverError && (
+          <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            {serverError}
+          </div>
+        )}
+
+        <form onSubmit={handleVerifyOtp} className="space-y-6">
+          <div>
+            <label className="block text-[10px] font-medium text-[var(--color-text-secondary)] mb-1 uppercase tracking-wider text-left text-purple-400">4-Digit PIN</label>
+            <input 
+              type="text" 
+              maxLength={4}
+              className="auth-input px-4 py-3 text-center text-2xl tracking-widest border-purple-500/30 bg-purple-500/5 text-purple-100 placeholder-purple-400/30 focus:border-purple-500" 
+              placeholder="••••" 
+              value={otp} 
+              onChange={e => setOtp(e.target.value.replace(/[^0-9]/g, ''))} 
+              disabled={isLoading}
+              required
+            />
+          </div>
+
+          <button type="submit" disabled={isLoading || otp.length !== 4} className="w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 transition-all text-white shadow-lg shadow-purple-500/20 border border-purple-500/50">
+            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Verify & Create Admin <CheckCircle2 className="h-4 w-4" /></>}
+          </button>
+        </form>
+
+        <button 
+          onClick={handleSubmit} 
+          disabled={isLoading}
+          className="mt-6 text-sm text-[var(--color-text-muted)] hover:text-purple-400 transition-colors"
+        >
+          Didn't receive the email? Resend PIN
+        </button>
       </div>
     );
   }
