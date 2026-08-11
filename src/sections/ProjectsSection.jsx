@@ -202,16 +202,28 @@ export default function ProjectsSection() {
                               Live URL <ArrowRight size={14} />
                             </a>
                             {project.buyable && !['Blogsite', 'Porfolio'].includes(project.slug) && (
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <span className="projects__card-price" style={{ fontWeight: 'bold', color: 'var(--color-accent-primary)' }}>
-                                  ₹{Number(project.projectPrice || 5000).toLocaleString('en-IN')}
-                                </span>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                                {project.offersDiscountPrice ? (
+                                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
+                                    <span className="projects__card-price" style={{ fontWeight: 'bold', color: 'var(--color-accent-primary)' }}>
+                                      ₹{Number(project.offersDiscountPrice).toLocaleString('en-IN')}
+                                    </span>
+                                    <span style={{ fontSize: '0.85rem', textDecoration: 'line-through', color: 'var(--color-text-muted)', opacity: 0.7 }}>
+                                      ₹{Number(project.projectPrice || 5000).toLocaleString('en-IN')}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <span className="projects__card-price" style={{ fontWeight: 'bold', color: 'var(--color-accent-primary)' }}>
+                                    ₹{Number(project.projectPrice || 5000).toLocaleString('en-IN')}
+                                  </span>
+                                )}
                                 <button 
                                   className="projects__card-link"
                                   style={{ color: 'var(--color-accent-primary)', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
                                   onClick={(e) => {
                                     e.preventDefault();
-                                    setPaymentModalState({ isOpen: true, amount: Number(project.projectPrice || 5000), projectName: project.title });
+                                    const finalPrice = project.offersDiscountPrice ? Number(project.offersDiscountPrice) : Number(project.projectPrice || 5000);
+                                    setPaymentModalState({ isOpen: true, amount: finalPrice, projectName: project.title });
                                   }}
                                 >
                                   Buy Project <ArrowRight size={14} />

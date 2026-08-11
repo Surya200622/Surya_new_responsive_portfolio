@@ -72,6 +72,11 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
     projectPrice = `₹${projectPrice}`;
   }
 
+  let discountPrice = project.offersDiscountPrice ? String(project.offersDiscountPrice) : null;
+  if (discountPrice && !discountPrice.startsWith('₹') && !discountPrice.toLowerCase().includes('starting') && !discountPrice.toLowerCase().includes('custom')) {
+    discountPrice = `₹${discountPrice}`;
+  }
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -80,7 +85,7 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
     image: project.image ? (project.image.startsWith('http') ? project.image : `https://suryacs.is-a.dev${project.image}`) : 'https://suryacs.is-a.dev/logo.png',
     offers: {
       '@type': 'Offer',
-      price: projectPrice ? projectPrice.replace(/[^0-9]/g, '') : '5000',
+      price: discountPrice ? discountPrice.replace(/[^0-9]/g, '') : (projectPrice ? projectPrice.replace(/[^0-9]/g, '') : '5000'),
       priceCurrency: 'INR',
       availability: project.buyable ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       url: `https://suryacs.is-a.dev/project/${project.slug}`,
@@ -132,13 +137,22 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           <div className="bg-[var(--bg-secondary)] p-6 md:p-10 rounded-3xl border border-[var(--border-color)] flex flex-col">
             <h4 className="text-[var(--text-secondary)] text-sm font-semibold mb-2 uppercase tracking-wider">Estimated Pricing</h4>
-            <div className="text-3xl md:text-4xl font-bold text-[var(--color-accent-primary)] mb-8">
-              {projectPrice || 'Custom Quote'}
+            <div className="text-3xl md:text-4xl font-bold text-[var(--color-accent-primary)] mb-8 flex items-baseline gap-3 flex-wrap">
+              {discountPrice ? (
+                <>
+                  <span>{discountPrice}</span>
+                  <span className="text-xl md:text-2xl text-[var(--text-muted)] line-through font-medium opacity-60">
+                    {projectPrice || 'Custom Quote'}
+                  </span>
+                </>
+              ) : (
+                projectPrice || 'Custom Quote'
+              )}
             </div>
             
             <div className="mt-auto">
               {project.buyable ? (
-                 <BuyProjectButton projectTitle={project.title} projectPrice={projectPrice || '5000'} />
+                 <BuyProjectButton projectTitle={project.title} projectPrice={discountPrice || projectPrice || '5000'} />
               ) : (
                 <a 
                   href="/#contact"
