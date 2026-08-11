@@ -30,6 +30,7 @@ export default function AdminOverviewPage() {
   const [bannerSettings, setBannerSettings] = useState({ 
     text: 'Meet Jarvis AI — Experience the next generation of AI assistance. Boost your productivity and streamline your workflow with Jarvis!', 
     url: 'https://surya-cs.itch.io/jarvis', 
+    buttonText: 'Try Jarvis Now',
     active: true 
   });
   const [bannerSaving, setBannerSaving] = useState(false);
@@ -223,8 +224,15 @@ export default function AdminOverviewPage() {
                 type="text" 
                 value={bannerSettings.url}
                 onChange={(e) => setBannerSettings(s => ({ ...s, url: e.target.value }))}
-                className="flex-1 bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg px-4 py-2 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] outline-none focus:border-[var(--color-accent-primary)] transition-colors"
+                className="flex-[2] bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg px-4 py-2 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] outline-none focus:border-[var(--color-accent-primary)] transition-colors"
                 placeholder="Banner Link URL (e.g. https://... or /offers)"
+              />
+              <input 
+                type="text" 
+                value={bannerSettings.buttonText || ''}
+                onChange={(e) => setBannerSettings(s => ({ ...s, buttonText: e.target.value }))}
+                className="flex-1 bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg px-4 py-2 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] outline-none focus:border-[var(--color-accent-primary)] transition-colors"
+                placeholder="Button Text"
               />
               <button
                 onClick={async () => {

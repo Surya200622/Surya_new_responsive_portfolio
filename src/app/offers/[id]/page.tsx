@@ -45,13 +45,13 @@ export default async function SingleOfferPage({ params }: { params: { id: string
 
   return (
     <PortfolioLayout>
-      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center pt-24 pb-12 px-4">
-        <div className="w-full max-w-2xl bg-[#12121e] border border-white/10 rounded-2xl p-8 shadow-2xl relative overflow-hidden isolate">
+      <div className="min-h-screen bg-[var(--color-bg-primary)] flex items-center justify-center pt-24 pb-12 px-4 transition-colors">
+        <div className="w-full max-w-2xl bg-[var(--color-bg-glass)] border border-[var(--color-glass-border)] rounded-2xl p-8 shadow-2xl relative overflow-hidden isolate">
           {/* Ambient Glow */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-[#c9a84c]/20 blur-[100px] -z-10 rounded-full" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-[var(--color-accent-primary)]/20 blur-[100px] -z-10 rounded-full" />
           
           {offer.imageUrl && (
-            <div className="w-full h-64 mb-8 rounded-xl overflow-hidden bg-black/30 relative">
+            <div className="w-full h-64 mb-8 rounded-xl overflow-hidden bg-[var(--color-bg-tertiary)] relative">
               <img src={offer.imageUrl} alt={offer.title} className="w-full h-full object-contain" />
             </div>
           )}
@@ -63,15 +63,15 @@ export default async function SingleOfferPage({ params }: { params: { id: string
               </div>
             ) : null}
 
-            <h1 className="text-3xl font-bold text-[#f0ece2] font-display">{offer.title}</h1>
+            <h1 className="text-3xl font-bold text-[var(--color-text-primary)] font-display">{offer.title}</h1>
 
-            <div className="text-[#a09a8e] leading-relaxed space-y-4 text-lg">
+            <div className="text-[var(--color-text-secondary)] leading-relaxed space-y-4 text-lg">
               {offer.description.split('\n').map((line, i) => (
                 <p key={i}>{line}</p>
               ))}
             </div>
 
-            <div className="mt-4 flex items-center gap-2 text-[#6b6560] font-medium bg-black/20 p-4 rounded-xl border border-white/5 w-fit">
+            <div className="mt-4 flex items-center gap-2 text-[var(--color-text-secondary)] font-medium bg-[var(--color-bg-tertiary)] p-4 rounded-xl border border-[var(--color-glass-border)] w-fit">
               <Calendar size={18} />
               <span>Valid till {formatDate(offer.validUntil)}</span>
             </div>

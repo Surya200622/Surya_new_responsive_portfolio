@@ -41,7 +41,7 @@ export default function JarvisAdBanner() {
                 <Sparkles size={16} className="jarvis-banner__icon" />
                 <span>{banner.text}</span>
                 <span className="jarvis-banner__cta">
-                  Go <ArrowRight size={14} />
+                  {banner.buttonText || 'Go'} <ArrowRight size={14} />
                 </span>
               </div>
             ))}
