@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { User, Mail, Building, Phone, Lock, Loader2, ArrowRight, CheckCircle2, Eye, EyeOff } from 'lucide-react';
@@ -19,7 +19,8 @@ export default function RegisterPage() {
   const [serverError, setServerError] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState(['', '', '', '']);
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -67,7 +68,7 @@ export default function RegisterPage() {
       const res = await fetch('/api/auth/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: formData.email, otp }),
+        body: JSON.stringify({ email: formData.email, otp: otp.join('') }),
       });
 
       const data = await res.json();
@@ -121,20 +122,44 @@ export default function RegisterPage() {
 
         <form onSubmit={handleVerifyOtp} className="space-y-6">
           <div>
-            <label className="block text-[10px] font-medium text-[var(--color-text-secondary)] mb-1 uppercase tracking-wider text-left">4-Digit PIN</label>
-            <input 
-              type="text" 
-              maxLength={4}
-              className="auth-input px-4 py-3 text-center text-2xl tracking-widest" 
-              placeholder="••••" 
-              value={otp} 
-              onChange={e => setOtp(e.target.value.replace(/[^0-9]/g, ''))} 
-              disabled={isLoading}
-              required
-            />
+            <label className="block text-[10px] font-medium text-[var(--color-text-secondary)] mb-3 uppercase tracking-wider text-center">4-Digit PIN</label>
+            <div className="flex justify-center gap-3">
+              {[0, 1, 2, 3].map((index) => (
+                <input
+                  key={index}
+                  ref={(el) => {
+                    otpRefs.current[index] = el;
+                  }}
+                  type="text"
+                  maxLength={1}
+                  className="auth-input w-12 h-14 text-center text-2xl font-bold rounded-xl border border-[var(--color-glass-border)] focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all bg-[var(--color-bg-glass)]"
+                  value={otp[index]}
+                  disabled={isLoading}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^0-9]/g, '');
+                    if (!val && e.target.value !== '') return;
+                    
+                    const newOtp = [...otp];
+                    newOtp[index] = val;
+                    setOtp(newOtp);
+
+                    // Move to next input if value is entered
+                    if (val && index < 3) {
+                      otpRefs.current[index + 1]?.focus();
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+                      otpRefs.current[index - 1]?.focus();
+                    }
+                  }}
+                  required
+                />
+              ))}
+            </div>
           </div>
 
-          <button type="submit" disabled={isLoading || otp.length !== 4} className="gradient-btn w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2">
+          <button type="submit" disabled={isLoading || otp.join('').length !== 4} className="gradient-btn w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2">
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Verify & Create Account <CheckCircle2 className="h-4 w-4" /></>}
           </button>
         </form>

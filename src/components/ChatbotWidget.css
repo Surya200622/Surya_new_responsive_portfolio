@@ -158,7 +158,7 @@
 }
 
 .chatbot-input-area input:focus {
-  border-color: var(--color-accent-primary);
+  border-color: #f97316;
 }
 
 .chatbot-input-area button {
