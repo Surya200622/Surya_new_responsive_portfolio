@@ -117,6 +117,13 @@ export default function CalculatorSection() {
     setFeatures(prev => {
       const newFeatures = { ...prev };
       
+      // Reset all boolean features before applying the package's features
+      Object.keys(newFeatures).forEach(key => {
+        if (typeof newFeatures[key] === 'boolean') {
+          newFeatures[key] = false;
+        }
+      });
+      
       switch (pkgId) {
         case 'starter':
           newFeatures.seo = true;
