@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import {
   PROJECT_TYPES, FEATURE_COSTS, PACKAGES, MAINTENANCE_OPTIONS,
-  UI_COMPLEXITY, ANIMATION_LEVELS, DELIVERY_SPEEDS, PAGE_RATE,
+  DELIVERY_SPEEDS, PAGE_RATE,
   calculatePricing, generateWhatsAppMessage, generateEmailBody,
 } from '../data/calculatorData';
 import PaymentModal from '../components/payment/PaymentModal';
@@ -30,8 +30,6 @@ export default function CalculatorSection() {
   const searchParams = useSearchParams();
   const [projectType, setProjectType] = useState('');
   const [pages, setPages] = useState(5);
-  const [uiComplexity, setUiComplexity] = useState('basic');
-  const [animationLevel, setAnimationLevel] = useState('none');
   const [deliverySpeed, setDeliverySpeed] = useState('standard');
   const [selectedPackage, setSelectedPackage] = useState('starter');
   const [features, setFeatures] = useState({
@@ -174,8 +172,8 @@ export default function CalculatorSection() {
   };
 
   const state = useMemo(() => ({
-    projectType, pages, uiComplexity, animationLevel, deliverySpeed, selectedPackage, features,
-  }), [projectType, pages, uiComplexity, animationLevel, deliverySpeed, selectedPackage, features]);
+    projectType, pages, deliverySpeed, selectedPackage, features,
+  }), [projectType, pages, deliverySpeed, selectedPackage, features]);
 
   const applicableOffer = useMemo(() => {
     if (!projectType || !offers.length) return null;
@@ -224,8 +222,6 @@ export default function CalculatorSection() {
     const quoteData = {
       projectType,
       pages,
-      uiComplexity,
-      animationLevel,
       deliverySpeed,
       selectedPackage,
       features,
@@ -364,41 +360,7 @@ export default function CalculatorSection() {
             </div>
 
             <div className="calc__config-grid">
-              {/* UI Complexity */}
-              <div className="calc__radio-group">
-                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>UI Complexity</div>
-                <div className="calc__radio-options">
-                  {Object.entries(UI_COMPLEXITY).map(([key, val]) => (
-                    <div
-                      key={key}
-                      className={`calc__radio-card${uiComplexity === key ? ' calc__radio-card--active' : ''}`}
-                      onClick={() => setUiComplexity(key)}
-                    >
-                      <div className="calc__radio-card-label">{val.label}</div>
-                      <div className="calc__radio-card-desc">{val.description}</div>
-                      <div className="calc__radio-card-mult">×{val.multiplier}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
 
-              {/* Animation Level */}
-              <div className="calc__radio-group">
-                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>Animation Level</div>
-                <div className="calc__radio-options">
-                  {Object.entries(ANIMATION_LEVELS).map(([key, val]) => (
-                    <div
-                      key={key}
-                      className={`calc__radio-card${animationLevel === key ? ' calc__radio-card--active' : ''}`}
-                      onClick={() => setAnimationLevel(key)}
-                    >
-                      <div className="calc__radio-card-label">{val.label}</div>
-                      <div className="calc__radio-card-desc">{val.description}</div>
-                      <div className="calc__radio-card-mult">×{val.multiplier}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
 
             {/* Delivery Speed */}

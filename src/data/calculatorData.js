@@ -104,18 +104,6 @@ export const MAINTENANCE_OPTIONS = [
   { value: '12months', label: '12 Months', cost: 1100, timeline: 0 },
 ];
 
-export const UI_COMPLEXITY = {
-  basic: { multiplier: 1.0, label: 'Basic', description: 'Clean & functional' },
-  professional: { multiplier: 1.3, label: 'Professional', description: 'Polished & refined' },
-  premium: { multiplier: 1.7, label: 'Premium', description: 'Luxury & cinematic' },
-};
-
-export const ANIMATION_LEVELS = {
-  none: { multiplier: 1.0, label: 'None', description: 'Static design' },
-  subtle: { multiplier: 1.1, label: 'Subtle', description: 'Smooth transitions' },
-  moderate: { multiplier: 1.25, label: 'Moderate', description: 'Interactive animations' },
-};
-
 export const DELIVERY_SPEEDS = {
   standard: { multiplier: 1.0, label: 'Standard', description: 'Regular timeline' },
   express: { multiplier: 1.3, label: 'Express', description: '30% faster delivery' },
@@ -200,14 +188,7 @@ export function calculatePricing(state) {
     }
   });
 
-  // UI Complexity
-  const uiMult = UI_COMPLEXITY[state.uiComplexity]?.multiplier || 1;
-  totalCost = Math.round(totalCost * uiMult);
-  breakdown.push({ label: `UI: ${UI_COMPLEXITY[state.uiComplexity]?.label}`, cost: null, note: `×${uiMult}` });
 
-  // Animation Level
-  const animMult = ANIMATION_LEVELS[state.animationLevel]?.multiplier || 1;
-  totalCost = Math.round(totalCost * animMult);
 
   // Package Multiplier
   const pkg = PACKAGES.find(p => p.id === state.selectedPackage);
