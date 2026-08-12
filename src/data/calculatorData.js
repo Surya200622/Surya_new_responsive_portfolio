@@ -84,7 +84,6 @@ export const PROJECT_TYPES = [
 export const FEATURE_COSTS = {
   adminDashboard: { cost: 1500, timeline: 7, label: 'Admin Dashboard', icon: 'LayoutDashboard' },
   clientDashboard: { cost: 1000, timeline: 5, label: 'Client Dashboard', icon: 'Users' },
-  authentication: { cost: 500, timeline: 3, label: 'Authentication System', icon: 'Shield' },
   database: { cost: 2500, timeline: 4, label: 'Database Integration', icon: 'Database' },
   paymentGateway: { cost: 1000, timeline: 5, label: 'Payment Gateway', icon: 'CreditCard' },
   cms: { cost: 2000, timeline: 4, label: 'CMS Support', icon: 'FileEdit' },
@@ -93,6 +92,9 @@ export const FEATURE_COSTS = {
   customAnimations: { cost: 1000, timeline: 4, label: 'Custom Animations', icon: 'Sparkles' },
   realtimeChat: { cost: 1500, timeline: 7, label: 'Real-time Chat', icon: 'MessageCircle' },
   analyticsDashboard: { cost: 1000, timeline: 5, label: 'Analytics Dashboard', icon: 'BarChart3' },
+  googleBusinessProfile: { cost: 2500, timeline: 3, label: 'Google Business Profile', icon: 'Building2' },
+  adCampaigns: { cost: 5000, timeline: 5, label: 'Ad Campaigns Setup', icon: 'Rocket' },
+  socialMediaSetup: { cost: 3000, timeline: 4, label: 'Social Media Setup', icon: 'MessageCircle' },
 };
 
 export const MAINTENANCE_OPTIONS = [
@@ -125,7 +127,7 @@ export const PACKAGES = [
     name: 'Starter',
     multiplier: 1.0,
     description: 'Essential features with clean design',
-    features: ['Responsive Design', 'Basic SEO', 'Contact Form', '1 Revision Round'],
+    features: ['SEO & Hosting', 'Google Business Profile', 'Contact Form', '1 Revision Round'],
     support: 'Email support',
     badge: null,
   },
@@ -134,7 +136,7 @@ export const PACKAGES = [
     name: 'Professional',
     multiplier: 1.5,
     description: 'Enhanced features with premium polish',
-    features: ['Everything in Starter', 'Advanced SEO', 'Performance Optimization', '3 Revision Rounds', 'Social Integration'],
+    features: ['Everything in Starter', 'CMS Support', 'Social Media Setup', 'Custom Animations', '3 Revision Rounds'],
     support: 'Priority email + WhatsApp',
     badge: 'Most Popular',
   },
@@ -143,7 +145,7 @@ export const PACKAGES = [
     name: 'Business',
     multiplier: 2.2,
     description: 'Full-stack with advanced integrations',
-    features: ['Everything in Professional', 'Admin Dashboard', 'Analytics', 'API Integrations', '5 Revision Rounds', 'Demo Session'],
+    features: ['Everything in Professional', 'Admin & Client Dashboards', 'Analytics & Payments', 'Ad Campaigns', '2 API Integrations'],
     support: 'Dedicated support channel',
     badge: null,
   },
@@ -152,7 +154,7 @@ export const PACKAGES = [
     name: 'Enterprise',
     multiplier: 3.5,
     description: 'Custom everything with priority support',
-    features: ['Everything in Business', 'Custom Architecture', 'Security Audit', 'Load Testing', 'Unlimited Revisions'],
+    features: ['Everything in Business', 'Real-time Chat', 'Custom Database', '5 API Integrations', 'Unlimited Revisions'],
     support: '24/7 priority support',
     badge: 'Premium',
   },

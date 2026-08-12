@@ -37,7 +37,6 @@ export default function CalculatorSection() {
   const [features, setFeatures] = useState({
     adminDashboard: false,
     clientDashboard: false,
-    authentication: false,
     database: false,
     paymentGateway: false,
     cms: false,
@@ -49,6 +48,9 @@ export default function CalculatorSection() {
     customAnimations: false,
     realtimeChat: false,
     analyticsDashboard: false,
+    googleBusinessProfile: false,
+    adCampaigns: false,
+    socialMediaSetup: false,
   });
 
   const [offers, setOffers] = useState([]);
@@ -107,6 +109,61 @@ export default function CalculatorSection() {
 
   const toggleFeature = (key) => {
     setFeatures(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const handlePackageSelect = (pkgId) => {
+    setSelectedPackage(pkgId);
+    
+    setFeatures(prev => {
+      const newFeatures = { ...prev };
+      
+      switch (pkgId) {
+        case 'starter':
+          newFeatures.seo = true;
+          newFeatures.hosting = true;
+          newFeatures.googleBusinessProfile = true;
+          break;
+        case 'professional':
+          newFeatures.seo = true;
+          newFeatures.hosting = true;
+          newFeatures.googleBusinessProfile = true;
+          newFeatures.socialMediaSetup = true;
+          newFeatures.cms = true;
+          newFeatures.customAnimations = true;
+          break;
+        case 'business':
+          newFeatures.seo = true;
+          newFeatures.hosting = true;
+          newFeatures.googleBusinessProfile = true;
+          newFeatures.socialMediaSetup = true;
+          newFeatures.cms = true;
+          newFeatures.customAnimations = true;
+          newFeatures.adminDashboard = true;
+          newFeatures.clientDashboard = true;
+          newFeatures.analyticsDashboard = true;
+          newFeatures.paymentGateway = true;
+          newFeatures.adCampaigns = true;
+          if (newFeatures.apiIntegrations === 0) newFeatures.apiIntegrations = 2;
+          break;
+        case 'enterprise':
+          newFeatures.seo = true;
+          newFeatures.hosting = true;
+          newFeatures.googleBusinessProfile = true;
+          newFeatures.socialMediaSetup = true;
+          newFeatures.cms = true;
+          newFeatures.customAnimations = true;
+          newFeatures.adminDashboard = true;
+          newFeatures.clientDashboard = true;
+          newFeatures.analyticsDashboard = true;
+          newFeatures.paymentGateway = true;
+          newFeatures.adCampaigns = true;
+          newFeatures.database = true;
+          newFeatures.realtimeChat = true;
+          if (newFeatures.apiIntegrations < 3) newFeatures.apiIntegrations = 5;
+          break;
+      }
+      return newFeatures;
+    });
   };
 
   const state = useMemo(() => ({
@@ -238,15 +295,49 @@ export default function CalculatorSection() {
           })}
         </div>
 
-        {/* Step 2: Configuration */}
+        {/* Step 2: Package Selection */}
+        {projectType && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="calc__step-label">Step 02 — Choose Package</div>
+            <h3 className="calc__step-title">Select your package tier</h3>
+
+            <div className="calc__packages">
+              {PACKAGES.map(pkg => (
+                <motion.div
+                  key={pkg.id}
+                  className={`calc__package-card${selectedPackage === pkg.id ? ' calc__package-card--active' : ''}`}
+                  onClick={() => handlePackageSelect(pkg.id)}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {pkg.badge && <div className="calc__package-badge">{pkg.badge}</div>}
+                  <div className="calc__package-name">{pkg.name}</div>
+                  <div className="calc__package-mult">×{pkg.multiplier} multiplier</div>
+                  <div className="calc__package-desc">{pkg.description}</div>
+                  <div className="calc__package-features">
+                    {pkg.features.map(f => (
+                      <span key={f} className="calc__package-feature">{f}</span>
+                    ))}
+                  </div>
+                  <div className="calc__package-support">{pkg.support}</div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Step 3: Configuration */}
         {projectType && (
           <motion.div
             className="calc__config"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <div className="calc__step-label">Step 02 — Configure Features</div>
+            <div className="calc__step-label">Step 03 — Configure Features</div>
             <h3 className="calc__step-title">Customize your requirements</h3>
 
             {/* Pages Slider */}
@@ -359,40 +450,6 @@ export default function CalculatorSection() {
                   </div>
                 ))}
               </div>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Step 3: Package Selection */}
-        {projectType && (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            <div className="calc__step-label">Step 03 — Choose Package</div>
-            <h3 className="calc__step-title">Select your package tier</h3>
-
-            <div className="calc__packages">
-              {PACKAGES.map(pkg => (
-                <motion.div
-                  key={pkg.id}
-                  className={`calc__package-card${selectedPackage === pkg.id ? ' calc__package-card--active' : ''}`}
-                  onClick={() => setSelectedPackage(pkg.id)}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  {pkg.badge && <div className="calc__package-badge">{pkg.badge}</div>}
-                  <div className="calc__package-name">{pkg.name}</div>
-                  <div className="calc__package-mult">×{pkg.multiplier} multiplier</div>
-                  <div className="calc__package-desc">{pkg.description}</div>
-                  <div className="calc__package-features">
-                    {pkg.features.map(f => (
-                      <span key={f} className="calc__package-feature">{f}</span>
-                    ))}
-                  </div>
-                  <div className="calc__package-support">{pkg.support}</div>
-                </motion.div>
-              ))}
             </div>
           </motion.div>
         )}
