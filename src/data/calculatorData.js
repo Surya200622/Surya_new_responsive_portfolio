@@ -161,11 +161,14 @@ export function calculatePricing(state) {
   breakdown.push({ label: `${projectType.name} (Base)`, cost: projectType.basePrice });
 
   // Pages
-  const pageCost = (state.pages - 1) * PAGE_RATE;
-  if (pageCost > 0) {
-    totalCost += pageCost;
-    totalTimeline += Math.ceil(state.pages / 5);
-    breakdown.push({ label: `${state.pages} Pages`, cost: pageCost });
+  let pageCost = 0;
+  if (state.projectType !== 'marketing') {
+    pageCost = (state.pages - 1) * PAGE_RATE;
+    if (pageCost > 0) {
+      totalCost += pageCost;
+      totalTimeline += Math.ceil(state.pages / 5);
+      breakdown.push({ label: `${state.pages} Pages`, cost: pageCost });
+    }
   }
 
   // Features
@@ -191,9 +194,12 @@ export function calculatePricing(state) {
 
 
   // Package Multiplier
-  const pkg = PACKAGES.find(p => p.id === state.selectedPackage);
-  const pkgMult = pkg?.multiplier || 1;
-  totalCost = Math.round(totalCost * pkgMult);
+  let pkg = null;
+  if (state.projectType !== 'marketing') {
+    pkg = PACKAGES.find(p => p.id === state.selectedPackage);
+    const pkgMult = pkg?.multiplier || 1;
+    totalCost = Math.round(totalCost * pkgMult);
+  }
 
   // Delivery Speed
   const speedMult = DELIVERY_SPEEDS[state.deliverySpeed]?.multiplier || 1;

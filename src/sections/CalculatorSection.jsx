@@ -476,14 +476,18 @@ export default function CalculatorSection() {
                 <span className="calc__total-label">Timeline</span>
                 <span className="calc__total-value calc__total-value--small">{pricing.timeline} Days</span>
               </div>
-              <div className="calc__total-item">
-                <span className="calc__total-label">Complexity</span>
-                <span className="calc__total-value calc__total-value--small">{pricing.complexity}</span>
-              </div>
-              <div className="calc__total-item">
-                <span className="calc__total-label">Package</span>
-                <span className="calc__total-value calc__total-value--small">{pricing.package?.name || '—'}</span>
-              </div>
+              {projectType !== 'marketing' && (
+                <div className="calc__total-item">
+                  <span className="calc__total-label">Complexity</span>
+                  <span className="calc__total-value calc__total-value--small">{pricing.complexity}</span>
+                </div>
+              )}
+              {projectType !== 'marketing' && (
+                <div className="calc__total-item">
+                  <span className="calc__total-label">Package</span>
+                  <span className="calc__total-value calc__total-value--small">{pricing.package?.name || '—'}</span>
+                </div>
+              )}
             </div>
 
             <div className="calc__total-actions">
