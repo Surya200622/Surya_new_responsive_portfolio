@@ -64,12 +64,12 @@ export const PROJECT_TYPES = [
     description: 'Content-rich blog with CMS',
   },
   {
-    id: 'portal',
-    name: 'Client Portal',
-    icon: 'Users',
-    basePrice: 9000,
-    baseTimeline: 28,
-    description: 'Secure client management portal',
+    id: 'marketing',
+    name: 'Google Business Profile',
+    icon: 'Rocket',
+    basePrice: 22500,
+    baseTimeline: 3,
+    description: 'Google Business Profile, Ads & Marketing',
   },
   {
     id: 'custom',

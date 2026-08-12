@@ -238,9 +238,13 @@ export default function CalculatorSection() {
     document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const booleanFeatures = Object.entries(FEATURE_COSTS).filter(([key]) =>
-    key !== 'apiIntegrations' && key !== 'maintenance'
-  );
+  const booleanFeatures = Object.entries(FEATURE_COSTS).filter(([key]) => {
+    if (key === 'apiIntegrations' || key === 'maintenance') return false;
+    if (projectType === 'marketing') {
+      return key === 'adCampaigns' || key === 'socialMediaSetup';
+    }
+    return true;
+  });
 
   return (
     <section className="calculator section" id="calculator">
@@ -299,7 +303,7 @@ export default function CalculatorSection() {
         </div>
 
         {/* Step 2: Package Selection */}
-        {projectType && (
+        {projectType && projectType !== 'marketing' && (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -340,46 +344,52 @@ export default function CalculatorSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            <div className="calc__step-label">Step 03 — Configure Features</div>
+            <div className="calc__step-label">
+              {projectType === 'marketing' ? 'Step 02' : 'Step 03'} — Configure Features
+            </div>
             <h3 className="calc__step-title">Customize your requirements</h3>
 
             {/* Pages Slider */}
-            <div className="calc__slider-group">
-              <div className="calc__slider-header">
-                <span className="calc__slider-label">Number of Pages</span>
-                <span className="calc__slider-value">{pages}</span>
+            {projectType !== 'marketing' && (
+              <div className="calc__slider-group">
+                <div className="calc__slider-header">
+                  <span className="calc__slider-label">Number of Pages</span>
+                  <span className="calc__slider-value">{pages}</span>
+                </div>
+                <input
+                  type="range"
+                  className="calc__slider"
+                  min="1"
+                  max="50"
+                  value={pages}
+                  onChange={(e) => setPages(Number(e.target.value))}
+                />
               </div>
-              <input
-                type="range"
-                className="calc__slider"
-                min="1"
-                max="50"
-                value={pages}
-                onChange={(e) => setPages(Number(e.target.value))}
-              />
-            </div>
+            )}
 
             <div className="calc__config-grid">
 
             </div>
 
             {/* Delivery Speed */}
-            <div className="calc__radio-group">
-              <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>Delivery Speed</div>
-              <div className="calc__radio-options">
-                {Object.entries(DELIVERY_SPEEDS).map(([key, val]) => (
-                  <div
-                    key={key}
-                    className={`calc__radio-card${deliverySpeed === key ? ' calc__radio-card--active' : ''}`}
-                    onClick={() => setDeliverySpeed(key)}
-                  >
-                    <div className="calc__radio-card-label">{val.label}</div>
-                    <div className="calc__radio-card-desc">{val.description}</div>
-                    <div className="calc__radio-card-mult">×{val.multiplier}</div>
-                  </div>
-                ))}
+            {projectType !== 'marketing' && (
+              <div className="calc__radio-group">
+                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>Delivery Speed</div>
+                <div className="calc__radio-options">
+                  {Object.entries(DELIVERY_SPEEDS).map(([key, val]) => (
+                    <div
+                      key={key}
+                      className={`calc__radio-card${deliverySpeed === key ? ' calc__radio-card--active' : ''}`}
+                      onClick={() => setDeliverySpeed(key)}
+                    >
+                      <div className="calc__radio-card-label">{val.label}</div>
+                      <div className="calc__radio-card-desc">{val.description}</div>
+                      <div className="calc__radio-card-mult">×{val.multiplier}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Extra Features */}
             <div className="calc__radio-group">
@@ -405,21 +415,23 @@ export default function CalculatorSection() {
             </div>
 
             {/* Maintenance */}
-            <div className="calc__radio-group">
-              <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>Maintenance Support</div>
-              <div className="calc__radio-options">
-                {MAINTENANCE_OPTIONS.map(opt => (
-                  <div
-                    key={opt.value}
-                    className={`calc__radio-card${features.maintenance === opt.value ? ' calc__radio-card--active' : ''}`}
-                    onClick={() => setFeatures(prev => ({ ...prev, maintenance: opt.value }))}
-                  >
-                    <div className="calc__radio-card-label">{opt.label}</div>
-                    {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{opt.cost.toLocaleString('en-IN')}</div>}
-                  </div>
-                ))}
+            {projectType !== 'marketing' && (
+              <div className="calc__radio-group">
+                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>Maintenance Support</div>
+                <div className="calc__radio-options">
+                  {MAINTENANCE_OPTIONS.map(opt => (
+                    <div
+                      key={opt.value}
+                      className={`calc__radio-card${features.maintenance === opt.value ? ' calc__radio-card--active' : ''}`}
+                      onClick={() => setFeatures(prev => ({ ...prev, maintenance: opt.value }))}
+                    >
+                      <div className="calc__radio-card-label">{opt.label}</div>
+                      {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{opt.cost.toLocaleString('en-IN')}</div>}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </motion.div>
         )}
 
@@ -453,6 +465,11 @@ export default function CalculatorSection() {
                     </div>
                   )}
                   <span className="calc__total-value">₹{pricing.total.toLocaleString('en-IN')}</span>
+                  {projectType === 'marketing' && (
+                    <span style={{ color: '#34A853', fontSize: '0.75em', marginTop: '4px', fontWeight: '500' }}>
+                      * Google gives back ₹20,000 as ad credits
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="calc__total-item">
