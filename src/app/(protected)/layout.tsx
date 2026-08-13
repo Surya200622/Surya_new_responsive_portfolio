@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { LogOut, Home, MessageSquare, Briefcase, Folder, FileText, Bell, User, Settings, X, ChevronDown, Menu, Trash2, CheckSquare, Square, Camera, Loader2, Lock, Tag, Star } from 'lucide-react';
+import { LogOut, Home, MessageSquare, Briefcase, Folder, FileText, Bell, User, Settings, X, ChevronDown, Menu, Trash2, CheckSquare, Square, Camera, Loader2, Lock, Tag, Star, Calculator } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import PendingQuotationHandler from './dashboard/quotations/PendingQuotationHandler';
 import { useSession, signOut } from 'next-auth/react';
@@ -293,6 +293,7 @@ export default function ProtectedLayout({
     { label: 'Messages', href: '/admin/messages', icon: MessageSquare },
     { label: 'Projects', href: '/admin/projects', icon: Folder },
     { label: 'Offers', href: '/admin/offers', icon: Tag },
+    { label: 'Calculator', href: '/admin/calculator', icon: Calculator },
   ] : [
     { label: 'Dashboard', href: '/dashboard', icon: Home },
     { label: 'Messages', href: '/dashboard/messages', icon: MessageSquare },

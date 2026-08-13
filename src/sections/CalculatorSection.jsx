@@ -28,8 +28,8 @@ const ICON_MAP = {
 
 export default function CalculatorSection() {
   const searchParams = useSearchParams();
+  const [config, setConfig] = useState(null);
   const [projectType, setProjectType] = useState('');
-  const [pages, setPages] = useState(5);
   const [deliverySpeed, setDeliverySpeed] = useState('standard');
   const [selectedPackage, setSelectedPackage] = useState('starter');
   const [features, setFeatures] = useState({
@@ -38,9 +38,9 @@ export default function CalculatorSection() {
     database: false,
     paymentGateway: false,
     cms: false,
-    seo: false,
+    seo: true,
     maintenance: 'none',
-    hosting: false,
+    hosting: true,
     apiIntegrations: 0,
     aiFeatures: false,
     customAnimations: false,
@@ -79,6 +79,23 @@ export default function CalculatorSection() {
     fetchOffers();
   }, []);
 
+  useEffect(() => {
+    async function fetchConfig() {
+      try {
+        const res = await fetch('/api/admin/settings?key=calculator_data');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.value && typeof data.value === 'object') {
+            setConfig(data.value);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch calculator config:', error);
+      }
+    }
+    fetchConfig();
+  }, []);
+
   // Listen to searchParams and hash changes to dynamically select projectType and scroll
   useEffect(() => {
     const handleScroll = () => {
@@ -87,6 +104,19 @@ export default function CalculatorSection() {
         const serviceParam = searchParams.get('service');
         if (serviceParam) {
           setProjectType(serviceParam);
+          if (serviceParam !== 'marketing') {
+            handlePackageSelect('starter');
+          } else {
+            setFeatures(prev => {
+              const newF = { ...prev };
+              Object.keys(newF).forEach(k => {
+                if (typeof newF[k] === 'boolean') newF[k] = false;
+              });
+              newF.apiIntegrations = 0;
+              newF.maintenance = 'none';
+              return newF;
+            });
+          }
           shouldScroll = true;
         }
       }
@@ -126,7 +156,6 @@ export default function CalculatorSection() {
         case 'starter':
           newFeatures.seo = true;
           newFeatures.hosting = true;
-          newFeatures.googleBusinessProfile = true;
           break;
         case 'professional':
           newFeatures.seo = true;
@@ -172,12 +201,13 @@ export default function CalculatorSection() {
   };
 
   const state = useMemo(() => ({
-    projectType, pages, deliverySpeed, selectedPackage, features,
-  }), [projectType, pages, deliverySpeed, selectedPackage, features]);
+    projectType, deliverySpeed, selectedPackage, features,
+  }), [projectType, deliverySpeed, selectedPackage, features]);
 
   const applicableOffer = useMemo(() => {
     if (!projectType || !offers.length) return null;
-    const currentProject = PROJECT_TYPES.find(p => p.id === projectType);
+    const pTypes = config?.PROJECT_TYPES || PROJECT_TYPES;
+    const currentProject = pTypes.find(p => p.id === projectType);
     if (!currentProject) return null;
     
     return offers.find(offer => {
@@ -195,7 +225,7 @@ export default function CalculatorSection() {
   }, [projectType, offers]);
 
   const pricing = useMemo(() => {
-    const basePricing = calculatePricing(state);
+    const basePricing = calculatePricing(state, config);
     if (applicableOffer) {
       return {
         ...basePricing,
@@ -208,12 +238,12 @@ export default function CalculatorSection() {
   }, [state, applicableOffer]);
 
   const handleWhatsApp = () => {
-    const msg = generateWhatsAppMessage(state, pricing);
+    const msg = generateWhatsAppMessage(state, pricing, config);
     window.open(`https://wa.me/918220443165?text=${msg}`, '_blank');
   };
 
   const handleEmail = () => {
-    const { subject, body } = generateEmailBody(state, pricing);
+    const { subject, body } = generateEmailBody(state, pricing, config);
     window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=suryacs.is.a.dev@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
   };
 
@@ -221,7 +251,6 @@ export default function CalculatorSection() {
     // Save to localStorage
     const quoteData = {
       projectType,
-      pages,
       deliverySpeed,
       selectedPackage,
       features,
@@ -238,7 +267,8 @@ export default function CalculatorSection() {
     document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const booleanFeatures = Object.entries(FEATURE_COSTS).filter(([key]) => {
+  const fCosts = config?.FEATURE_COSTS || FEATURE_COSTS;
+  const booleanFeatures = Object.entries(fCosts).filter(([key]) => {
     if (key === 'apiIntegrations' || key === 'maintenance') return false;
     if (projectType === 'marketing') {
       return key === 'adCampaigns' || key === 'socialMediaSetup';
@@ -285,13 +315,28 @@ export default function CalculatorSection() {
         <h3 className="calc__step-title">What are we building?</h3>
 
         <div className="calc__types-grid">
-          {PROJECT_TYPES.map(type => {
+          {(config?.PROJECT_TYPES || PROJECT_TYPES).map(type => {
             const IconComp = ICON_MAP[type.icon] || Code;
             return (
               <motion.div
                 key={type.id}
                 className={`calc__type-card${projectType === type.id ? ' calc__type-card--active' : ''}`}
-                onClick={() => setProjectType(type.id)}
+                onClick={() => {
+                  setProjectType(type.id);
+                  if (type.id !== 'marketing') {
+                    handlePackageSelect('starter');
+                  } else {
+                    setFeatures(prev => {
+                      const newF = { ...prev };
+                      Object.keys(newF).forEach(k => {
+                        if (typeof newF[k] === 'boolean') newF[k] = false;
+                      });
+                      newF.apiIntegrations = 0;
+                      newF.maintenance = 'none';
+                      return newF;
+                    });
+                  }
+                }}
                 whileTap={{ scale: 0.97 }}
               >
                 <div className="calc__type-icon"><IconComp size={28} /></div>
@@ -313,7 +358,7 @@ export default function CalculatorSection() {
             <h3 className="calc__step-title">Select your package tier</h3>
 
             <div className="calc__packages">
-              {PACKAGES.map(pkg => (
+              {(config?.PACKAGES || PACKAGES).map(pkg => (
                 <motion.div
                   key={pkg.id}
                   className={`calc__package-card${selectedPackage === pkg.id ? ' calc__package-card--active' : ''}`}
@@ -349,23 +394,7 @@ export default function CalculatorSection() {
             </div>
             <h3 className="calc__step-title">Customize your requirements</h3>
 
-            {/* Pages Slider */}
-            {projectType !== 'marketing' && (
-              <div className="calc__slider-group">
-                <div className="calc__slider-header">
-                  <span className="calc__slider-label">Number of Pages</span>
-                  <span className="calc__slider-value">{pages}</span>
-                </div>
-                <input
-                  type="range"
-                  className="calc__slider"
-                  min="1"
-                  max="50"
-                  value={pages}
-                  onChange={(e) => setPages(Number(e.target.value))}
-                />
-              </div>
-            )}
+
 
             <div className="calc__config-grid">
 
@@ -376,7 +405,7 @@ export default function CalculatorSection() {
               <div className="calc__radio-group">
                 <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>Delivery Speed</div>
                 <div className="calc__radio-options">
-                  {Object.entries(DELIVERY_SPEEDS).map(([key, val]) => (
+                  {Object.entries(config?.DELIVERY_SPEEDS || DELIVERY_SPEEDS).map(([key, val]) => (
                     <div
                       key={key}
                       className={`calc__radio-card${deliverySpeed === key ? ' calc__radio-card--active' : ''}`}
@@ -419,7 +448,7 @@ export default function CalculatorSection() {
               <div className="calc__radio-group">
                 <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>Maintenance Support</div>
                 <div className="calc__radio-options">
-                  {MAINTENANCE_OPTIONS.map(opt => (
+                  {(config?.MAINTENANCE_OPTIONS || MAINTENANCE_OPTIONS).map(opt => (
                     <div
                       key={opt.value}
                       className={`calc__radio-card${features.maintenance === opt.value ? ' calc__radio-card--active' : ''}`}

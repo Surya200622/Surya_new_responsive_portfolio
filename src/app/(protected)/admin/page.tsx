@@ -219,19 +219,19 @@ export default function AdminOverviewPage() {
               className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg px-4 py-2 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] outline-none focus:border-[var(--color-accent-primary)] transition-colors"
               placeholder="Banner Text"
             />
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <input 
                 type="text" 
                 value={bannerSettings.url}
                 onChange={(e) => setBannerSettings(s => ({ ...s, url: e.target.value }))}
-                className="flex-[2] bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg px-4 py-2 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] outline-none focus:border-[var(--color-accent-primary)] transition-colors"
+                className="flex-[2] w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg px-4 py-2 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] outline-none focus:border-[var(--color-accent-primary)] transition-colors"
                 placeholder="Banner Link URL (e.g. https://... or /offers)"
               />
               <input 
                 type="text" 
                 value={bannerSettings.buttonText || ''}
                 onChange={(e) => setBannerSettings(s => ({ ...s, buttonText: e.target.value }))}
-                className="flex-1 bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg px-4 py-2 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] outline-none focus:border-[var(--color-accent-primary)] transition-colors"
+                className="flex-1 w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg px-4 py-2 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] outline-none focus:border-[var(--color-accent-primary)] transition-colors"
                 placeholder="Button Text"
               />
               <button
@@ -249,7 +249,7 @@ export default function AdminOverviewPage() {
                   setBannerSaving(false);
                 }}
                 disabled={bannerSaving}
-                className="bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-primary)]/90 text-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-colors disabled:opacity-70 disabled:cursor-wait"
+                className="w-full sm:w-auto bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-primary)]/90 text-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-70 disabled:cursor-wait"
               >
                 {bannerSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                 Save

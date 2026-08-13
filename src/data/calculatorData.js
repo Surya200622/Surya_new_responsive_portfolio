@@ -115,7 +115,7 @@ export const PACKAGES = [
     name: 'Starter',
     multiplier: 1.0,
     description: 'Essential features with clean design',
-    features: ['SEO & Hosting', 'Google Business Profile', 'Contact Form', '1 Revision Round'],
+    features: ['SEO & Hosting', 'Contact Form', '1 Revision Round'],
     support: 'Email support',
     badge: null,
   },
@@ -148,10 +148,9 @@ export const PACKAGES = [
   },
 ];
 
-export const PAGE_RATE = 500; // per page
-
-export function calculatePricing(state) {
-  const projectType = PROJECT_TYPES.find(p => p.id === state.projectType);
+export function calculatePricing(state, config = null) {
+  const pTypes = config?.PROJECT_TYPES || PROJECT_TYPES;
+  const projectType = pTypes.find(p => p.id === state.projectType);
   if (!projectType) return { total: 0, timeline: 0, breakdown: [] };
 
   const breakdown = [];
@@ -160,21 +159,12 @@ export function calculatePricing(state) {
 
   breakdown.push({ label: `${projectType.name} (Base)`, cost: projectType.basePrice });
 
-  // Pages
-  let pageCost = 0;
-  if (state.projectType !== 'marketing') {
-    pageCost = (state.pages - 1) * PAGE_RATE;
-    if (pageCost > 0) {
-      totalCost += pageCost;
-      totalTimeline += Math.ceil(state.pages / 5);
-      breakdown.push({ label: `${state.pages} Pages`, cost: pageCost });
-    }
-  }
-
   // Features
+  const fCosts = config?.FEATURE_COSTS || FEATURE_COSTS;
+  const maintOpts = config?.MAINTENANCE_OPTIONS || MAINTENANCE_OPTIONS;
   Object.entries(state.features).forEach(([key, value]) => {
     if (key === 'maintenance') {
-      const maint = MAINTENANCE_OPTIONS.find(m => m.value === value);
+      const maint = maintOpts.find(m => m.value === value);
       if (maint && maint.cost > 0) {
         totalCost += maint.cost;
         breakdown.push({ label: `Maintenance (${maint.label})`, cost: maint.cost });
@@ -184,10 +174,10 @@ export function calculatePricing(state) {
       totalCost += apiCost;
       totalTimeline += value * 2;
       breakdown.push({ label: `${value} API Integrations`, cost: apiCost });
-    } else if (value === true && FEATURE_COSTS[key]) {
-      totalCost += FEATURE_COSTS[key].cost;
-      totalTimeline += FEATURE_COSTS[key].timeline;
-      breakdown.push({ label: FEATURE_COSTS[key].label, cost: FEATURE_COSTS[key].cost });
+    } else if (value === true && fCosts[key]) {
+      totalCost += fCosts[key].cost;
+      totalTimeline += fCosts[key].timeline;
+      breakdown.push({ label: fCosts[key].label, cost: fCosts[key].cost });
     }
   });
 
@@ -196,13 +186,15 @@ export function calculatePricing(state) {
   // Package Multiplier
   let pkg = null;
   if (state.projectType !== 'marketing') {
-    pkg = PACKAGES.find(p => p.id === state.selectedPackage);
+    const pkgs = config?.PACKAGES || PACKAGES;
+    pkg = pkgs.find(p => p.id === state.selectedPackage);
     const pkgMult = pkg?.multiplier || 1;
     totalCost = Math.round(totalCost * pkgMult);
   }
 
   // Delivery Speed
-  const speedMult = DELIVERY_SPEEDS[state.deliverySpeed]?.multiplier || 1;
+  const dSpeeds = config?.DELIVERY_SPEEDS || DELIVERY_SPEEDS;
+  const speedMult = dSpeeds[state.deliverySpeed]?.multiplier || 1;
   totalCost = Math.round(totalCost * speedMult);
   totalTimeline = Math.round(totalTimeline / speedMult);
 
@@ -220,8 +212,13 @@ export function calculatePricing(state) {
   };
 }
 
-export function generateWhatsAppMessage(state, pricing) {
-  const projectType = PROJECT_TYPES.find(p => p.id === state.projectType);
+export function generateWhatsAppMessage(state, pricing, config = null) {
+  const pTypes = config?.PROJECT_TYPES || PROJECT_TYPES;
+  const fCosts = config?.FEATURE_COSTS || FEATURE_COSTS;
+  const maintOpts = config?.MAINTENANCE_OPTIONS || MAINTENANCE_OPTIONS;
+  const pkgs = config?.PACKAGES || PACKAGES;
+
+  const projectType = pTypes.find(p => p.id === state.projectType);
   const enabledFeatures = Object.entries(state.features)
     .filter(([key, val]) => {
       if (key === 'maintenance') return val !== 'none';
@@ -231,13 +228,13 @@ export function generateWhatsAppMessage(state, pricing) {
     .map(([key]) => {
       if (key === 'apiIntegrations') return `${state.features.apiIntegrations} API Integrations`;
       if (key === 'maintenance') {
-        const m = MAINTENANCE_OPTIONS.find(opt => opt.value === state.features.maintenance);
+        const m = maintOpts.find(opt => opt.value === state.features.maintenance);
         return `Maintenance: ${m?.label}`;
       }
-      return FEATURE_COSTS[key]?.label || key;
+      return fCosts[key]?.label || key;
     });
 
-  const pkg = PACKAGES.find(p => p.id === state.selectedPackage);
+  const pkg = pkgs.find(p => p.id === state.selectedPackage);
 
   let msg = `Hello Surya,\n\n`;
   msg += `I need a ${projectType?.name || 'Custom Project'}.\n\n`;
@@ -256,8 +253,13 @@ export function generateWhatsAppMessage(state, pricing) {
   return encodeURIComponent(msg);
 }
 
-export function generateEmailBody(state, pricing) {
-  const projectType = PROJECT_TYPES.find(p => p.id === state.projectType);
+export function generateEmailBody(state, pricing, config = null) {
+  const pTypes = config?.PROJECT_TYPES || PROJECT_TYPES;
+  const fCosts = config?.FEATURE_COSTS || FEATURE_COSTS;
+  const maintOpts = config?.MAINTENANCE_OPTIONS || MAINTENANCE_OPTIONS;
+  const pkgs = config?.PACKAGES || PACKAGES;
+
+  const projectType = pTypes.find(p => p.id === state.projectType);
   const enabledFeatures = Object.entries(state.features)
     .filter(([key, val]) => {
       if (key === 'maintenance') return val !== 'none';
@@ -267,13 +269,13 @@ export function generateEmailBody(state, pricing) {
     .map(([key]) => {
       if (key === 'apiIntegrations') return `${state.features.apiIntegrations} API Integrations`;
       if (key === 'maintenance') {
-        const m = MAINTENANCE_OPTIONS.find(opt => opt.value === state.features.maintenance);
+        const m = maintOpts.find(opt => opt.value === state.features.maintenance);
         return `Maintenance: ${m?.label}`;
       }
-      return FEATURE_COSTS[key]?.label || key;
+      return fCosts[key]?.label || key;
     });
 
-  const pkg = PACKAGES.find(p => p.id === state.selectedPackage);
+  const pkg = pkgs.find(p => p.id === state.selectedPackage);
 
   const subject = `Project Inquiry: ${projectType?.name || 'Custom Project'}`;
   let body = `Hello Surya,\n\n`;
