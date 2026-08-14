@@ -170,13 +170,22 @@ export default function ContactSection() {
           {/* Info */}
           <motion.div
             className="contact__info"
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="contact__portrait">
-              <img src="/images/Gemini_Generated_Image_7eech37eech37eec.png" alt="SuryaCS Logo" loading="lazy" />
+            <div className="contact__map">
+              <iframe 
+                src="https://maps.google.com/maps?q=Surya%20webdev,%20137,%20Bakthavachalam%20street,%20Rathinapuri,%20Tatabad,%20Coimbatore,%20Tamil%20Nadu%20641027&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                width="100%" 
+                height="100%" 
+                style={{ border: 0 }} 
+                allowFullScreen="" 
+                loading="lazy" 
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Google Maps Location"
+              ></iframe>
             </div>
 
             <div className="contact__details">
