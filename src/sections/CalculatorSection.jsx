@@ -8,7 +8,7 @@ import {
   Building2, ShoppingCart, Palette, LayoutDashboard, Settings, Rocket,
   Brain, CalendarCheck, BookOpen, Users, Code, Shield, Database,
   CreditCard, FileEdit, Search, Server, Sparkles, MessageCircle,
-  BarChart3, MessageSquare, Mail, ArrowRight,
+  BarChart3, MessageSquare, Mail, ArrowRight, UsersRound,
 } from 'lucide-react';
 import {
   PROJECT_TYPES, FEATURE_COSTS, PACKAGES, MAINTENANCE_OPTIONS,
@@ -23,7 +23,7 @@ gsap.registerPlugin(ScrollTrigger);
 const ICON_MAP = {
   Building2, ShoppingCart, Palette, LayoutDashboard, Settings, Rocket,
   Brain, CalendarCheck, BookOpen, Users, Code, Shield, Database,
-  CreditCard, FileEdit, Search, Server, Sparkles, MessageCircle, BarChart3,
+  CreditCard, FileEdit, Search, Server, Sparkles, MessageCircle, BarChart3, UsersRound,
 };
 
 export default function CalculatorSection() {
@@ -151,6 +151,7 @@ export default function CalculatorSection() {
           newFeatures[key] = false;
         }
       });
+      newFeatures.apiIntegrations = 0;
       
       switch (pkgId) {
         case 'starter':
@@ -160,7 +161,6 @@ export default function CalculatorSection() {
         case 'professional':
           newFeatures.seo = true;
           newFeatures.hosting = true;
-          newFeatures.googleBusinessProfile = true;
           newFeatures.socialMediaSetup = true;
           newFeatures.cms = true;
           newFeatures.customAnimations = true;
@@ -168,7 +168,6 @@ export default function CalculatorSection() {
         case 'business':
           newFeatures.seo = true;
           newFeatures.hosting = true;
-          newFeatures.googleBusinessProfile = true;
           newFeatures.socialMediaSetup = true;
           newFeatures.cms = true;
           newFeatures.customAnimations = true;
@@ -176,7 +175,6 @@ export default function CalculatorSection() {
           newFeatures.clientDashboard = true;
           newFeatures.analyticsDashboard = true;
           newFeatures.paymentGateway = true;
-          newFeatures.adCampaigns = true;
           if (newFeatures.apiIntegrations === 0) newFeatures.apiIntegrations = 2;
           break;
         case 'enterprise':
@@ -272,6 +270,9 @@ export default function CalculatorSection() {
     if (key === 'apiIntegrations' || key === 'maintenance') return false;
     if (projectType === 'marketing') {
       return key === 'adCampaigns' || key === 'socialMediaSetup';
+    }
+    if (selectedPackage !== 'enterprise' && (key === 'adCampaigns' || key === 'googleBusinessProfile')) {
+      return false;
     }
     return true;
   });
@@ -494,9 +495,9 @@ export default function CalculatorSection() {
                     </div>
                   )}
                   <span className="calc__total-value">₹{pricing.total.toLocaleString('en-IN')}</span>
-                  {projectType === 'marketing' && (
+                  {(projectType === 'marketing' || selectedPackage === 'enterprise') && (
                     <span style={{ color: '#34A853', fontSize: '0.75em', marginTop: '4px', fontWeight: '500' }}>
-                      * Google gives back ₹20,000 as ad credits
+                      * 20,000 ad credits was credit in your google business profile page
                     </span>
                   )}
                 </div>
