@@ -95,7 +95,7 @@
   }
   .resume-header-image img {
     padding-left: 0;
-    object-position: center bottom;
+    object-position: center top;
   }
   .header-content {
     padding: 2rem;

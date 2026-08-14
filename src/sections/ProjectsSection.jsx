@@ -208,7 +208,7 @@ export default function ProjectsSection() {
                                     <span className="projects__card-price" style={{ fontWeight: 'bold', color: 'var(--color-accent-primary)' }}>
                                       ₹{Number(project.offersDiscountPrice).toLocaleString('en-IN')}
                                     </span>
-                                    <span style={{ fontSize: '0.85rem', textDecoration: 'line-through', color: 'var(--color-text-muted)', opacity: 0.7 }}>
+                                    <span style={{ fontSize: '0.85rem', textDecoration: 'line-through', color: 'var(--color-text-secondary)', opacity: 0.9 }}>
                                       ₹{Number(project.projectPrice || 5000).toLocaleString('en-IN')}
                                     </span>
                                   </div>
