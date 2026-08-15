@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Download, Loader2 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { calculatePricing, PACKAGES } from '@/data/calculatorData';
 
 interface DownloadQuotationButtonProps {
   quote: any;
@@ -156,13 +157,51 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       // === TABLE ===
       currentY += 10;
       
-      let tableData: any[][] = [];
+      let breakdownToUse: any = null;
       
       if (rawConfig && rawConfig.pricing && rawConfig.pricing.breakdown) {
+        breakdownToUse = rawConfig.pricing.breakdown;
+        
+        // Attempt to dynamically recalculate using the newest logic so old quotations 
+        // also get the beautiful new distributed breakdown layout
+        try {
+          if (rawConfig.projectType) {
+            const recalc = calculatePricing(rawConfig);
+            if (recalc && recalc.breakdown) {
+              breakdownToUse = recalc.breakdown;
+            }
+          }
+        } catch (e) {
+          console.warn('Failed to dynamically recalculate quote breakdown', e);
+        }
+      }
+
+      let tableData: any[][] = [];
+
+      if (breakdownToUse) {
+        // 1. Aggressively remove 'Pages' and 'UI' items
+        breakdownToUse = breakdownToUse.filter((b: any) => {
+          const l = (b.label || '').toLowerCase();
+          if (l.includes('pages')) return false;
+          if (l.includes('ui:')) return false;
+          return true;
+        });
+
+        // 2. Ensure package features are listed
+        const hasPkgFeatures = breakdownToUse.some((b: any) => b.isPackageFeature);
+        if (!hasPkgFeatures && rawConfig) {
+          const pkgId = rawConfig.selectedPackage || rawConfig.package?.id;
+          const pkg = PACKAGES.find(p => p.id === pkgId);
+          if (pkg && pkg.features) {
+            pkg.features.forEach(f => {
+              breakdownToUse.push({ label: `✓ ${f}`, cost: 0, isPackageFeature: true });
+            });
+          }
+        }
+
         let runningTotal = 0;
         
-        // 1. Add all breakdown items
-        rawConfig.pricing.breakdown.forEach((b: any) => {
+        breakdownToUse.forEach((b: any) => {
           tableData.push([
             b.label,
             b.isPackageFeature ? 'Package Feature' : 'Selected Feature',
@@ -171,16 +210,21 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
           runningTotal += (b.cost || 0);
         });
         
-        // 4. Discount
-        const originalTotal = rawConfig.pricing.originalTotal;
-        const currentTotal = rawConfig.pricing.total;
-        const discountAmount = rawConfig.pricing.discountAmount || (originalTotal && currentTotal && originalTotal > currentTotal ? originalTotal - currentTotal : 0);
+        // 3. Diff calculation to perfectly match quote.amount
+        const finalAmount = quote.amount || runningTotal;
+        const diff = finalAmount - runningTotal;
         
-        if (discountAmount > 0) {
+        if (diff > 0) {
+          tableData.push([
+            `Package Multiplier & Delivery`,
+            `Applied Multipliers`,
+            `Rs. ${diff.toLocaleString()}`
+          ]);
+        } else if (diff < 0) {
           tableData.push([
             `Special Offer Discount`,
             `Applied to base price`,
-            `- Rs. ${discountAmount.toLocaleString()}`
+            `- Rs. ${Math.abs(diff).toLocaleString()}`
           ]);
         }
       } else {
