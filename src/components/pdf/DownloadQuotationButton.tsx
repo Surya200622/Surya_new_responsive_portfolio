@@ -87,8 +87,21 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       doc.text(`Date: ${quoteDate}`, pageWidth - margin, startY - 5, { align: 'right' });
       doc.text(`Quote #: QT-${quoteId}`, pageWidth - margin, startY + 1, { align: 'right' });
 
-      // === CLIENT INFO ===
-      startY += 20;
+      // Status Badge
+      const statusText = quote.status.toUpperCase();
+      let statusColor = [150, 150, 150];
+      if (quote.status === 'accepted') statusColor = [34, 197, 94]; // Green
+      if (quote.status === 'rejected') statusColor = [239, 68, 68]; // Red
+      
+      doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
+      doc.roundedRect(pageWidth - margin - 35, startY + 6, 35, 7, 1.5, 1.5, 'F');
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(255, 255, 255);
+      doc.text(statusText, pageWidth - margin - 17.5, startY + 11, { align: 'center' });
+
+      // === CLIENT INFO & PROJECT DETAILS ===
+      startY += 25;
       doc.setFontSize(11);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
@@ -97,45 +110,123 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       doc.setFontSize(11);
       doc.setFont('helvetica', 'normal');
       doc.text(clientName, margin, startY + 6);
-      doc.text(`Project: ${quote.projects?.project_name || 'Web Development'}`, margin, startY + 12);
       
-      // Status Badge
-      const statusText = quote.status.toUpperCase();
-      let statusColor = [150, 150, 150];
-      if (quote.status === 'accepted') statusColor = [34, 197, 94]; // Green
-      if (quote.status === 'rejected') statusColor = [239, 68, 68]; // Red
-      
-      doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
-      doc.roundedRect(pageWidth - margin - 40, startY + 2, 40, 8, 2, 2, 'F');
-      doc.setFontSize(9);
+      const projectName = quote.projects?.title || quote.projects?.project_name || 'Web Development';
+      doc.setFontSize(12);
       doc.setFont('helvetica', 'bold');
-      doc.setTextColor(255, 255, 255);
-      doc.text(statusText, pageWidth - margin - 20, startY + 7.5, { align: 'center' });
-
-      // === TABLE ===
-      startY += 25;
+      doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+      doc.text(`Project: ${projectName}`, margin, startY + 16);
       
-      let parsedItems = [];
-      if (typeof quote.items === 'string') {
-        try { parsedItems = JSON.parse(quote.items); } catch(e) {}
-      } else if (Array.isArray(quote.items)) {
-        parsedItems = quote.items;
+      // Detailed Project Description & Package
+      let currentY = startY + 22;
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(80, 80, 80);
+      
+      if (quote.projects?.description) {
+        const splitDesc = doc.splitTextToSize(`Overview: ${quote.projects.description}`, pageWidth - margin * 2);
+        doc.text(splitDesc, margin, currentY);
+        currentY += splitDesc.length * 5;
       }
       
-      const tableData = parsedItems.map((item: any) => [
-        item.name || 'Item',
-        item.description || item.value || '-',
-        `Rs. ${(item.price || item.cost || 0).toLocaleString()}`
-      ]);
+      let parsedNotes = quote.notes || '';
+      let rawConfig: any = null;
+      
+      if (parsedNotes.includes('Raw Configuration:')) {
+        try {
+          const parts = parsedNotes.split('Raw Configuration:');
+          parsedNotes = parts[0].trim();
+          const jsonString = parts[1].trim();
+          rawConfig = JSON.parse(jsonString);
+        } catch (e) {
+          console.warn('Could not parse Raw Configuration from notes', e);
+        }
+      }
 
-      if (tableData.length === 0) {
-        // Fallback if structured items don't exist
-        tableData.push(['Base Project Package', 'Standard', `Rs. ${(quote.amount || 0).toLocaleString()}`]);
+      if (parsedNotes) {
+        currentY += 2;
+        doc.setFont('helvetica', 'bold');
+        doc.text('Package / Notes:', margin, currentY);
+        doc.setFont('helvetica', 'normal');
+        const splitNotes = doc.splitTextToSize(parsedNotes, pageWidth - margin * 2);
+        doc.text(splitNotes, margin, currentY + 5);
+        currentY += (splitNotes.length * 5) + 5;
+      }
+
+      // === TABLE ===
+      currentY += 10;
+      
+      let tableData: any[][] = [];
+      
+      if (rawConfig && rawConfig.pricing && rawConfig.pricing.breakdown) {
+        let runningTotal = 0;
+        
+        // 1. Add all breakdown items
+        rawConfig.pricing.breakdown.forEach((b: any) => {
+          tableData.push([
+            b.label,
+            'Included Feature',
+            `Rs. ${(b.cost || 0).toLocaleString()}`
+          ]);
+          runningTotal += (b.cost || 0);
+        });
+        
+        // 2. Multiplier for Package
+        if (rawConfig.pricing.package && rawConfig.pricing.package.multiplier !== 1) {
+          const pkgMult = rawConfig.pricing.package.multiplier;
+          const pkgCost = Math.round(runningTotal * pkgMult) - runningTotal;
+          tableData.push([
+            `Package Upgrade: ${rawConfig.pricing.package.id.toUpperCase()}`,
+            `Multiplier applied: ${pkgMult}x`,
+            `Rs. ${pkgCost.toLocaleString()}`
+          ]);
+          runningTotal += pkgCost;
+        }
+        
+        // 3. Delivery Speed Multiplier
+        const speedTotal = rawConfig.pricing.originalTotal || rawConfig.pricing.total;
+        if (speedTotal && speedTotal !== runningTotal) {
+           const speedDiff = speedTotal - runningTotal;
+           const speedName = rawConfig.deliverySpeed ? rawConfig.deliverySpeed.toUpperCase() : 'Custom';
+           tableData.push([
+             `Delivery Speed: ${speedName}`,
+             `Timeline Adjustment`,
+             `Rs. ${speedDiff.toLocaleString()}`
+           ]);
+           runningTotal += speedDiff;
+        }
+        
+        // 4. Discount
+        if (rawConfig.pricing.discountAmount) {
+          tableData.push([
+            `Special Offer Discount`,
+            `Applied to base price`,
+            `- Rs. ${rawConfig.pricing.discountAmount.toLocaleString()}`
+          ]);
+        }
+      } else {
+        // Fallback if no raw config
+        let parsedItems = [];
+        if (typeof quote.items === 'string') {
+          try { parsedItems = JSON.parse(quote.items); } catch(e) {}
+        } else if (Array.isArray(quote.items)) {
+          parsedItems = quote.items;
+        }
+        
+        tableData = parsedItems.map((item: any) => [
+          item.name || 'Item',
+          item.description || item.value || '-',
+          `Rs. ${(item.price || item.cost || 0).toLocaleString()}`
+        ]);
+  
+        if (tableData.length === 0) {
+          tableData.push(['Base Project Package', 'Standard implementation as per requirements', `Rs. ${(quote.amount || 0).toLocaleString()}`]);
+        }
       }
 
       autoTable(doc, {
-        startY: startY,
-        head: [['Description', 'Details', 'Cost']],
+        startY: currentY,
+        head: [['Description', 'Details', 'Amount']],
         body: tableData,
         theme: 'plain',
         headStyles: {
@@ -152,7 +243,9 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
           lineWidth: { bottom: 0.5 }
         },
         columnStyles: {
-          2: { halign: 'right', fontStyle: 'bold' } // Right align cost
+          0: { cellWidth: 50 },
+          1: { cellWidth: 'auto' },
+          2: { halign: 'right', fontStyle: 'bold', cellWidth: 40 }
         },
         margin: { left: margin, right: margin }
       });
@@ -171,6 +264,27 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       doc.setFontSize(14);
       doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
       doc.text(`Rs. ${(quote.amount || 0).toLocaleString()}`, pageWidth - margin - 10, finalY + 13, { align: 'right' });
+
+      // === TERMS & CONDITIONS ===
+      let termsY = finalY + 30;
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
+      doc.text('Terms & Conditions:', margin, termsY);
+      
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(100, 100, 100);
+      const terms = [
+        "1. Validity: This quotation is valid for 14 days from the date of issue.",
+        "2. Payment Terms: 50% advance payment required to commence work. Remaining 50% upon project completion.",
+        "3. Scope: Any additional features outside the agreed scope will be billed separately.",
+        "4. Timelines: Project timelines begin upon receipt of the advance payment."
+      ];
+      
+      terms.forEach((term, index) => {
+        doc.text(term, margin, termsY + 6 + (index * 5));
+      });
 
       // === FOOTER ===
       const pageHeight = doc.internal.pageSize.height;

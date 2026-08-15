@@ -38,7 +38,6 @@
 }
 
 .preloader-logo-hue {
-  animation: hue-shift 8s linear infinite;
 }
 
 .preloader-logo {
@@ -65,7 +64,6 @@
   overflow: hidden;
   position: relative;
   box-shadow: 0 0 10px rgba(249, 115, 22, 0.2);
-  animation: hue-shift 8s linear infinite;
 }
 
 .preloader-bar {

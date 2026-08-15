@@ -200,13 +200,11 @@ export default function HeroSection() {
           </motion.p>
 
           <motion.div className="hero__cta-row" variants={itemVariants}>
-            <a href="https://jarvis-official.vercel.app/" target="_blank" rel="noopener noreferrer" className="btn btn--primary" style={{ background: 'linear-gradient(90deg, #6366f1, #a855f7)', border: 'none', textDecoration: 'none' }}>
+            <a href="https://jarvis-official.vercel.app/" target="_blank" rel="noopener noreferrer" className="btn btn--primary" style={{ background: 'linear-gradient(90deg, #f97316, #fb923c)', border: 'none', textDecoration: 'none' }}>
               ✨ Meet Jarvis AI
             </a>
-            <button className="btn btn--glass" onClick={() => scrollToSection('#projects')}>
-              View My Work <ArrowRight size={16} />
-            </button>
-            <a href="/resume.pdf" download="Surya_CS_Resume.pdf" className="btn btn--glass" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+
+            <a href="/SuryaCS-resume.pdf" download="SuryaCS-resume.pdf" className="btn btn--glass" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               Download Resume
             </a>
             <button className="btn btn--glass" onClick={() => scrollToSection('#contact')}>
