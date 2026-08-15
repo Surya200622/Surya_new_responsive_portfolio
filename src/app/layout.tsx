@@ -4,6 +4,7 @@ import './globals.css';
 import ChatbotWidget from "@/components/ChatbotWidget";
 import MagicCursor from "@/components/MagicCursor";
 import Providers from "@/components/Providers";
+import CookieBanner from "@/components/CookieBanner";
 import { PROJECTS } from '../data/projectsData';
 
 export const metadata: Metadata = {
@@ -128,6 +129,7 @@ export default function RootLayout({
           {children}
           <ChatbotWidget />
           <MagicCursor />
+          <CookieBanner />
         </Providers>
       </body>
     </html>
