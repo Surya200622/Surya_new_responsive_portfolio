@@ -134,6 +134,14 @@ export default function ProtectedLayout({
     }
   }, [pathname, router]);
 
+  // Silent cron check for project deadlines (only run when admin is logged in to save unnecessary calls)
+  useEffect(() => {
+    if (isAdmin) {
+      // Fire and forget
+      fetch('/api/cron/check-deadlines').catch(e => console.error('Silent cron failed:', e));
+    }
+  }, [isAdmin]);
+
   // Close dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

@@ -190,6 +190,8 @@ export function calculatePricing(state, config = null) {
     pkg = pkgs.find(p => p.id === state.selectedPackage);
     const pkgMult = pkg?.multiplier || 1;
     totalCost = Math.round(totalCost * pkgMult);
+    // Apply package multiplier to timeline as higher packages take more time
+    totalTimeline = Math.round(totalTimeline * pkgMult);
   }
 
   // Delivery Speed

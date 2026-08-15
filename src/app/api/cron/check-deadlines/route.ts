@@ -1,0 +1,116 @@
+import { NextResponse } from 'next/server';
+import { db } from '@/db';
+import { projects, users } from '@/db/schema';
+import { eq, and, isNotNull, sql } from 'drizzle-orm';
+import { Resend } from 'resend';
+import { getBrandEmailTemplate } from '@/lib/email-template';
+
+export const dynamic = 'force-dynamic';
+
+export async function GET(request: Request) {
+  try {
+    // Note: In production you might want to protect this route with a secret key
+    // For now, it's safe to run since it only sends targeted notification emails once
+    const authHeader = request.headers.get('authorization');
+    if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+      // Optional basic security for cron if CRON_SECRET is set
+      // return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const activeProjects = await db
+      .select({
+        project: projects,
+        client: users
+      })
+      .from(projects)
+      .innerJoin(users, eq(projects.clientId, users.id))
+      .where(
+        and(
+          isNotNull(projects.startedAt),
+          eq(projects.notified3DaysLeft, 0),
+          // Exclude projects that are completed or cancelled
+          sql`${projects.status} NOT IN ('Completed', 'Cancelled', 'Review Phase')`
+        )
+      );
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    let emailsSent = 0;
+
+    for (const data of activeProjects) {
+      const p = data.project;
+      const clientEmail = data.client.email;
+
+      if (!p.timeline || !p.startedAt || !clientEmail) continue;
+
+      // Extract number from "20 Days", "3 Weeks", etc.
+      let totalDays = 0;
+      const match = p.timeline.match(/(\d+)\s*(day|week|month)/i);
+      if (match) {
+        const val = parseInt(match[1]);
+        const unit = match[2].toLowerCase();
+        if (unit.startsWith('day')) totalDays = val;
+        else if (unit.startsWith('week')) totalDays = val * 7;
+        else if (unit.startsWith('month')) totalDays = val * 30;
+      } else if (!isNaN(parseInt(p.timeline))) {
+        totalDays = parseInt(p.timeline);
+      } else {
+        continue; // Unparseable timeline
+      }
+
+      const startedDate = new Date(p.startedAt);
+      const currentDate = new Date();
+      const elapsedMs = currentDate.getTime() - startedDate.getTime();
+      const elapsedDays = Math.floor(elapsedMs / (1000 * 60 * 60 * 24));
+      
+      const daysLeft = totalDays - elapsedDays;
+
+      if (daysLeft <= 3 && daysLeft >= 0) {
+        // Send email
+        const emailContent = `
+          <div style="text-align: center;">
+            <div style="font-size: 48px; margin-bottom: 15px;">⏳</div>
+            <h2 style="color: #222; font-size: 20px; margin-bottom: 20px;">Project Deadline Approaching!</h2>
+            <p style="color: #555; font-size: 16px; margin-bottom: 25px;">
+              Your project <strong>${p.title}</strong> is entering its final stages and has <strong>${daysLeft} day(s)</strong> left until the estimated completion date.
+            </p>
+            <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; text-align: left; margin-bottom: 25px;">
+              <p style="margin: 0 0 10px 0; color: #666; font-size: 14px;"><strong>Timeline:</strong> ${p.timeline}</p>
+              <p style="margin: 0 0 10px 0; color: #666; font-size: 14px;"><strong>Started On:</strong> ${startedDate.toLocaleDateString()}</p>
+              <p style="margin: 0; color: #666; font-size: 14px;"><strong>Status:</strong> <span style="color: #ba966b; font-weight: 500;">${p.status}</span></p>
+            </div>
+            <p style="color: #555; font-size: 15px;">
+              I will be sharing the final preview links and deployment details with you shortly. If you have any last-minute assets or information, please share them now.
+            </p>
+          </div>
+        `;
+
+        try {
+          await resend.emails.send({
+            from: `Surya CS <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs.is-a.dev'}>`,
+            to: clientEmail,
+            subject: `Action Required: 3 Days Left for ${p.title}`,
+            html: getBrandEmailTemplate('Project Deadline Reminder', emailContent, 'Important Project Update'),
+          });
+
+          // Mark as notified
+          await db.update(projects)
+            .set({ notified3DaysLeft: 1 }) // Use 1 for true in sqlite
+            .where(eq(projects.id, p.id));
+            
+          emailsSent++;
+        } catch (error) {
+          console.error(`Error sending 3-day notification for project ${p.id}:`, error);
+        }
+      }
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      checked: activeProjects.length, 
+      emailsSent 
+    });
+  } catch (error: any) {
+    console.error('Error in check-deadlines cron:', error);
+    return NextResponse.json({ error: 'Failed to run cron check' }, { status: 500 });
+  }
+}

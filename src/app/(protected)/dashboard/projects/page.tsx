@@ -90,7 +90,43 @@ export default async function ClientProjectsPage() {
                 {project.timeline && (
                   <div className="flex items-center gap-3 text-sm text-[var(--color-text-muted)]">
                     <Clock className="w-4 h-4 text-[var(--color-text-secondary)]" />
-                    <span>Timeline: {project.timeline}</span>
+                    <span>
+                      {(() => {
+                        if (!project.startedAt) {
+                          return `Timeline: ${project.timeline} (Starts after advance payment)`;
+                        }
+                        
+                        let totalDays = 0;
+                        const match = project.timeline.match(/(\d+)\s*(day|week|month)/i);
+                        if (match) {
+                          const val = parseInt(match[1]);
+                          const unit = match[2].toLowerCase();
+                          if (unit.startsWith('day')) totalDays = val;
+                          else if (unit.startsWith('week')) totalDays = val * 7;
+                          else if (unit.startsWith('month')) totalDays = val * 30;
+                        } else if (!isNaN(parseInt(project.timeline))) {
+                          totalDays = parseInt(project.timeline);
+                        } else {
+                          return `Timeline: ${project.timeline}`;
+                        }
+                        
+                        const startedDate = new Date(project.startedAt);
+                        const currentDate = new Date();
+                        const elapsedMs = currentDate.getTime() - startedDate.getTime();
+                        const elapsedDays = Math.floor(elapsedMs / (1000 * 60 * 60 * 24));
+                        const daysLeft = totalDays - elapsedDays;
+                        
+                        if (['Completed', 'Cancelled', 'Review Phase'].includes(project.status)) {
+                           return `Timeline: ${project.timeline} (Done)`;
+                        }
+                        
+                        if (daysLeft < 0) {
+                          return `Timeline: Overdue by ${Math.abs(daysLeft)} days`;
+                        }
+                        
+                        return `${daysLeft} days left (Total: ${project.timeline})`;
+                      })()}
+                    </span>
                   </div>
                 )}
                 <div className="flex items-center justify-between text-sm text-[var(--color-text-muted)]">

@@ -56,12 +56,22 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       try {
         let newProjStatus = 'pending';
         // If they pay advance or full, it's time to start development
+        let startedAtValue: Date | undefined = undefined;
         if (action === 'pay' && (paymentType === 'advance' || paymentType === 'full' || paymentType === 'remaining')) {
           newProjStatus = 'Development Phase';
+          startedAtValue = new Date();
+        }
+
+        const projectResults = await db.select().from(projects).where(eq(projects.id, projectId));
+        const project = projectResults[0];
+
+        const updateData: any = { status: newProjStatus };
+        if (startedAtValue && project && !project.startedAt) {
+          updateData.startedAt = startedAtValue;
         }
 
         await db.update(projects)
-          .set({ status: newProjStatus })
+          .set(updateData)
           .where(eq(projects.id, projectId));
       } catch (projectError) {
         console.error('Error updating project status:', projectError);

@@ -105,7 +105,40 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                 <p className="text-xs text-[var(--color-text-muted)] uppercase tracking-wider mb-1">Timeline</p>
                 <p className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
                   <Clock className="w-4 h-4 text-[var(--color-text-muted)]" />
-                  {project.timeline || 'Not specified'}
+                  {(() => {
+                    if (!project.timeline) return 'Not specified';
+                    if (!project.startedAt) return `${project.timeline} (Pending Advance)`;
+                    
+                    let totalDays = 0;
+                    const match = project.timeline.match(/(\d+)\s*(day|week|month)/i);
+                    if (match) {
+                      const val = parseInt(match[1]);
+                      const unit = match[2].toLowerCase();
+                      if (unit.startsWith('day')) totalDays = val;
+                      else if (unit.startsWith('week')) totalDays = val * 7;
+                      else if (unit.startsWith('month')) totalDays = val * 30;
+                    } else if (!isNaN(parseInt(project.timeline))) {
+                      totalDays = parseInt(project.timeline);
+                    } else {
+                      return project.timeline;
+                    }
+                    
+                    const startedDate = new Date(project.startedAt);
+                    const currentDate = new Date();
+                    const elapsedMs = currentDate.getTime() - startedDate.getTime();
+                    const elapsedDays = Math.floor(elapsedMs / (1000 * 60 * 60 * 24));
+                    const daysLeft = totalDays - elapsedDays;
+                    
+                    if (['Completed', 'Cancelled', 'Review Phase'].includes(project.status)) {
+                        return `${project.timeline} (Done)`;
+                    }
+                    
+                    if (daysLeft < 0) {
+                      return `Overdue by ${Math.abs(daysLeft)} days`;
+                    }
+                    
+                    return `${daysLeft} days left (Total: ${project.timeline})`;
+                  })()}
                 </p>
               </div>
               <div>

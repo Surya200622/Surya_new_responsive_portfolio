@@ -81,6 +81,8 @@ export const projects = sqliteTable('projects', {
   budget: integer('budget'),
   timeline: text('timeline'),
   status: text('status').notNull().default('pending'),
+  startedAt: integer('started_at', { mode: 'timestamp_ms' }),
+  notified3DaysLeft: integer('notified_3_days_left', { mode: 'boolean' }).default(false),
   createdAt: integer('created_at', { mode: 'timestamp_ms' }),
 });
 

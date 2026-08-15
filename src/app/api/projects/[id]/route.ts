@@ -19,14 +19,27 @@ export async function PATCH(
     const { id } = await params;
     const body = await request.json();
 
+    const projectResults = await db.select().from(projects).where(eq(projects.id, id));
+    const project = projectResults[0];
+
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
+
+    const updateData: any = { 
+      status: body.status !== undefined ? body.status : project.status,
+      budget: body.budget !== undefined ? body.budget : project.budget,
+      title: body.title !== undefined ? body.title : project.title,
+      timeline: body.timeline !== undefined ? body.timeline : project.timeline,
+      description: body.description !== undefined ? body.description : project.description
+    };
+
+    if (body.status === 'Development Phase' && !project.startedAt) {
+      updateData.startedAt = new Date();
+    }
+
     await db.update(projects)
-      .set({ 
-        status: body.status,
-        budget: body.budget,
-        title: body.title,
-        timeline: body.timeline,
-        description: body.description
-      })
+      .set(updateData)
       .where(eq(projects.id, id));
 
     return NextResponse.json({ success: true });
