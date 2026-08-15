@@ -102,6 +102,7 @@ export const quotations = sqliteTable('quotations', {
   items: text('items', { mode: 'json' }),
   notes: text('notes'),
   status: text('status').notNull().default('pending'),
+  notifiedExpiry: integer('notified_expiry', { mode: 'boolean' }).default(false),
   createdAt: integer('created_at', { mode: 'timestamp_ms' }),
 });
 

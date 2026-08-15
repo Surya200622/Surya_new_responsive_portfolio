@@ -43,7 +43,10 @@ export default async function ClientQuotationsPage() {
     ...row.quotation,
     projects: row.project ? { 
       project_name: row.project.title, // mapped from projects.title 
-      reference_code: `PRJ-${row.project.id.substring(0, 8).toUpperCase()}` 
+      reference_code: `PRJ-${row.project.id.substring(0, 8).toUpperCase()}`,
+      startedAt: row.project.startedAt,
+      timeline: row.project.timeline,
+      status: row.project.status,
     } : null,
   }));
 
@@ -93,14 +96,96 @@ export default async function ClientQuotationsPage() {
                       {quote.status?.replace('_', ' ')}
                     </span>
                   </div>
-                  <p className="text-sm text-[var(--color-text-secondary)] flex items-center gap-2">
-                    <Clock className="w-3.5 h-3.5" />
-                    Generated on {(() => {
+                  <div className="flex flex-wrap items-center gap-2 mt-1">
+                    <p className="text-sm text-[var(--color-text-secondary)] flex items-center gap-2">
+                      <Clock className="w-3.5 h-3.5" />
+                      Generated on {(() => {
+                        let d = quote.createdAt ? new Date(quote.createdAt) : new Date();
+                        if (isNaN(d.getTime()) || d.getFullYear() === 1970) d = new Date();
+                        return d.toLocaleDateString();
+                      })()}
+                    </p>
+                    {(() => {
+                      // 1. Handover Countdown (If Paid & Started)
+                      if ((quote.status === 'advance_paid' || quote.status === 'fully_paid') && quote.projects?.startedAt && quote.projects?.timeline) {
+                        const p = quote.projects;
+                        const startedDate = new Date(p.startedAt);
+                        
+                        let totalDays = 0;
+                        const match = p.timeline.match(/(\d+)\s*(day|week|month)/i);
+                        if (match) {
+                          const val = parseInt(match[1]);
+                          const unit = match[2].toLowerCase();
+                          if (unit.startsWith('day')) totalDays = val;
+                          else if (unit.startsWith('week')) totalDays = val * 7;
+                          else if (unit.startsWith('month')) totalDays = val * 30;
+                        } else if (!isNaN(parseInt(p.timeline))) {
+                          totalDays = parseInt(p.timeline);
+                        }
+
+                        if (totalDays > 0) {
+                          const handoverDate = new Date(startedDate.getTime() + totalDays * 24 * 60 * 60 * 1000);
+                          const diffTime = handoverDate.getTime() - new Date().getTime();
+                          
+                          if (p.status === 'Completed' || p.status === 'Delivered') {
+                             return <span className="text-sm font-medium border-l border-[var(--color-glass-border)] pl-2 text-green-400">Project Delivered</span>;
+                          }
+                          
+                          if (diffTime <= 0) {
+                             return <span className="text-sm font-medium border-l border-[var(--color-glass-border)] pl-2 text-green-400">Handover Today</span>;
+                          }
+                          
+                          const daysLeft = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                          const hoursLeft = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                          
+                          let timeLeftStr = '';
+                          if (daysLeft > 0) timeLeftStr += `${daysLeft}d `;
+                          timeLeftStr += `${hoursLeft}h`;
+                          
+                          return (
+                            <span className="text-sm font-medium border-l border-[var(--color-glass-border)] pl-2 text-[#34A853]">
+                              Handover in: {timeLeftStr}
+                            </span>
+                          );
+                        }
+                      }
+                      
+                      // 2. Quotation Validity Countdown (If Not Paid)
+                      if (quote.status === 'accepted' || quote.status === 'advance_paid' || quote.status === 'fully_paid') {
+                        return null;
+                      }
+                      
                       let d = quote.createdAt ? new Date(quote.createdAt) : new Date();
                       if (isNaN(d.getTime()) || d.getFullYear() === 1970) d = new Date();
-                      return d.toLocaleDateString();
+                      
+                      const expiryDate = new Date(d.getTime() + 14 * 24 * 60 * 60 * 1000);
+                      const now = new Date();
+                      const diffTime = expiryDate.getTime() - now.getTime();
+                      
+                      if (diffTime <= 0) {
+                        return (
+                          <span className="text-sm text-red-500 font-medium border-l border-[var(--color-glass-border)] pl-2">
+                            Expired
+                          </span>
+                        );
+                      }
+                      
+                      const daysLeft = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                      const hoursLeft = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                      
+                      let timeLeftStr = '';
+                      if (daysLeft > 0) timeLeftStr += `${daysLeft}d `;
+                      timeLeftStr += `${hoursLeft}h left`;
+                      
+                      const isExpiringSoon = daysLeft <= 3;
+                      
+                      return (
+                        <span className={`text-sm font-medium border-l border-[var(--color-glass-border)] pl-2 ${isExpiringSoon ? 'text-red-400' : 'text-orange-400'}`}>
+                          Valid: {timeLeftStr}
+                        </span>
+                      );
                     })()}
-                  </p>
+                  </div>
                 </div>
               </div>
 
