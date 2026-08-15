@@ -11,7 +11,7 @@ import { getBrandEmailTemplate } from '@/lib/email-template';
 export async function POST(req: NextRequest) {
   try {
     const ip = getIp(req);
-    const rateLimit = checkRateLimit(ip, 3, 60 * 60 * 1000); // 3 registrations per hour
+    const rateLimit = checkRateLimit(ip, 'send-otp', 3, 60 * 60 * 1000); // 3 registrations per hour
     
     if (!rateLimit.success) {
       return NextResponse.json({ error: 'Too many registration attempts. Please try again later.' }, { status: 429 });

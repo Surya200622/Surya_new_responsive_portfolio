@@ -115,7 +115,7 @@ export async function POST(req: Request) {
     }
 
     const ip = getIp(req);
-    const rateLimit = checkRateLimit(ip, 20, 60 * 1000); // 20 requests per minute
+    const rateLimit = checkRateLimit(ip, 'chat', 10, 60 * 1000); // 10 requests per minute
     
     if (!rateLimit.success) {
       return NextResponse.json({ error: 'Too many requests. Please wait a minute before sending another message.' }, { status: 429 });

@@ -9,7 +9,7 @@ import { checkRateLimit, getIp } from '@/lib/rate-limit';
 export async function POST(req: Request) {
   try {
     const ip = getIp(req);
-    const rateLimit = checkRateLimit(ip, 3, 10 * 60 * 1000); // 3 requests per 10 minutes
+    const rateLimit = checkRateLimit(ip, 'forgot-password', 3, 10 * 60 * 1000); // 3 requests per 10 minutes
     
     if (!rateLimit.success) {
       return NextResponse.json({ error: 'Too many password reset requests. Please try again later.' }, { status: 429 });

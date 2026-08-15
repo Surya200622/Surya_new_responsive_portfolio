@@ -157,7 +157,11 @@ export function calculatePricing(state, config = null) {
   let totalCost = projectType.basePrice;
   let totalTimeline = projectType.baseTimeline;
 
-  breakdown.push({ label: `${projectType.name} (Base)`, cost: projectType.basePrice });
+  const pkgs = config?.PACKAGES || PACKAGES;
+  const selectedPkg = pkgs.find(p => p.id === state.selectedPackage);
+  const pkgName = selectedPkg ? selectedPkg.name : 'Starter';
+  
+  breakdown.push({ label: `${projectType.name} (${pkgName})`, cost: projectType.basePrice });
 
   // Features
   const fCosts = config?.FEATURE_COSTS || FEATURE_COSTS;
@@ -189,6 +193,19 @@ export function calculatePricing(state, config = null) {
     const pkgs = config?.PACKAGES || PACKAGES;
     pkg = pkgs.find(p => p.id === state.selectedPackage);
     const pkgMult = pkg?.multiplier || 1;
+    
+    // Distribute multiplier to breakdown items
+    breakdown.forEach(item => {
+      item.cost = Math.round(item.cost * pkgMult);
+    });
+    
+    // Add package features
+    if (pkg && pkg.features) {
+      pkg.features.forEach(f => {
+        breakdown.push({ label: `✓ ${f}`, cost: 0, isPackageFeature: true });
+      });
+    }
+
     totalCost = Math.round(totalCost * pkgMult);
     // Apply package multiplier to timeline as higher packages take more time
     totalTimeline = Math.round(totalTimeline * pkgMult);
@@ -197,6 +214,13 @@ export function calculatePricing(state, config = null) {
   // Delivery Speed
   const dSpeeds = config?.DELIVERY_SPEEDS || DELIVERY_SPEEDS;
   const speedMult = dSpeeds[state.deliverySpeed]?.multiplier || 1;
+  
+  if (speedMult !== 1) {
+    breakdown.forEach(item => {
+      item.cost = Math.round(item.cost * speedMult);
+    });
+  }
+  
   totalCost = Math.round(totalCost * speedMult);
   totalTimeline = Math.round(totalTimeline / speedMult);
 

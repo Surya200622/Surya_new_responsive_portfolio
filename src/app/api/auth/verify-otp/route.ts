@@ -7,7 +7,7 @@ import { checkRateLimit, getIp } from '@/lib/rate-limit';
 export async function POST(req: NextRequest) {
   try {
     const ip = getIp(req);
-    const rateLimit = checkRateLimit(ip, 5, 10 * 60 * 1000); // 5 attempts per 10 mins
+    const rateLimit = checkRateLimit(ip, 'verify-otp', 5, 10 * 60 * 1000); // 5 attempts per 10 mins
     
     if (!rateLimit.success) {
       return NextResponse.json({ error: 'Too many verification attempts. Please try again later.' }, { status: 429 });

@@ -7,23 +7,25 @@ const rateLimiter = new Map<string, RateLimitInfo>();
 
 export function checkRateLimit(
   ip: string,
+  action: string,
   limit: number,
   windowMs: number
 ): { success: boolean; remaining: number; resetTime: number } {
   const now = Date.now();
-  const info = rateLimiter.get(ip);
+  const key = `${action}:${ip}`;
+  const info = rateLimiter.get(key);
 
   // Simple garbage collection for stale entries (1% chance to run)
   if (Math.random() < 0.01) {
-    for (const [key, value] of rateLimiter.entries()) {
+    for (const [k, value] of rateLimiter.entries()) {
       if (now > value.resetTime) {
-        rateLimiter.delete(key);
+        rateLimiter.delete(k);
       }
     }
   }
 
   if (!info || now > info.resetTime) {
-    rateLimiter.set(ip, { count: 1, resetTime: now + windowMs });
+    rateLimiter.set(key, { count: 1, resetTime: now + windowMs });
     return { success: true, remaining: limit - 1, resetTime: now + windowMs };
   }
 
@@ -51,5 +53,5 @@ export function getIp(req: Request | any): string {
   if (Array.isArray(forwarded)) forwarded = forwarded[0];
   if (Array.isArray(realIp)) realIp = realIp[0];
   
-  return (forwarded ? forwarded.split(',')[0].trim() : null) || realIp || '127.0.0.1';
+  return (forwarded ? forwarded.split(',')[0].trim() : null) || realIp || req?.ip || '127.0.0.1';
 }

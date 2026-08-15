@@ -39,7 +39,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials, req) {
         const ip = getIp(req);
-        const rateLimit = checkRateLimit(ip, 5, 5 * 60 * 1000); // 5 attempts per 5 minutes
+        const rateLimit = checkRateLimit(ip, 'login', 5, 5 * 60 * 1000); // 5 attempts per 5 minutes
         
         if (!rateLimit.success) {
           throw new Error('Too many login attempts. Please try again later.');

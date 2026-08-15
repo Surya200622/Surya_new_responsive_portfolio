@@ -25,7 +25,7 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       let startY = margin;
 
       // Brand Colors
-      const primaryColor: [number, number, number] = [186, 150, 107]; // var(--color-accent-primary) Approx #ba966b
+      const primaryColor: [number, number, number] = [249, 115, 22]; // var(--brand-orange) #f97316
       const darkColor: [number, number, number] = [26, 26, 26];
 
       // === HEADER ===
@@ -77,7 +77,7 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(100, 100, 100);
       
-      let qDate = quote.created_at ? new Date(quote.created_at) : new Date();
+      let qDate = quote.createdAt ? new Date(quote.createdAt) : (quote.created_at ? new Date(quote.created_at) : new Date());
       if (isNaN(qDate.getTime()) || qDate.getFullYear() === 1970) {
         qDate = new Date();
       }
@@ -165,43 +165,22 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
         rawConfig.pricing.breakdown.forEach((b: any) => {
           tableData.push([
             b.label,
-            'Included Feature',
-            `Rs. ${(b.cost || 0).toLocaleString()}`
+            b.isPackageFeature ? 'Package Feature' : 'Selected Feature',
+            b.cost === 0 ? 'Included' : `Rs. ${(b.cost || 0).toLocaleString()}`
           ]);
           runningTotal += (b.cost || 0);
         });
         
-        // 2. Multiplier for Package
-        if (rawConfig.pricing.package && rawConfig.pricing.package.multiplier !== 1) {
-          const pkgMult = rawConfig.pricing.package.multiplier;
-          const pkgCost = Math.round(runningTotal * pkgMult) - runningTotal;
-          tableData.push([
-            `Package Upgrade: ${rawConfig.pricing.package.id.toUpperCase()}`,
-            `Multiplier applied: ${pkgMult}x`,
-            `Rs. ${pkgCost.toLocaleString()}`
-          ]);
-          runningTotal += pkgCost;
-        }
-        
-        // 3. Delivery Speed Multiplier
-        const speedTotal = rawConfig.pricing.originalTotal || rawConfig.pricing.total;
-        if (speedTotal && speedTotal !== runningTotal) {
-           const speedDiff = speedTotal - runningTotal;
-           const speedName = rawConfig.deliverySpeed ? rawConfig.deliverySpeed.toUpperCase() : 'Custom';
-           tableData.push([
-             `Delivery Speed: ${speedName}`,
-             `Timeline Adjustment`,
-             `Rs. ${speedDiff.toLocaleString()}`
-           ]);
-           runningTotal += speedDiff;
-        }
-        
         // 4. Discount
-        if (rawConfig.pricing.discountAmount) {
+        const originalTotal = rawConfig.pricing.originalTotal;
+        const currentTotal = rawConfig.pricing.total;
+        const discountAmount = rawConfig.pricing.discountAmount || (originalTotal && currentTotal && originalTotal > currentTotal ? originalTotal - currentTotal : 0);
+        
+        if (discountAmount > 0) {
           tableData.push([
             `Special Offer Discount`,
             `Applied to base price`,
-            `- Rs. ${rawConfig.pricing.discountAmount.toLocaleString()}`
+            `- Rs. ${discountAmount.toLocaleString()}`
           ]);
         }
       } else {
