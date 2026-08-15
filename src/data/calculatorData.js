@@ -114,6 +114,7 @@ export const PACKAGES = [
     id: 'starter',
     name: 'Starter',
     multiplier: 1.0,
+    timelineMultiplier: 1.0,
     description: 'Essential features with clean design',
     features: ['SEO & Hosting', 'Contact Form', '1 Revision Round'],
     support: 'Email & WhatsApp support',
@@ -123,6 +124,7 @@ export const PACKAGES = [
     id: 'professional',
     name: 'Professional',
     multiplier: 1.5,
+    timelineMultiplier: 1.15,
     description: 'Enhanced features with premium polish',
     features: ['Everything in Starter', 'CMS Support', 'Social Media Setup', 'Custom Animations', '3 Revision Rounds'],
     support: 'Priority email + WhatsApp',
@@ -132,6 +134,7 @@ export const PACKAGES = [
     id: 'business',
     name: 'Business',
     multiplier: 2.2,
+    timelineMultiplier: 1.3,
     description: 'Full-stack with advanced integrations',
     features: ['Everything in Professional', 'Admin & Client Dashboards', 'Analytics & Payments', '2 API Integrations'],
     support: 'Dedicated support channel',
@@ -141,6 +144,7 @@ export const PACKAGES = [
     id: 'enterprise',
     name: 'Enterprise',
     multiplier: 3.5,
+    timelineMultiplier: 1.5,
     description: 'Custom everything with priority support',
     features: ['Everything in Business', 'Ad Campaigns & Google Business', 'Real-time Chat', 'Custom Database', '5 API Integrations', 'Unlimited Revisions'],
     support: '24/7 priority support',
@@ -193,6 +197,7 @@ export function calculatePricing(state, config = null) {
     const pkgs = config?.PACKAGES || PACKAGES;
     pkg = pkgs.find(p => p.id === state.selectedPackage);
     const pkgMult = pkg?.multiplier || 1;
+    const pkgTimelineMult = pkg?.timelineMultiplier || 1;
     
     // Distribute multiplier to breakdown items
     breakdown.forEach(item => {
@@ -207,8 +212,9 @@ export function calculatePricing(state, config = null) {
     }
 
     totalCost = Math.round(totalCost * pkgMult);
-    // Apply package multiplier to timeline as higher packages take more time
-    totalTimeline = Math.round(totalTimeline * pkgMult);
+    // Apply specialized package timeline multiplier 
+    // (prevents timeline exploding on higher tiers like Business/Enterprise)
+    totalTimeline = Math.round(totalTimeline * pkgTimelineMult);
   }
 
   // Delivery Speed
