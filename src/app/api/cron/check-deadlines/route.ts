@@ -27,7 +27,7 @@ export async function GET(request: Request) {
       .where(
         and(
           isNotNull(projects.startedAt),
-          eq(projects.notified3DaysLeft, 0),
+          eq(projects.notified3DaysLeft, false),
           // Exclude projects that are completed or cancelled
           sql`${projects.status} NOT IN ('Completed', 'Cancelled', 'Review Phase')`
         )
@@ -94,7 +94,7 @@ export async function GET(request: Request) {
 
           // Mark as notified
           await db.update(projects)
-            .set({ notified3DaysLeft: 1 }) // Use 1 for true in sqlite
+            .set({ notified3DaysLeft: true }) // Use true instead of 1 for boolean mode
             .where(eq(projects.id, p.id));
             
           emailsSent++;
