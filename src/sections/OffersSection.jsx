@@ -150,7 +150,7 @@ export default function OffersSection() {
   }, []);
 
   if (loading || offers.length === 0) {
-    return null;
+    return <section id="offers" style={{ display: 'none' }}></section>;
   }
 
   function getServiceQuery(offer) {

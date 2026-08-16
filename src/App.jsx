@@ -70,6 +70,7 @@ export default function App() {
       offers: 'Special Offers | Surya CS',
       calculator: 'Project Cost Calculator | Surya CS',
       about: 'About Me | Surya CS',
+      process: 'Work Process | Surya CS',
       testimonials: 'Testimonials | Surya CS',
       contact: 'Contact | Surya CS'
     };
