@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import LegalThemeToggle from '@/components/LegalThemeToggle';
-import { useTranslations } from 'next-intl';
 import '../legal.css';
 
 export const metadata: Metadata = {
@@ -11,8 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default function TermsOfServicePage() {
-  const t = useTranslations('TermsOfService');
-  return (
+    return (
     <div className="legal-page">
       {/* Decorative background orbs */}
       <div
@@ -42,22 +40,22 @@ export default function TermsOfServicePage() {
             <path d="M19 12H5" />
             <polyline points="12 19 5 12 12 5" />
           </svg>
-          {t('back_to_portfolio')}
+          {"Back to Portfolio"}
         </Link>
 
         {/* Header */}
         <header className="legal-header">
-          <div className="legal-badge">{t('title')}</div>
+          <div className="legal-badge">{"Terms of Service"}</div>
           <h1 className="legal-title">
             Terms of <span className="text-gradient">Service</span>
           </h1>
           <p className="legal-subtitle">
-            {t('subtitle')}
+            {"These terms govern your use of suryacs.is-a.dev and the services provided by Surya CS. Please read them carefully."}
           </p>
           <div className="legal-meta">
-            <span>{t('effective_date')}</span>
+            <span>{"Effective Date: June 14, 2026"}</span>
             <span className="legal-meta-divider">•</span>
-            <span>{t('last_updated')}</span>
+            <span>{"Last Updated: June 14, 2026"}</span>
           </div>
         </header>
 
@@ -66,7 +64,7 @@ export default function TermsOfServicePage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">01</span>
-              {t('intro_title')}
+              {"Agreement to Terms"}
             </h2>
             <p>
               By accessing and using the portfolio website of{' '}
@@ -81,7 +79,7 @@ export default function TermsOfServicePage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">02</span>
-              {t('services_title')}
+              {"Services Provided"}
             </h2>
             <p>
               This website serves as a personal portfolio and professional
@@ -101,7 +99,7 @@ export default function TermsOfServicePage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">03</span>
-              {t('ip_title')}
+              {"Intellectual Property"}
             </h2>
             <p>
               All content on this website, including but not limited to text,
@@ -132,7 +130,7 @@ export default function TermsOfServicePage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">04</span>
-              {t('user_resp_title')}
+              {"User Responsibilities"}
             </h2>
             <p>
               When using this website, you agree to:
@@ -261,7 +259,7 @@ export default function TermsOfServicePage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">10</span>
-              {t('limitation_title')}
+              {"Limitation of Liability"}
             </h2>
             <p>
               To the fullest extent permitted by applicable law, Surya CS shall
@@ -297,7 +295,7 @@ export default function TermsOfServicePage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">12</span>
-              {t('changes_title')}
+              {"Changes to Terms"}
             </h2>
             <p>
               We reserve the right to modify or replace these Terms of Service
@@ -310,7 +308,7 @@ export default function TermsOfServicePage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">13</span>
-              {t('payments_title')}
+              {"Payments & Refunds"}
             </h2>
             <p>
               All payments made for full-stack web development services, freelance work, and digital project purchases are final and non-refundable. Once a payment is processed or a project is purchased, no refunds will be issued under any circumstances. By proceeding with a purchase or engaging our services, you expressly agree to this strict no-refund policy.
@@ -320,7 +318,7 @@ export default function TermsOfServicePage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">14</span>
-              {t('contact_title')}
+              {"Contact Information"}
             </h2>
             <p>
               If you have any questions about these Terms of Service, please
@@ -328,11 +326,11 @@ export default function TermsOfServicePage() {
             </p>
             <div className="legal-contact-card glass-card">
               <div className="legal-contact-item">
-                <span className="legal-contact-label">{t('name')}</span>
+                <span className="legal-contact-label">{"Name"}</span>
                 <span className="legal-contact-value">Surya CS</span>
               </div>
               <div className="legal-contact-item">
-                <span className="legal-contact-label">{t('email')}</span>
+                <span className="legal-contact-label">{"Email"}</span>
                 <a
                   href="mailto:suryacs.is.a.dev@gmail.com"
                   className="legal-contact-value legal-link"
@@ -341,13 +339,13 @@ export default function TermsOfServicePage() {
                 </a>
               </div>
               <div className="legal-contact-item">
-                <span className="legal-contact-label">{t('location')}</span>
+                <span className="legal-contact-label">{"Location"}</span>
                 <span className="legal-contact-value">
                   Coimbatore, Tamil Nadu, India
                 </span>
               </div>
               <div className="legal-contact-item">
-                <span className="legal-contact-label">{t('website')}</span>
+                <span className="legal-contact-label">{"Website"}</span>
                 <a
                   href="https://suryacs.is-a.dev"
                   className="legal-contact-value legal-link"
@@ -362,14 +360,14 @@ export default function TermsOfServicePage() {
         {/* Footer */}
         <footer className="legal-footer">
           <p>
-            {t('copyright', { year: new Date().getFullYear() })}
+            {`© ${new Date().getFullYear()} Surya CS. All rights reserved.`}
           </p>
           <div className="legal-footer-links">
             <Link href="/privacy-policy" className="legal-footer-link">
-              {t('privacy_link')}
+              {"Privacy Policy"}
             </Link>
             <Link href="/" className="legal-footer-link">
-              {t('back_to_portfolio')}
+              {"Back to Portfolio"}
             </Link>
           </div>
         </footer>

@@ -7,7 +7,6 @@ import { useGSAP } from '@gsap/react';
 import { ArrowRight, Briefcase, Heart, Award } from 'lucide-react';
 import MorphingBrackets from '../components/MorphingBrackets';
 import JarvisAdBanner from '../components/JarvisAdBanner';
-import { useTranslations } from 'next-intl';
 import './HeroSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -41,12 +40,11 @@ export default function HeroSection() {
   const sectionRef = useRef(null);
   const bgRef = useRef(null);
   const portraitRef = useRef(null);
-  const t = useTranslations('Hero');
-
+  
   const FLOATING_STATS = [
-    { value: '3+', label: t('stat_projects'), icon: Briefcase },
-    { value: 'IBM & ITC', label: t('stat_trained'), icon: Award },
-    { value: '10+', label: t('stat_tech'), icon: Heart },
+    { value: '3+', label: "Projects", icon: Briefcase },
+    { value: 'IBM & ITC', label: "Trained", icon: Award },
+    { value: '10+', label: "Technologies", icon: Heart },
   ];
 
   // Parallax on scroll
@@ -170,7 +168,7 @@ export default function HeroSection() {
             transition={{ delay: 1.5, duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
           >
             <span className="hero__status-dot" />
-            {t('available')}
+            {"Available for Hire"}
           </motion.div>
 
           {/* Floating Stats */}
@@ -194,29 +192,29 @@ export default function HeroSection() {
         <div className="hero__text">
           <motion.div className="hero__label" variants={itemVariants}>
             <div className="hero__label-line" aria-hidden="true" />
-            <span className="hero__typing-text">{t('role')}</span>
+            <span className="hero__typing-text">{"Full-Stack Python Developer"}</span>
           </motion.div>
 
           <motion.h1 className="hero__title" variants={itemVariants}>
-            {t('title_1')}<br />
-            <span className="hero__title-accent">{t('title_accent')}</span>{' '}
-            {t('title_2')}
+            {"I Craft"}<br />
+            <span className="hero__title-accent">{"Digital"}</span>{' '}
+            {"Experiences"}
           </motion.h1>
 
           <motion.p className="hero__subtitle" variants={itemVariants}>
-            {t('subtitle')}
+            {"Full-Stack Python Developer crafting modern, blazing-fast web solutions with Django & React. Based in Coimbatore, India."}
           </motion.p>
 
           <motion.div className="hero__cta-row" variants={itemVariants}>
             <a href="https://jarvis-official.vercel.app/" target="_blank" rel="noopener noreferrer" className="btn btn--primary" style={{ background: 'linear-gradient(90deg, #f97316, #fb923c)', border: 'none', textDecoration: 'none' }}>
-              {t('meet_jarvis')}
+              {"✨ Meet Jarvis AI"}
             </a>
 
             <a href="/SuryaCS-resume.pdf" download="SuryaCS-resume.pdf" className="btn btn--glass" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {t('download_resume')}
+              {"Download Resume"}
             </a>
             <button className="btn btn--glass" onClick={() => scrollToSection('#contact')}>
-              {t('get_in_touch')}
+              {"Get In Touch"}
             </button>
           </motion.div>
         </div>

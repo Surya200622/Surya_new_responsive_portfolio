@@ -6,15 +6,13 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import PaymentModal from '../components/payment/PaymentModal';
-import { useTranslations } from 'next-intl';
 import './ProjectsSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
 
 export default function ProjectsSection() {
-  const t = useTranslations('Portfolio');
-  const [projects, setProjects] = useState([]);
+    const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState(['All']);
   const [activeFilter, setActiveFilter] = useState('All');
   const [buyableFilter, setBuyableFilter] = useState('All');
@@ -101,7 +99,7 @@ export default function ProjectsSection() {
             transition={{ duration: 0.6 }}
           >
             <span className="about__section-label-line" />
-            {t('section_label')}
+            {"Portfolio"}
           </motion.div>
           <motion.h2
             className="projects__title"
@@ -110,7 +108,7 @@ export default function ProjectsSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.1 }}
           >
-            {t('title_1')} <span className="text-gradient">{t('title_accent')}</span>
+            {"Projects"} <span className="text-gradient">{"Works"}</span>
           </motion.h2>
         </div>
 
@@ -120,7 +118,7 @@ export default function ProjectsSection() {
           </div>
         ) : projects.length === 0 ? (
           <div className="flex items-center justify-center h-64 text-[var(--color-text-secondary)]">
-            {t('no_projects')}
+            {"No projects available yet."}
           </div>
         ) : (
           <>
@@ -139,7 +137,7 @@ export default function ProjectsSection() {
                   className={`projects__filter-btn${activeFilter === cat ? ' projects__filter-btn--active' : ''}`}
                   onClick={() => setActiveFilter(cat)}
                 >
-                  {cat === 'All' ? t('all') : cat}
+                  {cat === 'All' ? "All" : cat}
                 </button>
               ))}
 
@@ -149,19 +147,19 @@ export default function ProjectsSection() {
                 className={`projects__filter-btn${buyableFilter === 'All' ? ' projects__filter-btn--active' : ''}`}
                 onClick={() => setBuyableFilter('All')}
               >
-                {t('filter_all')}
+                {"All Status"}
               </button>
               <button
                 className={`projects__filter-btn${buyableFilter === 'Available' ? ' projects__filter-btn--active' : ''}`}
                 onClick={() => setBuyableFilter('Available')}
               >
-                {t('filter_for_sale')}
+                {"For Sale"}
               </button>
               <button
                 className={`projects__filter-btn${buyableFilter === 'Unavailable' ? ' projects__filter-btn--active' : ''}`}
                 onClick={() => setBuyableFilter('Unavailable')}
               >
-                {t('filter_not_for_sale')}
+                {"Not For Sale"}
               </button>
             </motion.div>
 
@@ -198,10 +196,10 @@ export default function ProjectsSection() {
                           
                           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
                             <a href={project.viewDetailsUrl || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }}>
-                              {t('view_details')} <ArrowRight size={14} />
+                              {"View Details"} <ArrowRight size={14} />
                             </a>
                             <a href={project.link || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }}>
-                              {t('live_url')} <ArrowRight size={14} />
+                              {"Live URL"} <ArrowRight size={14} />
                             </a>
                             {project.buyable && !['Blogsite', 'Porfolio'].includes(project.slug) && (
                               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
@@ -228,7 +226,7 @@ export default function ProjectsSection() {
                                     setPaymentModalState({ isOpen: true, amount: finalPrice, projectName: project.title });
                                   }}
                                 >
-                                  {t('buy_project')} <ArrowRight size={14} />
+                                  {"Buy Project"} <ArrowRight size={14} />
                                 </button>
                               </div>
                             )}
@@ -253,10 +251,10 @@ export default function ProjectsSection() {
                           </div>
                           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
                             <a href={project.viewDetailsUrl || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }}>
-                              {t('view_details')} <ArrowRight size={14} />
+                              {"View Details"} <ArrowRight size={14} />
                             </a>
                             <a href={project.link || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }}>
-                              {t('live_url')} <ArrowRight size={14} />
+                              {"Live URL"} <ArrowRight size={14} />
                             </a>
                           </div>
                         </div>

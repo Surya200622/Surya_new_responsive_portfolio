@@ -44,19 +44,14 @@ export const metadata: Metadata = {
   },
 };
 
-import { NextIntlClientProvider } from 'next-intl';
-import { getLocale, getMessages } from 'next-intl/server';
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const locale = await getLocale();
-  const messages = await getMessages();
-
   return (
-    <html lang={locale} data-theme="light" suppressHydrationWarning>
+    <html lang="en" data-theme="light" suppressHydrationWarning>
       <head>
         {/* Theme initialization — runs before paint to prevent flash */}
         <script
@@ -155,15 +150,13 @@ export default async function RootLayout({
         />
       </head>
       <body>
-        <NextIntlClientProvider messages={messages}>
-          <Providers>
-            {children}
-            <ChatbotWidget />
-            <MagicCursor />
-            <CookieBanner />
-            <AnalyticsTracker />
-          </Providers>
-        </NextIntlClientProvider>
+        <Providers>
+          {children}
+          <ChatbotWidget />
+          <MagicCursor />
+          <CookieBanner />
+          <AnalyticsTracker />
+        </Providers>
       </body>
     </html>
   );

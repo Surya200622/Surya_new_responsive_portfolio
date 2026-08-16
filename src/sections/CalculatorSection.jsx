@@ -16,7 +16,7 @@ import {
   calculatePricing, generateWhatsAppMessage, generateEmailBody,
 } from '../data/calculatorData';
 import PaymentModal from '../components/payment/PaymentModal';
-import { useTranslations } from 'next-intl';
+
 import './CalculatorSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -28,7 +28,7 @@ const ICON_MAP = {
 };
 
 export default function CalculatorSection() {
-  const t = useTranslations('Calculator');
+  
   const searchParams = useSearchParams();
   const [config, setConfig] = useState(null);
   const [projectType, setProjectType] = useState('');
@@ -290,7 +290,7 @@ export default function CalculatorSection() {
           viewport={{ once: true }}
         >
           <span className="about__section-label-line" />
-          {t('section_label')}
+          {"Pricing"}
         </motion.div>
 
         <motion.h2
@@ -300,7 +300,7 @@ export default function CalculatorSection() {
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
         >
-          {t('title_1')} <span className="text-gradient">{t('title_accent')}</span>
+          {"Project Budget"} <span className="text-gradient">{"Calculator"}</span>
         </motion.h2>
 
         <motion.p
@@ -310,12 +310,12 @@ export default function CalculatorSection() {
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
         >
-          {t('subtitle')}
+          {"Configure your project and get an instant estimate"}
         </motion.p>
 
         {/* Step 1: Project Type */}
-        <div className="calc__step-label">{t('step_1_label')}</div>
-        <h3 className="calc__step-title">{t('step_1_title')}</h3>
+        <div className="calc__step-label">{"Step 01 — Choose Your Project"}</div>
+        <h3 className="calc__step-title">{"What are we building?"}</h3>
 
         <div className="calc__types-grid">
           {(config?.PROJECT_TYPES || PROJECT_TYPES).map(type => {
@@ -357,8 +357,8 @@ export default function CalculatorSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="calc__step-label">{t('step_2_label')}</div>
-            <h3 className="calc__step-title">{t('step_2_title')}</h3>
+            <div className="calc__step-label">{"Step 02 — Choose Package"}</div>
+            <h3 className="calc__step-title">{"Select your package tier"}</h3>
 
             <div className="calc__packages">
               {(config?.PACKAGES || PACKAGES).map(pkg => (
@@ -393,9 +393,9 @@ export default function CalculatorSection() {
             transition={{ duration: 0.5, delay: 0.1 }}
           >
             <div className="calc__step-label">
-              {projectType === 'marketing' ? t('step_2_short') : t('step_3_short')} {t('configure_features')}
+              {projectType === 'marketing' ? "Step 02" : "Step 03"} {"— Configure Features"}
             </div>
-            <h3 className="calc__step-title">{t('step_3_title')}</h3>
+            <h3 className="calc__step-title">{"Customize your requirements"}</h3>
 
 
 
@@ -406,7 +406,7 @@ export default function CalculatorSection() {
             {/* Delivery Speed */}
             {projectType !== 'marketing' && (
               <div className="calc__radio-group">
-                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{t('delivery_speed')}</div>
+                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Delivery Speed"}</div>
                 <div className="calc__radio-options">
                   {Object.entries(config?.DELIVERY_SPEEDS || DELIVERY_SPEEDS).map(([key, val]) => (
                     <div
@@ -425,7 +425,7 @@ export default function CalculatorSection() {
 
             {/* Extra Features */}
             <div className="calc__radio-group">
-              <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{t('extra_features')}</div>
+              <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Extra Features"}</div>
               <div className="calc__radio-options">
                 {booleanFeatures.map(([key, val]) => {
                   const IconComp = ICON_MAP[val.icon] || Code;
@@ -449,7 +449,7 @@ export default function CalculatorSection() {
             {/* Maintenance */}
             {projectType !== 'marketing' && (
               <div className="calc__radio-group">
-                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{t('maintenance_support')}</div>
+                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Maintenance Support"}</div>
                 <div className="calc__radio-options">
                   {(config?.MAINTENANCE_OPTIONS || MAINTENANCE_OPTIONS).map(opt => (
                     <div
@@ -477,7 +477,7 @@ export default function CalculatorSection() {
           >
             <div className="calc__total-info">
               <div className="calc__total-item">
-                <span className="calc__total-label">{t('estimated_cost')}</span>
+                <span className="calc__total-label">{"Estimated Cost"}</span>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                   {pricing.originalTotal && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
@@ -492,31 +492,31 @@ export default function CalculatorSection() {
                         fontSize: '0.75em',
                         fontWeight: 'bold'
                       }}>
-                        {t('save')} {pricing.discountPercentage}%
+                        {"Save"} {pricing.discountPercentage}%
                       </span>
                     </div>
                   )}
                   <span className="calc__total-value">₹{pricing.total.toLocaleString('en-IN')}</span>
                   {(projectType === 'marketing' || selectedPackage === 'enterprise') && (
                     <span style={{ color: '#34A853', fontSize: '0.75em', marginTop: '4px', fontWeight: '500' }}>
-                      {t('ad_credits_note')}
+                      {"* 20,000 ad credits was credit in your google business profile page"}
                     </span>
                   )}
                 </div>
               </div>
               <div className="calc__total-item">
-                <span className="calc__total-label">{t('timeline')}</span>
-                <span className="calc__total-value calc__total-value--small">{pricing.timeline} {t('days')}</span>
+                <span className="calc__total-label">{"Timeline"}</span>
+                <span className="calc__total-value calc__total-value--small">{pricing.timeline} {"Days"}</span>
               </div>
               {projectType !== 'marketing' && (
                 <div className="calc__total-item">
-                  <span className="calc__total-label">{t('complexity')}</span>
+                  <span className="calc__total-label">{"Complexity"}</span>
                   <span className="calc__total-value calc__total-value--small">{pricing.complexity}</span>
                 </div>
               )}
               {projectType !== 'marketing' && (
                 <div className="calc__total-item">
-                  <span className="calc__total-label">{t('package')}</span>
+                  <span className="calc__total-label">{"Package"}</span>
                   <span className="calc__total-value calc__total-value--small">{pricing.package?.name || '—'}</span>
                 </div>
               )}
@@ -528,13 +528,13 @@ export default function CalculatorSection() {
                 onClick={() => setIsPaymentModalOpen(true)} 
                 style={{ background: 'linear-gradient(135deg, #4285F4, #34A853)', border: 'none', color: 'white' }}
               >
-                {t('pay_gpay')}
+                {"Pay via GPay"}
               </button>
               <button className="btn btn--glass" onClick={handleGetQuote}>
-                {t('save_quote')}
+                {"Save Quote"}
               </button>
               <button className="btn btn--glass" onClick={handleWhatsApp}>
-                <MessageSquare size={14} /> {t('discuss')}
+                <MessageSquare size={14} /> {"Discuss"}
               </button>
             </div>
           </motion.div>

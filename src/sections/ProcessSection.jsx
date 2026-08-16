@@ -2,7 +2,6 @@
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Search, PenTool, Code2, Rocket } from 'lucide-react';
-import { useTranslations } from 'next-intl';
 import './ProcessSection.css';
 
 const PROCESS_STEPS = [
@@ -46,9 +45,7 @@ const fadeInUp = {
 };
 
 export default function ProcessSection() {
-  const t = useTranslations('Process');
-  const d = useTranslations('Process.steps');
-
+    
   return (
     <section className="process section" id="process">
       <div className="process__orb process__orb--1" aria-hidden="true" />
@@ -64,13 +61,13 @@ export default function ProcessSection() {
         >
           <div className="process__label">
             <span className="process__label-line" />
-            {t('section_label')}
+            {"How I Work"}
           </div>
           <h2 className="process__title">
-            {t('title_1')} <span className="text-gradient">{t('title_accent')}</span>
+            {"My"} <span className="text-gradient">{"Process"}</span>
           </h2>
           <p className="process__subtitle">
-            {t('subtitle')}
+            {"A structured approach to turning your ideas into exceptional digital products."}
           </p>
         </motion.div>
 
@@ -104,15 +101,15 @@ export default function ProcessSection() {
                 </div>
 
                 {/* Content */}
-                <h3 className="process__card-title">{d(`${step.number}.title`)}</h3>
-                <p className="process__card-desc">{d(`${step.number}.description`)}</p>
+                <h3 className="process__card-title">{step.title}</h3>
+                <p className="process__card-desc">{step.description}</p>
 
                 {/* Details */}
                 <ul className="process__card-details">
                   {[0, 1, 2, 3].map((detailIdx) => (
                     <li key={detailIdx} className="process__card-detail">
                       <span className="process__detail-dot" style={{ background: step.color }} />
-                      {d(`${step.number}.details.${detailIdx}`)}
+                      {step.details[detailIdx]}
                     </li>
                   ))}
                 </ul>
