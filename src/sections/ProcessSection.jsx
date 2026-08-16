@@ -35,7 +35,7 @@ const PROCESS_STEPS = [
     description: 'Launching with confidence — deployment, optimization, and ongoing support.',
     details: ['Performance tuning', 'SEO optimization', 'Deployment', 'Maintenance & support'],
     icon: Rocket,
-    color: 'var(--color-accent-warm)',
+    color: 'var(--color-accent-primary)',
   },
 ];
 
