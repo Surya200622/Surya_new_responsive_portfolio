@@ -6,6 +6,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tag, Calendar, ArrowRight, X, Eye, Link, Check } from 'lucide-react';
 import { PROJECT_TYPES } from '../data/calculatorData';
+import { useTranslations } from 'next-intl';
 import './OffersSection.css';
 
 function formatDate(dateStr) {
@@ -19,6 +20,7 @@ function truncateText(text, maxLen = 100) {
 }
 
 function OfferModal({ offer, isOpen, onClose, serviceQuery }) {
+  const t = useTranslations('Offers');
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
 
@@ -60,7 +62,7 @@ function OfferModal({ offer, isOpen, onClose, serviceQuery }) {
 
             {/* Header */}
             <div className="offer-modal-header">
-              <h2 className="offer-modal-header-title">Offer Details</h2>
+              <h2 className="offer-modal-header-title">{t('offer_details')}</h2>
               <button onClick={onClose} className="offer-modal-close">
                 <X size={20} />
               </button>
@@ -76,7 +78,7 @@ function OfferModal({ offer, isOpen, onClose, serviceQuery }) {
 
               {offer.discountPercentage > 0 && (
                 <div className="offer-modal-badge">
-                  <Tag size={16} /> {offer.discountPercentage}% OFF
+                  <Tag size={16} /> {offer.discountPercentage}% {t('off')}
                 </div>
               )}
 
@@ -91,7 +93,7 @@ function OfferModal({ offer, isOpen, onClose, serviceQuery }) {
               <div className="offer-modal-meta">
                 <div className="offer-modal-meta-item">
                   <Calendar size={16} />
-                  <span>Valid till {formatDate(offer.validUntil)}</span>
+                  <span>{t('valid_till')} {formatDate(offer.validUntil)}</span>
                 </div>
               </div>
 
@@ -104,7 +106,7 @@ function OfferModal({ offer, isOpen, onClose, serviceQuery }) {
                   router.push(`/${serviceQuery}#calculator`);
                 }}
               >
-                Claim This Offer <ArrowRight size={18} />
+                {t('claim_offer')} <ArrowRight size={18} />
               </a>
             </div>
           </motion.div>
@@ -116,6 +118,7 @@ function OfferModal({ offer, isOpen, onClose, serviceQuery }) {
 }
 
 export default function OffersSection() {
+  const t = useTranslations('Offers');
   const router = useRouter();
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -176,8 +179,8 @@ export default function OffersSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="offers-title">Special <span className="text-gradient">Offers</span></h2>
-          <p className="offers-subtitle">Exclusive weekly deals for freelance web development and Python projects.</p>
+          <h2 className="offers-title">{t('title_1')} <span className="text-gradient">{t('title_accent')}</span></h2>
+          <p className="offers-subtitle">{t('subtitle')}</p>
         </motion.div>
 
         <div className="offers-grid">
@@ -203,7 +206,7 @@ export default function OffersSection() {
                 
                 {offer.discountPercentage > 0 && (
                   <div className="offer-badge">
-                    <Tag size={14} /> {offer.discountPercentage}% OFF
+                    <Tag size={14} /> {offer.discountPercentage}% {t('off')}
                   </div>
                 )}
                 
@@ -213,7 +216,7 @@ export default function OffersSection() {
                 <div className="offer-footer">
                   <div className="offer-expiry">
                     <Calendar size={14} />
-                    <span>Valid till {formatDate(offer.validUntil)}</span>
+                    <span>{t('valid_till')} {formatDate(offer.validUntil)}</span>
                   </div>
                   
                   <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
@@ -225,7 +228,7 @@ export default function OffersSection() {
                         setSelectedServiceQuery(serviceQuery);
                       }}
                     >
-                      <Eye size={15} /> View
+                      <Eye size={15} /> {t('view')}
                     </button>
                     <button
                       className="offer-view-btn"
@@ -233,7 +236,7 @@ export default function OffersSection() {
                       onClick={() => copyToClipboard(offer.id)}
                     >
                       {copiedId === offer.id ? <Check size={15} /> : <Link size={15} />}
-                      {copiedId === offer.id ? ' Copied' : ' Copy Link'}
+                      {copiedId === offer.id ? ` ${t('copied')}` : ` ${t('copy_link')}`}
                     </button>
                   </div>
                 </div>

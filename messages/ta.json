@@ -27,5 +27,309 @@
     "stat_projects": "திட்டங்கள்",
     "stat_trained": "பயிற்சி",
     "stat_tech": "தொழில்நுட்பங்கள்"
+  },
+  "About": {
+    "section_label": "About Me",
+    "title_1": "Crafting the Future of",
+    "title_accent": "Web Experiences",
+    "story_1_title": "Who I Am",
+    "story_1_text": "I'm Surya CS — an Full-Stack Python Developer based in Coimbatore, India. I'm a B.COM.CA graduate from Sri Ramakrishna College of Arts & Science with IBM & ITC collaborative training in Python Pandas & NumPy. I don't just build websites — I craft digital experiences.",
+    "story_2_title": "What I Do",
+    "story_2_text": "I specialize in Django and React to build modern, blazing-fast web solutions. From dental booking systems to fashion e-commerce platforms, every project I deliver combines beautiful design with powerful functionality.",
+    "story_3_title": "My Goal",
+    "story_3_text": "I'm actively seeking to apply my Python full-stack development skills, contribute to innovative projects, and grow professionally. I'm passionate about creating experiences that convert visitors into customers.",
+    "journey_title_1": "My",
+    "journey_accent": "Journey",
+    "skills_title_1": "My",
+    "skills_accent": "Skills"
+  },
+  "Data": {
+    "projects": {
+      "dental-experts": {
+        "title": "DentalExperts",
+        "category": "Booking System",
+        "description": "A comprehensive full-stack web application designed to streamline dental appointment booking, clinic information access, and efficient management of patient records & doctor schedules."
+      },
+      "cipher-apparel": {
+        "title": "CipherApparel",
+        "category": "E-commerce",
+        "description": "A responsive fashion e-commerce web application with login/signup, product listings, offers, and dynamic backend integration using Python and web technologies."
+      },
+      "personal-portfolio": {
+        "title": "Personal Portfolio",
+        "category": "Portfolio",
+        "description": "A responsive portfolio built with React Vite featuring parallax effects to showcase projects, skills, and professional experience."
+      },
+      "face-swap-editor": {
+        "title": "Face Swap Photo & Video Editor",
+        "category": "AI",
+        "description": "Professional face swap tool for photos and videos, built with modern web technologies and AI-powered editing capabilities."
+      }
+    },
+    "timeline": [
+      {
+        "year": "2023",
+        "title": "Started B.COM.CA at Sri Ramakrishna College",
+        "description": "Began my journey in Computer Applications at Sri Ramakrishna College of Arts & Science, Nava-India, Coimbatore. Developed a passion for web development alongside my studies."
+      },
+      {
+        "year": "2024",
+        "title": "IBM & ITC Python Pandas & NumPy Training",
+        "description": "Completed IBM & ITC collaborative training in Python Pandas & NumPy, building strong data analysis and manipulation foundations with hands-on project experience."
+      },
+      {
+        "year": "2025",
+        "title": "Indra Institute of Education — Full-Stack Python",
+        "description": "Full-Stack Python training at Indra Institute of Education, 100 Feet Road. Intensive program from July 09, 2025 to December 15, 2025, deepening expertise in Python full-stack development."
+      },
+      {
+        "year": "2025",
+        "title": "Launched DentalExperts, CipherApparel & Portfolio",
+        "description": "Built a dental clinic management system with appointment booking & patient records, a fashion e-commerce platform with Django, and a cinematic personal portfolio with React & Vite — establishing my freelance web development practice."
+      },
+      {
+        "year": "2026",
+        "title": "Full-Stack Python Developer — Open to Opportunities",
+        "description": "Actively seeking to apply my Python full-stack development skills, contribute to innovative projects, and grow professionally in a dynamic IT company."
+      }
+    ],
+    "stats": [
+      {
+        "value": "1+",
+        "label": "Projects Delivered"
+      },
+      {
+        "value": "2+",
+        "label": "Certifications"
+      },
+      {
+        "value": "10+",
+        "label": "Technologies"
+      },
+      {
+        "value": "1+",
+        "label": "Years Experience"
+      }
+    ]
+  },
+  "Portfolio": {
+    "section_label": "Portfolio",
+    "title_1": "Projects",
+    "title_accent": "Works",
+    "filter_all": "All Status",
+    "filter_for_sale": "For Sale",
+    "filter_not_for_sale": "Not For Sale",
+    "no_projects": "No projects available yet.",
+    "view_details": "View Details",
+    "live_url": "Live URL",
+    "buy_project": "Buy Project",
+    "all": "All"
+  },
+  "Skills": {
+    "section_label": "Expertise",
+    "title_1": "Technical",
+    "title_accent": "Arsenal",
+    "subtitle": "A comprehensive toolkit honed through building scalable applications and premium user experiences.",
+    "technologies": "Technologies",
+    "categories": {
+      "language": "Language",
+      "framework": "Framework",
+      "database": "Database",
+      "tool": "Tool",
+      "platform": "Platform",
+      "concept": "Concept",
+      "soft skill": "Soft Skill"
+    }
+  },
+  "Testimonials": {
+    "section_label": "Testimonials",
+    "title_1": "What Clients",
+    "title_accent": "Say",
+    "leave_review": "Leave a Review",
+    "modal_title": "Share Your Experience",
+    "success_msg": "Thank you! Your review has been submitted and is pending approval.",
+    "name": "Name *",
+    "name_placeholder": "John Doe",
+    "role": "Role / Company (Optional)",
+    "role_placeholder": "CEO, Acme Corp",
+    "review_label": "Review *",
+    "review_placeholder": "How was your experience?",
+    "rating": "Rating",
+    "error_msg": "An error occurred. Please try again.",
+    "submitting": "Submitting...",
+    "submit": "Submit Review"
+  },
+  "Calculator": {
+    "section_label": "Pricing",
+    "title_1": "Project Budget",
+    "title_accent": "Calculator",
+    "subtitle": "Configure your project and get an instant estimate",
+    "step_1_label": "Step 01 — Choose Your Project",
+    "step_1_title": "What are we building?",
+    "step_2_label": "Step 02 — Choose Package",
+    "step_2_title": "Select your package tier",
+    "step_2_short": "Step 02",
+    "step_3_short": "Step 03",
+    "configure_features": "— Configure Features",
+    "step_3_title": "Customize your requirements",
+    "delivery_speed": "Delivery Speed",
+    "extra_features": "Extra Features",
+    "maintenance_support": "Maintenance Support",
+    "estimated_cost": "Estimated Cost",
+    "save": "Save",
+    "ad_credits_note": "* 20,000 ad credits was credit in your google business profile page",
+    "timeline": "Timeline",
+    "days": "Days",
+    "complexity": "Complexity",
+    "package": "Package",
+    "pay_gpay": "Pay via GPay",
+    "save_quote": "Save Quote",
+    "discuss": "Discuss"
+  },
+  "Contact": {
+    "section_label": "Contact",
+    "title_1": "Let's Build Something",
+    "title_accent": "Amazing",
+    "subtitle": "Ready to start your project? Get in touch and let's make it happen.",
+    "success_title": "Message Sent!",
+    "success_msg": "Thank you for reaching out. I'll get back to you within 24 hours.",
+    "name_placeholder": "Your Name",
+    "email_placeholder": "Email Address",
+    "phone_placeholder": "Phone Number",
+    "project_placeholder": "Project Type (e.g., E-commerce Website)",
+    "message_placeholder": "Tell me about your project...",
+    "sending": "Sending...",
+    "send": "Send Message",
+    "email_label": "Email",
+    "whatsapp_label": "WhatsApp",
+    "location_label": "Location"
+  },
+  "Footer": {
+    "cta_1": "Let's work",
+    "cta_accent": "together",
+    "start_project": "Start a Project",
+    "brand_desc": "Full-Stack Python Developer crafting modern web solutions with Django & React from Coimbatore, India.",
+    "quick_links": "Quick Links",
+    "legal": "Legal",
+    "newsletter": "Subscribe to Newsletter",
+    "newsletter_desc": "Get updates on my latest projects and articles.",
+    "email_placeholder": "Enter your email",
+    "subscribe": "Subscribe",
+    "subscribe_success": "Successfully subscribed!",
+    "follow_me": "Follow Me",
+    "copyright": "© {year} Surya CS. All rights reserved.",
+    "privacy_policy": "Privacy Policy",
+    "terms_of_service": "Terms of Service",
+    "crafted_with": "Crafted with",
+    "and_passion": "and passion"
+  },
+  "Offers": {
+    "offer_details": "Offer Details",
+    "off": "OFF",
+    "valid_till": "Valid till",
+    "claim_offer": "Claim This Offer",
+    "title_1": "Special",
+    "title_accent": "Offers",
+    "subtitle": "Exclusive weekly deals for freelance web development and Python projects.",
+    "view": "View",
+    "copied": "Copied",
+    "copy_link": "Copy Link"
+  },
+  "Process": {
+    "section_label": "How I Work",
+    "title_1": "My",
+    "title_accent": "Process",
+    "subtitle": "A structured approach to turning your ideas into exceptional digital products.",
+    "steps": {
+      "01": {
+        "title": "Discovery",
+        "description": "Understanding your vision, goals, and target audience through in-depth consultation.",
+        "details": [
+          "Requirement analysis",
+          "Market research",
+          "Competitor audit",
+          "Project roadmap"
+        ]
+      },
+      "02": {
+        "title": "Design",
+        "description": "Crafting pixel-perfect wireframes and prototypes that bring your ideas to life.",
+        "details": [
+          "Wireframing",
+          "UI/UX design",
+          "Prototype review",
+          "Design iteration"
+        ]
+      },
+      "03": {
+        "title": "Development",
+        "description": "Building with modern technologies for performance, scalability, and clean architecture.",
+        "details": [
+          "Frontend development",
+          "Backend API",
+          "Database design",
+          "Testing & QA"
+        ]
+      },
+      "04": {
+        "title": "Delivery",
+        "description": "Launching with confidence — deployment, optimization, and ongoing support.",
+        "details": [
+          "Performance tuning",
+          "SEO optimization",
+          "Deployment",
+          "Maintenance & support"
+        ]
+      }
+    }
+  },
+  "PrivacyPolicy": {
+    "title": "Privacy Policy",
+    "subtitle": "Your privacy matters to us. This policy explains how we handle your information when you visit suryacs.is-a.dev.",
+    "effective_date": "Effective Date: June 14, 2026",
+    "last_updated": "Last Updated: June 14, 2026",
+    "back_to_portfolio": "Back to Portfolio",
+    "intro_title": "Introduction",
+    "intro_text": "Welcome to the portfolio website of Surya CS (\"we,\" \"us,\" or \"our\"), accessible at suryacs.is-a.dev. We are committed to protecting your privacy and ensuring a safe online experience.",
+    "info_collect_title": "Information We Collect",
+    "info_provide": "Information You Provide",
+    "info_auto": "Automatically Collected Information",
+    "use_info_title": "How We Use Your Information",
+    "third_party_title": "Third-Party Services",
+    "security_title": "Data Security",
+    "retention_title": "Data Retention",
+    "rights_title": "Your Rights",
+    "children_title": "Children's Privacy",
+    "changes_title": "Changes to This Policy",
+    "payments_title": "Payments and Refunds",
+    "payments_text": "Any payments made for full-stack web development services, project purchases, or related digital products are strictly non-refundable once given. By engaging in our services or purchasing projects, you acknowledge and agree to this no-refund policy.",
+    "contact_title": "Contact Us",
+    "name": "Name",
+    "email": "Email",
+    "location": "Location",
+    "website": "Website",
+    "copyright": "© {year} Surya CS. All rights reserved.",
+    "terms_link": "Terms of Service"
+  },
+  "TermsOfService": {
+    "title": "Terms of Service",
+    "subtitle": "These terms govern your use of suryacs.is-a.dev and the services provided by Surya CS. Please read them carefully.",
+    "effective_date": "Effective Date: June 14, 2026",
+    "last_updated": "Last Updated: June 14, 2026",
+    "back_to_portfolio": "Back to Portfolio",
+    "intro_title": "Agreement to Terms",
+    "services_title": "Services Provided",
+    "user_resp_title": "User Responsibilities",
+    "ip_title": "Intellectual Property",
+    "payments_title": "Payments & Refunds",
+    "limitation_title": "Limitation of Liability",
+    "changes_title": "Changes to Terms",
+    "contact_title": "Contact Information",
+    "name": "Name",
+    "email": "Email",
+    "location": "Location",
+    "website": "Website",
+    "copyright": "© {year} Surya CS. All rights reserved.",
+    "privacy_link": "Privacy Policy"
   }
 }

@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Star } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import './TestimonialsSection.css';
 
 export default function TestimonialsSection() {
+  const t = useTranslations('Testimonials');
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -67,7 +69,7 @@ export default function TestimonialsSection() {
           viewport={{ once: true }}
         >
           <span className="about__section-label-line" />
-          Testimonials
+          {t('section_label')}
         </motion.div>
 
         <motion.h2
@@ -78,13 +80,13 @@ export default function TestimonialsSection() {
           transition={{ delay: 0.1 }}
           style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}
         >
-          <div>What Clients <span className="text-gradient">Say</span></div>
+          <div>{t('title_1')} <span className="text-gradient">{t('title_accent')}</span></div>
           <button 
             onClick={() => setIsModalOpen(true)}
             className="btn btn--outline"
             style={{ fontSize: '0.875rem', padding: '0.5rem 1rem' }}
           >
-            Leave a Review
+            {t('leave_review')}
           </button>
         </motion.h2>
 
@@ -98,46 +100,46 @@ export default function TestimonialsSection() {
               >
                 &times;
               </button>
-              <h3 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--color-text-primary)' }}>Share Your Experience</h3>
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--color-text-primary)' }}>{t('modal_title')}</h3>
               
               {submitStatus === 'success' ? (
                 <div style={{ padding: '1rem', background: 'rgba(34, 197, 94, 0.1)', color: '#22c55e', borderRadius: '0.5rem', textAlign: 'center' }}>
-                  Thank you! Your review has been submitted and is pending approval.
+                  {t('success_msg')}
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>Name *</label>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>{t('name')}</label>
                     <input 
                       required
                       className="input-field"
                       value={formData.name}
                       onChange={e => setFormData({...formData, name: e.target.value})}
-                      placeholder="John Doe"
+                      placeholder={t('name_placeholder')}
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>Role / Company (Optional)</label>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>{t('role')}</label>
                     <input 
                       className="input-field"
                       value={formData.role}
                       onChange={e => setFormData({...formData, role: e.target.value})}
-                      placeholder="CEO, Acme Corp"
+                      placeholder={t('role_placeholder')}
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>Review *</label>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>{t('review_label')}</label>
                     <textarea 
                       required
                       className="input-field"
                       rows={4}
                       value={formData.content}
                       onChange={e => setFormData({...formData, content: e.target.value})}
-                      placeholder="How was your experience?"
+                      placeholder={t('review_placeholder')}
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>Rating</label>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>{t('rating')}</label>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                       {[1,2,3,4,5].map(star => (
                         <Star 
@@ -151,9 +153,9 @@ export default function TestimonialsSection() {
                       ))}
                     </div>
                   </div>
-                  {submitStatus === 'error' && <div style={{ color: '#ef4444', fontSize: '0.875rem' }}>An error occurred. Please try again.</div>}
+                  {submitStatus === 'error' && <div style={{ color: '#ef4444', fontSize: '0.875rem' }}>{t('error_msg')}</div>}
                   <button type="submit" className="btn btn--primary" disabled={submitStatus === 'submitting'} style={{ marginTop: '1rem' }}>
-                    {submitStatus === 'submitting' ? 'Submitting...' : 'Submit Review'}
+                    {submitStatus === 'submitting' ? t('submitting') : t('submit')}
                   </button>
                 </form>
               )}

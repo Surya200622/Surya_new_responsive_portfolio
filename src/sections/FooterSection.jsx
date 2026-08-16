@@ -2,6 +2,8 @@
 import { Globe, ExternalLink, Link2, Heart, Shield, FileText } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaInstagram, FaFacebook, FaYoutube } from 'react-icons/fa';
 import { SOCIAL_LINKS } from '../data/projectsData';
+import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 import './FooterSection.css';
 
 const ICON_MAP = { Github: FaGithub, Linkedin: FaLinkedin, Instagram: FaInstagram, Facebook: FaFacebook, Youtube: FaYoutube };
@@ -21,6 +23,8 @@ const LEGAL_LINKS = [
 ];
 
 export default function FooterSection() {
+  const t = useTranslations('Footer');
+  const tNav = useTranslations('Navbar');
   const scrollTo = (href) => {
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -31,10 +35,10 @@ export default function FooterSection() {
       <div className="container">
         <div className="footer__cta">
           <h3 className="footer__cta-text">
-            Let's work <span className="text-gradient">together</span>
+            {t('cta_1')} <span className="text-gradient">{t('cta_accent')}</span>
           </h3>
           <a className="btn btn--primary" href="/#contact" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-            Start a Project
+            {t('start_project')}
           </a>
         </div>
 
@@ -44,12 +48,12 @@ export default function FooterSection() {
               <img src="/logo.svg" alt="Surya CS Logo" className="theme-adaptive-logo" style={{ height: '56px', width: 'auto' }} />
             </div>
             <p className="footer__brand-desc">
-              Full-Stack Python Developer crafting modern web solutions with Django & React from Coimbatore, India.
+              {t('brand_desc')}
             </p>
           </div>
 
           <div className="footer__links">
-            <div className="footer__links-title">Quick Links</div>
+            <div className="footer__links-title">{t('quick_links')}</div>
             {NAV_LINKS.map(link => {
               if (link.href.startsWith('http')) {
                 return (
@@ -67,37 +71,38 @@ export default function FooterSection() {
               }
               // Prepend with / so it redirects to the home page sections correctly from any route
               const hrefPath = link.href.startsWith('#') ? `/${link.href}` : link.href;
+              const linkLabel = link.label === 'Blog' ? 'Blog' : link.label === 'Calculator' ? tNav('calculator') : tNav(link.label.toLowerCase());
               return (
                 <a key={link.href} className="footer__link" href={hrefPath} style={{ textDecoration: 'none' }}>
-                  {link.label}
+                  {linkLabel}
                 </a>
               );
             })}
           </div>
 
           <div className="footer__links">
-            <div className="footer__links-title">Legal</div>
+            <div className="footer__links-title">{t('legal')}</div>
             {LEGAL_LINKS.map(link => {
               const IconComp = link.icon;
               return (
-                <a
+                <Link
                   key={link.href}
                   className="footer__link footer__legal-link"
                   href={link.href}
                   style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none' }}
                 >
                   <IconComp size={14} />
-                  {link.label}
-                </a>
+                  {link.label === 'Privacy Policy' ? t('privacy_policy') : t('terms_of_service')}
+                </Link>
               );
             })}
           </div>
 
           <div className="footer__newsletter-socials" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             <div>
-              <div className="footer__links-title" style={{ marginBottom: '0.75rem' }}>Subscribe to Newsletter</div>
+              <div className="footer__links-title" style={{ marginBottom: '0.75rem' }}>{t('newsletter')}</div>
               <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
-                Get updates on my latest projects and articles.
+                {t('newsletter_desc')}
               </p>
               <form 
                 onSubmit={async (e) => {
@@ -115,15 +120,15 @@ export default function FooterSection() {
                     });
                     const data = await res.json();
                     if (res.ok) {
-                      form.innerHTML = '<p style="color: #22c55e; font-size: 0.875rem;">Successfully subscribed!</p>';
+                      form.innerHTML = `<p style="color: #22c55e; font-size: 0.875rem;">${t('subscribe_success')}</p>`;
                     } else {
                       alert(data.message || 'Error subscribing');
-                      btn.textContent = 'Subscribe';
+                      btn.textContent = t('subscribe');
                       btn.disabled = false;
                     }
                   } catch (err) {
                     alert('Error subscribing');
-                    btn.textContent = 'Subscribe';
+                    btn.textContent = t('subscribe');
                     btn.disabled = false;
                   }
                 }}
@@ -132,18 +137,18 @@ export default function FooterSection() {
                 <input 
                   type="email" 
                   name="email"
-                  placeholder="Enter your email" 
+                  placeholder={t('email_placeholder')} 
                   required 
                   style={{ flex: 1, padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)', fontSize: '0.875rem' }}
                 />
                 <button type="submit" className="btn btn--primary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}>
-                  Subscribe
+                  {t('subscribe')}
                 </button>
               </form>
             </div>
 
             <div>
-              <div className="footer__links-title" style={{ marginBottom: '0.75rem' }}>Follow Me</div>
+              <div className="footer__links-title" style={{ marginBottom: '0.75rem' }}>{t('follow_me')}</div>
               <div className="footer__socials">
                 {SOCIAL_LINKS.map(link => {
                   const IconComp = ICON_MAP[link.icon] || Globe;
@@ -166,14 +171,14 @@ export default function FooterSection() {
         </div>
 
         <div className="footer__bottom">
-          <span className="footer__copyright">© {new Date().getFullYear()} Surya CS. All rights reserved.</span>
+          <span className="footer__copyright">{t('copyright', { year: new Date().getFullYear() })}</span>
           <div className="footer__bottom-links">
-            <a href="/privacy-policy" className="footer__bottom-legal-link">Privacy Policy</a>
+            <Link href="/privacy-policy" className="footer__bottom-legal-link">{t('privacy_policy')}</Link>
             <span className="footer__bottom-divider">·</span>
-            <a href="/terms-of-service" className="footer__bottom-legal-link">Terms of Service</a>
+            <Link href="/terms-of-service" className="footer__bottom-legal-link">{t('terms_of_service')}</Link>
           </div>
           <span className="footer__made">
-            Crafted with <Heart size={12} className="footer__heart" fill="currentColor" style={{ display: 'inline', verticalAlign: 'middle' }} /> and passion
+            {t('crafted_with')} <Heart size={12} className="footer__heart" fill="currentColor" style={{ display: 'inline', verticalAlign: 'middle' }} /> {t('and_passion')}
           </span>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import LegalThemeToggle from '@/components/LegalThemeToggle';
+import { useTranslations } from 'next-intl';
 import '../legal.css';
 
 export const metadata: Metadata = {
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPolicyPage() {
+  const t = useTranslations('PrivacyPolicy');
   return (
     <div className="legal-page">
       {/* Decorative background orbs */}
@@ -40,24 +42,22 @@ export default function PrivacyPolicyPage() {
             <path d="M19 12H5" />
             <polyline points="12 19 5 12 12 5" />
           </svg>
-          Back to Portfolio
+          {t('back_to_portfolio')}
         </Link>
 
         {/* Header */}
         <header className="legal-header">
-          <div className="legal-badge">Privacy Policy</div>
+          <div className="legal-badge">{t('title')}</div>
           <h1 className="legal-title">
             Privacy <span className="text-gradient">Policy</span>
           </h1>
           <p className="legal-subtitle">
-            Your privacy matters to us. This policy explains how we handle your
-            information when you visit{' '}
-            <strong>suryacs.is-a.dev</strong>.
+            {t('subtitle')}
           </p>
           <div className="legal-meta">
-            <span>Effective Date: June 14, 2026</span>
+            <span>{t('effective_date')}</span>
             <span className="legal-meta-divider">•</span>
-            <span>Last Updated: June 14, 2026</span>
+            <span>{t('last_updated')}</span>
           </div>
         </header>
 
@@ -66,26 +66,21 @@ export default function PrivacyPolicyPage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">01</span>
-              Introduction
+              {t('intro_title')}
             </h2>
             <p>
-              Welcome to the portfolio website of <strong>Surya CS</strong>{' '}
-              (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;), accessible at{' '}
-              <strong>suryacs.is-a.dev</strong>. We are committed to protecting
-              your privacy and ensuring a safe online experience. This Privacy
-              Policy describes what information we collect, how we use it, and
-              the choices you have.
+              {t('intro_text')}
             </p>
           </section>
 
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">02</span>
-              Information We Collect
+              {t('info_collect_title')}
             </h2>
 
             <h3 className="legal-subsection-title">
-              Information You Provide
+              {t('info_provide')}
             </h3>
             <ul className="legal-list">
               <li>
@@ -104,7 +99,7 @@ export default function PrivacyPolicyPage() {
             </ul>
 
             <h3 className="legal-subsection-title">
-              Automatically Collected Information
+              {t('info_auto')}
             </h3>
             <ul className="legal-list">
               <li>
@@ -124,7 +119,7 @@ export default function PrivacyPolicyPage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">03</span>
-              How We Use Your Information
+              {t('use_info_title')}
             </h2>
             <ul className="legal-list">
               <li>To respond to your inquiries and project requests</li>
@@ -141,7 +136,7 @@ export default function PrivacyPolicyPage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">04</span>
-              Third-Party Services
+              {t('third_party_title')}
             </h2>
             <p>
               Our website may use the following third-party services, each
@@ -206,7 +201,7 @@ export default function PrivacyPolicyPage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">05</span>
-              Data Security
+              {t('security_title')}
             </h2>
             <p>
               We take reasonable precautions to protect your personal
@@ -220,7 +215,7 @@ export default function PrivacyPolicyPage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">06</span>
-              Data Retention
+              {t('retention_title')}
             </h2>
             <p>
               We retain your personal information only for as long as necessary
@@ -234,7 +229,7 @@ export default function PrivacyPolicyPage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">07</span>
-              Your Rights
+              {t('rights_title')}
             </h2>
             <p>You have the right to:</p>
             <ul className="legal-list">
@@ -259,7 +254,7 @@ export default function PrivacyPolicyPage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">08</span>
-              Children&apos;s Privacy
+              {t('children_title')}
             </h2>
             <p>
               This website is not directed at individuals under the age of 13.
@@ -272,7 +267,7 @@ export default function PrivacyPolicyPage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">09</span>
-              Changes to This Policy
+              {t('changes_title')}
             </h2>
             <p>
               We may update this Privacy Policy from time to time. Any changes
@@ -285,17 +280,17 @@ export default function PrivacyPolicyPage() {
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">10</span>
-              Payments and Refunds
+              {t('payments_title')}
             </h2>
             <p>
-              Any payments made for full-stack web development services, project purchases, or related digital products are strictly non-refundable once given. By engaging in our services or purchasing projects, you acknowledge and agree to this no-refund policy.
+              {t('payments_text')}
             </p>
           </section>
 
           <section className="legal-section">
             <h2 className="legal-section-title">
               <span className="legal-section-number">11</span>
-              Contact Us
+              {t('contact_title')}
             </h2>
             <p>
               If you have any questions or concerns about this Privacy Policy,
@@ -303,11 +298,11 @@ export default function PrivacyPolicyPage() {
             </p>
             <div className="legal-contact-card glass-card">
               <div className="legal-contact-item">
-                <span className="legal-contact-label">Name</span>
+                <span className="legal-contact-label">{t('name')}</span>
                 <span className="legal-contact-value">Surya CS</span>
               </div>
               <div className="legal-contact-item">
-                <span className="legal-contact-label">Email</span>
+                <span className="legal-contact-label">{t('email')}</span>
                 <a
                   href="mailto:suryacs.is.a.dev@gmail.com"
                   className="legal-contact-value legal-link"
@@ -316,13 +311,13 @@ export default function PrivacyPolicyPage() {
                 </a>
               </div>
               <div className="legal-contact-item">
-                <span className="legal-contact-label">Location</span>
+                <span className="legal-contact-label">{t('location')}</span>
                 <span className="legal-contact-value">
                   Coimbatore, Tamil Nadu, India
                 </span>
               </div>
               <div className="legal-contact-item">
-                <span className="legal-contact-label">Website</span>
+                <span className="legal-contact-label">{t('website')}</span>
                 <a
                   href="https://suryacs.is-a.dev"
                   className="legal-contact-value legal-link"
@@ -337,14 +332,14 @@ export default function PrivacyPolicyPage() {
         {/* Footer */}
         <footer className="legal-footer">
           <p>
-            © {new Date().getFullYear()} Surya CS. All rights reserved.
+            {t('copyright', { year: new Date().getFullYear() })}
           </p>
           <div className="legal-footer-links">
             <Link href="/terms-of-service" className="legal-footer-link">
-              Terms of Service
+              {t('terms_link')}
             </Link>
             <Link href="/" className="legal-footer-link">
-              Back to Portfolio
+              {t('back_to_portfolio')}
             </Link>
           </div>
         </footer>

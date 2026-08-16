@@ -7,6 +7,7 @@ import { useGSAP } from '@gsap/react';
 import { Briefcase, Heart, Award, Code, Coffee, Zap, Globe2, Layers, Database, Server, MonitorSmartphone, ShieldCheck, Brain, MessageCircle, RefreshCw, Lightbulb, Users } from 'lucide-react';
 import { SKILLS, TIMELINE_DATA, STATS } from '../data/projectsData';
 import GithubStats from '../components/GithubStats';
+import { useTranslations } from 'next-intl';
 import './AboutSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -17,31 +18,21 @@ const ICON_MAP = {
   Brain, MessageCircle, RefreshCw, Lightbulb, Users
 };
 
-const STORY_BLOCKS = [
-  {
-    title: 'Who I Am',
-    text: 'I\'m Surya CS — an Full-Stack Python Developer based in Coimbatore, India. I\'m a B.COM.CA graduate from Sri Ramakrishna College of Arts & Science with IBM & ITC collaborative training in Python Pandas & NumPy. I don\'t just build websites — I craft digital experiences.',
-  },
-  {
-    title: 'What I Do',
-    text: 'I specialize in Django and React to build modern, blazing-fast web solutions. From dental booking systems to fashion e-commerce platforms, every project I deliver combines beautiful design with powerful functionality.',
-  },
-  {
-    title: 'My Goal',
-    text: 'I\'m actively seeking to apply my Python full-stack development skills, contribute to innovative projects, and grow professionally. I\'m passionate about creating experiences that convert visitors into customers.',
-  },
-];
-
-
-
-
-
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.25, 0.1, 0.25, 1] } },
 };
 
 export default function AboutSection() {
+  const t = useTranslations('About');
+  const d = useTranslations('Data');
+
+  const STORY_BLOCKS = [
+    { title: t('story_1_title'), text: t('story_1_text') },
+    { title: t('story_2_title'), text: t('story_2_text') },
+    { title: t('story_3_title'), text: t('story_3_text') },
+  ];
+
   const sectionRef = useRef(null);
   const storyRef = useRef(null);
   const revealRef = useRef(null);
@@ -370,12 +361,12 @@ export default function AboutSection() {
         <div className="about__intro">
           <div className="about__section-label about__fade-in-up">
             <span className="about__section-label-line" />
-            About Me
+            {t('section_label')}
           </div>
 
           <h2 className="about__title about__fade-in-up">
-            Crafting the Future of <span className="text-gradient" style={{ position: 'relative' }}>
-              Web Experiences
+            {t('title_1')} <span className="text-gradient" style={{ position: 'relative' }}>
+              {t('title_accent')}
               <svg 
                 className="about__svg-draw"
                 width="120%" height="20" viewBox="0 0 200 20" 
@@ -427,11 +418,15 @@ export default function AboutSection() {
         <div className="about__stats">
           {STATS.map((stat, i) => {
             const IconComp = ICON_MAP[stat.icon] || Briefcase;
+            // The stat label comes from Data translations
+            // Let's assume STATS are mapped by array index for translations
+            // but it's easier to just use the raw string and map it to a key or just pull it from d('stats') if we had it as an array.
+            // Since we stored it in en.json under Data.stats, we can use d(`stats.${i}.label`)
             return (
               <div key={stat.label} className="about__stat">
                 <div className="about__stat-icon"><IconComp size={28} /></div>
-                <div className="about__stat-value">{stat.value}</div>
-                <div className="about__stat-label">{stat.label}</div>
+                <div className="about__stat-value">{d(`stats.${i}.value`) || stat.value}</div>
+                <div className="about__stat-label">{d(`stats.${i}.label`) || stat.label}</div>
               </div>
             );
           })}
@@ -441,8 +436,8 @@ export default function AboutSection() {
 
         {/* Timeline */}
         <div className="about__timeline" ref={timelineRef}>
-          <h2 className="about__title about__fade-in-up" style={{ textAlign: 'center', marginBottom: 'var(--space-3xl)' }}>
-            My <span className="text-gradient">Journey</span>
+        <h2 className="about__title about__fade-in-up" style={{ textAlign: 'center', marginBottom: 'var(--space-3xl)' }}>
+            {t('journey_title_1')} <span className="text-gradient">{t('journey_accent')}</span>
           </h2>
 
           <div style={{ position: 'relative' }}>
@@ -455,8 +450,8 @@ export default function AboutSection() {
                   <div className={`about__timeline-content ${i % 2 === 0 ? 'about__timeline-content--left' : 'about__timeline-content--right'}`}>
                     <div className="about__timeline-parallax">
                       <div className="about__timeline-card">
-                        <h4 className="about__timeline-title">{item.title}</h4>
-                        <p className="about__timeline-desc">{item.description}</p>
+                        <h4 className="about__timeline-title">{d(`timeline.${i}.title`) || item.title}</h4>
+                        <p className="about__timeline-desc">{d(`timeline.${i}.description`) || item.description}</p>
                       </div>
                     </div>
                   </div>
@@ -473,7 +468,7 @@ export default function AboutSection() {
         {/* Skills */}
         <div className="about__skills" ref={skillsRef}>
           <h2 className="about__title about__fade-in-up" style={{ textAlign: 'center', marginBottom: 'var(--space-3xl)' }}>
-            My <span className="text-gradient">Skills</span>
+            {t('skills_title_1')} <span className="text-gradient">{t('skills_accent')}</span>
           </h2>
 
           <div className="about__skills-marquee">

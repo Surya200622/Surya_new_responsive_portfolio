@@ -3,6 +3,7 @@ import { useRef, useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Code2, Database, PenTool, Wrench } from 'lucide-react';
 import { SKILLS } from '../data/projectsData';
+import { useTranslations } from 'next-intl';
 import './SkillsSection.css';
 
 const ICON_MAP = {
@@ -13,6 +14,7 @@ const ICON_MAP = {
 };
 
 export default function SkillsSection() {
+  const t = useTranslations('Skills');
   // Group skills by category
   const categories = useMemo(() => {
     const grouped = SKILLS.reduce((acc, skill) => {
@@ -44,7 +46,7 @@ export default function SkillsSection() {
           viewport={{ once: true }}
         >
           <span className="skills__label-line" />
-          Expertise
+          {t('section_label')}
         </motion.div>
         
         <motion.h2
@@ -54,7 +56,7 @@ export default function SkillsSection() {
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
         >
-          Technical <span className="text-gradient">Arsenal</span>
+          {t('title_1')} <span className="text-gradient">{t('title_accent')}</span>
         </motion.h2>
         
         <motion.p
@@ -64,7 +66,7 @@ export default function SkillsSection() {
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
         >
-          A comprehensive toolkit honed through building scalable applications and premium user experiences.
+          {t('subtitle')}
         </motion.p>
       </div>
 
@@ -80,9 +82,9 @@ export default function SkillsSection() {
                   </div>
                   <div>
                     <h3 className="skills__category-name" style={{ textTransform: 'capitalize' }}>
-                      {category.name}
+                      {t(`categories.${category.name}`) || category.name}
                     </h3>
-                    <span className="skills__category-count">{category.count} Technologies</span>
+                    <span className="skills__category-count">{category.count} {t('technologies')}</span>
                   </div>
                 </div>
                 

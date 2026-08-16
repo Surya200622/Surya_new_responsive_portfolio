@@ -4,11 +4,13 @@ import { motion } from 'framer-motion';
 import { Mail, MessageSquare, MapPin, Send, CheckCircle, Globe, ExternalLink, Link2 } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaInstagram, FaFacebook, FaYoutube } from 'react-icons/fa';
 import { SOCIAL_LINKS, CONTACT_INFO } from '../data/projectsData';
+import { useTranslations } from 'next-intl';
 import './ContactSection.css';
 
 const ICON_MAP = { Github: FaGithub, Linkedin: FaLinkedin, Instagram: FaInstagram, Facebook: FaFacebook, Youtube: FaYoutube };
 
 export default function ContactSection() {
+  const t = useTranslations('Contact');
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', project: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,7 +61,7 @@ export default function ContactSection() {
           viewport={{ once: true }}
         >
           <span className="about__section-label-line" />
-          Contact
+          {t('section_label')}
         </motion.div>
 
         <motion.h2
@@ -69,7 +71,7 @@ export default function ContactSection() {
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
         >
-          Let's Build Something <span className="text-gradient">Amazing</span>
+          {t('title_1')} <span className="text-gradient">{t('title_accent')}</span>
         </motion.h2>
 
         <motion.p
@@ -79,7 +81,7 @@ export default function ContactSection() {
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
         >
-          Ready to start your project? Get in touch and let's make it happen.
+          {t('subtitle')}
         </motion.p>
 
         <div className="contact__grid">
@@ -99,9 +101,9 @@ export default function ContactSection() {
                 animate={{ opacity: 1, scale: 1 }}
               >
                 <CheckCircle size={48} style={{ marginBottom: '1rem' }} />
-                <h3>Message Sent!</h3>
+                <h3>{t('success_title')}</h3>
                 <p style={{ color: 'var(--color-text-secondary)', marginTop: '0.5rem' }}>
-                  Thank you for reaching out. I'll get back to you within 24 hours.
+                  {t('success_msg')}
                 </p>
               </motion.div>
             ) : (
@@ -110,7 +112,7 @@ export default function ContactSection() {
                   <input
                     className="contact__input"
                     type="text"
-                    placeholder="Your Name"
+                    placeholder={t('name_placeholder')}
                     value={formData.name}
                     onChange={(e) => handleChange('name', e.target.value)}
                     required
@@ -121,7 +123,7 @@ export default function ContactSection() {
                   <input
                     className="contact__input"
                     type="email"
-                    placeholder="Email Address"
+                    placeholder={t('email_placeholder')}
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
                     required
@@ -132,7 +134,7 @@ export default function ContactSection() {
                   <input
                     className="contact__input"
                     type="tel"
-                    placeholder="Phone Number"
+                    placeholder={t('phone_placeholder')}
                     value={formData.phone}
                     onChange={(e) => handleChange('phone', e.target.value)}
                     id="contact-phone"
@@ -142,7 +144,7 @@ export default function ContactSection() {
                   <input
                     className="contact__input"
                     type="text"
-                    placeholder="Project Type (e.g., E-commerce Website)"
+                    placeholder={t('project_placeholder')}
                     value={formData.project}
                     onChange={(e) => handleChange('project', e.target.value)}
                     id="contact-project"
@@ -151,7 +153,7 @@ export default function ContactSection() {
                 <div className="contact__field">
                   <textarea
                     className="contact__textarea"
-                    placeholder="Tell me about your project..."
+                    placeholder={t('message_placeholder')}
                     value={formData.message}
                     onChange={(e) => handleChange('message', e.target.value)}
                     required
@@ -161,7 +163,7 @@ export default function ContactSection() {
                 {error && <p style={{ color: '#ff4d4d', marginBottom: '1rem', fontSize: '14px', textAlign: 'center' }}>{error}</p>}
                 <button className="contact__submit" type="submit" disabled={isSubmitting} style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}>
                   <Send size={16} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle' }} />
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                  {isSubmitting ? t('sending') : t('send')}
                 </button>
               </>
             )}
@@ -192,21 +194,21 @@ export default function ContactSection() {
               <div className="contact__detail-item">
                 <div className="contact__detail-icon"><Mail size={20} /></div>
                 <div>
-                  <div className="contact__detail-label">Email</div>
+                  <div className="contact__detail-label">{t('email_label')}</div>
                   <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${CONTACT_INFO.email}`} target="_blank" rel="noopener noreferrer" className="contact__detail-text">{CONTACT_INFO.email}</a>
                 </div>
               </div>
               <div className="contact__detail-item">
                 <div className="contact__detail-icon"><MessageSquare size={20} /></div>
                 <div>
-                  <div className="contact__detail-label">WhatsApp</div>
+                  <div className="contact__detail-label">{t('whatsapp_label')}</div>
                   <div className="contact__detail-text">{CONTACT_INFO.whatsapp}</div>
                 </div>
               </div>
               <div className="contact__detail-item">
                 <div className="contact__detail-icon"><MapPin size={20} /></div>
                 <div>
-                  <div className="contact__detail-label">Location</div>
+                  <div className="contact__detail-label">{t('location_label')}</div>
                   <div className="contact__detail-text">{CONTACT_INFO.location}</div>
                 </div>
               </div>
