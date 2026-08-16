@@ -1,0 +1,31 @@
+{
+  "Navbar": {
+    "home": "होम",
+    "about": "परिचय",
+    "resume": "रिज्यूमे",
+    "projects": "प्रोजेक्ट्स",
+    "calculator": "कैलकुलेटर",
+    "reviews": "समीक्षाएँ",
+    "blog": "ब्लॉग",
+    "contact": "संपर्क करें",
+    "clientLogin": "लॉगिन",
+    "admin": "एडमिन",
+    "dashboard": "डैशबोर्ड",
+    "accountSettings": "सेटिंग्स",
+    "signOut": "लॉग आउट"
+  },
+  "Hero": {
+    "role": "फुल-स्टैक पायथन डेवलपर",
+    "title_1": "मैं बनाता हूँ",
+    "title_accent": "डिजिटल",
+    "title_2": "अनुभव",
+    "subtitle": "फुल-स्टैक पायथन डेवलपर जो Django और React के साथ आधुनिक, सुपर-फास्ट वेब समाधान बनाता है। कोयंबटूर, भारत में स्थित।",
+    "available": "काम के लिए उपलब्ध",
+    "meet_jarvis": "✨ Jarvis AI से मिलें",
+    "download_resume": "रिज्यूमे डाउनलोड करें",
+    "get_in_touch": "संपर्क करें",
+    "stat_projects": "प्रोजेक्ट्स",
+    "stat_trained": "प्रशिक्षित",
+    "stat_tech": "तकनीकें"
+  }
+}

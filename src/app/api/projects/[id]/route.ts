@@ -38,9 +38,48 @@ export async function PATCH(
       updateData.startedAt = new Date();
     }
 
+    // Check if we need to send a review request email
+    let clientEmail = '';
+    let clientName = '';
+    if (body.status === 'Completed' && project.status !== 'Completed' && project.clientId) {
+      const { users } = await import('@/db/schema');
+      const clientResults = await db.select().from(users).where(eq(users.id, project.clientId));
+      if (clientResults.length > 0) {
+        clientEmail = clientResults[0].email;
+        clientName = clientResults[0].name || 'Client';
+      }
+    }
+
     await db.update(projects)
       .set(updateData)
       .where(eq(projects.id, id));
+
+    // Send the email if applicable
+    if (clientEmail && process.env.RESEND_API_KEY) {
+      const { Resend } = await import('resend');
+      const { getBrandEmailTemplate } = await import('@/lib/email-template');
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev';
+      const reviewUrl = `${appUrl}/dashboard/reviews`;
+
+      const emailContent = `
+        <p>Hi ${clientName},</p>
+        <p>Your project "<strong>${project.title}</strong>" has been marked as completed!</p>
+        <p>It was a pleasure working with you. If you have a moment, I would deeply appreciate it if you could leave a review for my portfolio.</p>
+        <div style="text-align: center; margin-top: 30px;">
+          <a href="${reviewUrl}" style="background-color: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Leave a Review</a>
+        </div>
+        <p style="margin-top: 30px;">Best regards,<br/>Surya CS</p>
+      `;
+
+      await resend.emails.send({
+        from: `Surya CS <${process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'}>`,
+        to: clientEmail,
+        subject: 'Project Completed - Your feedback is appreciated!',
+        html: getBrandEmailTemplate('Project Completed', emailContent, 'Review Request'),
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

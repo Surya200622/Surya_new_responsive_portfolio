@@ -125,6 +125,14 @@ export const reviews = sqliteTable('reviews', {
   role: text('role'),
   content: text('content').notNull(),
   rating: integer('rating').notNull(),
+  isApproved: integer('is_approved', { mode: 'boolean' }).default(false),
+  createdAt: integer('created_at', { mode: 'timestamp_ms' }),
+});
+
+export const subscribers = sqliteTable('subscribers', {
+  id: text('id').notNull().primaryKey(),
+  email: text('email').notNull().unique(),
+  status: text('status').default('active'),
   createdAt: integer('created_at', { mode: 'timestamp_ms' }),
 });
 
@@ -189,4 +197,13 @@ export const pendingRegistrations = sqliteTable('pending_registrations', {
   otp: text('otp').notNull(),
   expiresAt: integer('expires_at', { mode: 'timestamp_ms' }).notNull(),
 });
+
+export const pageViews = sqliteTable('page_views', {
+  id: text('id').notNull().primaryKey(),
+  path: text('path').notNull(),
+  userAgent: text('user_agent'),
+  ipHash: text('ip_hash'), // Hashed for privacy
+  timestamp: integer('timestamp', { mode: 'timestamp_ms' }),
+});
+
 

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import LegalThemeToggle from '@/components/LegalThemeToggle';
 import '../legal.css';
 
 export const metadata: Metadata = {
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="legal-page" data-theme="dark">
+    <div className="legal-page">
       {/* Decorative background orbs */}
       <div
         className="gradient-orb gradient-orb--accent"
@@ -21,7 +22,9 @@ export default function PrivacyPolicyPage() {
         style={{ width: 300, height: 300, bottom: '10%', left: '-8%' }}
       />
 
-      <div className="legal-container">
+      <div className="legal-container relative">
+        <LegalThemeToggle />
+        
         {/* Back navigation */}
         <Link href="/" className="legal-back">
           <svg

@@ -302,6 +302,8 @@ export default function ProtectedLayout({
     { label: 'Projects', href: '/admin/projects', icon: Folder },
     { label: 'Offers', href: '/admin/offers', icon: Tag },
     { label: 'Calculator', href: '/admin/calculator', icon: Calculator },
+    { label: 'Testimonials', href: '/admin/testimonials', icon: Star },
+    { label: 'Subscribers', href: '/admin/subscribers', icon: Mail },
   ] : [
     { label: 'Dashboard', href: '/dashboard', icon: Home },
     { label: 'Messages', href: '/dashboard/messages', icon: MessageSquare },

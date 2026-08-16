@@ -112,6 +112,7 @@
 
   --color-glass-border: rgba(255, 255, 255, 0.1);
   --color-glass-shadow: rgba(0, 0, 0, 0.4);
+  --color-glass-inset: rgba(255, 255, 255, 0.06);
 
   --color-gradient-start: #0a0a12;
   --color-gradient-mid: #0e0e1a;
@@ -157,6 +158,7 @@
 
   --color-glass-border: rgba(0, 0, 0, 0.08);
   --color-glass-shadow: rgba(0, 0, 0, 0.1);
+  --color-glass-inset: rgba(255, 255, 255, 0.5);
 
   --color-gradient-start: #faf8f5;
   --color-gradient-mid: #f5f2ec;
@@ -379,7 +381,7 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-glass-border);
   box-shadow: 0 8px 32px var(--color-glass-shadow),
-              inset 0 1px 0 rgba(255, 255, 255, 0.06);
+              inset 0 1px 0 var(--color-glass-inset);
   padding: var(--space-xl);
   position: relative;
   overflow: hidden;
@@ -394,9 +396,9 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: inherit;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.06) 0%,
+    var(--color-glass-inset) 0%,
     transparent 50%,
-    rgba(255, 255, 255, 0.02) 100%
+    rgba(128, 128, 128, 0.02) 100%
   );
   pointer-events: none;
   z-index: -1;

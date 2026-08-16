@@ -5,7 +5,20 @@ import ChatbotWidget from "@/components/ChatbotWidget";
 import MagicCursor from "@/components/MagicCursor";
 import Providers from "@/components/Providers";
 import CookieBanner from "@/components/CookieBanner";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 import { PROJECTS } from '../data/projectsData';
+
+// ... (Metadata omitted for brevity in thought block, but will use replace_file_content with proper line numbers)
+
+      <body>
+        <Providers>
+          {children}
+          <ChatbotWidget />
+          <MagicCursor />
+          <CookieBanner />
+          <AnalyticsTracker />
+        </Providers>
+      </body>
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://suryacs.is-a.dev'),
@@ -43,13 +56,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en" data-theme="light" suppressHydrationWarning>
+    <html lang={locale} data-theme="light" suppressHydrationWarning>
       <head>
         {/* Theme initialization — runs before paint to prevent flash */}
         <script
@@ -125,12 +144,15 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Providers>
-          {children}
-          <ChatbotWidget />
-          <MagicCursor />
-          <CookieBanner />
-        </Providers>
+        <NextIntlClientProvider messages={messages}>
+          <Providers>
+            {children}
+            <ChatbotWidget />
+            <MagicCursor />
+            <CookieBanner />
+            <AnalyticsTracker />
+          </Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

@@ -3,6 +3,8 @@ import { Sun, Moon, Menu, X, LogOut, Settings, LayoutDashboard } from 'lucide-re
 import { useRouter, usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
+import LanguageSwitcher from './LanguageSwitcher';
 import './Navbar.css';
 
 const NAV_LINKS = [
@@ -28,6 +30,7 @@ export default function Navbar({ theme, toggleTheme }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const [calculatorEnabled, setCalculatorEnabled] = useState(true);
+  const t = useTranslations('Navbar');
 
   // Fetch calculator visibility setting
   useEffect(() => {
@@ -150,7 +153,7 @@ export default function Navbar({ theme, toggleTheme }) {
                     rel="noopener noreferrer"
                     tabIndex={0}
                   >
-                    {link.label}
+                    {t(link.label.toLowerCase())}
                   </a>
                 );
               }
@@ -172,13 +175,15 @@ export default function Navbar({ theme, toggleTheme }) {
                   tabIndex={0}
                   style={{ position: 'relative' }}
                 >
-                  {link.label}
+                  {t(link.label.toLowerCase())}
                 </a>
               );
             })}
           </div>
 
-          <div className="navbar__actions">
+          <div className="navbar__actions flex items-center gap-2 sm:gap-4">
+            <LanguageSwitcher />
+            
             {user ? (
               <div className="relative group shrink-0" onMouseEnter={() => setDropdownOpen(true)} onMouseLeave={() => setDropdownOpen(false)}>
                 <button 
@@ -195,10 +200,10 @@ export default function Navbar({ theme, toggleTheme }) {
                 </button>
                 <div className={`absolute right-0 top-full mt-2 w-[calc(100vw-24px)] sm:w-48 max-w-[200px] bg-white border border-gray-200 rounded-xl shadow-xl transition-all ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'} flex flex-col overflow-hidden z-[60]`}>
                   <a href={profile?.role === 'admin' ? '/admin' : '/dashboard'} className="flex items-center gap-2 px-4 py-3 hover:bg-gray-50 text-gray-800 font-medium text-sm transition-colors border-b border-gray-100">
-                    <LayoutDashboard size={16} /> Dashboard
+                    <LayoutDashboard size={16} /> {profile?.role === 'admin' ? t('admin') : t('dashboard')}
                   </a>
                   <a href="/dashboard?settings=true" className="flex items-center gap-2 px-4 py-3 hover:bg-gray-50 text-gray-800 font-medium text-sm transition-colors border-b border-gray-100">
-                    <Settings size={16} /> Account Settings
+                    <Settings size={16} /> {t('accountSettings')}
                   </a>
                   <button 
                     onClick={async () => {
@@ -206,7 +211,7 @@ export default function Navbar({ theme, toggleTheme }) {
                     }} 
                     className="flex items-center gap-2 px-4 py-3 hover:bg-red-500/10 text-red-500 hover:text-red-400 text-sm text-left transition-colors"
                   >
-                    <LogOut size={16} /> Sign Out
+                    <LogOut size={16} /> {t('signOut')}
                   </button>
                 </div>
               </div>
@@ -216,7 +221,7 @@ export default function Navbar({ theme, toggleTheme }) {
                 className="text-xs sm:text-sm font-semibold text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all shadow-md hover:shadow-lg"
                 style={{ background: 'linear-gradient(90deg, #6366f1, #a855f7)', animation: 'hue-shift 8s linear infinite' }}
               >
-                Login
+                {t('clientLogin')}
               </a>
             )}
             
@@ -264,7 +269,7 @@ export default function Navbar({ theme, toggleTheme }) {
                   tabIndex={0}
                   onClick={() => setMobileOpen(false)}
                 >
-                  {link.label}
+                  {t(link.label.toLowerCase())}
                 </a>
               );
             }
@@ -286,17 +291,17 @@ export default function Navbar({ theme, toggleTheme }) {
                 style={isActive ? { color: 'var(--color-accent-primary)' } : {}}
                 tabIndex={0}
               >
-                {link.label}
+                {t(link.label.toLowerCase())}
               </a>
             );
           })}
           {user ? (
-            <>
+              <>
               <a href={profile?.role === 'admin' ? '/admin' : '/dashboard'} className="navbar__mobile-link text-[var(--color-accent-primary)] flex items-center gap-2">
-                <LayoutDashboard size={18} /> Dashboard
+                <LayoutDashboard size={18} /> {profile?.role === 'admin' ? t('admin') : t('dashboard')}
               </a>
               <a href="/dashboard?settings=true" className="navbar__mobile-link text-[var(--color-text-primary)] flex items-center gap-2">
-                <Settings size={18} /> Account Settings
+                <Settings size={18} /> {t('accountSettings')}
               </a>
               <button 
                 onClick={async () => {
@@ -304,7 +309,7 @@ export default function Navbar({ theme, toggleTheme }) {
                 }} 
                 className="navbar__mobile-link text-red-500 flex items-center gap-2 mt-4 text-left w-full"
               >
-                <LogOut size={18} /> Sign Out
+                <LogOut size={18} /> {t('signOut')}
               </button>
             </>
           ) : (
@@ -313,7 +318,7 @@ export default function Navbar({ theme, toggleTheme }) {
               className="navbar__mobile-link text-[var(--color-accent-primary)] mt-4"
               tabIndex={0}
             >
-              Client Portal
+              {t('clientLogin')}
             </a>
           )}
         </div>

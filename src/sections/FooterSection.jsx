@@ -93,24 +93,74 @@ export default function FooterSection() {
             })}
           </div>
 
-          <div>
-            <div className="footer__links-title" style={{ marginBottom: '0.75rem' }}>Follow Me</div>
-            <div className="footer__socials">
-              {SOCIAL_LINKS.map(link => {
-                const IconComp = ICON_MAP[link.icon] || Globe;
-                return (
-                  <a
-                    key={link.name}
-                    className="footer__social-link"
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={link.name}
-                  >
-                    <IconComp size={18} />
-                  </a>
-                );
-              })}
+          <div className="footer__newsletter-socials" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            <div>
+              <div className="footer__links-title" style={{ marginBottom: '0.75rem' }}>Subscribe to Newsletter</div>
+              <p style={{ fontSize: '0.875rem', color: 'var(--color-text-muted)', marginBottom: '1rem' }}>
+                Get updates on my latest projects and articles.
+              </p>
+              <form 
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  const form = e.target;
+                  const email = form.email.value;
+                  const btn = form.querySelector('button');
+                  btn.textContent = '...';
+                  btn.disabled = true;
+                  try {
+                    const res = await fetch('/api/newsletter/subscribe', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ email })
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                      form.innerHTML = '<p style="color: #22c55e; font-size: 0.875rem;">Successfully subscribed!</p>';
+                    } else {
+                      alert(data.message || 'Error subscribing');
+                      btn.textContent = 'Subscribe';
+                      btn.disabled = false;
+                    }
+                  } catch (err) {
+                    alert('Error subscribing');
+                    btn.textContent = 'Subscribe';
+                    btn.disabled = false;
+                  }
+                }}
+                style={{ display: 'flex', gap: '0.5rem' }}
+              >
+                <input 
+                  type="email" 
+                  name="email"
+                  placeholder="Enter your email" 
+                  required 
+                  style={{ flex: 1, padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', background: 'var(--color-bg-primary)', color: 'var(--color-text-primary)', fontSize: '0.875rem' }}
+                />
+                <button type="submit" className="btn btn--primary" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}>
+                  Subscribe
+                </button>
+              </form>
+            </div>
+
+            <div>
+              <div className="footer__links-title" style={{ marginBottom: '0.75rem' }}>Follow Me</div>
+              <div className="footer__socials">
+                {SOCIAL_LINKS.map(link => {
+                  const IconComp = ICON_MAP[link.icon] || Globe;
+                  return (
+                    <a
+                      key={link.name}
+                      className="footer__social-link"
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={link.name}
+                    >
+                      <IconComp size={18} />
+                    </a>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>

@@ -1,0 +1,31 @@
+{
+  "Navbar": {
+    "home": "Home",
+    "about": "About",
+    "resume": "Resume",
+    "projects": "Projects",
+    "calculator": "Calculator",
+    "reviews": "Reviews",
+    "blog": "Blog",
+    "contact": "Contact",
+    "clientLogin": "Client Login",
+    "admin": "Admin",
+    "dashboard": "Dashboard",
+    "accountSettings": "Account Settings",
+    "signOut": "Sign Out"
+  },
+  "Hero": {
+    "role": "Full-Stack Python Developer",
+    "title_1": "I Craft",
+    "title_accent": "Digital",
+    "title_2": "Experiences",
+    "subtitle": "Full-Stack Python Developer crafting modern, blazing-fast web solutions with Django & React. Based in Coimbatore, India.",
+    "available": "Available for Hire",
+    "meet_jarvis": "✨ Meet Jarvis AI",
+    "download_resume": "Download Resume",
+    "get_in_touch": "Get In Touch",
+    "stat_projects": "Projects",
+    "stat_trained": "Trained",
+    "stat_tech": "Technologies"
+  }
+}

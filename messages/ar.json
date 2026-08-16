@@ -1,0 +1,31 @@
+{
+  "Navbar": {
+    "home": "الرئيسية",
+    "about": "نبذة",
+    "resume": "السيرة الذاتية",
+    "projects": "المشاريع",
+    "calculator": "الحاسبة",
+    "reviews": "التقييمات",
+    "blog": "المدونة",
+    "contact": "اتصل بي",
+    "clientLogin": "تسجيل دخول",
+    "admin": "المسؤول",
+    "dashboard": "لوحة القيادة",
+    "accountSettings": "إعدادات",
+    "signOut": "تسجيل الخروج"
+  },
+  "Hero": {
+    "role": "مطور بايثون متكامل",
+    "title_1": "أنا أصنع",
+    "title_accent": "تجارب",
+    "title_2": "رقمية",
+    "subtitle": "مطور بايثون متكامل يصنع حلول ويب حديثة وسريعة باستخدام Django و React. مقري في كويمباتور، الهند.",
+    "available": "متاح للتوظيف",
+    "meet_jarvis": "✨ تعرف على Jarvis AI",
+    "download_resume": "تحميل السيرة الذاتية",
+    "get_in_touch": "تواصل معي",
+    "stat_projects": "مشاريع",
+    "stat_trained": "تدريب",
+    "stat_tech": "تقنيات"
+  }
+}

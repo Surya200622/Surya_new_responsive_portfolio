@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Users, Briefcase, MessageSquare, IndianRupee, Calculator, Loader2, Megaphone, Save } from 'lucide-react';
+import { Users, Briefcase, MessageSquare, IndianRupee, Calculator, Loader2, Megaphone, Save, Mail, BarChart3 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface Client {
   id: string;
@@ -22,6 +23,8 @@ export default function AdminOverviewPage() {
   const [projectCount, setProjectCount] = useState(0);
   const [unreadCount, setUnreadCount] = useState(0);
   const [revenue, setRevenue] = useState(0);
+  const [subscriberCount, setSubscriberCount] = useState(0);
+  const [pageViewsData, setPageViewsData] = useState<any[]>([]);
   const [recentClients, setRecentClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [calculatorEnabled, setCalculatorEnabled] = useState(true);
@@ -57,6 +60,8 @@ export default function AdminOverviewPage() {
           setProjectCount(data.projectCount || 0);
           setUnreadCount(data.unreadCount || 0);
           setRevenue(data.revenue || 0);
+          setSubscriberCount(data.subscriberCount || 0);
+          setPageViewsData(data.pageViewsData || []);
           setRecentClients(data.recentClients || []);
         }
 
@@ -137,6 +142,53 @@ export default function AdminOverviewPage() {
             <p className="text-sm text-[var(--color-text-secondary)] font-medium">Revenue (Est)</p>
           </div>
           <h3 className="text-3xl font-display font-bold text-[var(--color-text-primary)]">₹{revenue.toLocaleString('en-IN')}</h3>
+        </div>
+
+        <div className="glass-card-strong p-6 rounded-2xl border border-[var(--color-glass-border)]">
+          <div className="flex items-center gap-4 mb-2">
+            <div className="w-10 h-10 rounded-xl bg-pink-500/20 flex items-center justify-center">
+              <Mail className="w-5 h-5 text-pink-400" />
+            </div>
+            <p className="text-sm text-[var(--color-text-secondary)] font-medium">Subscribers</p>
+          </div>
+          <h3 className="text-3xl font-display font-bold text-[var(--color-text-primary)]">{subscriberCount}</h3>
+        </div>
+
+        <div className="glass-card-strong p-6 rounded-2xl border border-[var(--color-glass-border)]">
+          <div className="flex items-center gap-4 mb-2">
+            <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+              <BarChart3 className="w-5 h-5 text-cyan-400" />
+            </div>
+            <p className="text-sm text-[var(--color-text-secondary)] font-medium">Page Views</p>
+          </div>
+          <h3 className="text-3xl font-display font-bold text-[var(--color-text-primary)]">
+            {pageViewsData.reduce((acc, curr) => acc + curr.views, 0)}
+          </h3>
+        </div>
+      </div>
+
+      {/* Analytics Chart */}
+      <div className="glass-card-strong p-6 rounded-2xl border border-[var(--color-glass-border)]">
+        <h2 className="text-lg font-display font-bold text-[var(--color-text-primary)] mb-5">Page Views (Last 30 Days)</h2>
+        <div className="h-[300px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={pageViewsData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#f97316" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#f97316" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-glass-border)" vertical={false} />
+              <XAxis dataKey="date" stroke="var(--color-text-muted)" fontSize={12} tickLine={false} axisLine={false} />
+              <YAxis stroke="var(--color-text-muted)" fontSize={12} tickLine={false} axisLine={false} />
+              <Tooltip 
+                contentStyle={{ backgroundColor: 'var(--color-bg-primary)', border: '1px solid var(--color-glass-border)', borderRadius: '8px' }}
+                itemStyle={{ color: 'var(--color-accent-primary)' }}
+              />
+              <Area type="monotone" dataKey="views" stroke="#f97316" strokeWidth={3} fillOpacity={1} fill="url(#colorViews)" />
+            </AreaChart>
+          </ResponsiveContainer>
         </div>
       </div>
 

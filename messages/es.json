@@ -1,0 +1,31 @@
+{
+  "Navbar": {
+    "home": "Inicio",
+    "about": "Sobre mí",
+    "resume": "Currículum",
+    "projects": "Proyectos",
+    "calculator": "Calculadora",
+    "reviews": "Reseñas",
+    "blog": "Blog",
+    "contact": "Contacto",
+    "clientLogin": "Acceso Clientes",
+    "admin": "Admin",
+    "dashboard": "Panel",
+    "accountSettings": "Configuración",
+    "signOut": "Cerrar sesión"
+  },
+  "Hero": {
+    "role": "Desarrollador Python Full-Stack",
+    "title_1": "Creo",
+    "title_accent": "Experiencias",
+    "title_2": "Digitales",
+    "subtitle": "Desarrollador Python Full-Stack creando soluciones web modernas y ultrarrápidas con Django y React. Con base en Coimbatore, India.",
+    "available": "Disponible",
+    "meet_jarvis": "✨ Conoce a Jarvis AI",
+    "download_resume": "Descargar CV",
+    "get_in_touch": "Contáctame",
+    "stat_projects": "Proyectos",
+    "stat_trained": "Formado por",
+    "stat_tech": "Tecnologías"
+  }
+}
