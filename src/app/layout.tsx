@@ -8,18 +8,6 @@ import CookieBanner from "@/components/CookieBanner";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import { PROJECTS } from '../data/projectsData';
 
-// ... (Metadata omitted for brevity in thought block, but will use replace_file_content with proper line numbers)
-
-      <body>
-        <Providers>
-          {children}
-          <ChatbotWidget />
-          <MagicCursor />
-          <CookieBanner />
-          <AnalyticsTracker />
-        </Providers>
-      </body>
-
 export const metadata: Metadata = {
   metadataBase: new URL('https://suryacs.is-a.dev'),
   applicationName: 'Surya CS',
@@ -41,7 +29,7 @@ export const metadata: Metadata = {
     title: 'Surya CS | Full-Stack Python Developer',
     description:
       'Portfolio of Surya CS, a Full-Stack Python Developer specializing in Django, React, and modern web solutions.',
-    images: ['/images/surya-portrait.jpg'],
+    images: ['/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png'],
     locale: 'en_IN',
   },
   twitter: {
@@ -49,7 +37,7 @@ export const metadata: Metadata = {
     title: 'Surya CS | Full-Stack Python Developer',
     description:
       'Full-Stack Python Developer specializing in Django & React. Based in Coimbatore, India.',
-    images: ['/images/surya-portrait.jpg'],
+    images: ['/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png'],
   },
   verification: {
     google: ['FXp4jqzCy6bxO6ThBXz34F29BgX2w0qgt9v4tONOfec'],
@@ -129,6 +117,29 @@ export default async function RootLayout({
                   'https://suryacs.is-a.dev',
                   'https://www.instagram.com/suryacs.is_a.dev/'
                 ],
+              },
+              {
+                '@context': 'https://schema.org',
+                '@type': 'LocalBusiness',
+                '@id': 'https://suryacs.is-a.dev/#localbusiness',
+                name: 'Suryacs Web Solutions',
+                description: 'Full-Stack Python Developer specializing in Django, React, and modern web solutions.',
+                url: 'https://suryacs.is-a.dev',
+                image: 'https://suryacs.is-a.dev/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png',
+                telephone: '+918220443165',
+                address: {
+                  '@type': 'PostalAddress',
+                  streetAddress: '137, Bakthavachalam street, Rathinapuri, Tatabad',
+                  addressLocality: 'Coimbatore',
+                  addressRegion: 'Tamil Nadu',
+                  postalCode: '641027',
+                  addressCountry: 'India',
+                },
+                priceRange: '$$',
+                founder: {
+                  '@type': 'Person',
+                  name: 'Surya CS'
+                }
               },
               ...PROJECTS.map((project) => ({
                 '@context': 'https://schema.org',

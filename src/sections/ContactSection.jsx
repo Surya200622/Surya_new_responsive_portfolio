@@ -177,7 +177,7 @@ export default function ContactSection() {
           >
             <div className="contact__map">
               <iframe 
-                src="https://maps.google.com/maps?q=Surya%20webdev,%20137,%20Bakthavachalam%20street,%20Rathinapuri,%20Tatabad,%20Coimbatore,%20Tamil%20Nadu%20641027&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                src="https://maps.google.com/maps?q=Suryacs%20Web%20Solutions,%20137,%20Bakthavachalam%20street,%20Rathinapuri,%20Tatabad,%20Coimbatore,%20Tamil%20Nadu%20641027&t=&z=15&ie=UTF8&iwloc=&output=embed"
                 width="100%" 
                 height="100%" 
                 style={{ border: 0 }} 

@@ -29,7 +29,7 @@ export default async function ClientMessagesPage() {
   const adminProfile = adminProfileData[0];
   const adminId = adminProfile?.id || '';
   const adminName = adminProfile?.name || 'Surya CS';
-  const adminAvatar = adminProfile?.image || '/images/surya-portrait.jpg';
+  const adminAvatar = adminProfile?.image || '/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png';
 
   // Fetch client projects
   const clientProjectsData = await db.select({

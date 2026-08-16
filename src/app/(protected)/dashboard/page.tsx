@@ -171,7 +171,7 @@ export default function DashboardOverview() {
                     )}
                     <div className="w-10 h-10 rounded-full bg-[var(--color-accent-primary)] p-[1px] shrink-0">
                       <div className="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center">
-                        <img src="/images/surya-portrait.jpg" alt="Surya" className="w-full h-full rounded-full object-cover" />
+                        <img src="/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png" alt="Surya" className="w-full h-full rounded-full object-cover" />
                       </div>
                     </div>
                     <div>

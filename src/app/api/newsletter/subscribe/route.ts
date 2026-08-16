@@ -47,7 +47,7 @@ export async function POST(req: Request) {
       `;
 
       await resend.emails.send({
-        from: \`Newsletter <\${process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'}>\`,
+        from: `Newsletter <${process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'}>`,
         to: email,
         subject: 'Welcome to the Newsletter!',
         html: getBrandEmailTemplate('Welcome to the Newsletter!', emailContent, 'Welcome!'),
