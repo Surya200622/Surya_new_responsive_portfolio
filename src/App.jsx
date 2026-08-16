@@ -84,7 +84,7 @@ export default function App() {
           }
         });
       },
-      { threshold: 0.5 }
+      { threshold: 0, rootMargin: '-30% 0px -60% 0px' }
     );
 
     const sections = document.querySelectorAll('section[id]');

@@ -92,7 +92,7 @@ export default function Navbar({ theme, toggleTheme }) {
           }
         });
       },
-      { threshold: 0.1, rootMargin: '-20% 0px -40% 0px' }
+      { threshold: 0, rootMargin: '-20% 0px -60% 0px' }
     );
 
     setTimeout(() => {
