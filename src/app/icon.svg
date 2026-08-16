@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="100%" height="100%">
+  <defs>
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f97316" />
+      <stop offset="100%" stop-color="#fb923c" />
+    </linearGradient>
+  </defs>
+  
+  <g transform="translate(3, 0)">
+    <!-- Hexagon base: solid white background inside so it pops in dark mode search results -->
+    <path d="M22,0 L44,12.5 L44,37.5 L22,50 L0,37.5 L0,12.5 Z" fill="#ffffff" stroke="url(#primaryGrad)" stroke-width="2" />
+    
+    <!-- Stylized 'S' representing Surya and Code -->
+    <path d="M28,14 C28,14 16,14 16,22 C16,28 28,28 28,34 C28,40 16,40 16,40" fill="none" stroke="#f97316" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- Spark / Magic Star -->
+    <path d="M34,6 L36,11 L41,13 L36,15 L34,20 L32,15 L27,13 L32,11 Z" fill="url(#primaryGrad)"/>
+  </g>
+</svg>
