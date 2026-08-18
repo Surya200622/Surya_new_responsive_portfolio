@@ -9,7 +9,7 @@ const projectSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   category: z.string().min(1, 'Category is required'),
   description: z.string().min(1, 'Description is required'),
-  image: z.string().min(1, 'Image path/URL is required'),
+  image: z.string().optional(),
   tech_array: z.string().min(1, 'Tech stack is required'), // We'll convert comma separated to array
   year: z.string().min(4, 'Year is required'),
   link: z.string().optional(),
@@ -18,6 +18,14 @@ const projectSchema = z.object({
   offers_discount_price: z.union([z.string(), z.number()]).optional(),
   buyable: z.boolean(),
   hide_link: z.boolean(),
+  is_youtube: z.boolean().default(false),
+  youtube_id: z.string().optional(),
+}).refine(data => {
+  if (data.is_youtube) return !!data.youtube_id && data.youtube_id.trim().length > 0;
+  return !!data.image && data.image.trim().length > 0;
+}, {
+  message: "Either Image or YouTube ID is required based on project type",
+  path: ["image"]
 });
 
 type Project = {
@@ -35,6 +43,8 @@ type Project = {
   offersDiscountPrice?: string | number;
   buyable: boolean;
   hideLink: boolean;
+  isYoutube?: boolean;
+  youtubeId?: string;
   createdAt: string;
 };
 
@@ -61,6 +71,8 @@ export default function AdminProjectsPage() {
     offers_discount_price: '',
     buyable: false,
     hide_link: false,
+    is_youtube: false,
+    youtube_id: '',
   });
 
   const fetchProjects = async () => {
@@ -132,12 +144,14 @@ export default function AdminProjectsPage() {
         offers_discount_price: project.offersDiscountPrice?.toString() || '',
         buyable: project.buyable || false,
         hide_link: project.hideLink || false,
+        is_youtube: project.isYoutube || false,
+        youtube_id: project.youtubeId || '',
       });
     } else {
       setEditingId(null);
       setFormData({
         slug: '', title: '', category: '', description: '', image: '', tech_array: '', 
-        year: new Date().getFullYear().toString(), link: '', view_details_url: '', project_price: '', offers_discount_price: '', buyable: false, hide_link: false
+        year: new Date().getFullYear().toString(), link: '', view_details_url: '', project_price: '', offers_discount_price: '', buyable: false, hide_link: false, is_youtube: false, youtube_id: ''
       });
     }
     setShowModal(true);
@@ -476,7 +490,34 @@ export default function AdminProjectsPage() {
                     </div>
                     <span className="text-sm text-[var(--color-text-secondary)]">Hide Link Button</span>
                   </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <div className="relative flex items-center">
+                      <input
+                        type="checkbox"
+                        className="sr-only"
+                        checked={formData.is_youtube}
+                        onChange={e => setFormData({ ...formData, is_youtube: e.target.checked })}
+                      />
+                      <div className={`w-10 h-6 rounded-full transition-colors ${formData.is_youtube ? 'bg-[var(--color-accent-primary)]' : 'bg-[var(--color-bg-secondary)]'}`}>
+                        <div className={`absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition-transform ${formData.is_youtube ? 'translate-x-4' : 'translate-x-0'}`} />
+                      </div>
+                    </div>
+                    <span className="text-sm text-[var(--color-text-secondary)]">Is YouTube Video?</span>
+                  </label>
                 </div>
+
+                {formData.is_youtube && (
+                  <div>
+                    <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">YouTube Video ID</label>
+                    <input
+                      type="text"
+                      className="auth-input px-4"
+                      value={formData.youtube_id}
+                      onChange={e => setFormData({ ...formData, youtube_id: e.target.value })}
+                      placeholder="e.g. yOPAyTTOtho"
+                    />
+                  </div>
+                )}
               </form>
             </div>
 

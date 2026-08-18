@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   description:
     'Portfolio of Surya CS, a Full-Stack Python Developer specializing in Django, React, and modern web solutions. View projects, resume, and contact for freelance work.',
   keywords:
-    'Surya CS, Cssurya, Full Stack Developer, Python Developer, Django, React, Web Development, Coimbatore, Freelance Developer',
+    'Surya CS, Cssurya, Full Stack Developer, Python Developer, Django, React, Web Development, Coimbatore, Freelance Developer, Suryacs web solutions',
   authors: [{ name: 'Surya CS' }],
   creator: 'Surya CS',
   publisher: 'Surya CS',
@@ -29,7 +29,6 @@ export const metadata: Metadata = {
     title: 'Surya CS | Full-Stack Python Developer',
     description:
       'Portfolio of Surya CS, a Full-Stack Python Developer specializing in Django, React, and modern web solutions.',
-    images: ['/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png'],
     locale: 'en_IN',
   },
   twitter: {
@@ -37,7 +36,11 @@ export const metadata: Metadata = {
     title: 'Surya CS | Full-Stack Python Developer',
     description:
       'Full-Stack Python Developer specializing in Django & React. Based in Coimbatore, India.',
-    images: ['/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png'],
+  },
+  icons: {
+    icon: '/icon.svg',
+    shortcut: '/icon.svg',
+    apple: '/icon.svg',
   },
   verification: {
     google: ['FXp4jqzCy6bxO6ThBXz34F29BgX2w0qgt9v4tONOfec'],

@@ -178,7 +178,18 @@ export default function ProjectsSection() {
                     onMouseMove={(e) => handleCardMouse(e, e.currentTarget)}
                     onMouseLeave={(e) => handleCardLeave(e.currentTarget)}
                   >
-                    {!project.hideLink ? (
+                    {project.isYoutube ? (
+                      <div className="projects__card-inner" style={{ position: 'relative', width: '100%', paddingTop: '56.25%' }}>
+                        <iframe
+                          src={`https://www.youtube.com/embed/${project.youtubeId}?rel=0`}
+                          title={project.title}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '12px', border: 'none' }}
+                        ></iframe>
+                      </div>
+                    ) : !project.hideLink ? (
                       <div className="projects__card-inner" style={{ color: 'inherit' }}>
                         <a href={`/project/${project.slug}`} className="projects__card-image" style={{ display: 'block', textDecoration: 'none' }}>
                           <img src={project.image} alt={project.title} loading="lazy" />
@@ -266,7 +277,9 @@ export default function ProjectsSection() {
             </div>
           </>
         )}
+
       </div>
+
 
       <PaymentModal 
         isOpen={paymentModalState.isOpen}

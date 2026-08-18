@@ -170,6 +170,8 @@ export const portfolioProjects = sqliteTable('portfolio_projects', {
   link: text('link'),
   buyable: integer('buyable', { mode: 'boolean' }).default(false),
   hideLink: integer('hide_link', { mode: 'boolean' }).default(false),
+  isYoutube: integer('is_youtube', { mode: 'boolean' }).default(false),
+  youtubeId: text('youtube_id'),
   projectPrice: text('project_price'),
   offersDiscountPrice: text('offers_discount_price'),
   viewDetailsUrl: text('view_details_url'),

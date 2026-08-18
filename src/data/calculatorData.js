@@ -79,6 +79,22 @@ export const PROJECT_TYPES = [
     baseTimeline: 35,
     description: 'Tailored solution for unique needs',
   },
+  {
+    id: 'promo-graphics',
+    name: 'Promo Videos & Graphics',
+    icon: 'Video',
+    basePrice: 3000,
+    baseTimeline: 7,
+    description: 'Promo videos, posters, logos, and custom graphics',
+  },
+  {
+    id: 'ai-faceswap',
+    name: 'AI Face Swap',
+    icon: 'Sparkles',
+    basePrice: 2000,
+    baseTimeline: 3,
+    description: 'Professional face swap for images and videos',
+  },
 ];
 
 export const FEATURE_COSTS = {

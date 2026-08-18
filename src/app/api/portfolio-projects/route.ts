@@ -37,6 +37,8 @@ export async function POST(request: Request) {
       offersDiscountPrice: body.offers_discount_price?.toString(),
       buyable: body.buyable,
       hideLink: body.hide_link,
+      isYoutube: body.is_youtube,
+      youtubeId: body.youtube_id,
       createdAt: new Date()
     }).returning();
 
