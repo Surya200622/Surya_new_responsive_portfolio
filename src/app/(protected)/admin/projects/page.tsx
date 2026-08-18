@@ -5,13 +5,13 @@ import { Plus, Edit2, Trash2, Loader2, Save, X, ExternalLink, Image as ImageIcon
 import { z } from 'zod';
 
 const projectSchema = z.object({
-  slug: z.string().min(1, 'Slug is required'),
-  title: z.string().min(1, 'Title is required'),
-  category: z.string().min(1, 'Category is required'),
-  description: z.string().min(1, 'Description is required'),
+  slug: z.string().optional(),
+  title: z.string().optional(),
+  category: z.string().optional(),
+  description: z.string().optional(),
   image: z.string().optional(),
-  tech_array: z.string().min(1, 'Tech stack is required'), // We'll convert comma separated to array
-  year: z.string().min(4, 'Year is required'),
+  tech_array: z.string().optional(),
+  year: z.string().optional(),
   link: z.string().optional(),
   view_details_url: z.string().optional(),
   project_price: z.union([z.string(), z.number()]).optional(),
@@ -20,12 +20,6 @@ const projectSchema = z.object({
   hide_link: z.boolean(),
   is_youtube: z.boolean().default(false),
   youtube_id: z.string().optional(),
-}).refine(data => {
-  if (data.is_youtube) return !!data.youtube_id && data.youtube_id.trim().length > 0;
-  return !!data.image && data.image.trim().length > 0;
-}, {
-  message: "Either Image or YouTube ID is required based on project type",
-  path: ["image"]
 });
 
 type Project = {
@@ -164,10 +158,19 @@ export default function AdminProjectsPage() {
 
     try {
       const validData = projectSchema.parse(formData);
-      const techArray = validData.tech_array.split(',').map(s => s.trim()).filter(Boolean);
+      const techArray = validData.tech_array ? validData.tech_array.split(',').map(s => s.trim()).filter(Boolean) : [];
+      
+      let finalSlug = validData.slug;
+      if (!finalSlug || finalSlug.trim() === '') {
+        finalSlug = `project-${Date.now()}`;
+      }
 
       const dbData = {
         ...validData,
+        slug: finalSlug,
+        title: validData.title || '',
+        category: validData.category || '',
+        description: validData.description || '',
         tech_array: techArray,
       };
 
