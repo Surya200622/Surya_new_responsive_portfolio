@@ -115,10 +115,10 @@ function OfferModal({ offer, isOpen, onClose, serviceQuery }) {
   );
 }
 
-export default function OffersSection() {
+export default function OffersSection({ initialOffers = null }) {
     const router = useRouter();
-  const [offers, setOffers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [offers, setOffers] = useState(initialOffers || []);
+  const [loading, setLoading] = useState(!initialOffers);
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [selectedServiceQuery, setSelectedServiceQuery] = useState('');
   const [copiedId, setCopiedId] = useState(null);
@@ -133,6 +133,8 @@ export default function OffersSection() {
   };
 
   useEffect(() => {
+    if (initialOffers) return; // Don't fetch if SSR data provided
+    
     async function fetchOffers() {
       try {
         const res = await fetch('/api/offers');
