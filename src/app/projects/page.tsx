@@ -27,7 +27,7 @@ export default function ProjectsPage() {
     <Suspense fallback={<div className="min-h-screen bg-[#0a0a0f]" />}>
       <PortfolioLayout>
         <div style={{ paddingTop: '80px' }}>
-          <ProjectsSection />
+          <ProjectsSection isStandalone={true} />
         </div>
       </PortfolioLayout>
     </Suspense>

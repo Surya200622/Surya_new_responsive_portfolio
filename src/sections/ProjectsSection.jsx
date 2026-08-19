@@ -31,8 +31,8 @@ const YoutubeCardVideo = ({ project }) => {
 };
 
 
-export default function ProjectsSection() {
-    const [projects, setProjects] = useState([]);
+export default function ProjectsSection({ isStandalone = false }) {
+  const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState(['All']);
   const [activeFilter, setActiveFilter] = useState('All');
   const [buyableFilter, setBuyableFilter] = useState('All');
@@ -74,29 +74,7 @@ export default function ProjectsSection() {
     ? filtered.slice(0, 4)
     : filtered;
 
-  useGSAP(() => {
-    if (loading || projects.length === 0) return;
-    const cards = sectionRef.current?.querySelectorAll('.projects__card');
-    if (cards) {
-      cards.forEach((card, i) => {
-        gsap.fromTo(card,
-          { opacity: 0, y: 50 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-            delay: i * 0.1,
-            ease: 'power2.out',
-            scrollTrigger: {
-               trigger: card,
-               start: 'top 85%',
-               toggleActions: 'play none none reverse',
-            },
-          }
-        );
-      });
-    }
-  }, { scope: sectionRef, dependencies: [activeFilter, buyableFilter, loading, projects], revertOnUpdate: true });
+  // useGSAP removed in favor of Framer Motion whileInView for better standalone page support
 
   const handleCardMouse = useCallback((e, cardEl) => {
     const rect = cardEl.getBoundingClientRect();
@@ -110,7 +88,7 @@ export default function ProjectsSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="projects section" id="projects" style={{ minHeight: '100vh' }}>
+    <section ref={sectionRef} className="projects section" id="projects" style={{ minHeight: '100vh', paddingTop: isStandalone ? '100px' : '0' }}>
       <div className="container">
         <div className="projects__header">
           <motion.div
@@ -194,10 +172,11 @@ export default function ProjectsSection() {
                     key={project.id}
                     className="projects__card"
                     layout
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+                    initial={{ opacity: 0, scale: 0.95, y: 30 }}
+                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    exit={{ opacity: 0, scale: 0.95, y: 30 }}
+                    transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
                     onMouseMove={(e) => handleCardMouse(e, e.currentTarget)}
                     onMouseLeave={(e) => handleCardLeave(e.currentTarget)}
                     onClick={() => window.location.href = `/project/${project.slug}`}
