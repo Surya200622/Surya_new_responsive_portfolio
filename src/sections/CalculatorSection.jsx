@@ -268,8 +268,10 @@ export default function CalculatorSection() {
   };
 
   const fCosts = config?.FEATURE_COSTS || FEATURE_COSTS;
+  const isSimpleProject = ['promo-graphics', 'ai-faceswap'].includes(projectType);
   const booleanFeatures = Object.entries(fCosts).filter(([key]) => {
     if (key === 'apiIntegrations' || key === 'maintenance') return false;
+    if (isSimpleProject) return false;
     if (projectType === 'marketing') {
       return key === 'adCampaigns' || key === 'socialMediaSetup';
     }
@@ -351,7 +353,7 @@ export default function CalculatorSection() {
         </div>
 
         {/* Step 2: Package Selection */}
-        {projectType && projectType !== 'marketing' && (
+        {projectType && projectType !== 'marketing' && !isSimpleProject && (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -404,7 +406,7 @@ export default function CalculatorSection() {
             </div>
 
             {/* Delivery Speed */}
-            {projectType !== 'marketing' && (
+            {projectType !== 'marketing' && !isSimpleProject && (
               <div className="calc__radio-group">
                 <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Delivery Speed"}</div>
                 <div className="calc__radio-options">
@@ -424,8 +426,9 @@ export default function CalculatorSection() {
             )}
 
             {/* Extra Features */}
-            <div className="calc__radio-group">
-              <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Extra Features"}</div>
+            {booleanFeatures.length > 0 && (
+              <div className="calc__radio-group">
+                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Extra Features"}</div>
               <div className="calc__radio-options">
                 {booleanFeatures.map(([key, val]) => {
                   const IconComp = ICON_MAP[val.icon] || Code;
@@ -445,9 +448,10 @@ export default function CalculatorSection() {
                 })}
               </div>
             </div>
+            )}
 
             {/* Maintenance */}
-            {projectType !== 'marketing' && (
+            {projectType !== 'marketing' && !isSimpleProject && (
               <div className="calc__radio-group">
                 <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Maintenance Support"}</div>
                 <div className="calc__radio-options">
@@ -508,13 +512,13 @@ export default function CalculatorSection() {
                 <span className="calc__total-label">{"Timeline"}</span>
                 <span className="calc__total-value calc__total-value--small">{pricing.timeline} {"Days"}</span>
               </div>
-              {projectType !== 'marketing' && (
+              {projectType !== 'marketing' && !isSimpleProject && (
                 <div className="calc__total-item">
                   <span className="calc__total-label">{"Complexity"}</span>
                   <span className="calc__total-value calc__total-value--small">{pricing.complexity}</span>
                 </div>
               )}
-              {projectType !== 'marketing' && (
+              {projectType !== 'marketing' && !isSimpleProject && (
                 <div className="calc__total-item">
                   <span className="calc__total-label">{"Package"}</span>
                   <span className="calc__total-value calc__total-value--small">{pricing.package?.name || '—'}</span>

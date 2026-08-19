@@ -10,6 +10,41 @@ import './ProjectsSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const YoutubeCardVideo = ({ youtubeId, title }) => {
+  const iframeRef = useRef(null);
+
+  const handleMouseEnter = () => {
+    if (iframeRef.current) {
+      iframeRef.current.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*');
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (iframeRef.current) {
+      iframeRef.current.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*');
+    }
+  };
+
+  return (
+    <div 
+      className="projects__card-image" 
+      style={{ position: 'relative', width: '100%', paddingTop: '56.25%', display: 'block' }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <iframe
+        ref={iframeRef}
+        src={`https://www.youtube.com/embed/${youtubeId}?rel=0&enablejsapi=1&mute=1`}
+        title={title}
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '12px', border: 'none', pointerEvents: 'none' }}
+      ></iframe>
+    </div>
+  );
+};
+
 
 export default function ProjectsSection() {
     const [projects, setProjects] = useState([]);
@@ -179,15 +214,55 @@ export default function ProjectsSection() {
                     onMouseLeave={(e) => handleCardLeave(e.currentTarget)}
                   >
                     {project.isYoutube ? (
-                      <div className="projects__card-inner" style={{ position: 'relative', width: '100%', paddingTop: '56.25%' }}>
-                        <iframe
-                          src={`https://www.youtube.com/embed/${project.youtubeId}?rel=0`}
-                          title={project.title}
-                          frameBorder="0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '12px', border: 'none' }}
-                        ></iframe>
+                      <div className="projects__card-inner" style={{ color: 'inherit' }}>
+                        <YoutubeCardVideo youtubeId={project.youtubeId} title={project.title} />
+                        <div className="projects__card-body">
+                          <h3 className="projects__card-title">{project.title}</h3>
+                          <p className="projects__card-desc">{project.description}</p>
+                          <div className="projects__card-tech">
+                            {(project.techArray || []).map(t => (
+                              <span key={t} className="projects__card-tag">{t}</span>
+                            ))}
+                          </div>
+                          
+                          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
+                            <a href={project.viewDetailsUrl || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }}>
+                              {"View Details"} <ArrowRight size={14} />
+                            </a>
+                            <a href={project.link || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }}>
+                              {"Live URL"} <ArrowRight size={14} />
+                            </a>
+                            {project.buyable && !['Blogsite', 'Porfolio'].includes(project.slug) && (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                                {project.offersDiscountPrice ? (
+                                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
+                                    <span className="projects__card-price" style={{ fontWeight: 'bold', color: 'var(--color-accent-primary)' }}>
+                                      ₹{Number(project.offersDiscountPrice).toLocaleString('en-IN')}
+                                    </span>
+                                    <span style={{ fontSize: '0.85rem', textDecoration: 'line-through', color: 'var(--color-text-secondary)', opacity: 0.9 }}>
+                                      ₹{Number(project.projectPrice || 5000).toLocaleString('en-IN')}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <span className="projects__card-price" style={{ fontWeight: 'bold', color: 'var(--color-accent-primary)' }}>
+                                    ₹{Number(project.projectPrice || 5000).toLocaleString('en-IN')}
+                                  </span>
+                                )}
+                                <button 
+                                  className="projects__card-link"
+                                  style={{ color: 'var(--color-accent-primary)', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    const finalPrice = project.offersDiscountPrice ? Number(project.offersDiscountPrice) : Number(project.projectPrice || 5000);
+                                    setPaymentModalState({ isOpen: true, amount: finalPrice, projectName: project.title });
+                                  }}
+                                >
+                                  {"Buy Project"} <ArrowRight size={14} />
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     ) : !project.hideLink ? (
                       <div className="projects__card-inner" style={{ color: 'inherit' }}>

@@ -183,33 +183,36 @@ export function calculatePricing(state, config = null) {
   
   breakdown.push({ label: `${projectType.name} (${pkgName})`, cost: projectType.basePrice });
 
+  const isSimpleProject = ['promo-graphics', 'ai-faceswap'].includes(state.projectType);
+
   // Features
   const fCosts = config?.FEATURE_COSTS || FEATURE_COSTS;
   const maintOpts = config?.MAINTENANCE_OPTIONS || MAINTENANCE_OPTIONS;
-  Object.entries(state.features).forEach(([key, value]) => {
-    if (key === 'maintenance') {
-      const maint = maintOpts.find(m => m.value === value);
-      if (maint && maint.cost > 0) {
-        totalCost += maint.cost;
-        breakdown.push({ label: `Maintenance (${maint.label})`, cost: maint.cost });
+  
+  if (!isSimpleProject) {
+    Object.entries(state.features).forEach(([key, value]) => {
+      if (key === 'maintenance') {
+        const maint = maintOpts.find(m => m.value === value);
+        if (maint && maint.cost > 0) {
+          totalCost += maint.cost;
+          breakdown.push({ label: `Maintenance (${maint.label})`, cost: maint.cost });
+        }
+      } else if (key === 'apiIntegrations' && value > 0) {
+        const apiCost = value * 1000;
+        totalCost += apiCost;
+        totalTimeline += value * 2;
+        breakdown.push({ label: `${value} API Integrations`, cost: apiCost });
+      } else if (value === true && fCosts[key]) {
+        totalCost += fCosts[key].cost;
+        totalTimeline += fCosts[key].timeline;
+        breakdown.push({ label: fCosts[key].label, cost: fCosts[key].cost });
       }
-    } else if (key === 'apiIntegrations' && value > 0) {
-      const apiCost = value * 1000;
-      totalCost += apiCost;
-      totalTimeline += value * 2;
-      breakdown.push({ label: `${value} API Integrations`, cost: apiCost });
-    } else if (value === true && fCosts[key]) {
-      totalCost += fCosts[key].cost;
-      totalTimeline += fCosts[key].timeline;
-      breakdown.push({ label: fCosts[key].label, cost: fCosts[key].cost });
-    }
-  });
-
-
+    });
+  }
 
   // Package Multiplier
   let pkg = null;
-  if (state.projectType !== 'marketing') {
+  if (state.projectType !== 'marketing' && !isSimpleProject) {
     const pkgs = config?.PACKAGES || PACKAGES;
     pkg = pkgs.find(p => p.id === state.selectedPackage);
     const pkgMult = pkg?.multiplier || 1;
@@ -234,13 +237,16 @@ export function calculatePricing(state, config = null) {
   }
 
   // Delivery Speed
-  const dSpeeds = config?.DELIVERY_SPEEDS || DELIVERY_SPEEDS;
-  const speedMult = dSpeeds[state.deliverySpeed]?.multiplier || 1;
-  
-  if (speedMult !== 1) {
-    breakdown.forEach(item => {
-      item.cost = Math.round(item.cost * speedMult);
-    });
+  let speedMult = 1;
+  if (!isSimpleProject) {
+    const dSpeeds = config?.DELIVERY_SPEEDS || DELIVERY_SPEEDS;
+    speedMult = dSpeeds[state.deliverySpeed]?.multiplier || 1;
+    
+    if (speedMult !== 1) {
+      breakdown.forEach(item => {
+        item.cost = Math.round(item.cost * speedMult);
+      });
+    }
   }
   
   totalCost = Math.round(totalCost * speedMult);
