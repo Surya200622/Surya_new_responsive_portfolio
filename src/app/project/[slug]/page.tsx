@@ -113,10 +113,23 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
            </div>
         </div>
 
-        {project.image && (
-          <div className="rounded-2xl overflow-hidden mb-10 md:mb-12 border border-[var(--border-color)]">
-            <img src={project.image} alt={project.title} className="w-full h-auto max-h-[400px] md:max-h-[600px] object-cover block" />
+        {project.isYoutube && project.youtubeId ? (
+          <div className="rounded-2xl overflow-hidden mb-10 md:mb-12 border border-[var(--border-color)] relative w-full" style={{ paddingTop: '56.25%' }}>
+            <iframe
+              src={`https://www.youtube.com/embed/${project.youtubeId}?rel=0`}
+              title={project.title}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="absolute top-0 left-0 w-full h-full border-none"
+            ></iframe>
           </div>
+        ) : (
+          project.image && (
+            <div className="rounded-2xl overflow-hidden mb-10 md:mb-12 border border-[var(--border-color)]">
+              <img src={project.image} alt={project.title} className="w-full h-auto max-h-[400px] md:max-h-[600px] object-cover block" />
+            </div>
+          )
         )}
 
         <div className="bg-[var(--bg-secondary)] p-6 md:p-10 rounded-3xl mb-10 md:mb-12 border border-[var(--border-color)]">

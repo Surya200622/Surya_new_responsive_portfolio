@@ -387,7 +387,7 @@ export default function CalculatorSection() {
         )}
 
         {/* Step 3: Configuration */}
-        {projectType && (
+        {projectType && !isSimpleProject && (
           <motion.div
             className="calc__config"
             initial={{ opacity: 0, y: 30 }}

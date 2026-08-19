@@ -122,6 +122,7 @@ export default function OffersSection() {
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [selectedServiceQuery, setSelectedServiceQuery] = useState('');
   const [copiedId, setCopiedId] = useState(null);
+  const [showAllOffers, setShowAllOffers] = useState(false);
 
   const copyToClipboard = (id) => {
     const url = `${window.location.origin}/offers/${id}`;
@@ -166,6 +167,8 @@ export default function OffersSection() {
     return matchedProject ? `?service=${matchedProject.id}` : '';
   }
 
+  const displayedOffers = showAllOffers ? offers : offers.slice(0, 4);
+
   return (
     <section id="offers" className="offers-section">
       <div className="section-container">
@@ -181,7 +184,7 @@ export default function OffersSection() {
         </motion.div>
 
         <div className="offers-grid">
-          {offers.map((offer, index) => {
+          {displayedOffers.map((offer, index) => {
             const serviceQuery = getServiceQuery(offer);
 
             return (
@@ -241,6 +244,40 @@ export default function OffersSection() {
             );
           })}
         </div>
+        
+        {offers.length > 4 && (
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '3rem' }}>
+            <button
+              onClick={() => setShowAllOffers(!showAllOffers)}
+              style={{
+                background: 'var(--color-bg-secondary)',
+                border: '1px solid var(--color-glass-border)',
+                color: 'var(--color-text-primary)',
+                padding: '0.75rem 2rem',
+                borderRadius: '9999px',
+                fontSize: '0.95rem',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = 'var(--color-accent-primary)';
+                e.currentTarget.style.color = '#fff';
+                e.currentTarget.style.borderColor = 'var(--color-accent-primary)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = 'var(--color-bg-secondary)';
+                e.currentTarget.style.color = 'var(--color-text-primary)';
+                e.currentTarget.style.borderColor = 'var(--color-glass-border)';
+              }}
+            >
+              {showAllOffers ? 'Show Less' : 'View All Offers'} <ArrowRight size={16} style={{ transform: showAllOffers ? 'rotate(-90deg)' : 'rotate(90deg)', transition: 'transform 0.3s' }} />
+            </button>
+          </div>
+        )}
       </div>
 
       <OfferModal
