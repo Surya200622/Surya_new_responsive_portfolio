@@ -5,18 +5,7 @@ const nextConfig = {
   },
   transpilePackages: ['gsap'],
   async redirects() {
-    return [
-      {
-        source: '/about',
-        destination: '/#about',
-        permanent: true,
-      },
-      {
-        source: '/contact',
-        destination: '/#contact',
-        permanent: true,
-      },
-    ];
+    return [];
   },
 };
 

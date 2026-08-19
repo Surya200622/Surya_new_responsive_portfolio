@@ -27,6 +27,10 @@ export default function App() {
       window.location.replace('/projects');
     } else if (window.location.hash === '#offers') {
       window.location.replace('/offers');
+    } else if (window.location.hash === '#about') {
+      window.location.replace('/about');
+    } else if (window.location.hash === '#contact') {
+      window.location.replace('/contact');
     }
   }, []);
 
