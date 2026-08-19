@@ -38,9 +38,8 @@ export default function ProjectsSection() {
   const [buyableFilter, setBuyableFilter] = useState('All');
   const [loading, setLoading] = useState(true);
   const [paymentModalState, setPaymentModalState] = useState({ isOpen: false, amount: 0, projectName: '' });
+  const [showAll, setShowAll] = useState(false);
   const sectionRef = useRef(null);
-
-
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -49,8 +48,13 @@ export default function ProjectsSection() {
         if (!res.ok) throw new Error('Failed to fetch projects');
         const data = await res.json();
         if (data) {
-          setProjects(data);
-          setCategories(['All', ...new Set(data.map(p => p.category))]);
+          const sortedData = [...data].sort((a, b) => {
+            if (a.isYoutube && !b.isYoutube) return 1;
+            if (!a.isYoutube && b.isYoutube) return -1;
+            return 0;
+          });
+          setProjects(sortedData);
+          setCategories(['All', ...new Set(sortedData.map(p => p.category))]);
         }
       } catch (err) {
         console.error('Error fetching projects:', err);
@@ -70,6 +74,10 @@ export default function ProjectsSection() {
         : !(p.buyable && !['Blogsite', 'Porfolio'].includes(p.slug));
     return categoryMatch && buyableMatch;
   });
+
+  const displayedProjects = (!showAll && filtered.length > 4)
+    ? filtered.slice(0, 4)
+    : filtered;
 
   useGSAP(() => {
     if (loading || projects.length === 0) return;
@@ -186,7 +194,7 @@ export default function ProjectsSection() {
             {/* Grid */}
             <div className="projects__grid">
               <AnimatePresence mode="popLayout">
-                {filtered.map(project => (
+                {displayedProjects.map(project => (
                   <motion.div
                     key={project.id}
                     className="projects__card"
@@ -335,6 +343,18 @@ export default function ProjectsSection() {
                 ))}
               </AnimatePresence>
             </div>
+
+            {!showAll && filtered.length > 4 && (
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '3rem' }}>
+                <button 
+                  className="btn btn--primary"
+                  onClick={() => setShowAll(true)}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                  {"View all projects"} <ArrowRight size={16} />
+                </button>
+              </div>
+            )}
           </>
         )}
 
