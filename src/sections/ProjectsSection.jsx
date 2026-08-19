@@ -88,7 +88,7 @@ export default function ProjectsSection({ isStandalone = false }) {
   }, []);
 
   return (
-    <section ref={sectionRef} className="projects section" id="projects" style={{ minHeight: '100vh', paddingTop: isStandalone ? '100px' : '0' }}>
+    <section ref={sectionRef} className="projects section" id="projects" style={{ minHeight: '100vh', paddingTop: isStandalone ? '100px' : undefined }}>
       <div className="container">
         <div className="projects__header">
           <motion.div
