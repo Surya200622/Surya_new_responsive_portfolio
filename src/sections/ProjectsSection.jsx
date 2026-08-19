@@ -11,40 +11,22 @@ import './ProjectsSection.css';
 gsap.registerPlugin(ScrollTrigger);
 
 const YoutubeCardVideo = ({ project }) => {
-  const iframeRef = useRef(null);
-
-  const handleMouseEnter = () => {
-    if (iframeRef.current) {
-      iframeRef.current.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'playVideo', args: [] }), '*');
-    }
-  };
-
-  const handleMouseLeave = () => {
-    if (iframeRef.current) {
-      iframeRef.current.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*');
-    }
-  };
-
   return (
-    <a 
-      href={`/project/${project.slug}`} 
+    <div 
       className="projects__card-image" 
       style={{ position: 'relative', width: '100%', paddingTop: '56.25%', display: 'block', textDecoration: 'none' }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
       <iframe
-        ref={iframeRef}
-        src={`https://www.youtube.com/embed/${project.youtubeId}?rel=0&enablejsapi=1&mute=1`}
+        src={`https://www.youtube.com/embed/${project.youtubeId}?rel=0`}
         title={project.title}
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '12px', border: 'none', pointerEvents: 'none' }}
+        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '12px', border: 'none' }}
       ></iframe>
       <span className="projects__card-year">{project.year}</span>
       <span className="projects__card-category">{project.category}</span>
-    </a>
+    </div>
   );
 };
 
