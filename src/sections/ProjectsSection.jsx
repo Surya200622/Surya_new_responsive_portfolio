@@ -200,6 +200,8 @@ export default function ProjectsSection() {
                     transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
                     onMouseMove={(e) => handleCardMouse(e, e.currentTarget)}
                     onMouseLeave={(e) => handleCardLeave(e.currentTarget)}
+                    onClick={() => window.location.href = `/project/${project.slug}`}
+                    style={{ cursor: 'pointer' }}
                   >
                     {project.isYoutube ? (
                       <div className="projects__card-inner" style={{ color: 'inherit' }}>
@@ -214,10 +216,10 @@ export default function ProjectsSection() {
                           </div>
                           
                           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
-                            <a href={project.viewDetailsUrl || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }}>
+                            <a href={project.viewDetailsUrl || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }} onClick={(e) => e.stopPropagation()}>
                               {"View Details"} <ArrowRight size={14} />
                             </a>
-                            <a href={project.link || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }}>
+                            <a href={project.link || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }} onClick={(e) => e.stopPropagation()}>
                               {"Live URL"} <ArrowRight size={14} />
                             </a>
                             {project.buyable && !['Blogsite', 'Porfolio'].includes(project.slug) && (
@@ -241,6 +243,7 @@ export default function ProjectsSection() {
                                   style={{ color: 'var(--color-accent-primary)', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
                                   onClick={(e) => {
                                     e.preventDefault();
+                                    e.stopPropagation();
                                     const finalPrice = project.offersDiscountPrice ? Number(project.offersDiscountPrice) : Number(project.projectPrice || 5000);
                                     setPaymentModalState({ isOpen: true, amount: finalPrice, projectName: project.title });
                                   }}
@@ -254,7 +257,7 @@ export default function ProjectsSection() {
                       </div>
                     ) : !project.hideLink ? (
                       <div className="projects__card-inner" style={{ color: 'inherit' }}>
-                        <a href={`/project/${project.slug}`} className="projects__card-image" style={{ display: 'block', textDecoration: 'none' }}>
+                        <a href={`/project/${project.slug}`} className="projects__card-image" style={{ display: 'block', textDecoration: 'none' }} onClick={(e) => e.stopPropagation()}>
                           <img src={project.image} alt={project.title} loading="lazy" />
                           <span className="projects__card-year">{project.year}</span>
                           <span className="projects__card-category">{project.category}</span>
@@ -269,10 +272,10 @@ export default function ProjectsSection() {
                           </div>
                           
                           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
-                            <a href={project.viewDetailsUrl || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }}>
+                            <a href={project.viewDetailsUrl || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }} onClick={(e) => e.stopPropagation()}>
                               {"View Details"} <ArrowRight size={14} />
                             </a>
-                            <a href={project.link || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }}>
+                            <a href={project.link || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }} onClick={(e) => e.stopPropagation()}>
                               {"Live URL"} <ArrowRight size={14} />
                             </a>
                             {project.buyable && !['Blogsite', 'Porfolio'].includes(project.slug) && (
@@ -296,6 +299,7 @@ export default function ProjectsSection() {
                                   style={{ color: 'var(--color-accent-primary)', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}
                                   onClick={(e) => {
                                     e.preventDefault();
+                                    e.stopPropagation();
                                     const finalPrice = project.offersDiscountPrice ? Number(project.offersDiscountPrice) : Number(project.projectPrice || 5000);
                                     setPaymentModalState({ isOpen: true, amount: finalPrice, projectName: project.title });
                                   }}
@@ -310,7 +314,7 @@ export default function ProjectsSection() {
                       </div>
                     ) : (
                       <div className="projects__card-inner" style={{ color: 'inherit' }}>
-                        <a href={`/project/${project.slug}`} className="projects__card-image" style={{ display: 'block', textDecoration: 'none' }}>
+                        <a href={`/project/${project.slug}`} className="projects__card-image" style={{ display: 'block', textDecoration: 'none' }} onClick={(e) => e.stopPropagation()}>
                           <img src={project.image} alt={project.title} loading="lazy" />
                           <span className="projects__card-year">{project.year}</span>
                           <span className="projects__card-category">{project.category}</span>
@@ -324,10 +328,10 @@ export default function ProjectsSection() {
                             ))}
                           </div>
                           <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginTop: '1rem', flexWrap: 'wrap' }}>
-                            <a href={project.viewDetailsUrl || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }}>
+                            <a href={project.viewDetailsUrl || `/project/${project.slug}`} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none' }} onClick={(e) => e.stopPropagation()}>
                               {"View Details"} <ArrowRight size={14} />
                             </a>
-                            <a href={project.link || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }}>
+                            <a href={project.link || '#'} target="_blank" rel="noopener noreferrer" className="projects__card-link" style={{ textDecoration: 'none', color: 'var(--color-accent-secondary)' }} onClick={(e) => e.stopPropagation()}>
                               {"Live URL"} <ArrowRight size={14} />
                             </a>
                           </div>
