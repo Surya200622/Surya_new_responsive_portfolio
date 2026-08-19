@@ -10,7 +10,7 @@ import './ProjectsSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const YoutubeCardVideo = ({ youtubeId, title }) => {
+const YoutubeCardVideo = ({ project }) => {
   const iframeRef = useRef(null);
 
   const handleMouseEnter = () => {
@@ -26,22 +26,25 @@ const YoutubeCardVideo = ({ youtubeId, title }) => {
   };
 
   return (
-    <div 
+    <a 
+      href={`/project/${project.slug}`} 
       className="projects__card-image" 
-      style={{ position: 'relative', width: '100%', paddingTop: '56.25%', display: 'block' }}
+      style={{ position: 'relative', width: '100%', paddingTop: '56.25%', display: 'block', textDecoration: 'none' }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <iframe
         ref={iframeRef}
-        src={`https://www.youtube.com/embed/${youtubeId}?rel=0&enablejsapi=1&mute=1`}
-        title={title}
+        src={`https://www.youtube.com/embed/${project.youtubeId}?rel=0&enablejsapi=1&mute=1`}
+        title={project.title}
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '12px', border: 'none', pointerEvents: 'none' }}
       ></iframe>
-    </div>
+      <span className="projects__card-year">{project.year}</span>
+      <span className="projects__card-category">{project.category}</span>
+    </a>
   );
 };
 
@@ -215,7 +218,7 @@ export default function ProjectsSection() {
                   >
                     {project.isYoutube ? (
                       <div className="projects__card-inner" style={{ color: 'inherit' }}>
-                        <YoutubeCardVideo youtubeId={project.youtubeId} title={project.title} />
+                        <YoutubeCardVideo project={project} />
                         <div className="projects__card-body">
                           <h3 className="projects__card-title">{project.title}</h3>
                           <p className="projects__card-desc">{project.description}</p>
