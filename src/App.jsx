@@ -21,6 +21,13 @@ export default function App() {
   const { theme, toggleTheme } = useTheme();
   const [calculatorEnabled, setCalculatorEnabled] = useState(true);
 
+  // Redirect to separate pages if accessed via hash link from outside
+  useEffect(() => {
+    if (window.location.hash === '#projects') {
+      window.location.replace('/projects');
+    }
+  }, []);
+
   // Fetch calculator visibility setting
   useEffect(() => {
     async function checkCalculatorSetting() {
