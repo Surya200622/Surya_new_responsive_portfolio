@@ -10,35 +10,46 @@ import { PROJECTS } from '../data/projectsData';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://suryacs.is-a.dev'),
-  applicationName: 'Surya CS',
-  title: 'Surya CS | Full-Stack Python Developer | Coimbatore, India',
+  applicationName: 'Suryacs Web Solutions',
+  title: 'Suryacs Web Solutions | Full-Stack Python Developer | Coimbatore, India',
   description:
     'Portfolio of Surya CS, a Full-Stack Python Developer specializing in Django, React, and modern web solutions. View projects, resume, and contact for freelance work.',
   keywords:
     'Surya CS, Cssurya, Full Stack Developer, Python Developer, Django, React, Web Development, Coimbatore, Freelance Developer, Suryacs web solutions',
   authors: [{ name: 'Surya CS' }],
   creator: 'Surya CS',
-  publisher: 'Surya CS',
+  publisher: 'Suryacs Web Solutions',
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     url: 'https://suryacs.is-a.dev',
-    siteName: 'Surya CS',
-    title: 'Surya CS | Full-Stack Python Developer',
+    siteName: 'Suryacs Web Solutions',
+    title: 'Suryacs Web Solutions | Full-Stack Python Developer',
     description:
       'Portfolio of Surya CS, a Full-Stack Python Developer specializing in Django, React, and modern web solutions.',
     locale: 'en_IN',
+    images: [
+      {
+        url: '/images/Gemini_Generated_Image_7eech37eech37eec.png',
+        width: 1200,
+        height: 630,
+        alt: 'Surya CS - Full-Stack Python Developer',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Surya CS | Full-Stack Python Developer',
+    title: 'Suryacs Web Solutions | Full-Stack Python Developer',
     description:
       'Full-Stack Python Developer specializing in Django & React. Based in Coimbatore, India.',
+    images: ['/images/Gemini_Generated_Image_7eech37eech37eec.png'],
   },
   icons: {
-    icon: '/icon.svg',
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' }
+    ],
     shortcut: '/icon.svg',
     apple: '/icon.svg',
   },
@@ -82,9 +93,17 @@ export default function RootLayout({
                 '@context': 'https://schema.org',
                 '@type': 'WebSite',
                 '@id': 'https://suryacs.is-a.dev/#website',
-                name: 'Surya CS',
+                name: 'Suryacs Web Solutions',
                 alternateName: ['suryacs', 'SuryaCS', 'Surya.CS', 'Cssurya'],
-                url: 'https://suryacs.is-a.dev/'
+                url: 'https://suryacs.is-a.dev/',
+                publisher: {
+                  '@type': 'Organization',
+                  name: 'Suryacs Web Solutions',
+                  logo: {
+                    '@type': 'ImageObject',
+                    url: 'https://suryacs.is-a.dev/icon.svg'
+                  }
+                }
               },
               {
                 '@context': 'https://schema.org',
@@ -124,6 +143,7 @@ export default function RootLayout({
                 description: 'Full-Stack Python Developer specializing in Django, React, and modern web solutions.',
                 url: 'https://suryacs.is-a.dev',
                 image: 'https://suryacs.is-a.dev/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png',
+                logo: 'https://suryacs.is-a.dev/icon.svg',
                 telephone: '+918220443165',
                 address: {
                   '@type': 'PostalAddress',
