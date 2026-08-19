@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { portfolioProjects } from '@/db/schema';
-import { desc } from 'drizzle-orm';
+import { desc, asc } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
 export async function GET() {
   try {
-    const projects = await db.select().from(portfolioProjects).orderBy(desc(portfolioProjects.createdAt));
+    const projects = await db.select().from(portfolioProjects).orderBy(asc(portfolioProjects.sortOrder), desc(portfolioProjects.createdAt));
     return NextResponse.json(projects);
   } catch (error) {
     console.error('Error fetching portfolio projects:', error);

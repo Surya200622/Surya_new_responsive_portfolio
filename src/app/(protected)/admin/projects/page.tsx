@@ -51,6 +51,11 @@ export default function AdminProjectsPage() {
   const [error, setError] = useState('');
   const [imageUploading, setImageUploading] = useState(false);
   
+  const [isOrderDirty, setIsOrderDirty] = useState(false);
+  const [savingOrder, setSavingOrder] = useState(false);
+  const [draggedItemIndex, setDraggedItemIndex] = useState<number | null>(null);
+  const [dragOverItemIndex, setDragOverItemIndex] = useState<number | null>(null);
+  
   const [formData, setFormData] = useState({
     slug: '',
     title: '',
@@ -217,6 +222,51 @@ export default function AdminProjectsPage() {
     }
   };
 
+  const handleDragStart = (index: number) => {
+    setDraggedItemIndex(index);
+  };
+
+  const handleDragEnter = (index: number) => {
+    setDragOverItemIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    if (draggedItemIndex !== null && dragOverItemIndex !== null && draggedItemIndex !== dragOverItemIndex) {
+      const newProjects = [...projects];
+      const draggedItem = newProjects[draggedItemIndex];
+      newProjects.splice(draggedItemIndex, 1);
+      newProjects.splice(dragOverItemIndex, 0, draggedItem);
+      
+      setProjects(newProjects);
+      setIsOrderDirty(true);
+    }
+    setDraggedItemIndex(null);
+    setDragOverItemIndex(null);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault(); 
+  };
+
+  const handleSaveOrder = async () => {
+    setSavingOrder(true);
+    try {
+      const updates = projects.map((p, idx) => ({ id: p.id, sortOrder: idx }));
+      const res = await fetch('/api/portfolio-projects/reorder', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates)
+      });
+      if (!res.ok) throw new Error('Failed to save order');
+      setIsOrderDirty(false);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to save order.');
+    } finally {
+      setSavingOrder(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -232,18 +282,38 @@ export default function AdminProjectsPage() {
           <h1 className="text-2xl font-display font-bold text-[var(--color-text-primary)]">Projects</h1>
           <p className="text-sm text-[var(--color-text-muted)]">Manage your portfolio projects</p>
         </div>
-        <button
-          onClick={() => handleOpenModal()}
-          className="gradient-btn px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2"
-        >
-          <Plus className="w-4 h-4" />
-          Add Project
-        </button>
+        <div className="flex gap-4">
+          {isOrderDirty && (
+            <button
+              onClick={handleSaveOrder}
+              disabled={savingOrder}
+              className="px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30 transition-colors"
+            >
+              {savingOrder ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              Save Order
+            </button>
+          )}
+          <button
+            onClick={() => handleOpenModal()}
+            className="gradient-btn px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Add Project
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project) => (
-          <div key={project.id} className="glass-card-strong rounded-2xl overflow-hidden border border-[var(--color-glass-border)] flex flex-col">
+        {projects.map((project, index) => (
+          <div 
+            key={project.id} 
+            draggable
+            onDragStart={() => handleDragStart(index)}
+            onDragEnter={() => handleDragEnter(index)}
+            onDragEnd={handleDragEnd}
+            onDragOver={handleDragOver}
+            className={`glass-card-strong rounded-2xl overflow-hidden border border-[var(--color-glass-border)] flex flex-col cursor-move transition-transform ${draggedItemIndex === index ? 'opacity-50 scale-95' : ''} ${dragOverItemIndex === index && draggedItemIndex !== index ? 'border-primary ring-2 ring-primary/50' : ''}`}
+          >
             <div className="h-48 relative overflow-hidden bg-[var(--color-bg-secondary)]">
               {project.image ? (
                 <img src={project.image} alt={project.title} className="w-full h-full object-cover" />

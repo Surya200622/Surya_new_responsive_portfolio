@@ -175,6 +175,7 @@ export const portfolioProjects = sqliteTable('portfolio_projects', {
   projectPrice: text('project_price'),
   offersDiscountPrice: text('offers_discount_price'),
   viewDetailsUrl: text('view_details_url'),
+  sortOrder: integer('sort_order').default(0),
   createdAt: integer('created_at', { mode: 'timestamp_ms' }),
 });
 

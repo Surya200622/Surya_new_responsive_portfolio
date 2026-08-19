@@ -48,13 +48,8 @@ export default function ProjectsSection() {
         if (!res.ok) throw new Error('Failed to fetch projects');
         const data = await res.json();
         if (data) {
-          const sortedData = [...data].sort((a, b) => {
-            if (a.isYoutube && !b.isYoutube) return 1;
-            if (!a.isYoutube && b.isYoutube) return -1;
-            return 0;
-          });
-          setProjects(sortedData);
-          setCategories(['All', ...new Set(sortedData.map(p => p.category))]);
+          setProjects(data);
+          setCategories(['All', ...new Set(data.map(p => p.category))]);
         }
       } catch (err) {
         console.error('Error fetching projects:', err);
