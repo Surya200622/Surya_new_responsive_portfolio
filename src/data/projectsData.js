@@ -99,11 +99,12 @@ export const TIMELINE_DATA = [
     type: 'education',
   },
   {
-    year: '2024',
-    title: 'IBM & ITC Python Pandas & NumPy Training',
+    year: '2025',
+    title: 'Data Analytics',
     description:
-      'Completed IBM & ITC collaborative training in Python Pandas & NumPy, building strong data analysis and manipulation foundations with hands-on project experience.',
+      'IBM & ITC, in association with Sri Ramakrishna College Of Arts & Science',
     type: 'milestone',
+    link: 'https://drive.google.com/file/d/1UFR6S13iJSiycCxFsXYNVcVLOek4UkHY/view?usp=drive_link',
   },
   {
     year: '2025',

@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     locale: 'en_IN',
     images: [
       {
-        url: '/images/Gemini_Generated_Image_7eech37eech37eec.png',
+        url: '/images/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'Surya CS - Full-Stack Python Developer',
@@ -44,13 +44,14 @@ export const metadata: Metadata = {
     title: 'Suryacs Web Solutions | Full-Stack Python Developer',
     description:
       'Full-Stack Python Developer specializing in Django & React. Based in Coimbatore, India.',
-    images: ['/images/Gemini_Generated_Image_7eech37eech37eec.png'],
+    images: ['/images/og-image.jpg'],
   },
   icons: {
     icon: [
+      { url: '/favicon.ico', sizes: 'any' },
       { url: '/icon.svg', type: 'image/svg+xml' }
     ],
-    shortcut: '/icon.svg',
+    shortcut: '/favicon.ico',
     apple: '/icon.svg',
   },
   verification: {
@@ -114,7 +115,7 @@ export default function RootLayout({
                 image: 'https://suryacs.is-a.dev/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png',
                 jobTitle: 'Full-Stack Python Developer',
                 description:
-                  'B.Com.CA graduate from Sri Ramakrishna College of Arts & Science. IBM & ITC trained in Python Pandas & NumPy. Django & React Specialist.',
+                  'B.Com.CA graduate from Sri Ramakrishna College of Arts & Science. IBM & ITC trained in Data Analytics. Django & React Specialist.',
                 email: 'suryacs.is.a.dev@gmail.com',
                 telephone: '+918220443165',
                 address: {

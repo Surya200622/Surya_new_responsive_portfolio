@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { Briefcase, Heart, Award, Code, Coffee, Zap, Globe2, Layers, Database, Server, MonitorSmartphone, ShieldCheck, Brain, MessageCircle, RefreshCw, Lightbulb, Users } from 'lucide-react';
+import { Briefcase, Heart, Award, Code, Coffee, Zap, Globe2, Layers, Database, Server, MonitorSmartphone, ShieldCheck, Brain, MessageCircle, RefreshCw, Lightbulb, Users, ExternalLink } from 'lucide-react';
 import { SKILLS, TIMELINE_DATA, STATS } from '../data/projectsData';
 import GithubStats from '../components/GithubStats';
 import './AboutSection.css';
@@ -25,7 +25,7 @@ const fadeInUp = {
 export default function AboutSection() {
     
   const STORY_BLOCKS = [
-    { title: "Who I Am", text: "I'm Surya CS — an Full-Stack Python Developer based in Coimbatore, India. I'm a B.COM.CA graduate from Sri Ramakrishna College of Arts & Science with IBM & ITC collaborative training in Python Pandas & NumPy. I don't just build websites — I craft digital experiences." },
+    { title: "Who I Am", text: "I'm Surya CS — an Full-Stack Python Developer based in Coimbatore, India. I'm a B.COM.CA graduate from Sri Ramakrishna College of Arts & Science with Data Analytics training from IBM & ITC. I don't just build websites — I craft digital experiences." },
     { title: "What I Do", text: "I specialize in Django and React to build modern, blazing-fast web solutions. From dental booking systems to fashion e-commerce platforms, every project I deliver combines beautiful design with powerful functionality." },
     { title: "My Goal", text: "I'm actively seeking to apply my Python full-stack development skills, contribute to innovative projects, and grow professionally. I'm passionate about creating experiences that convert visitors into customers." },
   ];
@@ -447,7 +447,14 @@ export default function AboutSection() {
                   <div className={`about__timeline-content ${i % 2 === 0 ? 'about__timeline-content--left' : 'about__timeline-content--right'}`}>
                     <div className="about__timeline-parallax">
                       <div className="about__timeline-card">
-                        <h4 className="about__timeline-title">{item.title}</h4>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+                          <h4 className="about__timeline-title">{item.title}</h4>
+                          {item.link && (
+                            <a href={item.link} target="_blank" rel="noreferrer" style={{ color: 'var(--color-accent-primary)', opacity: 0.8 }} className="hover:opacity-100 transition-opacity">
+                              <ExternalLink size={16} />
+                            </a>
+                          )}
+                        </div>
                         <p className="about__timeline-desc">{item.description}</p>
                       </div>
                     </div>

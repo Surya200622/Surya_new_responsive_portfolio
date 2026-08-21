@@ -205,10 +205,13 @@ export default function ResumePage() {
               </div>
               <div className="experience-item">
                 <div className="experience-header">
-                  <h4>Python Numpy&amp;Pandas</h4>
-                  <span className="date">Nov 2025</span>
+                  <h4>Data Analytics</h4>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <span className="date">Nov 2025</span>
+                    <a href="https://drive.google.com/file/d/1UFR6S13iJSiycCxFsXYNVcVLOek4UkHY/view?usp=drive_link" target="_blank" rel="noreferrer" className="project-link"><ExternalLink size={14} /></a>
+                  </div>
                 </div>
-                <p>IBM &amp; ITC, in association with college</p>
+                <p>IBM &amp; ITC, in association with Sri Ramakrishna College Of Arts &amp; Science</p>
               </div>
             </section>
           </main>
