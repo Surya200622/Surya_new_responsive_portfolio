@@ -1,6 +1,15 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Sparkles, Shield, Zap } from 'lucide-react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Authentication | Suryacs Web Solutions',
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default function AuthLayout({
   children,
