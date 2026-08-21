@@ -210,7 +210,7 @@ export default function HeroSection() {
               {"✨ Meet Jarvis AI"}
             </a>
 
-            <a href="/SuryaCS-resume.pdf" download="SuryaCS-resume.pdf" className="btn btn--glass" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <a href="/api/resume/download" download="SuryaCS-resume.pdf" className="btn btn--glass" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               {"Download Resume"}
             </a>
             <button className="btn btn--glass" onClick={() => scrollToSection('#contact')}>

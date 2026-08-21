@@ -29,7 +29,7 @@ export default function ResumePage() {
           <ArrowLeft size={18} />
           <span>Back to Portfolio</span>
         </Link>
-        <a href="/SuryaCS-resume.pdf" download="SuryaCS-resume.pdf" className="download-btn">
+        <a href="/api/resume/download" download="SuryaCS-resume.pdf" className="download-btn">
           <Download size={18} />
           <span>Download PDF</span>
         </a>

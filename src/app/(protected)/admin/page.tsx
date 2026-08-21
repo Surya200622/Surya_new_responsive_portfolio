@@ -37,6 +37,7 @@ export default function AdminOverviewPage() {
     active: true 
   });
   const [bannerSaving, setBannerSaving] = useState(false);
+  const [resumeUploading, setResumeUploading] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -307,6 +308,73 @@ export default function AdminOverviewPage() {
                 Save
               </button>
             </div>
+          </div>
+        </div>
+
+        {/* Resume Updater */}
+        <div className="flex flex-col gap-4 p-4 rounded-xl bg-[var(--color-bg-glass)] border border-[var(--color-glass-border)] mt-4">
+          <div className="flex items-center gap-4 mb-2">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-blue-500/20`}>
+              <Briefcase className="w-5 h-5 text-blue-400" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-[var(--color-text-primary)]">Resume Updater</p>
+              <p className="text-xs text-[var(--color-text-muted)] mt-0.5">Upload a new PDF to update your resume across the site.</p>
+            </div>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-3">
+            <input 
+              type="file" 
+              accept=".pdf"
+              id="resume-upload"
+              className="flex-1 w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg px-4 py-2 text-sm text-[var(--color-text-primary)] file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-medium file:bg-[var(--color-accent-primary)] file:text-[var(--color-bg-primary)] hover:file:bg-[var(--color-accent-primary)]/90 outline-none focus:border-[var(--color-accent-primary)] transition-colors"
+            />
+            <button
+              onClick={async () => {
+                const fileInput = document.getElementById('resume-upload') as HTMLInputElement;
+                if (!fileInput.files || fileInput.files.length === 0) {
+                  alert('Please select a PDF file first');
+                  return;
+                }
+                const file = fileInput.files[0];
+                
+                setResumeUploading(true);
+                try {
+                  const formData = new FormData();
+                  formData.append('file', file);
+                  formData.append('bucket', 'resume');
+                  formData.append('path', 'SuryaCS-resume');
+                  
+                  const uploadRes = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData,
+                  });
+                  
+                  if (!uploadRes.ok) throw new Error('Upload failed');
+                  const uploadData = await uploadRes.json();
+                  
+                  if (uploadData.url) {
+                    await fetch('/api/admin/settings', {
+                      method: 'PATCH',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ key: 'resume_url', value: uploadData.url }),
+                    });
+                    alert('Resume updated successfully!');
+                    fileInput.value = '';
+                  }
+                } catch (e) {
+                  console.error('Resume upload failed:', e);
+                  alert('Failed to update resume');
+                }
+                setResumeUploading(false);
+              }}
+              disabled={resumeUploading}
+              className="w-full sm:w-auto bg-[var(--color-accent-primary)] hover:bg-[var(--color-accent-primary)]/90 text-[var(--color-bg-primary)] px-4 py-2 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-70 disabled:cursor-wait"
+            >
+              {resumeUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              Upload & Update
+            </button>
           </div>
         </div>
       </div>
