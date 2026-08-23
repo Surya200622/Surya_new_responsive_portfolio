@@ -108,8 +108,7 @@ export const FEATURE_COSTS = {
   customAnimations: { cost: 1000, timeline: 4, label: 'Custom Animations', icon: 'Sparkles' },
   realtimeChat: { cost: 1500, timeline: 7, label: 'Real-time Chat', icon: 'MessageCircle' },
   analyticsDashboard: { cost: 1000, timeline: 5, label: 'Analytics Dashboard', icon: 'BarChart3' },
-  googleBusinessProfile: { cost: 2500, timeline: 3, label: 'Google Business Profile', icon: 'Building2' },
-  adCampaigns: { cost: 5000, timeline: 5, label: 'Ad Campaigns Setup', icon: 'Rocket' },
+  adCampaigns: { cost: 2500, timeline: 5, label: 'Ad Campaigns Setup', icon: 'Rocket' },
   socialMediaSetup: { cost: 3000, timeline: 4, label: 'Social Media Setup', icon: 'MessageCircle' },
   promoVideo: { cost: 500, timeline: 3, label: 'Promo Video', icon: 'Video' },
   posters: { cost: 400, timeline: 2, label: 'Posters', icon: 'Image' },
@@ -175,7 +174,14 @@ export const PACKAGES = [
 ];
 
 export function calculatePricing(state, config = null) {
-  const pTypes = config?.PROJECT_TYPES || PROJECT_TYPES;
+  const pTypes = PROJECT_TYPES.map(p => {
+    const override = config?.PROJECT_TYPES?.find(c => c.id === p.id);
+    // Force basePrice to 0 for a-la-carte simple projects even if config says otherwise
+    if (['promo-graphics', 'ai-faceswap'].includes(p.id)) {
+      return override ? { ...p, ...override, basePrice: 0 } : p;
+    }
+    return override ? { ...p, ...override } : p;
+  });
   const projectType = pTypes.find(p => p.id === state.projectType);
   if (!projectType) return { total: 0, timeline: 0, breakdown: [] };
 
@@ -192,29 +198,27 @@ export function calculatePricing(state, config = null) {
   const isSimpleProject = ['promo-graphics', 'ai-faceswap'].includes(state.projectType);
 
   // Features
-  const fCosts = config?.FEATURE_COSTS || FEATURE_COSTS;
+  const fCosts = { ...FEATURE_COSTS, ...(config?.FEATURE_COSTS || {}) };
   const maintOpts = config?.MAINTENANCE_OPTIONS || MAINTENANCE_OPTIONS;
   
-  if (!isSimpleProject) {
-    Object.entries(state.features).forEach(([key, value]) => {
-      if (key === 'maintenance') {
-        const maint = maintOpts.find(m => m.value === value);
-        if (maint && maint.cost > 0) {
-          totalCost += maint.cost;
-          breakdown.push({ label: `Maintenance (${maint.label})`, cost: maint.cost });
-        }
-      } else if (key === 'apiIntegrations' && value > 0) {
-        const apiCost = value * 1000;
-        totalCost += apiCost;
-        totalTimeline += value * 2;
-        breakdown.push({ label: `${value} API Integrations`, cost: apiCost });
-      } else if (value === true && fCosts[key]) {
-        totalCost += fCosts[key].cost;
-        totalTimeline += fCosts[key].timeline;
-        breakdown.push({ label: fCosts[key].label, cost: fCosts[key].cost });
+  Object.entries(state.features).forEach(([key, value]) => {
+    if (key === 'maintenance') {
+      const maint = maintOpts.find(m => m.value === value);
+      if (maint && maint.cost > 0) {
+        totalCost += maint.cost;
+        breakdown.push({ label: `Maintenance (${maint.label})`, cost: maint.cost });
       }
-    });
-  }
+    } else if (key === 'apiIntegrations' && value > 0) {
+      const apiCost = value * 1000;
+      totalCost += apiCost;
+      totalTimeline += value * 2;
+      breakdown.push({ label: `${value} API Integrations`, cost: apiCost });
+    } else if (value === true && fCosts[key]) {
+      totalCost += fCosts[key].cost;
+      totalTimeline += fCosts[key].timeline;
+      breakdown.push({ label: fCosts[key].label, cost: fCosts[key].cost });
+    }
+  });
 
   // Package Multiplier
   let pkg = null;

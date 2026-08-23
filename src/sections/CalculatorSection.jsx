@@ -276,9 +276,19 @@ export default function CalculatorSection() {
   const isSimpleProject = ['promo-graphics', 'ai-faceswap'].includes(projectType);
 
   const booleanFeatures = useMemo(() => {
-    return Object.entries(config?.FEATURE_COSTS || FEATURE_COSTS).filter(([key]) => {
+    const mergedFeatureCosts = { ...FEATURE_COSTS, ...(config?.FEATURE_COSTS || {}) };
+    
+    // Completely remove googleBusinessProfile if it's cached in the db config
+    if (mergedFeatureCosts.googleBusinessProfile) {
+      delete mergedFeatureCosts.googleBusinessProfile;
+    }
+
+    return Object.entries(mergedFeatureCosts).filter(([key]) => {
       if (typeof features[key] === 'undefined') return false;
       
+      if (projectType === 'marketing') {
+        return ['adCampaigns', 'socialMediaSetup'].includes(key);
+      }
       if (projectType === 'promo-graphics') {
         return ['promoVideo', 'posters', 'logos', 'customGraphics'].includes(key);
       }
