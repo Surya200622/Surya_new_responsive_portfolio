@@ -147,7 +147,17 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       let pkgName = 'Custom Package';
       if (rawConfig) {
         const pkgId = rawConfig.selectedPackage || rawConfig.package?.id;
-        const pkg = PACKAGES.find(p => p.id === pkgId);
+        let pkg = null;
+        if (Array.isArray(PACKAGES)) {
+          pkg = PACKAGES.find(p => p.id === pkgId);
+        } else if (PACKAGES && typeof PACKAGES === 'object') {
+          for (const key in PACKAGES) {
+            if (Array.isArray(PACKAGES[key])) {
+              pkg = PACKAGES[key].find((p: any) => p.id === pkgId);
+              if (pkg) break;
+            }
+          }
+        }
         if (pkg) {
           pkgName = pkg.name + ' Package';
         }
