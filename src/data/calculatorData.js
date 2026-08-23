@@ -957,8 +957,8 @@ export function calculatePricing(state, config = null) {
   if (!projectType) return { total: 0, timeline: 0, breakdown: [] };
 
   const breakdown = [];
-  let totalCost = projectType.basePrice;
-  let totalTimeline = projectType.baseTimeline;
+  let totalCost = Number(projectType.basePrice || 0);
+  let totalTimeline = Number(projectType.baseTimeline || 0);
 
   let pkgsObj = config?.PACKAGES || PACKAGES;
   if (Array.isArray(pkgsObj)) {
@@ -982,9 +982,9 @@ export function calculatePricing(state, config = null) {
         if (category) {
           const option = category.options.find(o => o.value === selectedValue);
           if (option) {
-            totalCost += option.cost || 0;
-            totalTimeline += option.timeline || 0;
-            breakdown.push({ label: `${category.title}: ${option.label}`, cost: option.cost || 0 });
+            totalCost += Number(option.cost || 0);
+            totalTimeline += Number(option.timeline || 0);
+            breakdown.push({ label: `${category.title}: ${option.label}`, cost: Number(option.cost || 0) });
           }
         }
       }
@@ -1007,10 +1007,12 @@ export function calculatePricing(state, config = null) {
       totalCost += apiCost;
       totalTimeline += value * 2;
       breakdown.push({ label: `${value} API Integrations`, cost: apiCost });
-    } else if (value === true && fCosts[key]) {
-      totalCost += fCosts[key].cost;
-      totalTimeline += fCosts[key].timeline;
-      breakdown.push({ label: fCosts[key].label, cost: fCosts[key].cost });
+    } else if (value) {
+      if (fCosts[key]) {
+        totalCost += Number(fCosts[key].cost || 0);
+        totalTimeline += Number(fCosts[key].timeline || 0);
+        breakdown.push({ label: fCosts[key].label || key, cost: Number(fCosts[key].cost || 0) });
+      }
     }
   });
 
@@ -1018,15 +1020,15 @@ export function calculatePricing(state, config = null) {
   let pkg = null;
   if (state.projectType !== 'marketing' && !isSimpleProject) {
     pkg = pkgs.find(p => p.id === state.selectedPackage);
-    const pkgTimelineMult = pkg?.timelineMultiplier || 1;
+    const pkgTimelineMult = Number(pkg?.timelineMultiplier || 1);
     
     // Check if we have specific package prices defined
-    if (pkg && typeof pkg.cost === 'number' && pkg.cost > 0) {
-      const specificCost = pkg.cost;
+    if (pkg && Number(pkg.cost || 0) > 0) {
+      const specificCost = Number(pkg.cost);
       totalCost = totalCost - bItem.cost + specificCost;
       bItem.cost = specificCost;
     } else {
-      const pkgMult = pkg?.multiplier || 1;
+      const pkgMult = Number(pkg?.multiplier || 1);
       // Distribute multiplier to breakdown items
       breakdown.forEach(item => {
         if (!item.isPackageFeature) {

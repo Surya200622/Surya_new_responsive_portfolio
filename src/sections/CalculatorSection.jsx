@@ -476,7 +476,7 @@ export default function CalculatorSection() {
                         <IconComp size={16} />
                         <div className="calc__radio-card-label">{val.label}</div>
                       </div>
-                      <div className="calc__radio-card-mult">+₹{val.cost.toLocaleString('en-IN')}</div>
+                      <div className="calc__radio-card-mult">+₹{Number(val.cost || 0).toLocaleString('en-IN')}</div>
                     </div>
                   );
                 })}
@@ -497,7 +497,7 @@ export default function CalculatorSection() {
                       onClick={() => setAddons(prev => ({ ...prev, [category.id]: opt.value }))}
                     >
                       <div className="calc__radio-card-label">{opt.label}</div>
-                      {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{opt.cost.toLocaleString('en-IN')}</div>}
+                      {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{Number(opt.cost || 0).toLocaleString('en-IN')}</div>}
                       {opt.duration && <div className="calc__radio-card-desc">{opt.duration}</div>}
                       {opt.description && <div className="calc__radio-card-desc">{opt.description}</div>}
                     </div>
@@ -518,7 +518,7 @@ export default function CalculatorSection() {
                       onClick={() => setFeatures(prev => ({ ...prev, maintenance: opt.value }))}
                     >
                       <div className="calc__radio-card-label">{opt.label}</div>
-                      {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{opt.cost.toLocaleString('en-IN')}</div>}
+                      {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{Number(opt.cost || 0).toLocaleString('en-IN')}</div>}
                     </div>
                   ))}
                 </div>
@@ -542,7 +542,7 @@ export default function CalculatorSection() {
                   {pricing.originalTotal && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                       <span className="calc__total-value" style={{ textDecoration: 'line-through', opacity: 0.5, fontSize: '0.9em' }}>
-                        ₹{pricing.originalTotal.toLocaleString('en-IN')}
+                        ₹{Number(pricing.originalTotal || 0).toLocaleString('en-IN')}
                       </span>
                       <span style={{ 
                         background: 'rgba(249, 115, 22, 0.2)', 
@@ -556,7 +556,7 @@ export default function CalculatorSection() {
                       </span>
                     </div>
                   )}
-                  <span className="calc__total-value">₹{pricing.total.toLocaleString('en-IN')}</span>
+                  <span className="calc__total-value">₹{Number(pricing.total || 0).toLocaleString('en-IN')}</span>
                   {(projectType === 'marketing' || selectedPackage === 'enterprise') && (
                     <span style={{ color: '#34A853', fontSize: '0.75em', marginTop: '4px', fontWeight: '500' }}>
                       {"* 20,000 ad credits was credit in your google business profile page"}
