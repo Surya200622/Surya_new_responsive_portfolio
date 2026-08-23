@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Download, Loader2 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { calculatePricing, PACKAGES } from '@/data/calculatorData';
+import { calculatePricing, PACKAGES, PROJECT_TYPES, FEATURE_COSTS } from '@/data/calculatorData';
 
 interface DownloadQuotationButtonProps {
   quote: any;
@@ -72,7 +72,7 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       doc.setFontSize(28);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(darkColor[0], darkColor[1], darkColor[2]);
-      doc.text('QUOTATION', margin, startY);
+      doc.text('RECEIPT', margin, startY);
 
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
@@ -86,7 +86,7 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       const quoteId = quote.id ? quote.id.split('-')[0].toUpperCase() : 'PENDING';
       
       doc.text(`Date: ${quoteDate}`, pageWidth - margin, startY - 5, { align: 'right' });
-      doc.text(`Quote #: QT-${quoteId}`, pageWidth - margin, startY + 1, { align: 'right' });
+      doc.text(`Receipt #: REC-${quoteId}`, pageWidth - margin, startY + 1, { align: 'right' });
 
       // Status Badge
       const statusText = quote.status.toUpperCase();
@@ -144,10 +144,28 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
         }
       }
 
+      let pkgName = 'Custom Package';
+      if (rawConfig) {
+        const pkgId = rawConfig.selectedPackage || rawConfig.package?.id;
+        const pkg = PACKAGES.find(p => p.id === pkgId);
+        if (pkg) {
+          pkgName = pkg.name + ' Package';
+        }
+      }
+
+      currentY += 4;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+      doc.text(`Selected Package: ${pkgName}`, margin, currentY);
+      currentY += 8;
+
+      doc.setFontSize(10);
+      doc.setTextColor(80, 80, 80);
+
       if (parsedNotes) {
-        currentY += 2;
         doc.setFont('helvetica', 'bold');
-        doc.text('Package / Notes:', margin, currentY);
+        doc.text('Notes:', margin, currentY);
         doc.setFont('helvetica', 'normal');
         const splitNotes = doc.splitTextToSize(parsedNotes, pageWidth - margin * 2);
         doc.text(splitNotes, margin, currentY + 5);
@@ -157,66 +175,67 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       // === TABLE ===
       currentY += 10;
       
-      let breakdownToUse: any = null;
-      
-      if (rawConfig && rawConfig.pricing && rawConfig.pricing.breakdown) {
-        breakdownToUse = rawConfig.pricing.breakdown;
-        
-        // Attempt to dynamically recalculate using the newest logic so old quotations 
-        // also get the beautiful new distributed breakdown layout
-        try {
-          if (rawConfig.projectType) {
-            const recalc = calculatePricing(rawConfig);
-            if (recalc && recalc.breakdown) {
-              breakdownToUse = recalc.breakdown;
-            }
-          }
-        } catch (e) {
-          console.warn('Failed to dynamically recalculate quote breakdown', e);
-        }
-      }
-
       let tableData: any[][] = [];
 
-      if (breakdownToUse) {
-        // 1. Aggressively remove 'Pages' and 'UI' items
-        breakdownToUse = breakdownToUse.filter((b: any) => {
-          const l = (b.label || '').toLowerCase();
-          if (l.includes('pages')) return false;
-          if (l.includes('ui:')) return false;
-          return true;
-        });
+      if (rawConfig) {
+        let runningTotal = 0;
+        
+        // 1. Base Project
+        const pType = PROJECT_TYPES.find((p: any) => p.id === rawConfig.projectType);
+        if (pType) {
+          tableData.push([
+            `${pType.name} Base`,
+            'Base Project Cost',
+            `Rs. ${(pType.basePrice || 0).toLocaleString()}`
+          ]);
+          runningTotal += pType.basePrice || 0;
+        }
 
-        // 2. Ensure package features are listed
-        const hasPkgFeatures = breakdownToUse.some((b: any) => b.isPackageFeature);
-        if (!hasPkgFeatures && rawConfig) {
-          const pkgId = rawConfig.selectedPackage || rawConfig.package?.id;
-          const pkg = PACKAGES.find(p => p.id === pkgId);
-          if (pkg && pkg.features) {
-            pkg.features.forEach(f => {
-              breakdownToUse.push({ label: `✓ ${f}`, cost: 0, isPackageFeature: true });
-            });
+        // 2. Package Features (Included)
+        const pkgId = rawConfig.selectedPackage || rawConfig.package?.id;
+        const pkg = PACKAGES.find((p: any) => p.id === pkgId);
+        if (pkg && pkg.features) {
+          pkg.features.forEach((f: string) => {
+            tableData.push([
+              `✓ ${f}`,
+              `${pkg.name} Package Feature`,
+              'Included'
+            ]);
+          });
+        }
+
+        // 3. Selected Add-on Features
+        if (rawConfig.features) {
+          Object.entries(rawConfig.features).forEach(([key, value]) => {
+            if (value === true && FEATURE_COSTS[key as keyof typeof FEATURE_COSTS]) {
+              const f = FEATURE_COSTS[key as keyof typeof FEATURE_COSTS];
+              tableData.push([
+                f.label,
+                'Selected Feature',
+                `Rs. ${(f.cost || 0).toLocaleString()}`
+              ]);
+              runningTotal += f.cost || 0;
+            }
+          });
+          
+          if (rawConfig.features.apiIntegrations && rawConfig.features.apiIntegrations > 0) {
+            const apiCost = rawConfig.features.apiIntegrations * 1000;
+            tableData.push([
+              `${rawConfig.features.apiIntegrations} API Integrations`,
+              'Selected Feature',
+              `Rs. ${(apiCost).toLocaleString()}`
+            ]);
+            runningTotal += apiCost;
           }
         }
 
-        let runningTotal = 0;
-        
-        breakdownToUse.forEach((b: any) => {
-          tableData.push([
-            b.label,
-            b.isPackageFeature ? 'Package Feature' : 'Selected Feature',
-            b.cost === 0 ? 'Included' : `Rs. ${(b.cost || 0).toLocaleString()}`
-          ]);
-          runningTotal += (b.cost || 0);
-        });
-        
-        // 3. Diff calculation to perfectly match quote.amount
+        // 4. Diff Calculation (Package Multiplier / Discounts)
         const finalAmount = quote.amount || runningTotal;
         const diff = finalAmount - runningTotal;
         
         if (diff > 0) {
           tableData.push([
-            `Package Multiplier & Delivery`,
+            `${pkg ? pkg.name : 'Package'} Multiplier & Delivery`,
             `Applied Multipliers`,
             `Rs. ${diff.toLocaleString()}`
           ]);
@@ -227,6 +246,7 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
             `- Rs. ${Math.abs(diff).toLocaleString()}`
           ]);
         }
+
       } else {
         // Fallback if no raw config
         let parsedItems = [];
@@ -299,7 +319,7 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(100, 100, 100);
       const terms = [
-        "1. Validity: This quotation is valid for 14 days from the date of issue.",
+        "1. Acknowledgment: This receipt confirms your package selection and project details.",
         "2. Payment Terms: 50% advance payment required to commence work. Remaining 50% upon project completion.",
         "3. Scope: Any additional features outside the agreed scope will be billed separately.",
         "4. Timelines: Project timelines begin upon receipt of the advance payment."
@@ -319,7 +339,7 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       doc.text('This is a computer generated document and does not require a signature.', pageWidth / 2, pageHeight - 15, { align: 'center' });
 
       // Save PDF
-      doc.save(`Quotation_${quoteId}.pdf`);
+      doc.save(`Receipt_${quoteId}.pdf`);
 
     } catch (error) {
       console.error('Error generating PDF:', error);

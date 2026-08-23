@@ -83,7 +83,7 @@ export const PROJECT_TYPES = [
     id: 'promo-graphics',
     name: 'Promo Videos & Graphics',
     icon: 'Video',
-    basePrice: 3000,
+    basePrice: 0,
     baseTimeline: 7,
     description: 'Promo videos, posters, logos, and custom graphics',
   },
@@ -91,7 +91,7 @@ export const PROJECT_TYPES = [
     id: 'ai-faceswap',
     name: 'AI Face Swap',
     icon: 'Sparkles',
-    basePrice: 2000,
+    basePrice: 0,
     baseTimeline: 3,
     description: 'Professional face swap for images and videos',
   },
@@ -111,6 +111,12 @@ export const FEATURE_COSTS = {
   googleBusinessProfile: { cost: 2500, timeline: 3, label: 'Google Business Profile', icon: 'Building2' },
   adCampaigns: { cost: 5000, timeline: 5, label: 'Ad Campaigns Setup', icon: 'Rocket' },
   socialMediaSetup: { cost: 3000, timeline: 4, label: 'Social Media Setup', icon: 'MessageCircle' },
+  promoVideo: { cost: 500, timeline: 3, label: 'Promo Video', icon: 'Video' },
+  posters: { cost: 400, timeline: 2, label: 'Posters', icon: 'Image' },
+  logos: { cost: 500, timeline: 3, label: 'Logos', icon: 'Palette' },
+  customGraphics: { cost: 1000, timeline: 4, label: 'Custom Graphics', icon: 'PenTool' },
+  imageFaceswap: { cost: 500, timeline: 1, label: 'Images Faceswap', icon: 'Image' },
+  videoFaceswap: { cost: 650, timeline: 2, label: 'Video Faceswap', icon: 'Video' },
 };
 
 export const MAINTENANCE_OPTIONS = [

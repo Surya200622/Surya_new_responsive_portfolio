@@ -8,7 +8,7 @@ import {
   Building2, ShoppingCart, Palette, LayoutDashboard, Settings, Rocket,
   Brain, CalendarCheck, BookOpen, Users, Code, Shield, Database,
   CreditCard, FileEdit, Search, Server, Sparkles, MessageCircle,
-  BarChart3, MessageSquare, Mail, ArrowRight, UsersRound,
+  BarChart3, MessageSquare, Mail, ArrowRight, UsersRound, Video, Image, PenTool,
 } from 'lucide-react';
 import {
   PROJECT_TYPES, FEATURE_COSTS, PACKAGES, MAINTENANCE_OPTIONS,
@@ -24,7 +24,7 @@ gsap.registerPlugin(ScrollTrigger);
 const ICON_MAP = {
   Building2, ShoppingCart, Palette, LayoutDashboard, Settings, Rocket,
   Brain, CalendarCheck, BookOpen, Users, Code, Shield, Database,
-  CreditCard, FileEdit, Search, Server, Sparkles, MessageCircle, BarChart3, UsersRound,
+  CreditCard, FileEdit, Search, Server, Sparkles, MessageCircle, BarChart3, UsersRound, Video, Image, PenTool,
 };
 
 export default function CalculatorSection() {
@@ -51,6 +51,12 @@ export default function CalculatorSection() {
     googleBusinessProfile: false,
     adCampaigns: false,
     socialMediaSetup: false,
+    promoVideo: false,
+    posters: false,
+    logos: false,
+    customGraphics: false,
+    imageFaceswap: false,
+    videoFaceswap: false,
   });
 
   const [offers, setOffers] = useState([]);
@@ -267,20 +273,22 @@ export default function CalculatorSection() {
     document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const fCosts = config?.FEATURE_COSTS || FEATURE_COSTS;
   const isSimpleProject = ['promo-graphics', 'ai-faceswap'].includes(projectType);
-  const booleanFeatures = Object.entries(fCosts).filter(([key]) => {
-    if (key === 'apiIntegrations' || key === 'maintenance') return false;
-    if (isSimpleProject) return false;
-    if (projectType === 'marketing') {
-      return key === 'adCampaigns' || key === 'socialMediaSetup';
-    }
-    if (selectedPackage !== 'enterprise' && (key === 'adCampaigns' || key === 'googleBusinessProfile')) {
-      return false;
-    }
-    return true;
-  });
 
+  const booleanFeatures = useMemo(() => {
+    return Object.entries(config?.FEATURE_COSTS || FEATURE_COSTS).filter(([key]) => {
+      if (typeof features[key] === 'undefined') return false;
+      
+      if (projectType === 'promo-graphics') {
+        return ['promoVideo', 'posters', 'logos', 'customGraphics'].includes(key);
+      }
+      if (projectType === 'ai-faceswap') {
+        return ['imageFaceswap', 'videoFaceswap'].includes(key);
+      }
+      
+      return !['promoVideo', 'posters', 'logos', 'customGraphics', 'imageFaceswap', 'videoFaceswap'].includes(key);
+    });
+  }, [config, features, projectType]);
   return (
     <section className="calculator section" id="calculator">
       <div className="container">
@@ -387,7 +395,7 @@ export default function CalculatorSection() {
         )}
 
         {/* Step 3: Configuration */}
-        {projectType && !isSimpleProject && (
+        {projectType && (
           <motion.div
             className="calc__config"
             initial={{ opacity: 0, y: 30 }}
@@ -395,7 +403,7 @@ export default function CalculatorSection() {
             transition={{ duration: 0.5, delay: 0.1 }}
           >
             <div className="calc__step-label">
-              {projectType === 'marketing' ? "Step 02" : "Step 03"} {"— Configure Features"}
+              {projectType === 'marketing' || isSimpleProject ? "Step 02" : "Step 03"} {"— Configure Features"}
             </div>
             <h3 className="calc__step-title">{"Customize your requirements"}</h3>
 
