@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Download, Loader2 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { calculatePricing, PACKAGES, PROJECT_TYPES, FEATURE_COSTS } from '@/data/calculatorData';
+import { calculatePricing, PACKAGES, PROJECT_TYPES, FEATURE_COSTS, DOMAIN_OPTIONS, HOSTING_OPTIONS, SETUP_OPTIONS, DATABASE_OPTIONS, STORAGE_OPTIONS, AUTHENTICATION_OPTIONS } from '@/data/calculatorData';
 
 interface DownloadQuotationButtonProps {
   quote: any;
@@ -185,7 +185,7 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
         if (pType) {
           tableData.push([
             `${pType.name} Base`,
-            'Base Project Cost',
+            pType.description || 'Base Project Cost',
             `Rs. ${(pType.basePrice || 0).toLocaleString()}`
           ]);
           runningTotal += pType.basePrice || 0;
@@ -229,20 +229,49 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
           }
         }
 
+        // 3.5 Additional Configuration Options
+        const addOptionToTable = (val: string | undefined, options: any[], category: string) => {
+          if (val && val !== 'none') {
+            const opt = options.find((o: any) => o.value === val);
+            if (opt) {
+              tableData.push([
+                opt.label,
+                opt.description || category,
+                `Rs. ${(opt.cost || 0).toLocaleString()}`
+              ]);
+              runningTotal += opt.cost || 0;
+            }
+          }
+        };
+
+        if (rawConfig.domain) addOptionToTable(rawConfig.domain, DOMAIN_OPTIONS, 'Domain Configuration');
+        if (rawConfig.hosting) addOptionToTable(rawConfig.hosting, HOSTING_OPTIONS, 'Hosting Provider');
+        if (rawConfig.setup) addOptionToTable(rawConfig.setup, SETUP_OPTIONS, 'Setup & Deployment');
+        if (rawConfig.database) addOptionToTable(rawConfig.database, DATABASE_OPTIONS, 'Database Provider');
+        if (rawConfig.storage) addOptionToTable(rawConfig.storage, STORAGE_OPTIONS, 'Storage Provider');
+        if (rawConfig.authentication) addOptionToTable(rawConfig.authentication, AUTHENTICATION_OPTIONS, 'Authentication Setup');
+
+        // Subtotal
+        tableData.push([
+          '',
+          'SUBTOTAL',
+          `Rs. ${runningTotal.toLocaleString()}`
+        ]);
+
         // 4. Diff Calculation (Package Multiplier / Discounts)
         const finalAmount = quote.amount || runningTotal;
         const diff = finalAmount - runningTotal;
         
         if (diff > 0) {
           tableData.push([
+            '',
             `${pkg ? pkg.name : 'Package'} Multiplier & Delivery`,
-            `Applied Multipliers`,
-            `Rs. ${diff.toLocaleString()}`
+            `+ Rs. ${diff.toLocaleString()}`
           ]);
         } else if (diff < 0) {
           tableData.push([
+            '',
             `Special Offer Discount`,
-            `Applied to base price`,
             `- Rs. ${Math.abs(diff).toLocaleString()}`
           ]);
         }

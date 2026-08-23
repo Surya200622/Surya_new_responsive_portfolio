@@ -12,7 +12,8 @@ import {
 } from 'lucide-react';
 import {
   PROJECT_TYPES, FEATURE_COSTS, PACKAGES, MAINTENANCE_OPTIONS,
-  DELIVERY_SPEEDS, PAGE_RATE,
+  DELIVERY_SPEEDS, DOMAIN_OPTIONS, HOSTING_OPTIONS, SETUP_OPTIONS,
+  DATABASE_OPTIONS, STORAGE_OPTIONS, AUTHENTICATION_OPTIONS,
   calculatePricing, generateWhatsAppMessage, generateEmailBody,
 } from '../data/calculatorData';
 import PaymentModal from '../components/payment/PaymentModal';
@@ -34,6 +35,12 @@ export default function CalculatorSection() {
   const [projectType, setProjectType] = useState('');
   const [deliverySpeed, setDeliverySpeed] = useState('standard');
   const [selectedPackage, setSelectedPackage] = useState('starter');
+  const [domain, setDomain] = useState('none');
+  const [hosting, setHosting] = useState('none');
+  const [setup, setSetup] = useState('none');
+  const [database, setDatabase] = useState('none');
+  const [storage, setStorage] = useState('none');
+  const [authentication, setAuthentication] = useState('none');
   const [features, setFeatures] = useState({
     adminDashboard: false,
     clientDashboard: false,
@@ -207,8 +214,8 @@ export default function CalculatorSection() {
   };
 
   const state = useMemo(() => ({
-    projectType, deliverySpeed, selectedPackage, features,
-  }), [projectType, deliverySpeed, selectedPackage, features]);
+    projectType, deliverySpeed, selectedPackage, features, domain, hosting, setup, database, storage, authentication,
+  }), [projectType, deliverySpeed, selectedPackage, features, domain, hosting, setup, database, storage, authentication]);
 
   const applicableOffer = useMemo(() => {
     if (!projectType || !offers.length) return null;
@@ -260,6 +267,12 @@ export default function CalculatorSection() {
       deliverySpeed,
       selectedPackage,
       features,
+      domain,
+      hosting,
+      setup,
+      database,
+      storage,
+      authentication,
       pricing,
       timestamp: new Date().toISOString()
     };
@@ -436,7 +449,7 @@ export default function CalculatorSection() {
                     >
                       <div className="calc__radio-card-label">{val.label}</div>
                       <div className="calc__radio-card-desc">{val.description}</div>
-                      <div className="calc__radio-card-mult">×{val.multiplier}</div>
+                      {val.multiplier !== 1 && <div className="calc__radio-card-mult">×{val.multiplier}</div>}
                     </div>
                   ))}
                 </div>
@@ -466,6 +479,126 @@ export default function CalculatorSection() {
                 })}
               </div>
             </div>
+            )}
+
+            {/* Domain Options */}
+            {projectType !== 'marketing' && !isSimpleProject && (
+              <div className="calc__radio-group">
+                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Domain Options"}</div>
+                <div className="calc__radio-options">
+                  {(config?.DOMAIN_OPTIONS || DOMAIN_OPTIONS).map(opt => (
+                    <div
+                      key={opt.value}
+                      className={`calc__radio-card${domain === opt.value ? ' calc__radio-card--active' : ''}`}
+                      onClick={() => setDomain(opt.value)}
+                    >
+                      <div className="calc__radio-card-label">{opt.label}</div>
+                      {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{opt.cost.toLocaleString('en-IN')}</div>}
+                      {opt.duration && <div className="calc__radio-card-desc">{opt.duration}</div>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Hosting Options */}
+            {projectType !== 'marketing' && !isSimpleProject && (
+              <div className="calc__radio-group">
+                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Hosting Options"}</div>
+                <div className="calc__radio-options">
+                  {(config?.HOSTING_OPTIONS || HOSTING_OPTIONS).map(opt => (
+                    <div
+                      key={opt.value}
+                      className={`calc__radio-card${hosting === opt.value ? ' calc__radio-card--active' : ''}`}
+                      onClick={() => setHosting(opt.value)}
+                    >
+                      <div className="calc__radio-card-label">{opt.label}</div>
+                      {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{opt.cost.toLocaleString('en-IN')}</div>}
+                      {opt.description && <div className="calc__radio-card-desc">{opt.description}</div>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Database Options */}
+            {projectType !== 'marketing' && !isSimpleProject && (
+              <div className="calc__radio-group">
+                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Database Provider"}</div>
+                <div className="calc__radio-options">
+                  {(config?.DATABASE_OPTIONS || DATABASE_OPTIONS).map(opt => (
+                    <div
+                      key={opt.value}
+                      className={`calc__radio-card${database === opt.value ? ' calc__radio-card--active' : ''}`}
+                      onClick={() => setDatabase(opt.value)}
+                    >
+                      <div className="calc__radio-card-label">{opt.label}</div>
+                      {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{opt.cost.toLocaleString('en-IN')}</div>}
+                      {opt.description && <div className="calc__radio-card-desc">{opt.description}</div>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Storage Options */}
+            {projectType !== 'marketing' && !isSimpleProject && (
+              <div className="calc__radio-group">
+                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Storage Provider"}</div>
+                <div className="calc__radio-options">
+                  {(config?.STORAGE_OPTIONS || STORAGE_OPTIONS).map(opt => (
+                    <div
+                      key={opt.value}
+                      className={`calc__radio-card${storage === opt.value ? ' calc__radio-card--active' : ''}`}
+                      onClick={() => setStorage(opt.value)}
+                    >
+                      <div className="calc__radio-card-label">{opt.label}</div>
+                      {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{opt.cost.toLocaleString('en-IN')}</div>}
+                      {opt.description && <div className="calc__radio-card-desc">{opt.description}</div>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Authentication Options */}
+            {projectType !== 'marketing' && !isSimpleProject && (
+              <div className="calc__radio-group">
+                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Authentication Setup"}</div>
+                <div className="calc__radio-options">
+                  {(config?.AUTHENTICATION_OPTIONS || AUTHENTICATION_OPTIONS).map(opt => (
+                    <div
+                      key={opt.value}
+                      className={`calc__radio-card${authentication === opt.value ? ' calc__radio-card--active' : ''}`}
+                      onClick={() => setAuthentication(opt.value)}
+                    >
+                      <div className="calc__radio-card-label">{opt.label}</div>
+                      {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{opt.cost.toLocaleString('en-IN')}</div>}
+                      {opt.description && <div className="calc__radio-card-desc">{opt.description}</div>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+
+            {/* Setup Options */}
+            {projectType !== 'marketing' && !isSimpleProject && (
+              <div className="calc__radio-group">
+                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Additional Setup"}</div>
+                <div className="calc__radio-options">
+                  {(config?.SETUP_OPTIONS || SETUP_OPTIONS).map(opt => (
+                    <div
+                      key={opt.value}
+                      className={`calc__radio-card${setup === opt.value ? ' calc__radio-card--active' : ''}`}
+                      onClick={() => setSetup(opt.value)}
+                    >
+                      <div className="calc__radio-card-label">{opt.label}</div>
+                      {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{opt.cost.toLocaleString('en-IN')}</div>}
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
 
             {/* Maintenance */}
