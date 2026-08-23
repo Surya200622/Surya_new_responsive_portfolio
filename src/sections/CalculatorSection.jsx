@@ -309,6 +309,9 @@ export default function CalculatorSection() {
       return !['promoVideo', 'posters', 'logos', 'customGraphics', 'imageFaceswap', 'videoFaceswap', 'adCampaigns'].includes(key);
     });
   }, [config, features, projectType]);
+
+  const isSimpleProject = ['promo-graphics', 'ai-faceswap'].includes(projectType);
+
   return (
     <section className="calculator section" id="calculator">
       <div className="container">
@@ -409,7 +412,7 @@ export default function CalculatorSection() {
                   <div className="calc__package-mult">×{pkg.multiplier} multiplier</div>
                   <div className="calc__package-desc">{pkg.description}</div>
                   <div className="calc__package-features">
-                    {pkg.features?.map(f => (
+                    {Array.isArray(pkg.features) && pkg.features.map(f => (
                       <span key={f} className="calc__package-feature">{f}</span>
                     ))}
                   </div>

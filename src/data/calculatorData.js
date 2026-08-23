@@ -1039,7 +1039,7 @@ export function calculatePricing(state, config = null) {
     }
     
     // Add package features
-    if (pkg && pkg.features) {
+    if (pkg && Array.isArray(pkg.features)) {
       pkg.features.forEach(f => {
         breakdown.push({ label: `✓ ${f}`, cost: 0, isPackageFeature: true });
       });
