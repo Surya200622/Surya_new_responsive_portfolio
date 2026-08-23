@@ -296,7 +296,7 @@ export default function CalculatorSection() {
         return ['imageFaceswap', 'videoFaceswap'].includes(key);
       }
       
-      return !['promoVideo', 'posters', 'logos', 'customGraphics', 'imageFaceswap', 'videoFaceswap'].includes(key);
+      return !['promoVideo', 'posters', 'logos', 'customGraphics', 'imageFaceswap', 'videoFaceswap', 'adCampaigns'].includes(key);
     });
   }, [config, features, projectType]);
   return (
