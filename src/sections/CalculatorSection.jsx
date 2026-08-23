@@ -280,7 +280,17 @@ export default function CalculatorSection() {
 
   const currentProject = useMemo(() => {
     const pTypes = config?.PROJECT_TYPES || PROJECT_TYPES;
-    return pTypes.find(p => p.id === projectType);
+    const p = pTypes.find(p => p.id === projectType);
+    
+    // If the database config is missing the hasAddons property (e.g. from an older save), fallback to default
+    if (p && typeof p.hasAddons === 'undefined') {
+      const defaultP = PROJECT_TYPES.find(dp => dp.id === projectType);
+      if (defaultP) {
+        return { ...p, hasAddons: defaultP.hasAddons };
+      }
+    }
+    
+    return p;
   }, [projectType, config]);
 
   const hasAddons = currentProject?.hasAddons;
