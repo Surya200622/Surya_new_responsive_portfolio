@@ -36,14 +36,21 @@ export async function POST(req: Request) {
     await db.insert(projects).values(newProject);
 
     // 2. Create the Quotation
-    const lineItems = [
-      {
-        name: `${projectName} Setup`,
-        description: `Includes ${data.pages} pages, ${data.uiComplexity} UI complexity, and ${data.animationLevel} animations.`,
-        price: data.pricing?.total || 0,
-        quantity: 1
-      }
-    ];
+    const lineItems = data.pricing?.breakdown 
+      ? data.pricing.breakdown.map((item: any) => ({
+          name: item.label,
+          description: '',
+          price: item.cost,
+          quantity: 1
+        }))
+      : [
+          {
+            name: `${projectName} Setup`,
+            description: `Package: ${data.selectedPackage || 'Standard'}`,
+            price: data.pricing?.total || 0,
+            quantity: 1
+          }
+        ];
 
     const newQuotation = {
       id: crypto.randomUUID(),

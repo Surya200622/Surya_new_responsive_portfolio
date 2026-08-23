@@ -1,0 +1,678 @@
+{
+  "landing": [
+    {
+      "id": "landing-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "1 Professional Page",
+        "Responsive Design",
+        "WhatsApp CTA",
+        "Basic SEO",
+        "SSL",
+        "1 Revision"
+      ]
+    },
+    {
+      "id": "landing-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "Premium UI Design",
+        "Custom Animations",
+        "Contact Form",
+        "Google Maps",
+        "Social Media Links",
+        "3 Revisions"
+      ]
+    },
+    {
+      "id": "landing-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "Advanced Animations",
+        "Analytics",
+        "Lead Management",
+        "Advanced SEO",
+        "API Integration"
+      ]
+    },
+    {
+      "id": "landing-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Custom Sections",
+        "Advanced Integrations",
+        "Custom Functionality",
+        "Priority Support"
+      ]
+    }
+  ],
+  "portfolio": [
+    {
+      "id": "portfolio-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "Up to 5 Pages",
+        "Home",
+        "About",
+        "Skills",
+        "Projects",
+        "Contact",
+        "Responsive Design"
+      ]
+    },
+    {
+      "id": "portfolio-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "Premium UI",
+        "Custom Animations",
+        "Dark / Light Mode",
+        "Resume Section",
+        "SEO",
+        "Analytics",
+        "WhatsApp"
+      ]
+    },
+    {
+      "id": "portfolio-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "CMS",
+        "Blog",
+        "Advanced SEO",
+        "Advanced Animations",
+        "Project Management"
+      ]
+    },
+    {
+      "id": "portfolio-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Custom CMS",
+        "Advanced Dashboard",
+        "API Integrations",
+        "Custom Features"
+      ]
+    }
+  ],
+  "business": [
+    {
+      "id": "business-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "Up to 5 Pages",
+        "Responsive Design",
+        "WhatsApp",
+        "Contact Form",
+        "Google Maps",
+        "Social Links",
+        "Basic SEO",
+        "SSL",
+        "1 Revision"
+      ]
+    },
+    {
+      "id": "business-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "Up to 8 Pages",
+        "Premium UI Design",
+        "Custom Animations",
+        "Gallery",
+        "Testimonials",
+        "FAQ",
+        "Google Analytics",
+        "Search Console",
+        "3 Revisions"
+      ]
+    },
+    {
+      "id": "business-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "CMS",
+        "Admin Dashboard",
+        "Blog",
+        "Lead Management",
+        "Advanced SEO",
+        "Analytics Dashboard",
+        "API Integration"
+      ]
+    },
+    {
+      "id": "business-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Client Dashboard",
+        "Database",
+        "Advanced Admin",
+        "Multiple API Integrations",
+        "Automation",
+        "Custom Business Logic"
+      ]
+    }
+  ],
+  "blog": [
+    {
+      "id": "blog-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "Blog",
+        "Categories",
+        "Search",
+        "Responsive Design",
+        "Basic SEO"
+      ]
+    },
+    {
+      "id": "blog-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "CMS",
+        "Admin Dashboard",
+        "Rich Text Editor",
+        "Tags",
+        "SEO Controls",
+        "Analytics"
+      ]
+    },
+    {
+      "id": "blog-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "Author Management",
+        "Comments",
+        "Newsletter",
+        "Advanced SEO",
+        "Advanced Analytics"
+      ]
+    },
+    {
+      "id": "blog-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Custom Publishing Workflow",
+        "Membership System",
+        "Advanced CMS",
+        "API Integrations"
+      ]
+    }
+  ],
+  "booking": [
+    {
+      "id": "booking-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "Services",
+        "Booking Form",
+        "Date Selection",
+        "Time Selection",
+        "WhatsApp",
+        "Email Notification",
+        "Responsive Design"
+      ]
+    },
+    {
+      "id": "booking-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "Online Payment",
+        "Customer Login",
+        "Booking Dashboard",
+        "Admin Dashboard",
+        "Cancellation",
+        "Rescheduling",
+        "Calendar Integration"
+      ]
+    },
+    {
+      "id": "booking-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "Staff Management",
+        "Multiple Services",
+        "Multiple Locations",
+        "Automated Reminders",
+        "Reports",
+        "Advanced Scheduling"
+      ]
+    },
+    {
+      "id": "booking-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Advanced Calendar",
+        "Custom Booking Logic",
+        "API Integrations",
+        "Automation",
+        "Advanced Reports"
+      ]
+    }
+  ],
+  "ecommerce": [
+    {
+      "id": "ecommerce-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "Responsive Store",
+        "Homepage",
+        "Product Catalog",
+        "Categories",
+        "Product Details",
+        "Cart",
+        "Basic Checkout",
+        "WhatsApp",
+        "Customer Order Form",
+        "Up to 20 Products",
+        "Basic SEO",
+        "SSL",
+        "1 Revision"
+      ]
+    },
+    {
+      "id": "ecommerce-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "Up to 100 Products",
+        "Customer Accounts",
+        "Wishlist",
+        "Product Variants",
+        "Coupons",
+        "Inventory Management",
+        "Order Management",
+        "Payment Gateway",
+        "Shipping Configuration",
+        "Product Reviews",
+        "Analytics",
+        "3 Revisions"
+      ]
+    },
+    {
+      "id": "ecommerce-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "250+ Products",
+        "Advanced Inventory",
+        "Advanced Search",
+        "Advanced Filters",
+        "Customer Dashboard",
+        "Sales Analytics",
+        "Advanced Admin",
+        "Email Notifications",
+        "Marketing Integrations",
+        "Advanced SEO",
+        "3 Months Maintenance"
+      ]
+    },
+    {
+      "id": "ecommerce-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Custom Store Features",
+        "Advanced Automation",
+        "Multiple Payment Gateways",
+        "Advanced Shipping",
+        "Advanced Reports",
+        "Custom API Integrations",
+        "Priority Support"
+      ]
+    }
+  ],
+  "crm": [
+    {
+      "id": "crm-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "User Login",
+        "Customer Management",
+        "Lead Management",
+        "Basic Dashboard",
+        "Database",
+        "Responsive Interface"
+      ]
+    },
+    {
+      "id": "crm-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "User Roles",
+        "Permissions",
+        "Advanced Dashboard",
+        "Search & Filters",
+        "Reports",
+        "Activity Tracking",
+        "Email Notifications"
+      ]
+    },
+    {
+      "id": "crm-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "Workflow Automation",
+        "Advanced Analytics",
+        "Multiple Users",
+        "Advanced Reports",
+        "API Integration",
+        "Admin Management"
+      ]
+    },
+    {
+      "id": "crm-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Custom Workflows",
+        "Advanced Automation",
+        "Multiple Integrations",
+        "Custom Modules",
+        "Advanced Security",
+        "Priority Support"
+      ]
+    }
+  ],
+  "saas": [
+    {
+      "id": "saas-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "Authentication",
+        "User Dashboard",
+        "Database",
+        "Responsive UI",
+        "User Management"
+      ]
+    },
+    {
+      "id": "saas-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "User Roles",
+        "Subscriptions",
+        "Payment Integration",
+        "Advanced Dashboard",
+        "Analytics",
+        "Email Notifications"
+      ]
+    },
+    {
+      "id": "saas-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "Advanced Permissions",
+        "Billing System",
+        "API Integrations",
+        "Automation",
+        "Admin Dashboard",
+        "Advanced Analytics"
+      ]
+    },
+    {
+      "id": "saas-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Multi-Tenant Architecture",
+        "Advanced Billing",
+        "Advanced Automation",
+        "Custom Integrations",
+        "Scalable Architecture",
+        "Priority Support"
+      ]
+    }
+  ],
+  "custom": [
+    {
+      "id": "custom-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "Custom UI",
+        "Responsive Design",
+        "Authentication",
+        "Basic Dashboard",
+        "Database"
+      ]
+    },
+    {
+      "id": "custom-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "Advanced Dashboard",
+        "User Roles",
+        "API Integrations",
+        "Analytics",
+        "Notifications"
+      ]
+    },
+    {
+      "id": "custom-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "Advanced Workflows",
+        "Automation",
+        "Advanced Database",
+        "Multiple APIs",
+        "Admin Dashboard",
+        "Client Dashboard"
+      ]
+    },
+    {
+      "id": "custom-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Custom Architecture",
+        "Advanced Automation",
+        "Scalable Infrastructure",
+        "Advanced Integrations",
+        "Custom Business Logic"
+      ]
+    }
+  ],
+  "marketing": [],
+  "promo-graphics": [],
+  "ai-faceswap": []
+}

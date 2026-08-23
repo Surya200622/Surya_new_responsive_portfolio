@@ -12,8 +12,7 @@ import {
 } from 'lucide-react';
 import {
   PROJECT_TYPES, FEATURE_COSTS, PACKAGES, MAINTENANCE_OPTIONS,
-  DELIVERY_SPEEDS, DOMAIN_OPTIONS, HOSTING_OPTIONS, SETUP_OPTIONS,
-  DATABASE_OPTIONS, STORAGE_OPTIONS, AUTHENTICATION_OPTIONS,
+  DELIVERY_SPEEDS, ADDON_CATEGORIES,
   calculatePricing, generateWhatsAppMessage, generateEmailBody,
 } from '../data/calculatorData';
 import PaymentModal from '../components/payment/PaymentModal';
@@ -35,12 +34,7 @@ export default function CalculatorSection() {
   const [projectType, setProjectType] = useState('');
   const [deliverySpeed, setDeliverySpeed] = useState('standard');
   const [selectedPackage, setSelectedPackage] = useState('starter');
-  const [domain, setDomain] = useState('none');
-  const [hosting, setHosting] = useState('none');
-  const [setup, setSetup] = useState('none');
-  const [database, setDatabase] = useState('none');
-  const [storage, setStorage] = useState('none');
-  const [authentication, setAuthentication] = useState('none');
+  const [addons, setAddons] = useState({});
   const [features, setFeatures] = useState({
     adminDashboard: false,
     clientDashboard: false,
@@ -101,7 +95,12 @@ export default function CalculatorSection() {
         if (res.ok) {
           const data = await res.json();
           if (data.value && typeof data.value === 'object') {
-            setConfig(data.value);
+            const safeConfig = { ...data.value };
+            // Ignore old array format so it falls back to correct object format
+            if (Array.isArray(safeConfig.PACKAGES)) {
+              delete safeConfig.PACKAGES;
+            }
+            setConfig(safeConfig);
           }
         }
       } catch (error) {
@@ -120,7 +119,11 @@ export default function CalculatorSection() {
         if (serviceParam) {
           setProjectType(serviceParam);
           if (!['marketing', 'promo-graphics', 'ai-faceswap'].includes(serviceParam)) {
-            handlePackageSelect('starter');
+            const allPkgs = config?.PACKAGES || PACKAGES;
+            const projectPkgs = allPkgs[serviceParam] || [];
+            if (projectPkgs.length > 0) {
+              handlePackageSelect(projectPkgs[0].id);
+            }
           } else {
             setFeatures(prev => {
               const newF = { ...prev };
@@ -168,54 +171,51 @@ export default function CalculatorSection() {
       });
       newFeatures.apiIntegrations = 0;
       
-      switch (pkgId) {
-        case 'starter':
-          newFeatures.seo = true;
-          newFeatures.hosting = true;
-          break;
-        case 'professional':
-          newFeatures.seo = true;
-          newFeatures.hosting = true;
-          newFeatures.socialMediaSetup = true;
-          newFeatures.cms = true;
-          newFeatures.customAnimations = true;
-          break;
-        case 'business':
-          newFeatures.seo = true;
-          newFeatures.hosting = true;
-          newFeatures.socialMediaSetup = true;
-          newFeatures.cms = true;
-          newFeatures.customAnimations = true;
-          newFeatures.adminDashboard = true;
-          newFeatures.clientDashboard = true;
-          newFeatures.analyticsDashboard = true;
-          newFeatures.paymentGateway = true;
-          if (newFeatures.apiIntegrations === 0) newFeatures.apiIntegrations = 2;
-          break;
-        case 'enterprise':
-          newFeatures.seo = true;
-          newFeatures.hosting = true;
-          newFeatures.googleBusinessProfile = true;
-          newFeatures.socialMediaSetup = true;
-          newFeatures.cms = true;
-          newFeatures.customAnimations = true;
-          newFeatures.adminDashboard = true;
-          newFeatures.clientDashboard = true;
-          newFeatures.analyticsDashboard = true;
-          newFeatures.paymentGateway = true;
-          newFeatures.adCampaigns = true;
-          newFeatures.database = true;
-          newFeatures.realtimeChat = true;
-          if (newFeatures.apiIntegrations < 3) newFeatures.apiIntegrations = 5;
-          break;
+      if (!pkgId) return newFeatures;
+      
+      if (pkgId.includes('starter')) {
+        newFeatures.seo = true;
+        newFeatures.hosting = true;
+      } else if (pkgId.includes('professional')) {
+        newFeatures.seo = true;
+        newFeatures.hosting = true;
+        newFeatures.socialMediaSetup = true;
+        newFeatures.cms = true;
+        newFeatures.customAnimations = true;
+      } else if (pkgId.includes('business')) {
+        newFeatures.seo = true;
+        newFeatures.hosting = true;
+        newFeatures.socialMediaSetup = true;
+        newFeatures.cms = true;
+        newFeatures.customAnimations = true;
+        newFeatures.adminDashboard = true;
+        newFeatures.clientDashboard = true;
+        newFeatures.analyticsDashboard = true;
+        newFeatures.paymentGateway = true;
+        if (newFeatures.apiIntegrations === 0) newFeatures.apiIntegrations = 2;
+      } else if (pkgId.includes('enterprise')) {
+        newFeatures.seo = true;
+        newFeatures.hosting = true;
+        newFeatures.googleBusinessProfile = true;
+        newFeatures.socialMediaSetup = true;
+        newFeatures.cms = true;
+        newFeatures.customAnimations = true;
+        newFeatures.adminDashboard = true;
+        newFeatures.clientDashboard = true;
+        newFeatures.analyticsDashboard = true;
+        newFeatures.paymentGateway = true;
+        newFeatures.adCampaigns = true;
+        newFeatures.database = true;
+        newFeatures.realtimeChat = true;
+        if (newFeatures.apiIntegrations < 3) newFeatures.apiIntegrations = 5;
       }
       return newFeatures;
     });
   };
 
   const state = useMemo(() => ({
-    projectType, deliverySpeed, selectedPackage, features, domain, hosting, setup, database, storage, authentication,
-  }), [projectType, deliverySpeed, selectedPackage, features, domain, hosting, setup, database, storage, authentication]);
+    projectType, deliverySpeed, selectedPackage, features, addons,
+  }), [projectType, deliverySpeed, selectedPackage, features, addons]);
 
   const applicableOffer = useMemo(() => {
     if (!projectType || !offers.length) return null;
@@ -263,17 +263,8 @@ export default function CalculatorSection() {
   const handleGetQuote = () => {
     // Save to localStorage
     const quoteData = {
-      projectType,
-      deliverySpeed,
-      selectedPackage,
-      features,
-      domain,
-      hosting,
-      setup,
-      database,
-      storage,
-      authentication,
-      pricing,
+      projectType, deliverySpeed, selectedPackage, features,
+      addons, pricing,
       timestamp: new Date().toISOString()
     };
     localStorage.setItem('pendingQuote', JSON.stringify(quoteData));
@@ -286,7 +277,12 @@ export default function CalculatorSection() {
     document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const isSimpleProject = ['promo-graphics', 'ai-faceswap'].includes(projectType);
+  const currentProject = useMemo(() => {
+    const pTypes = config?.PROJECT_TYPES || PROJECT_TYPES;
+    return pTypes.find(p => p.id === projectType);
+  }, [projectType, config]);
+
+  const hasAddons = currentProject?.hasAddons;
 
   const booleanFeatures = useMemo(() => {
     const mergedFeatureCosts = { ...FEATURE_COSTS, ...(config?.FEATURE_COSTS || {}) };
@@ -394,7 +390,7 @@ export default function CalculatorSection() {
             <h3 className="calc__step-title">{"Select your package tier"}</h3>
 
             <div className="calc__packages">
-              {(config?.PACKAGES || PACKAGES).map(pkg => (
+              {((config?.PACKAGES && config?.PACKAGES[projectType]) || PACKAGES[projectType] || []).map(pkg => (
                 <motion.div
                   key={pkg.id}
                   className={`calc__package-card${selectedPackage === pkg.id ? ' calc__package-card--active' : ''}`}
@@ -406,7 +402,7 @@ export default function CalculatorSection() {
                   <div className="calc__package-mult">×{pkg.multiplier} multiplier</div>
                   <div className="calc__package-desc">{pkg.description}</div>
                   <div className="calc__package-features">
-                    {pkg.features.map(f => (
+                    {pkg.features?.map(f => (
                       <span key={f} className="calc__package-feature">{f}</span>
                     ))}
                   </div>
@@ -481,128 +477,30 @@ export default function CalculatorSection() {
             </div>
             )}
 
-            {/* Domain Options */}
-            {projectType !== 'marketing' && !isSimpleProject && (
-              <div className="calc__radio-group">
-                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Domain Options"}</div>
+
+            {/* Dynamic Addon Categories */}
+            {hasAddons && (config?.ADDON_CATEGORIES || ADDON_CATEGORIES).map(category => (
+              <div key={category.id} className="calc__radio-group">
+                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{category.title}</div>
                 <div className="calc__radio-options">
-                  {(config?.DOMAIN_OPTIONS || DOMAIN_OPTIONS).map(opt => (
+                  {(category.options || []).map(opt => (
                     <div
                       key={opt.value}
-                      className={`calc__radio-card${domain === opt.value ? ' calc__radio-card--active' : ''}`}
-                      onClick={() => setDomain(opt.value)}
+                      className={`calc__radio-card${addons[category.id] === opt.value ? ' calc__radio-card--active' : ''}`}
+                      onClick={() => setAddons(prev => ({ ...prev, [category.id]: opt.value }))}
                     >
                       <div className="calc__radio-card-label">{opt.label}</div>
                       {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{opt.cost.toLocaleString('en-IN')}</div>}
                       {opt.duration && <div className="calc__radio-card-desc">{opt.duration}</div>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Hosting Options */}
-            {projectType !== 'marketing' && !isSimpleProject && (
-              <div className="calc__radio-group">
-                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Hosting Options"}</div>
-                <div className="calc__radio-options">
-                  {(config?.HOSTING_OPTIONS || HOSTING_OPTIONS).map(opt => (
-                    <div
-                      key={opt.value}
-                      className={`calc__radio-card${hosting === opt.value ? ' calc__radio-card--active' : ''}`}
-                      onClick={() => setHosting(opt.value)}
-                    >
-                      <div className="calc__radio-card-label">{opt.label}</div>
-                      {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{opt.cost.toLocaleString('en-IN')}</div>}
                       {opt.description && <div className="calc__radio-card-desc">{opt.description}</div>}
                     </div>
                   ))}
                 </div>
               </div>
-            )}
-
-            {/* Database Options */}
-            {projectType !== 'marketing' && !isSimpleProject && (
-              <div className="calc__radio-group">
-                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Database Provider"}</div>
-                <div className="calc__radio-options">
-                  {(config?.DATABASE_OPTIONS || DATABASE_OPTIONS).map(opt => (
-                    <div
-                      key={opt.value}
-                      className={`calc__radio-card${database === opt.value ? ' calc__radio-card--active' : ''}`}
-                      onClick={() => setDatabase(opt.value)}
-                    >
-                      <div className="calc__radio-card-label">{opt.label}</div>
-                      {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{opt.cost.toLocaleString('en-IN')}</div>}
-                      {opt.description && <div className="calc__radio-card-desc">{opt.description}</div>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Storage Options */}
-            {projectType !== 'marketing' && !isSimpleProject && (
-              <div className="calc__radio-group">
-                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Storage Provider"}</div>
-                <div className="calc__radio-options">
-                  {(config?.STORAGE_OPTIONS || STORAGE_OPTIONS).map(opt => (
-                    <div
-                      key={opt.value}
-                      className={`calc__radio-card${storage === opt.value ? ' calc__radio-card--active' : ''}`}
-                      onClick={() => setStorage(opt.value)}
-                    >
-                      <div className="calc__radio-card-label">{opt.label}</div>
-                      {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{opt.cost.toLocaleString('en-IN')}</div>}
-                      {opt.description && <div className="calc__radio-card-desc">{opt.description}</div>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Authentication Options */}
-            {projectType !== 'marketing' && !isSimpleProject && (
-              <div className="calc__radio-group">
-                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Authentication Setup"}</div>
-                <div className="calc__radio-options">
-                  {(config?.AUTHENTICATION_OPTIONS || AUTHENTICATION_OPTIONS).map(opt => (
-                    <div
-                      key={opt.value}
-                      className={`calc__radio-card${authentication === opt.value ? ' calc__radio-card--active' : ''}`}
-                      onClick={() => setAuthentication(opt.value)}
-                    >
-                      <div className="calc__radio-card-label">{opt.label}</div>
-                      {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{opt.cost.toLocaleString('en-IN')}</div>}
-                      {opt.description && <div className="calc__radio-card-desc">{opt.description}</div>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-
-            {/* Setup Options */}
-            {projectType !== 'marketing' && !isSimpleProject && (
-              <div className="calc__radio-group">
-                <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Additional Setup"}</div>
-                <div className="calc__radio-options">
-                  {(config?.SETUP_OPTIONS || SETUP_OPTIONS).map(opt => (
-                    <div
-                      key={opt.value}
-                      className={`calc__radio-card${setup === opt.value ? ' calc__radio-card--active' : ''}`}
-                      onClick={() => setSetup(opt.value)}
-                    >
-                      <div className="calc__radio-card-label">{opt.label}</div>
-                      {opt.cost > 0 && <div className="calc__radio-card-mult">+₹{opt.cost.toLocaleString('en-IN')}</div>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            ))}
 
             {/* Maintenance */}
-            {projectType !== 'marketing' && !isSimpleProject && (
+            {hasAddons && (
               <div className="calc__radio-group">
                 <div className="calc__slider-label" style={{ marginBottom: 'var(--space-sm)' }}>{"Maintenance Support"}</div>
                 <div className="calc__radio-options">

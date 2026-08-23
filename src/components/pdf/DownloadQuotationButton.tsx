@@ -178,122 +178,25 @@ export default function DownloadQuotationButton({ quote, clientName }: DownloadQ
       let tableData: any[][] = [];
 
       if (rawConfig) {
-        let runningTotal = 0;
-        
-        // 1. Base Project
+        // Fallback backward compatibility for older quotes if they still have diffs or discounts
         const pType = PROJECT_TYPES.find((p: any) => p.id === rawConfig.projectType);
-        if (pType) {
-          tableData.push([
-            `${pType.name} Base`,
-            pType.description || 'Base Project Cost',
-            `Rs. ${(pType.basePrice || 0).toLocaleString()}`
-          ]);
-          runningTotal += pType.basePrice || 0;
-        }
+      }
 
-        // 2. Package Features (Included)
-        const pkgId = rawConfig.selectedPackage || rawConfig.package?.id;
-        const pkg = PACKAGES.find((p: any) => p.id === pkgId);
-        if (pkg && pkg.features) {
-          pkg.features.forEach((f: string) => {
-            tableData.push([
-              `✓ ${f}`,
-              `${pkg.name} Package Feature`,
-              'Included'
-            ]);
-          });
-        }
+      let parsedItems = [];
+      if (typeof quote.items === 'string') {
+        try { parsedItems = JSON.parse(quote.items); } catch(e) {}
+      } else if (Array.isArray(quote.items)) {
+        parsedItems = quote.items;
+      }
+      
+      tableData = parsedItems.map((item: any) => [
+        item.name || 'Item',
+        item.description || '-',
+        `Rs. ${(item.price || item.cost || 0).toLocaleString()}`
+      ]);
 
-        // 3. Selected Add-on Features
-        if (rawConfig.features) {
-          Object.entries(rawConfig.features).forEach(([key, value]) => {
-            if (value === true && FEATURE_COSTS[key as keyof typeof FEATURE_COSTS]) {
-              const f = FEATURE_COSTS[key as keyof typeof FEATURE_COSTS];
-              tableData.push([
-                f.label,
-                'Selected Feature',
-                `Rs. ${(f.cost || 0).toLocaleString()}`
-              ]);
-              runningTotal += f.cost || 0;
-            }
-          });
-          
-          if (rawConfig.features.apiIntegrations && rawConfig.features.apiIntegrations > 0) {
-            const apiCost = rawConfig.features.apiIntegrations * 1000;
-            tableData.push([
-              `${rawConfig.features.apiIntegrations} API Integrations`,
-              'Selected Feature',
-              `Rs. ${(apiCost).toLocaleString()}`
-            ]);
-            runningTotal += apiCost;
-          }
-        }
-
-        // 3.5 Additional Configuration Options
-        const addOptionToTable = (val: string | undefined, options: any[], category: string) => {
-          if (val && val !== 'none') {
-            const opt = options.find((o: any) => o.value === val);
-            if (opt) {
-              tableData.push([
-                opt.label,
-                opt.description || category,
-                `Rs. ${(opt.cost || 0).toLocaleString()}`
-              ]);
-              runningTotal += opt.cost || 0;
-            }
-          }
-        };
-
-        if (rawConfig.domain) addOptionToTable(rawConfig.domain, DOMAIN_OPTIONS, 'Domain Configuration');
-        if (rawConfig.hosting) addOptionToTable(rawConfig.hosting, HOSTING_OPTIONS, 'Hosting Provider');
-        if (rawConfig.setup) addOptionToTable(rawConfig.setup, SETUP_OPTIONS, 'Setup & Deployment');
-        if (rawConfig.database) addOptionToTable(rawConfig.database, DATABASE_OPTIONS, 'Database Provider');
-        if (rawConfig.storage) addOptionToTable(rawConfig.storage, STORAGE_OPTIONS, 'Storage Provider');
-        if (rawConfig.authentication) addOptionToTable(rawConfig.authentication, AUTHENTICATION_OPTIONS, 'Authentication Setup');
-
-        // Subtotal
-        tableData.push([
-          '',
-          'SUBTOTAL',
-          `Rs. ${runningTotal.toLocaleString()}`
-        ]);
-
-        // 4. Diff Calculation (Package Multiplier / Discounts)
-        const finalAmount = quote.amount || runningTotal;
-        const diff = finalAmount - runningTotal;
-        
-        if (diff > 0) {
-          tableData.push([
-            '',
-            `${pkg ? pkg.name : 'Package'} Multiplier & Delivery`,
-            `+ Rs. ${diff.toLocaleString()}`
-          ]);
-        } else if (diff < 0) {
-          tableData.push([
-            '',
-            `Special Offer Discount`,
-            `- Rs. ${Math.abs(diff).toLocaleString()}`
-          ]);
-        }
-
-      } else {
-        // Fallback if no raw config
-        let parsedItems = [];
-        if (typeof quote.items === 'string') {
-          try { parsedItems = JSON.parse(quote.items); } catch(e) {}
-        } else if (Array.isArray(quote.items)) {
-          parsedItems = quote.items;
-        }
-        
-        tableData = parsedItems.map((item: any) => [
-          item.name || 'Item',
-          item.description || item.value || '-',
-          `Rs. ${(item.price || item.cost || 0).toLocaleString()}`
-        ]);
-  
-        if (tableData.length === 0) {
-          tableData.push(['Base Project Package', 'Standard implementation as per requirements', `Rs. ${(quote.amount || 0).toLocaleString()}`]);
-        }
+      if (tableData.length === 0) {
+        tableData.push(['Base Project Package', 'Standard implementation as per requirements', `Rs. ${(quote.amount || 0).toLocaleString()}`]);
       }
 
       autoTable(doc, {

@@ -101,90 +101,684 @@ export const PROJECT_TYPES = [
   },
 ];
 
-export const PACKAGES = [
-  {
-    id: 'starter',
-    name: 'Starter',
-    multiplier: 1.0,
-    timelineMultiplier: 1.0,
-    description: 'Affordable essential package for individuals and small businesses',
-    features: [
-      'Responsive Design',
-      'Mobile & Desktop Support',
-      'Basic SEO',
-      'SSL Configuration',
-      'WhatsApp Integration',
-      'Contact Form',
-      '1 Revision Round',
-    ],
-    support: 'Email & WhatsApp Support',
-    badge: null,
-  },
-  {
-    id: 'professional',
-    name: 'Professional',
-    multiplier: 1.0,
-    timelineMultiplier: 1.0,
-    description: 'Premium package with enhanced design and functionality',
-    features: [
-      'Everything in Starter',
-      'Premium UI Design',
-      'Custom Animations',
-      'CMS Support',
-      'Google Analytics',
-      'Google Search Console',
-      'Social Media Integration',
-      'Gallery / Testimonials / FAQ',
-      '3 Revision Rounds',
-    ],
-    support: 'Priority Email + WhatsApp Support',
-    badge: 'Most Popular',
-  },
-  {
-    id: 'business',
-    name: 'Business',
-    multiplier: 1.0,
-    timelineMultiplier: 1.0,
-    description: 'Advanced package for growing businesses and professional applications',
-    features: [
-      'Everything in Professional',
-      'Admin Dashboard',
-      'Client Dashboard',
-      'Database Integration',
-      'Payment Gateway',
-      'Advanced Analytics',
-      'Advanced SEO',
-      'Email Notifications',
-      'API Integrations',
-      'Advanced Forms',
-      '3 Revision Rounds',
-    ],
-    support: 'Dedicated Support',
-    badge: null,
-  },
-  {
-    id: 'enterprise',
-    name: 'Enterprise',
-    multiplier: 1.0,
-    timelineMultiplier: 1.0,
-    description: 'Fully customized solution for advanced business requirements',
-    features: [
-      'Everything in Business',
-      'Advanced Database',
-      'Advanced Admin Panel',
-      'Advanced Client Dashboard',
-      'Real-time Features',
-      'Multiple API Integrations',
-      'Advanced Automation',
-      'Custom Business Logic',
-      'Advanced Analytics',
-      'Priority Development',
-      'Dedicated Support',
-    ],
-    support: 'Priority Dedicated Support',
-    badge: 'Premium',
-  },
-];
+export const PACKAGES = {
+  "landing": [
+    {
+      "id": "landing-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "1 Professional Page",
+        "Responsive Design",
+        "WhatsApp CTA",
+        "Basic SEO",
+        "SSL",
+        "1 Revision"
+      ]
+    },
+    {
+      "id": "landing-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "Premium UI Design",
+        "Custom Animations",
+        "Contact Form",
+        "Google Maps",
+        "Social Media Links",
+        "3 Revisions"
+      ]
+    },
+    {
+      "id": "landing-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "Advanced Animations",
+        "Analytics",
+        "Lead Management",
+        "Advanced SEO",
+        "API Integration"
+      ]
+    },
+    {
+      "id": "landing-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Custom Sections",
+        "Advanced Integrations",
+        "Custom Functionality",
+        "Priority Support"
+      ]
+    }
+  ],
+  "portfolio": [
+    {
+      "id": "portfolio-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "Up to 5 Pages",
+        "Home",
+        "About",
+        "Skills",
+        "Projects",
+        "Contact",
+        "Responsive Design"
+      ]
+    },
+    {
+      "id": "portfolio-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "Premium UI",
+        "Custom Animations",
+        "Dark / Light Mode",
+        "Resume Section",
+        "SEO",
+        "Analytics",
+        "WhatsApp"
+      ]
+    },
+    {
+      "id": "portfolio-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "CMS",
+        "Blog",
+        "Advanced SEO",
+        "Advanced Animations",
+        "Project Management"
+      ]
+    },
+    {
+      "id": "portfolio-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Custom CMS",
+        "Advanced Dashboard",
+        "API Integrations",
+        "Custom Features"
+      ]
+    }
+  ],
+  "business": [
+    {
+      "id": "business-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "Up to 5 Pages",
+        "Responsive Design",
+        "WhatsApp",
+        "Contact Form",
+        "Google Maps",
+        "Social Links",
+        "Basic SEO",
+        "SSL",
+        "1 Revision"
+      ]
+    },
+    {
+      "id": "business-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "Up to 8 Pages",
+        "Premium UI Design",
+        "Custom Animations",
+        "Gallery",
+        "Testimonials",
+        "FAQ",
+        "Google Analytics",
+        "Search Console",
+        "3 Revisions"
+      ]
+    },
+    {
+      "id": "business-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "CMS",
+        "Admin Dashboard",
+        "Blog",
+        "Lead Management",
+        "Advanced SEO",
+        "Analytics Dashboard",
+        "API Integration"
+      ]
+    },
+    {
+      "id": "business-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Client Dashboard",
+        "Database",
+        "Advanced Admin",
+        "Multiple API Integrations",
+        "Automation",
+        "Custom Business Logic"
+      ]
+    }
+  ],
+  "blog": [
+    {
+      "id": "blog-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "Blog",
+        "Categories",
+        "Search",
+        "Responsive Design",
+        "Basic SEO"
+      ]
+    },
+    {
+      "id": "blog-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "CMS",
+        "Admin Dashboard",
+        "Rich Text Editor",
+        "Tags",
+        "SEO Controls",
+        "Analytics"
+      ]
+    },
+    {
+      "id": "blog-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "Author Management",
+        "Comments",
+        "Newsletter",
+        "Advanced SEO",
+        "Advanced Analytics"
+      ]
+    },
+    {
+      "id": "blog-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Custom Publishing Workflow",
+        "Membership System",
+        "Advanced CMS",
+        "API Integrations"
+      ]
+    }
+  ],
+  "booking": [
+    {
+      "id": "booking-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "Services",
+        "Booking Form",
+        "Date Selection",
+        "Time Selection",
+        "WhatsApp",
+        "Email Notification",
+        "Responsive Design"
+      ]
+    },
+    {
+      "id": "booking-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "Online Payment",
+        "Customer Login",
+        "Booking Dashboard",
+        "Admin Dashboard",
+        "Cancellation",
+        "Rescheduling",
+        "Calendar Integration"
+      ]
+    },
+    {
+      "id": "booking-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "Staff Management",
+        "Multiple Services",
+        "Multiple Locations",
+        "Automated Reminders",
+        "Reports",
+        "Advanced Scheduling"
+      ]
+    },
+    {
+      "id": "booking-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Advanced Calendar",
+        "Custom Booking Logic",
+        "API Integrations",
+        "Automation",
+        "Advanced Reports"
+      ]
+    }
+  ],
+  "ecommerce": [
+    {
+      "id": "ecommerce-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "Responsive Store",
+        "Homepage",
+        "Product Catalog",
+        "Categories",
+        "Product Details",
+        "Cart",
+        "Basic Checkout",
+        "WhatsApp",
+        "Customer Order Form",
+        "Up to 20 Products",
+        "Basic SEO",
+        "SSL",
+        "1 Revision"
+      ]
+    },
+    {
+      "id": "ecommerce-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "Up to 100 Products",
+        "Customer Accounts",
+        "Wishlist",
+        "Product Variants",
+        "Coupons",
+        "Inventory Management",
+        "Order Management",
+        "Payment Gateway",
+        "Shipping Configuration",
+        "Product Reviews",
+        "Analytics",
+        "3 Revisions"
+      ]
+    },
+    {
+      "id": "ecommerce-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "250+ Products",
+        "Advanced Inventory",
+        "Advanced Search",
+        "Advanced Filters",
+        "Customer Dashboard",
+        "Sales Analytics",
+        "Advanced Admin",
+        "Email Notifications",
+        "Marketing Integrations",
+        "Advanced SEO",
+        "3 Months Maintenance"
+      ]
+    },
+    {
+      "id": "ecommerce-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Custom Store Features",
+        "Advanced Automation",
+        "Multiple Payment Gateways",
+        "Advanced Shipping",
+        "Advanced Reports",
+        "Custom API Integrations",
+        "Priority Support"
+      ]
+    }
+  ],
+  "crm": [
+    {
+      "id": "crm-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "User Login",
+        "Customer Management",
+        "Lead Management",
+        "Basic Dashboard",
+        "Database",
+        "Responsive Interface"
+      ]
+    },
+    {
+      "id": "crm-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "User Roles",
+        "Permissions",
+        "Advanced Dashboard",
+        "Search & Filters",
+        "Reports",
+        "Activity Tracking",
+        "Email Notifications"
+      ]
+    },
+    {
+      "id": "crm-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "Workflow Automation",
+        "Advanced Analytics",
+        "Multiple Users",
+        "Advanced Reports",
+        "API Integration",
+        "Admin Management"
+      ]
+    },
+    {
+      "id": "crm-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Custom Workflows",
+        "Advanced Automation",
+        "Multiple Integrations",
+        "Custom Modules",
+        "Advanced Security",
+        "Priority Support"
+      ]
+    }
+  ],
+  "saas": [
+    {
+      "id": "saas-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "Authentication",
+        "User Dashboard",
+        "Database",
+        "Responsive UI",
+        "User Management"
+      ]
+    },
+    {
+      "id": "saas-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "User Roles",
+        "Subscriptions",
+        "Payment Integration",
+        "Advanced Dashboard",
+        "Analytics",
+        "Email Notifications"
+      ]
+    },
+    {
+      "id": "saas-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "Advanced Permissions",
+        "Billing System",
+        "API Integrations",
+        "Automation",
+        "Admin Dashboard",
+        "Advanced Analytics"
+      ]
+    },
+    {
+      "id": "saas-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Multi-Tenant Architecture",
+        "Advanced Billing",
+        "Advanced Automation",
+        "Custom Integrations",
+        "Scalable Architecture",
+        "Priority Support"
+      ]
+    }
+  ],
+  "custom": [
+    {
+      "id": "custom-starter",
+      "name": "Starter",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Affordable essential package for individuals and small businesses",
+      "support": "Email & WhatsApp Support",
+      "badge": null,
+      "features": [
+        "Custom UI",
+        "Responsive Design",
+        "Authentication",
+        "Basic Dashboard",
+        "Database"
+      ]
+    },
+    {
+      "id": "custom-professional",
+      "name": "Professional",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Premium package with enhanced design and functionality",
+      "support": "Priority Email + WhatsApp Support",
+      "badge": "Most Popular",
+      "features": [
+        "Everything in Starter",
+        "Advanced Dashboard",
+        "User Roles",
+        "API Integrations",
+        "Analytics",
+        "Notifications"
+      ]
+    },
+    {
+      "id": "custom-business",
+      "name": "Business",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Advanced package for growing businesses and professional applications",
+      "support": "Dedicated Support",
+      "badge": null,
+      "features": [
+        "Everything in Professional",
+        "Advanced Workflows",
+        "Automation",
+        "Advanced Database",
+        "Multiple APIs",
+        "Admin Dashboard",
+        "Client Dashboard"
+      ]
+    },
+    {
+      "id": "custom-enterprise",
+      "name": "Enterprise",
+      "multiplier": 1,
+      "timelineMultiplier": 1,
+      "description": "Fully customized solution for advanced business requirements",
+      "support": "Priority Dedicated Support",
+      "badge": "Premium",
+      "features": [
+        "Everything in Business",
+        "Custom Architecture",
+        "Advanced Automation",
+        "Scalable Infrastructure",
+        "Advanced Integrations",
+        "Custom Business Logic"
+      ]
+    }
+  ],
+  "marketing": [],
+  "promo-graphics": [],
+  "ai-faceswap": []
+};
 
 export const FEATURE_COSTS = {
   adminDashboard: { cost: 3000, timeline: 3, label: 'Admin Dashboard', icon: 'LayoutDashboard' },
@@ -212,62 +806,7 @@ export const FEATURE_COSTS = {
   videoFaceswap: { cost: 1000, timeline: 1, label: 'Video Face Swap', icon: 'Video' },
 };
 
-export const PROJECT_PACKAGE_FEATURES = {
-  landing: {
-    starter: [ '1 Professional Page', 'Responsive Design', 'WhatsApp CTA', 'Basic SEO', 'SSL', '1 Revision' ],
-    professional: [ 'Everything in Starter', 'Premium UI Design', 'Custom Animations', 'Contact Form', 'Google Maps', 'Social Media Links', '3 Revisions' ],
-    business: [ 'Everything in Professional', 'Advanced Animations', 'Analytics', 'Lead Management', 'Advanced SEO', 'API Integration' ],
-    enterprise: [ 'Everything in Business', 'Custom Sections', 'Advanced Integrations', 'Custom Functionality', 'Priority Support' ],
-  },
-  portfolio: {
-    starter: [ 'Up to 5 Pages', 'Home', 'About', 'Skills', 'Projects', 'Contact', 'Responsive Design' ],
-    professional: [ 'Everything in Starter', 'Premium UI', 'Custom Animations', 'Dark / Light Mode', 'Resume Section', 'SEO', 'Analytics', 'WhatsApp' ],
-    business: [ 'Everything in Professional', 'CMS', 'Blog', 'Advanced SEO', 'Advanced Animations', 'Project Management' ],
-    enterprise: [ 'Everything in Business', 'Custom CMS', 'Advanced Dashboard', 'API Integrations', 'Custom Features' ],
-  },
-  business: {
-    starter: [ 'Up to 5 Pages', 'Responsive Design', 'WhatsApp', 'Contact Form', 'Google Maps', 'Social Links', 'Basic SEO', 'SSL', '1 Revision' ],
-    professional: [ 'Everything in Starter', 'Up to 8 Pages', 'Premium UI Design', 'Custom Animations', 'Gallery', 'Testimonials', 'FAQ', 'Google Analytics', 'Search Console', '3 Revisions' ],
-    business: [ 'Everything in Professional', 'CMS', 'Admin Dashboard', 'Blog', 'Lead Management', 'Advanced SEO', 'Analytics Dashboard', 'API Integration' ],
-    enterprise: [ 'Everything in Business', 'Client Dashboard', 'Database', 'Advanced Admin', 'Multiple API Integrations', 'Automation', 'Custom Business Logic' ],
-  },
-  blog: {
-    starter: [ 'Blog', 'Categories', 'Search', 'Responsive Design', 'Basic SEO' ],
-    professional: [ 'Everything in Starter', 'CMS', 'Admin Dashboard', 'Rich Text Editor', 'Tags', 'SEO Controls', 'Analytics' ],
-    business: [ 'Everything in Professional', 'Author Management', 'Comments', 'Newsletter', 'Advanced SEO', 'Advanced Analytics' ],
-    enterprise: [ 'Everything in Business', 'Custom Publishing Workflow', 'Membership System', 'Advanced CMS', 'API Integrations' ],
-  },
-  booking: {
-    starter: [ 'Services', 'Booking Form', 'Date Selection', 'Time Selection', 'WhatsApp', 'Email Notification', 'Responsive Design' ],
-    professional: [ 'Everything in Starter', 'Online Payment', 'Customer Login', 'Booking Dashboard', 'Admin Dashboard', 'Cancellation', 'Rescheduling', 'Calendar Integration' ],
-    business: [ 'Everything in Professional', 'Staff Management', 'Multiple Services', 'Multiple Locations', 'Automated Reminders', 'Reports', 'Advanced Scheduling' ],
-    enterprise: [ 'Everything in Business', 'Advanced Calendar', 'Custom Booking Logic', 'API Integrations', 'Automation', 'Advanced Reports' ],
-  },
-  ecommerce: {
-    starter: [ 'Responsive Store', 'Homepage', 'Product Catalog', 'Categories', 'Product Details', 'Cart', 'Basic Checkout', 'WhatsApp', 'Customer Order Form', 'Up to 20 Products', 'Basic SEO', 'SSL', '1 Revision' ],
-    professional: [ 'Everything in Starter', 'Up to 100 Products', 'Customer Accounts', 'Wishlist', 'Product Variants', 'Coupons', 'Inventory Management', 'Order Management', 'Payment Gateway', 'Shipping Configuration', 'Product Reviews', 'Analytics', '3 Revisions' ],
-    business: [ 'Everything in Professional', '250+ Products', 'Advanced Inventory', 'Advanced Search', 'Advanced Filters', 'Customer Dashboard', 'Sales Analytics', 'Advanced Admin', 'Email Notifications', 'Marketing Integrations', 'Advanced SEO', '3 Months Maintenance' ],
-    enterprise: [ 'Everything in Business', 'Custom Store Features', 'Advanced Automation', 'Multiple Payment Gateways', 'Advanced Shipping', 'Advanced Reports', 'Custom API Integrations', 'Priority Support' ],
-  },
-  crm: {
-    starter: [ 'User Login', 'Customer Management', 'Lead Management', 'Basic Dashboard', 'Database', 'Responsive Interface' ],
-    professional: [ 'Everything in Starter', 'User Roles', 'Permissions', 'Advanced Dashboard', 'Search & Filters', 'Reports', 'Activity Tracking', 'Email Notifications' ],
-    business: [ 'Everything in Professional', 'Workflow Automation', 'Advanced Analytics', 'Multiple Users', 'Advanced Reports', 'API Integration', 'Admin Management' ],
-    enterprise: [ 'Everything in Business', 'Custom Workflows', 'Advanced Automation', 'Multiple Integrations', 'Custom Modules', 'Advanced Security', 'Priority Support' ],
-  },
-  saas: {
-    starter: [ 'Authentication', 'User Dashboard', 'Database', 'Responsive UI', 'User Management' ],
-    professional: [ 'Everything in Starter', 'User Roles', 'Subscriptions', 'Payment Integration', 'Advanced Dashboard', 'Analytics', 'Email Notifications' ],
-    business: [ 'Everything in Professional', 'Advanced Permissions', 'Billing System', 'API Integrations', 'Automation', 'Admin Dashboard', 'Advanced Analytics' ],
-    enterprise: [ 'Everything in Business', 'Multi-Tenant Architecture', 'Advanced Billing', 'Advanced Automation', 'Custom Integrations', 'Scalable Architecture', 'Priority Support' ],
-  },
-  custom: {
-    starter: [ 'Custom UI', 'Responsive Design', 'Authentication', 'Basic Dashboard', 'Database' ],
-    professional: [ 'Everything in Starter', 'Advanced Dashboard', 'User Roles', 'API Integrations', 'Analytics', 'Notifications' ],
-    business: [ 'Everything in Professional', 'Advanced Workflows', 'Automation', 'Advanced Database', 'Multiple APIs', 'Admin Dashboard', 'Client Dashboard' ],
-    enterprise: [ 'Everything in Business', 'Custom Architecture', 'Advanced Automation', 'Scalable Infrastructure', 'Advanced Integrations', 'Custom Business Logic' ],
-  },
-};
+
 
 export const DOMAIN_OPTIONS = [
   { value: 'none', label: 'No Domain', cost: 0, timeline: 0, duration: 'No Domain' },
@@ -332,6 +871,39 @@ export const SETUP_OPTIONS = [
   { value: 'full', label: 'Full Deployment Setup', cost: 1000, timeline: 2 },
 ];
 
+export const ADDON_CATEGORIES = [
+  {
+    id: 'domain',
+    title: 'Domain Options',
+    options: DOMAIN_OPTIONS
+  },
+  {
+    id: 'hosting',
+    title: 'Hosting Options',
+    options: HOSTING_OPTIONS
+  },
+  {
+    id: 'database',
+    title: 'Database Provider',
+    options: DATABASE_OPTIONS
+  },
+  {
+    id: 'storage',
+    title: 'Storage Provider',
+    options: STORAGE_OPTIONS
+  },
+  {
+    id: 'authentication',
+    title: 'Authentication Setup',
+    options: AUTHENTICATION_OPTIONS
+  },
+  {
+    id: 'setup',
+    title: 'Additional Setup',
+    options: SETUP_OPTIONS
+  }
+];
+
 export const MAINTENANCE_OPTIONS = [
   { value: 'none', label: 'No Maintenance', cost: 0, timeline: 0 },
   { value: '3months', label: '3 Months Maintenance', cost: 1499, timeline: 0 },
@@ -345,15 +917,15 @@ export const DELIVERY_SPEEDS = {
 };
 
 export const PACKAGE_PRICES = {
-  landing: { starter: 1999, professional: 3499, business: 5999, enterprise: 9999 },
-  portfolio: { starter: 2999, professional: 5999, business: 9999, enterprise: 14999 },
-  business: { starter: 4999, professional: 9999, business: 17999, enterprise: 29999 },
-  blog: { starter: 4999, professional: 8999, business: 14999, enterprise: 24999 },
-  booking: { starter: 7999, professional: 14999, business: 24999, enterprise: 39999 },
-  ecommerce: { starter: 9999, professional: 17999, business: 29999, enterprise: 49999 },
-  crm: { starter: 24999, professional: 39999, business: 59999, enterprise: 99999 },
-  saas: { starter: 29999, professional: 49999, business: 79999, enterprise: 149999 },
-  custom: { starter: 29999, professional: 49999, business: 79999, enterprise: 149999 },
+  landing: { 'landing-starter': 1999, 'landing-professional': 3499, 'landing-business': 5999, 'landing-enterprise': 9999 },
+  portfolio: { 'portfolio-starter': 2999, 'portfolio-professional': 5999, 'portfolio-business': 9999, 'portfolio-enterprise': 14999 },
+  business: { 'business-starter': 4999, 'business-professional': 9999, 'business-business': 17999, 'business-enterprise': 29999 },
+  blog: { 'blog-starter': 4999, 'blog-professional': 8999, 'blog-business': 14999, 'blog-enterprise': 24999 },
+  booking: { 'booking-starter': 7999, 'booking-professional': 14999, 'booking-business': 24999, 'booking-enterprise': 39999 },
+  ecommerce: { 'ecommerce-starter': 9999, 'ecommerce-professional': 17999, 'ecommerce-business': 29999, 'ecommerce-enterprise': 49999 },
+  crm: { 'crm-starter': 24999, 'crm-professional': 39999, 'crm-business': 59999, 'crm-enterprise': 99999 },
+  saas: { 'saas-starter': 29999, 'saas-professional': 49999, 'saas-business': 79999, 'saas-enterprise': 149999 },
+  custom: { 'custom-starter': 29999, 'custom-professional': 49999, 'custom-business': 79999, 'custom-enterprise': 149999 },
 };
 
 export const CREATIVE_SERVICE_PRICES = {
@@ -394,7 +966,11 @@ export function calculatePricing(state, config = null) {
   let totalCost = projectType.basePrice;
   let totalTimeline = projectType.baseTimeline;
 
-  const pkgs = config?.PACKAGES || PACKAGES;
+  let pkgsObj = config?.PACKAGES || PACKAGES;
+  if (Array.isArray(pkgsObj)) {
+    pkgsObj = PACKAGES;
+  }
+  const pkgs = pkgsObj[state.projectType] || [];
   const selectedPkg = pkgs.find(p => p.id === state.selectedPackage);
   const pkgName = selectedPkg ? selectedPkg.name : 'Starter';
   
@@ -403,70 +979,23 @@ export function calculatePricing(state, config = null) {
 
   const isSimpleProject = ['promo-graphics', 'ai-faceswap'].includes(state.projectType);
 
-  // New configuration options
-  const dOpts = config?.DOMAIN_OPTIONS || DOMAIN_OPTIONS;
-  const hOpts = config?.HOSTING_OPTIONS || HOSTING_OPTIONS;
-  const sOpts = config?.SETUP_OPTIONS || SETUP_OPTIONS;
-
-  if (state.domain && state.domain !== 'none') {
-    const domain = dOpts.find(d => d.value === state.domain);
-    if (domain) {
-      totalCost += domain.cost;
-      totalTimeline += domain.timeline;
-      breakdown.push({ label: `Domain: ${domain.label}`, cost: domain.cost });
-    }
+  // Dynamic Addon Categories
+  const categories = config?.ADDON_CATEGORIES || ADDON_CATEGORIES;
+  if (state.addons) {
+    Object.entries(state.addons).forEach(([categoryId, selectedValue]) => {
+      if (selectedValue && selectedValue !== 'none') {
+        const category = categories.find(c => c.id === categoryId);
+        if (category) {
+          const option = category.options.find(o => o.value === selectedValue);
+          if (option) {
+            totalCost += option.cost || 0;
+            totalTimeline += option.timeline || 0;
+            breakdown.push({ label: `${category.title}: ${option.label}`, cost: option.cost || 0 });
+          }
+        }
+      }
+    });
   }
-
-  if (state.hosting && state.hosting !== 'none') {
-    const hosting = hOpts.find(h => h.value === state.hosting);
-    if (hosting) {
-      totalCost += hosting.cost;
-      totalTimeline += hosting.timeline;
-      breakdown.push({ label: `Hosting: ${hosting.label}`, cost: hosting.cost });
-    }
-  }
-
-  if (state.setup && state.setup !== 'none') {
-    const setup = sOpts.find(s => s.value === state.setup);
-    if (setup) {
-      totalCost += setup.cost;
-      totalTimeline += setup.timeline;
-      breakdown.push({ label: `Setup: ${setup.label}`, cost: setup.cost });
-    }
-  }
-
-  const dbOpts = config?.DATABASE_OPTIONS || DATABASE_OPTIONS;
-  const stOpts = config?.STORAGE_OPTIONS || STORAGE_OPTIONS;
-  const authOpts = config?.AUTHENTICATION_OPTIONS || AUTHENTICATION_OPTIONS;
-
-  if (state.database && state.database !== 'none') {
-    const db = dbOpts.find(d => d.value === state.database);
-    if (db) {
-      totalCost += db.cost;
-      totalTimeline += db.timeline;
-      breakdown.push({ label: `Database: ${db.label}`, cost: db.cost });
-    }
-  }
-
-  if (state.storage && state.storage !== 'none') {
-    const st = stOpts.find(s => s.value === state.storage);
-    if (st) {
-      totalCost += st.cost;
-      totalTimeline += st.timeline;
-      breakdown.push({ label: `Storage: ${st.label}`, cost: st.cost });
-    }
-  }
-
-  if (state.authentication && state.authentication !== 'none') {
-    const auth = authOpts.find(a => a.value === state.authentication);
-    if (auth) {
-      totalCost += auth.cost;
-      totalTimeline += auth.timeline;
-      breakdown.push({ label: `Auth: ${auth.label}`, cost: auth.cost });
-    }
-  }
-
-  // Removed infrastructure loop
 
   // Features
   const fCosts = { ...FEATURE_COSTS, ...(config?.FEATURE_COSTS || {}) };
@@ -498,9 +1027,8 @@ export function calculatePricing(state, config = null) {
     const pkgTimelineMult = pkg?.timelineMultiplier || 1;
     
     // Check if we have specific package prices defined
-    const pkgPrices = config?.PACKAGE_PRICES || PACKAGE_PRICES;
-    if (pkgPrices[state.projectType] && pkgPrices[state.projectType][state.selectedPackage]) {
-      const specificCost = pkgPrices[state.projectType][state.selectedPackage];
+    if (pkg && typeof pkg.cost === 'number' && pkg.cost > 0) {
+      const specificCost = pkg.cost;
       totalCost = totalCost - bItem.cost + specificCost;
       bItem.cost = specificCost;
     } else {
@@ -561,43 +1089,20 @@ export function calculatePricing(state, config = null) {
 function formatAdditionalOptions(state, config) {
   const opts = [];
   
-  if (state.domain && state.domain !== 'none') {
-    const dOpts = config?.DOMAIN_OPTIONS || DOMAIN_OPTIONS;
-    const domain = dOpts.find(d => d.value === state.domain);
-    if (domain) opts.push(`Domain: ${domain.label}`);
+  const categories = config?.ADDON_CATEGORIES || ADDON_CATEGORIES;
+  if (state.addons) {
+    Object.entries(state.addons).forEach(([categoryId, selectedValue]) => {
+      if (selectedValue && selectedValue !== 'none') {
+        const category = categories.find(c => c.id === categoryId);
+        if (category) {
+          const option = category.options.find(o => o.value === selectedValue);
+          if (option) {
+            opts.push(`${category.title}: ${option.label}`);
+          }
+        }
+      }
+    });
   }
-  
-  if (state.hosting && state.hosting !== 'none') {
-    const hOpts = config?.HOSTING_OPTIONS || HOSTING_OPTIONS;
-    const hosting = hOpts.find(h => h.value === state.hosting);
-    if (hosting) opts.push(`Hosting: ${hosting.label}`);
-  }
-  
-  if (state.setup && state.setup !== 'none') {
-    const sOpts = config?.SETUP_OPTIONS || SETUP_OPTIONS;
-    const setup = sOpts.find(s => s.value === state.setup);
-    if (setup) opts.push(`Setup: ${setup.label}`);
-  }
-  
-  if (state.database && state.database !== 'none') {
-    const dbOpts = config?.DATABASE_OPTIONS || DATABASE_OPTIONS;
-    const db = dbOpts.find(d => d.value === state.database);
-    if (db) opts.push(`Database: ${db.label}`);
-  }
-
-  if (state.storage && state.storage !== 'none') {
-    const stOpts = config?.STORAGE_OPTIONS || STORAGE_OPTIONS;
-    const st = stOpts.find(s => s.value === state.storage);
-    if (st) opts.push(`Storage: ${st.label}`);
-  }
-
-  if (state.authentication && state.authentication !== 'none') {
-    const authOpts = config?.AUTHENTICATION_OPTIONS || AUTHENTICATION_OPTIONS;
-    const auth = authOpts.find(a => a.value === state.authentication);
-    if (auth) opts.push(`Auth: ${auth.label}`);
-  }
-
-  // Removed infrastructure formatting
 
   return opts;
 }
@@ -606,7 +1111,8 @@ export function generateWhatsAppMessage(state, pricing, config = null) {
   const pTypes = config?.PROJECT_TYPES || PROJECT_TYPES;
   const fCosts = config?.FEATURE_COSTS || FEATURE_COSTS;
   const maintOpts = config?.MAINTENANCE_OPTIONS || MAINTENANCE_OPTIONS;
-  const pkgs = config?.PACKAGES || PACKAGES;
+  const pkgsObj = config?.PACKAGES || PACKAGES;
+  const pkgs = pkgsObj[state.projectType] || [];
 
   const projectType = pTypes.find(p => p.id === state.projectType);
   
@@ -652,7 +1158,8 @@ export function generateEmailBody(state, pricing, config = null) {
   const pTypes = config?.PROJECT_TYPES || PROJECT_TYPES;
   const fCosts = config?.FEATURE_COSTS || FEATURE_COSTS;
   const maintOpts = config?.MAINTENANCE_OPTIONS || MAINTENANCE_OPTIONS;
-  const pkgs = config?.PACKAGES || PACKAGES;
+  const pkgsObj = config?.PACKAGES || PACKAGES;
+  const pkgs = pkgsObj[state.projectType] || [];
 
   const projectType = pTypes.find(p => p.id === state.projectType);
   const additionalOptions = formatAdditionalOptions(state, config);

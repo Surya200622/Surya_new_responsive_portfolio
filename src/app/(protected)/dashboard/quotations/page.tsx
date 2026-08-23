@@ -195,6 +195,45 @@ export default async function ClientQuotationsPage() {
                   <p className="text-xl font-display font-bold text-[var(--color-text-primary)]">
                     ₹{(quote.amount || 0).toLocaleString()}
                   </p>
+                  
+                  <details className="mt-2 text-sm text-[var(--color-text-secondary)] group/details">
+                    <summary className="cursor-pointer hover:text-[var(--color-accent-primary)] transition-colors inline-flex items-center gap-1 select-none font-medium">
+                      <span className="group-open/details:hidden">► View Pricing Breakdown</span>
+                      <span className="hidden group-open/details:inline">▼ Hide Pricing Breakdown</span>
+                    </summary>
+                    <div className="mt-3 space-y-2 bg-[var(--color-bg-tertiary)] p-4 rounded-xl border border-[var(--color-glass-border)] text-sm">
+                      {(() => {
+                        let parsedItems = [];
+                        if (typeof quote.items === 'string') {
+                          try { parsedItems = JSON.parse(quote.items); } catch(e) {}
+                        } else if (Array.isArray(quote.items)) {
+                          parsedItems = quote.items;
+                        }
+                        
+                        if (parsedItems.length === 0) {
+                           return <div className="flex justify-between items-center"><span className="text-[var(--color-text-primary)]">Base Project Package</span><span className="font-bold text-[var(--color-text-primary)]">₹{(quote.amount || 0).toLocaleString()}</span></div>;
+                        }
+
+                        return (
+                          <>
+                            {parsedItems.map((item: any, i: number) => (
+                              <div key={i} className="flex justify-between items-start gap-4 pb-2 border-b border-[var(--color-glass-border)] last:border-0 last:pb-0">
+                                <div>
+                                  <div className="text-[var(--color-text-primary)]">{item.name || 'Item'}</div>
+                                  {item.description && <div className="text-[10px] text-[var(--color-text-muted)] mt-0.5">{item.description}</div>}
+                                </div>
+                                <span className="font-medium text-[var(--color-text-primary)] shrink-0">₹{(item.price || item.cost || 0).toLocaleString()}</span>
+                              </div>
+                            ))}
+                            <div className="pt-2 mt-2 border-t border-[var(--color-glass-border)] flex justify-between items-center font-bold text-[var(--color-text-primary)]">
+                                <span>Total Amount</span>
+                                <span className="text-[var(--color-accent-primary)]">₹{(quote.amount || 0).toLocaleString()}</span>
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </div>
+                  </details>
                 </div>
                 <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full sm:w-auto">
                   {quote.status !== 'rejected' && quote.status !== 'fully_paid' && (
