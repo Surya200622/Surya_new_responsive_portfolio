@@ -154,10 +154,10 @@ export default function CalculatorSettingsPage() {
           </p>
         </div>
         
-        <div className="flex items-center gap-3 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
           <button
             onClick={handleReset}
-            className="px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-white bg-[var(--color-bg-glass)] hover:bg-[var(--color-bg-glass-strong)] border border-[var(--color-glass-border)] rounded-xl transition-all flex items-center gap-2"
+            className="w-full sm:w-auto justify-center px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-white bg-[var(--color-bg-glass)] hover:bg-[var(--color-bg-glass-strong)] border border-[var(--color-glass-border)] rounded-xl transition-all flex items-center gap-2"
           >
             <RefreshCcw className="w-4 h-4" />
             Reset Defaults
@@ -166,7 +166,7 @@ export default function CalculatorSettingsPage() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="gradient-btn flex-1 sm:flex-none px-6 py-2 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-accent-primary)]/20 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="gradient-btn w-full sm:w-auto px-6 py-2 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-accent-primary)]/20 disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {saving ? (
               <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</>
@@ -301,7 +301,7 @@ export default function CalculatorSettingsPage() {
 
         {activeTab === 'providers' && (
           <div className="space-y-8">
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4 mb-6">
               <div>
                 <h2 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">Dynamic Add-on Categories</h2>
                 <p className="text-[var(--color-text-muted)] text-sm">Add and manage infrastructure dropdown options (like Hosting, Domains, etc.).</p>
@@ -315,7 +315,7 @@ export default function CalculatorSettingsPage() {
                   const newCategories = [...(config.ADDON_CATEGORIES || []), { id, title, options: [] }];
                   updateConfig('ADDON_CATEGORIES', newCategories);
                 }}
-                className="px-4 py-2 bg-[var(--color-accent-primary)] hover:bg-purple-600 text-white rounded-lg flex items-center gap-2"
+                className="w-full sm:w-auto justify-center px-4 py-2 bg-[var(--color-accent-primary)] hover:bg-purple-600 text-white rounded-lg flex items-center gap-2"
               >
                 + Add Category
               </button>
