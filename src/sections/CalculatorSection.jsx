@@ -174,40 +174,43 @@ export default function CalculatorSection() {
       if (!pkgId) return newFeatures;
       
       const pkgIdStr = String(pkgId).toLowerCase();
-      if (pkgIdStr.includes('starter')) {
-        newFeatures.seo = true;
-        newFeatures.hosting = true;
-      } else if (pkgIdStr.includes('professional')) {
-        newFeatures.seo = true;
-        newFeatures.hosting = true;
-        newFeatures.socialMediaSetup = true;
-        newFeatures.cms = true;
-        newFeatures.customAnimations = true;
-      } else if (pkgId.includes('business')) {
-        newFeatures.seo = true;
-        newFeatures.hosting = true;
-        newFeatures.socialMediaSetup = true;
-        newFeatures.cms = true;
-        newFeatures.customAnimations = true;
-        newFeatures.adminDashboard = true;
-        newFeatures.clientDashboard = true;
-        newFeatures.analyticsDashboard = true;
-        newFeatures.paymentGateway = true;
+      const pType = pkgIdStr.split('-')[0];
+      
+      // Find all textual features for this package, including inherited ones ("Everything in X")
+      const allPkgs = config?.PACKAGES || PACKAGES;
+      const projectPkgs = allPkgs[pType] || [];
+      
+      let allText = '';
+      const targetIndex = projectPkgs.findIndex(p => p.id === pkgId);
+      if (targetIndex !== -1) {
+        for (let i = 0; i <= targetIndex; i++) {
+          if (projectPkgs[i].features) {
+            allText += projectPkgs[i].features.join(' ').toLowerCase() + ' ';
+          }
+        }
+      }
+      
+      const has = (kw) => allText.includes(kw.toLowerCase());
+      
+      // Smart dynamic toggles based on actual textual features
+      if (has('seo')) newFeatures.seo = true;
+      if (has('hosting') || has('ssl') || has('domain') || has('responsive') || pkgIdStr.includes('starter')) newFeatures.hosting = true;
+      if (has('social media') || has('marketing')) newFeatures.socialMediaSetup = true;
+      if (has('cms') || has('content') || has('blog') || has('catalog')) newFeatures.cms = true;
+      if (has('animation') || has('premium ui')) newFeatures.customAnimations = true;
+      if (has('admin') || has('management') || has('dashboard')) newFeatures.adminDashboard = true;
+      if (has('customer') || has('client') || has('login') || has('account')) newFeatures.clientDashboard = true;
+      if (has('analytic') || has('report')) newFeatures.analyticsDashboard = true;
+      if (has('payment') || has('gateway') || has('checkout') || has('cart')) newFeatures.paymentGateway = true;
+      if (has('campaign') || has('ad ') || has('ads')) newFeatures.adCampaigns = true;
+      if (has('database') || has('inventory') || has('storage')) newFeatures.database = true;
+      if (has('chat') || has('messaging')) newFeatures.realtimeChat = true;
+      if (has('google business') || has('gbp')) newFeatures.googleBusinessProfile = true;
+      
+      // API Integrations (quantifiable)
+      if (pkgIdStr.includes('business')) {
         if (newFeatures.apiIntegrations === 0) newFeatures.apiIntegrations = 2;
-      } else if (pkgId.includes('enterprise')) {
-        newFeatures.seo = true;
-        newFeatures.hosting = true;
-        newFeatures.googleBusinessProfile = true;
-        newFeatures.socialMediaSetup = true;
-        newFeatures.cms = true;
-        newFeatures.customAnimations = true;
-        newFeatures.adminDashboard = true;
-        newFeatures.clientDashboard = true;
-        newFeatures.analyticsDashboard = true;
-        newFeatures.paymentGateway = true;
-        newFeatures.adCampaigns = true;
-        newFeatures.database = true;
-        newFeatures.realtimeChat = true;
+      } else if (pkgIdStr.includes('enterprise')) {
         if (newFeatures.apiIntegrations < 3) newFeatures.apiIntegrations = 5;
       }
       return newFeatures;
