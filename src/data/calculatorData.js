@@ -10,6 +10,7 @@ export const PROJECT_TYPES = [
     basePrice: 1999,
     baseTimeline: 5,
     description: 'High-converting professional single-page website',
+    hasAddons: true
   },
   {
     id: 'portfolio',
@@ -18,6 +19,7 @@ export const PROJECT_TYPES = [
     basePrice: 2999,
     baseTimeline: 7,
     description: 'Professional portfolio website for individuals and freelancers',
+    hasAddons: true
   },
   {
     id: 'business',
@@ -26,6 +28,7 @@ export const PROJECT_TYPES = [
     basePrice: 4999,
     baseTimeline: 7,
     description: 'Professional website for small and growing businesses',
+    hasAddons: true
   },
   {
     id: 'blog',
@@ -34,6 +37,7 @@ export const PROJECT_TYPES = [
     basePrice: 4999,
     baseTimeline: 7,
     description: 'Professional content and blogging website',
+    hasAddons: true
   },
   {
     id: 'booking',
@@ -42,6 +46,7 @@ export const PROJECT_TYPES = [
     basePrice: 7999,
     baseTimeline: 14,
     description: 'Online appointment and reservation website',
+    hasAddons: true
   },
   {
     id: 'ecommerce',
@@ -50,6 +55,7 @@ export const PROJECT_TYPES = [
     basePrice: 9999,
     baseTimeline: 14,
     description: 'Online store for selling products and managing orders',
+    hasAddons: true
   },
   {
     id: 'marketing',
@@ -58,6 +64,7 @@ export const PROJECT_TYPES = [
     basePrice: 22500,
     baseTimeline: 3,
     description: 'Google Business Profile setup and optimization',
+    hasAddons: false
   },
   {
     id: 'crm',
@@ -66,6 +73,7 @@ export const PROJECT_TYPES = [
     basePrice: 24999,
     baseTimeline: 20,
     description: 'Custom CRM and business management system',
+    hasAddons: true
   },
   {
     id: 'saas',
@@ -74,6 +82,7 @@ export const PROJECT_TYPES = [
     basePrice: 29999,
     baseTimeline: 25,
     description: 'Scalable software-as-a-service application',
+    hasAddons: true
   },
   {
     id: 'custom',
@@ -82,6 +91,7 @@ export const PROJECT_TYPES = [
     basePrice: 29999,
     baseTimeline: 25,
     description: 'Custom web application built for specific requirements',
+    hasAddons: true
   },
   {
     id: 'promo-graphics',
@@ -90,6 +100,7 @@ export const PROJECT_TYPES = [
     basePrice: 0,
     baseTimeline: 1,
     description: 'Promo videos, posters, logos and custom graphics',
+    hasAddons: false
   },
   {
     id: 'ai-faceswap',
@@ -98,6 +109,7 @@ export const PROJECT_TYPES = [
     basePrice: 0,
     baseTimeline: 1,
     description: 'AI-powered image and video face swap service',
+    hasAddons: false
   },
 ];
 
