@@ -196,12 +196,12 @@ export default async function ClientQuotationsPage() {
                     ₹{(quote.amount || 0).toLocaleString()}
                   </p>
                   
-                  <details className="mt-2 text-sm text-[var(--color-text-secondary)] group/details">
+                  <details className="mt-2 text-sm text-[var(--color-text-secondary)] group/details relative">
                     <summary className="cursor-pointer hover:text-[var(--color-accent-primary)] transition-colors inline-flex items-center gap-1 select-none font-medium">
                       <span className="group-open/details:hidden">► View Pricing Breakdown</span>
                       <span className="hidden group-open/details:inline">▼ Hide Pricing Breakdown</span>
                     </summary>
-                    <div className="mt-3 space-y-2 bg-[var(--color-bg-tertiary)] p-4 rounded-xl border border-[var(--color-glass-border)] text-sm">
+                    <div className="absolute top-full left-0 mt-2 space-y-2 bg-[var(--color-bg-tertiary)] p-4 rounded-xl border border-[var(--color-glass-border)] text-sm z-50 shadow-2xl min-w-[280px] max-w-[90vw] md:min-w-[350px] max-h-[60vh] overflow-y-auto custom-scrollbar backdrop-blur-xl">
                       {(() => {
                         let parsedItems = [];
                         if (typeof quote.items === 'string') {
