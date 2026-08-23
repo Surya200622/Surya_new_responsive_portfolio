@@ -112,7 +112,7 @@ export default function CalculatorSection() {
         const serviceParam = searchParams.get('service');
         if (serviceParam) {
           setProjectType(serviceParam);
-          if (serviceParam !== 'marketing') {
+          if (!['marketing', 'promo-graphics', 'ai-faceswap'].includes(serviceParam)) {
             handlePackageSelect('starter');
           } else {
             setFeatures(prev => {
@@ -346,7 +346,7 @@ export default function CalculatorSection() {
                 className={`calc__type-card${projectType === type.id ? ' calc__type-card--active' : ''}`}
                 onClick={() => {
                   setProjectType(type.id);
-                  if (type.id !== 'marketing') {
+                  if (!['marketing', 'promo-graphics', 'ai-faceswap'].includes(type.id)) {
                     handlePackageSelect('starter');
                   } else {
                     setFeatures(prev => {

@@ -67,7 +67,7 @@ export const PROJECT_TYPES = [
     id: 'marketing',
     name: 'Google Business Profile',
     icon: 'Rocket',
-    basePrice: 9999,
+    basePrice: 22500,
     baseTimeline: 6,
     description: 'Google Business Profile, Ads & Marketing',
   },
