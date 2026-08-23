@@ -31,6 +31,7 @@ const PACKAGE_SCHEMA: any = [
   { key: 'badge', label: 'Badge (Optional)', type: 'text' },
   { key: 'description', label: 'Description', type: 'textarea' },
   { key: 'features', label: 'Features (One per line)', type: 'stringArray' },
+  { key: 'autoFeatures', label: 'Auto-Enabled Extra Features (Overrides Smart Parser)', type: 'featureChecklist' },
 ];
 
 const FEATURE_SCHEMA: any = [
@@ -251,22 +252,37 @@ export default function CalculatorSettingsPage() {
             
             {(config.PROJECT_TYPES || [])
               .filter((p: any) => p.id === selectedPackageProject)
-              .map((project: any) => (
-              <div key={project.id}>
-                <ArrayEditor 
-                  title={`${project.name} Packages`}
-                  description={`Manage packages specifically for ${project.name}.`}
-                  value={config.PACKAGES?.[project.id] || []} 
-                  schema={PACKAGE_SCHEMA} 
-                  onChange={(val) => {
-                    const newPackages = { ...(config.PACKAGES || {}) };
-                    newPackages[project.id] = val;
-                    updateConfig('PACKAGES', newPackages);
-                  }}
-                  itemTitleKey="name"
-                />
-              </div>
-            ))}
+              .map((project: any) => {
+                const dynamicSchema = PACKAGE_SCHEMA.map((f: any) => {
+                  if (f.key === 'autoFeatures') {
+                    return {
+                      ...f,
+                      options: Object.entries(config.FEATURE_COSTS || FEATURE_COSTS).map(([k, v]: any) => ({
+                        id: k,
+                        label: v.label || k
+                      }))
+                    };
+                  }
+                  return f;
+                });
+                
+                return (
+                  <div key={project.id}>
+                    <ArrayEditor 
+                      title={`${project.name} Packages`}
+                      description={`Manage packages specifically for ${project.name}.`}
+                      value={config.PACKAGES?.[project.id] || []} 
+                      schema={dynamicSchema} 
+                      onChange={(val) => {
+                        const newPackages = { ...(config.PACKAGES || {}) };
+                        newPackages[project.id] = val;
+                        updateConfig('PACKAGES', newPackages);
+                      }}
+                      itemTitleKey="name"
+                    />
+                  </div>
+                );
+              })}
           </div>
         )}
 

@@ -190,22 +190,30 @@ export default function CalculatorSection() {
         }
       }
       
-      const has = (kw) => allText.includes(kw.toLowerCase());
+      const selectedPkg = targetIndex !== -1 ? projectPkgs[targetIndex] : null;
       
-      // Smart dynamic toggles based on actual textual features
-      if (has('seo')) newFeatures.seo = true;
-      if (has('hosting') || has('ssl') || has('domain') || has('responsive') || pkgIdStr.includes('starter')) newFeatures.hosting = true;
-      if (has('social media') || has('marketing')) newFeatures.socialMediaSetup = true;
-      if (has('cms') || has('content') || has('blog') || has('catalog')) newFeatures.cms = true;
-      if (has('animation') || has('premium ui')) newFeatures.customAnimations = true;
-      if (has('admin') || has('management') || has('dashboard')) newFeatures.adminDashboard = true;
-      if (has('customer') || has('client') || has('login') || has('account')) newFeatures.clientDashboard = true;
-      if (has('analytic') || has('report')) newFeatures.analyticsDashboard = true;
-      if (has('payment') || has('gateway') || has('checkout') || has('cart')) newFeatures.paymentGateway = true;
-      if (has('campaign') || has('ad ') || has('ads')) newFeatures.adCampaigns = true;
-      if (has('database') || has('inventory') || has('storage')) newFeatures.database = true;
-      if (has('chat') || has('messaging')) newFeatures.realtimeChat = true;
-      if (has('google business') || has('gbp')) newFeatures.googleBusinessProfile = true;
+      if (selectedPkg && Array.isArray(selectedPkg.autoFeatures) && selectedPkg.autoFeatures.length > 0) {
+        // Use manually defined feature checklist from Admin Dashboard
+        selectedPkg.autoFeatures.forEach(featKey => {
+          newFeatures[featKey] = true;
+        });
+      } else {
+        // Fallback: Smart dynamic toggles based on actual textual features
+        const has = (kw) => allText.includes(kw.toLowerCase());
+        if (has('seo')) newFeatures.seo = true;
+        if (has('hosting') || has('ssl') || has('domain') || has('responsive') || pkgIdStr.includes('starter')) newFeatures.hosting = true;
+        if (has('social media') || has('marketing')) newFeatures.socialMediaSetup = true;
+        if (has('cms') || has('content') || has('blog') || has('catalog')) newFeatures.cms = true;
+        if (has('animation') || has('premium ui')) newFeatures.customAnimations = true;
+        if (has('admin') || has('management') || has('dashboard')) newFeatures.adminDashboard = true;
+        if (has('customer') || has('client') || has('login') || has('account')) newFeatures.clientDashboard = true;
+        if (has('analytic') || has('report')) newFeatures.analyticsDashboard = true;
+        if (has('payment') || has('gateway') || has('checkout') || has('cart')) newFeatures.paymentGateway = true;
+        if (has('campaign') || has('ad ') || has('ads')) newFeatures.adCampaigns = true;
+        if (has('database') || has('inventory') || has('storage')) newFeatures.database = true;
+        if (has('chat') || has('messaging')) newFeatures.realtimeChat = true;
+        if (has('google business') || has('gbp')) newFeatures.googleBusinessProfile = true;
+      }
       
       // API Integrations (quantifiable)
       if (pkgIdStr.includes('business')) {

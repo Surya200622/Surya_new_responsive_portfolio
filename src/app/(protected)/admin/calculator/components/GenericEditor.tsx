@@ -6,7 +6,8 @@ import { Plus, Trash2, ChevronDown, ChevronRight, GripVertical } from 'lucide-re
 interface SchemaField {
   key: string;
   label: string;
-  type: 'text' | 'number' | 'textarea' | 'stringArray';
+  type: 'text' | 'number' | 'textarea' | 'stringArray' | 'boolean' | 'featureChecklist';
+  options?: { id: string, label: string }[];
 }
 
 interface ArrayEditorProps {
@@ -29,6 +30,10 @@ export function ArrayEditor({ title, description, value = [], schema, onChange, 
       finalValue = newValue === '' ? 0 : Number(newValue);
     } else if (type === 'stringArray') {
       finalValue = newValue.split('\n').filter((s: string) => s.trim() !== '');
+    } else if (type === 'boolean') {
+      finalValue = Boolean(newValue);
+    } else if (type === 'featureChecklist') {
+      finalValue = newValue;
     }
 
     updated[index] = { ...updated[index], [key]: finalValue };
@@ -38,7 +43,7 @@ export function ArrayEditor({ title, description, value = [], schema, onChange, 
   const handleAdd = () => {
     const newItem: any = {};
     schema.forEach(field => {
-      newItem[field.key] = field.type === 'number' ? 0 : field.type === 'stringArray' ? [] : '';
+      newItem[field.key] = field.type === 'number' ? 0 : field.type === 'stringArray' || field.type === 'featureChecklist' ? [] : field.type === 'boolean' ? false : '';
     });
     // Add unique ID suffix if there's an id or value field
     if (newItem.id !== undefined) newItem.id = `new_item_${Date.now()}`;
@@ -98,8 +103,9 @@ export function ArrayEditor({ title, description, value = [], schema, onChange, 
                       ? (Array.isArray(fieldValue) ? fieldValue.join('\n') : '') 
                       : (fieldValue || '');
 
+                    const isFullWidth = field.type === 'textarea' || field.type === 'stringArray' || field.type === 'featureChecklist';
                     return (
-                      <div key={field.key} className={field.type === 'textarea' || field.type === 'stringArray' ? 'md:col-span-2' : ''}>
+                      <div key={field.key} className={isFullWidth ? 'md:col-span-2' : ''}>
                         <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">{field.label}</label>
                         {field.type === 'textarea' || field.type === 'stringArray' ? (
                           <textarea
@@ -108,6 +114,40 @@ export function ArrayEditor({ title, description, value = [], schema, onChange, 
                             className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg p-2.5 text-sm text-[var(--color-text-primary)] focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] outline-none min-h-[80px]"
                             placeholder={field.type === 'stringArray' ? 'Enter items, one per line' : ''}
                           />
+                        ) : field.type === 'boolean' ? (
+                          <div className="flex items-center h-[42px] px-3 bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg">
+                            <input
+                              type="checkbox"
+                              checked={!!displayValue}
+                              onChange={(e) => handleFieldChange(index, field.key, e.target.checked, field.type)}
+                              className="w-4 h-4 text-[var(--color-accent-primary)] rounded bg-[var(--color-bg-glass)] border-[var(--color-glass-border)] focus:ring-[var(--color-accent-primary)]"
+                            />
+                            <span className="ml-3 text-sm text-[var(--color-text-primary)]">Enabled</span>
+                          </div>
+                        ) : field.type === 'featureChecklist' ? (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] p-4 rounded-xl">
+                            {(field.options || []).map(opt => {
+                              const isChecked = Array.isArray(displayValue) && displayValue.includes(opt.id);
+                              return (
+                                <label key={opt.id} className="flex items-center gap-2 cursor-pointer p-2 hover:bg-[var(--color-bg-glass)] rounded-lg transition-colors border border-transparent hover:border-[var(--color-glass-border)]">
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={(e) => {
+                                      const current = Array.isArray(displayValue) ? [...displayValue] : [];
+                                      if (e.target.checked) {
+                                        handleFieldChange(index, field.key, [...current, opt.id], field.type);
+                                      } else {
+                                        handleFieldChange(index, field.key, current.filter(id => id !== opt.id), field.type);
+                                      }
+                                    }}
+                                    className="w-4 h-4 text-[var(--color-accent-primary)] rounded bg-[var(--color-bg-glass)] border-[var(--color-glass-border)] focus:ring-[var(--color-accent-primary)]"
+                                  />
+                                  <span className="text-sm text-[var(--color-text-primary)] truncate">{opt.label}</span>
+                                </label>
+                              );
+                            })}
+                          </div>
                         ) : (
                           <input
                             type={field.type === 'number' ? 'number' : 'text'}
