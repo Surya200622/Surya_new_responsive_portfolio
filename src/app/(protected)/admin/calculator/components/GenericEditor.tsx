@@ -60,8 +60,8 @@ export function ArrayEditor({ title, description, value = [], schema, onChange, 
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
-        {description && <p className="text-sm text-gray-400 mt-1">{description}</p>}
+        <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">{title}</h3>
+        {description && <p className="text-sm text-[var(--color-text-secondary)] mt-1">{description}</p>}
       </div>
 
       <div className="space-y-2">
@@ -75,23 +75,23 @@ export function ArrayEditor({ title, description, value = [], schema, onChange, 
               >
                 <div className="flex items-center gap-3">
                   <GripVertical className="w-4 h-4 text-gray-500 cursor-grab" />
-                  <span className="font-medium text-gray-200">
+                  <span className="font-medium text-[var(--color-text-primary)]">
                     {item[itemTitleKey] || `Item ${index + 1}`}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <button 
                     onClick={(e) => { e.stopPropagation(); handleRemove(index); }}
-                    className="p-1.5 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                    className="p-1.5 text-[var(--color-text-muted)] hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
-                  {isExpanded ? <ChevronDown className="w-5 h-5 text-gray-400" /> : <ChevronRight className="w-5 h-5 text-gray-400" />}
+                  {isExpanded ? <ChevronDown className="w-5 h-5 text-[var(--color-text-muted)]" /> : <ChevronRight className="w-5 h-5 text-[var(--color-text-muted)]" />}
                 </div>
               </div>
 
               {isExpanded && (
-                <div className="p-4 border-t border-[var(--color-glass-border)] bg-black/20 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 border-t border-[var(--color-glass-border)] bg-[var(--color-bg-glass-strong)] grid grid-cols-1 md:grid-cols-2 gap-4">
                   {schema.map((field) => {
                     const fieldValue = item[field.key];
                     const displayValue = field.type === 'stringArray' 
@@ -100,12 +100,12 @@ export function ArrayEditor({ title, description, value = [], schema, onChange, 
 
                     return (
                       <div key={field.key} className={field.type === 'textarea' || field.type === 'stringArray' ? 'md:col-span-2' : ''}>
-                        <label className="block text-xs font-medium text-gray-400 mb-1.5">{field.label}</label>
+                        <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">{field.label}</label>
                         {field.type === 'textarea' || field.type === 'stringArray' ? (
                           <textarea
                             value={displayValue}
                             onChange={(e) => handleFieldChange(index, field.key, e.target.value, field.type)}
-                            className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg p-2.5 text-sm text-gray-200 focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] outline-none min-h-[80px]"
+                            className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg p-2.5 text-sm text-[var(--color-text-primary)] focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] outline-none min-h-[80px]"
                             placeholder={field.type === 'stringArray' ? 'Enter items, one per line' : ''}
                           />
                         ) : (
@@ -113,7 +113,7 @@ export function ArrayEditor({ title, description, value = [], schema, onChange, 
                             type={field.type === 'number' ? 'number' : 'text'}
                             value={displayValue}
                             onChange={(e) => handleFieldChange(index, field.key, e.target.value, field.type)}
-                            className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg p-2.5 text-sm text-gray-200 focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] outline-none"
+                            className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg p-2.5 text-sm text-[var(--color-text-primary)] focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] outline-none"
                           />
                         )}
                       </div>
@@ -201,8 +201,8 @@ export function ObjectEditor({ title, description, value = {}, schema, onChange,
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
-        {description && <p className="text-sm text-gray-400 mt-1">{description}</p>}
+        <h3 className="text-lg font-semibold text-[var(--color-text-primary)]">{title}</h3>
+        {description && <p className="text-sm text-[var(--color-text-secondary)] mt-1">{description}</p>}
       </div>
 
       <div className="space-y-2">
@@ -219,31 +219,31 @@ export function ObjectEditor({ title, description, value = {}, schema, onChange,
               >
                 <div className="flex items-center gap-3">
                   <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent-primary)]"></div>
-                  <span className="font-medium text-gray-200">
+                  <span className="font-medium text-[var(--color-text-primary)]">
                     {titleText || itemKey}
                   </span>
-                  <span className="text-xs text-gray-500 font-mono bg-black/30 px-2 py-0.5 rounded-md">{itemKey}</span>
+                  <span className="text-xs text-[var(--color-text-muted)] font-mono bg-[var(--color-bg-tertiary)] px-2 py-0.5 rounded-md border border-[var(--color-glass-border)]">{itemKey}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <button 
                     onClick={(e) => { e.stopPropagation(); handleRemove(itemKey); }}
-                    className="p-1.5 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                    className="p-1.5 text-[var(--color-text-muted)] hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
-                  {isExpanded ? <ChevronDown className="w-5 h-5 text-gray-400" /> : <ChevronRight className="w-5 h-5 text-gray-400" />}
+                  {isExpanded ? <ChevronDown className="w-5 h-5 text-[var(--color-text-muted)]" /> : <ChevronRight className="w-5 h-5 text-[var(--color-text-muted)]" />}
                 </div>
               </div>
 
               {isExpanded && (
-                <div className="p-4 border-t border-[var(--color-glass-border)] bg-black/20 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 border-t border-[var(--color-glass-border)] bg-[var(--color-bg-glass-strong)] grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-medium text-gray-400 mb-1.5">{keyLabel}</label>
+                    <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">{keyLabel}</label>
                     <input
                       type="text"
                       defaultValue={itemKey}
                       onBlur={(e) => handleKeyChange(itemKey, e.target.value)}
-                      className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg p-2.5 text-sm text-gray-200 font-mono focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] outline-none"
+                      className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg p-2.5 text-sm text-[var(--color-text-primary)] font-mono focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] outline-none"
                     />
                   </div>
                   
@@ -253,19 +253,19 @@ export function ObjectEditor({ title, description, value = {}, schema, onChange,
 
                     return (
                       <div key={field.key} className={field.type === 'textarea' ? 'md:col-span-2' : ''}>
-                        <label className="block text-xs font-medium text-gray-400 mb-1.5">{field.label}</label>
+                        <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5">{field.label}</label>
                         {field.type === 'textarea' ? (
                           <textarea
                             value={displayValue}
                             onChange={(e) => handleFieldChange(itemKey, field.key, e.target.value, field.type)}
-                            className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg p-2.5 text-sm text-gray-200 focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] outline-none min-h-[80px]"
+                            className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg p-2.5 text-sm text-[var(--color-text-primary)] focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] outline-none min-h-[80px]"
                           />
                         ) : (
                           <input
                             type={field.type === 'number' ? 'number' : 'text'}
                             value={displayValue}
                             onChange={(e) => handleFieldChange(itemKey, field.key, e.target.value, field.type)}
-                            className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg p-2.5 text-sm text-gray-200 focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] outline-none"
+                            className="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-glass-border)] rounded-lg p-2.5 text-sm text-[var(--color-text-primary)] focus:border-[var(--color-accent-primary)] focus:ring-1 focus:ring-[var(--color-accent-primary)] outline-none"
                           />
                         )}
                       </div>

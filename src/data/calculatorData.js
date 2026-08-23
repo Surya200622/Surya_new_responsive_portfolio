@@ -952,13 +952,7 @@ export const PRICING_RULES = {
 };
 
 export function calculatePricing(state, config = null) {
-  const pTypes = PROJECT_TYPES.map(p => {
-    const override = config?.PROJECT_TYPES?.find(c => c.id === p.id);
-    if (['promo-graphics', 'ai-faceswap'].includes(p.id)) {
-      return override ? { ...p, ...override, basePrice: 0 } : p;
-    }
-    return override ? { ...p, ...override } : p;
-  });
+  const pTypes = config?.PROJECT_TYPES || PROJECT_TYPES;
   const projectType = pTypes.find(p => p.id === state.projectType);
   if (!projectType) return { total: 0, timeline: 0, breakdown: [] };
 

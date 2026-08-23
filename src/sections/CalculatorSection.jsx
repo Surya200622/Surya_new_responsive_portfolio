@@ -173,10 +173,11 @@ export default function CalculatorSection() {
       
       if (!pkgId) return newFeatures;
       
-      if (pkgId.includes('starter')) {
+      const pkgIdStr = String(pkgId).toLowerCase();
+      if (pkgIdStr.includes('starter')) {
         newFeatures.seo = true;
         newFeatures.hosting = true;
-      } else if (pkgId.includes('professional')) {
+      } else if (pkgIdStr.includes('professional')) {
         newFeatures.seo = true;
         newFeatures.hosting = true;
         newFeatures.socialMediaSetup = true;
@@ -356,7 +357,13 @@ export default function CalculatorSection() {
                 onClick={() => {
                   setProjectType(type.id);
                   if (!['marketing', 'promo-graphics', 'ai-faceswap'].includes(type.id)) {
-                    handlePackageSelect('starter');
+                    const pkgsObj = config?.PACKAGES || PACKAGES;
+                    const typePkgs = pkgsObj[type.id] || [];
+                    if (typePkgs.length > 0) {
+                      handlePackageSelect(typePkgs[0].id);
+                    } else {
+                      handlePackageSelect('starter');
+                    }
                   } else {
                     setFeatures(prev => {
                       const newF = { ...prev };
