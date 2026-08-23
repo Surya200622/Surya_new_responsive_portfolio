@@ -73,13 +73,13 @@ export function ArrayEditor({ title, description, value = [], schema, onChange, 
                 className="flex items-center justify-between p-3 cursor-pointer hover:bg-[var(--color-bg-glass-strong)]"
                 onClick={() => setExpandedIndex(isExpanded ? null : index)}
               >
-                <div className="flex items-center gap-3">
-                  <GripVertical className="w-4 h-4 text-gray-500 cursor-grab" />
-                  <span className="font-medium text-[var(--color-text-primary)]">
+                <div className="flex items-center gap-3 min-w-0 flex-1 mr-2">
+                  <GripVertical className="w-4 h-4 text-gray-500 cursor-grab shrink-0" />
+                  <span className="font-medium text-[var(--color-text-primary)] truncate">
                     {item[itemTitleKey] || `Item ${index + 1}`}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                   <button 
                     onClick={(e) => { e.stopPropagation(); handleRemove(index); }}
                     className="p-1.5 text-[var(--color-text-muted)] hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
@@ -217,14 +217,14 @@ export function ObjectEditor({ title, description, value = {}, schema, onChange,
                 className="flex items-center justify-between p-3 cursor-pointer hover:bg-[var(--color-bg-glass-strong)]"
                 onClick={() => setExpandedKey(isExpanded ? null : itemKey)}
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent-primary)]"></div>
-                  <span className="font-medium text-[var(--color-text-primary)]">
+                <div className="flex items-center gap-3 min-w-0 flex-1 mr-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent-primary)] shrink-0"></div>
+                  <span className="font-medium text-[var(--color-text-primary)] truncate">
                     {titleText || itemKey}
                   </span>
-                  <span className="text-xs text-[var(--color-text-muted)] font-mono bg-[var(--color-bg-tertiary)] px-2 py-0.5 rounded-md border border-[var(--color-glass-border)]">{itemKey}</span>
+                  <span className="text-xs text-[var(--color-text-muted)] font-mono bg-[var(--color-bg-tertiary)] px-2 py-0.5 rounded-md border border-[var(--color-glass-border)] truncate shrink-0 hidden sm:inline-block">{itemKey}</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                   <button 
                     onClick={(e) => { e.stopPropagation(); handleRemove(itemKey); }}
                     className="p-1.5 text-[var(--color-text-muted)] hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"

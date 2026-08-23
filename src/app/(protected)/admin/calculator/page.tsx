@@ -229,7 +229,7 @@ export default function CalculatorSettingsPage() {
         {activeTab === 'packages' && (
           <div className="space-y-6">
             <div className="mb-6">
-              <h2 className="text-xl font-bold text-white mb-2">Packages by Project Type</h2>
+              <h2 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">Packages by Project Type</h2>
               <p className="text-[var(--color-text-muted)] text-sm mb-4">Each project type has its own distinct set of packages, features, and multipliers.</p>
               
               <div className="flex flex-wrap gap-2">
@@ -240,7 +240,7 @@ export default function CalculatorSettingsPage() {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                       selectedPackageProject === project.id
                         ? 'bg-[var(--color-accent-primary)] text-white'
-                        : 'bg-[var(--color-bg-glass)] text-gray-400 hover:text-white border border-[var(--color-glass-border)]'
+                        : 'bg-[var(--color-bg-glass)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] border border-[var(--color-glass-border)]'
                     }`}
                   >
                     {project.name}
@@ -287,7 +287,7 @@ export default function CalculatorSettingsPage() {
           <div className="space-y-8">
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-xl font-bold text-white mb-2">Dynamic Add-on Categories</h2>
+                <h2 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">Dynamic Add-on Categories</h2>
                 <p className="text-[var(--color-text-muted)] text-sm">Add and manage infrastructure dropdown options (like Hosting, Domains, etc.).</p>
               </div>
               <button 
