@@ -9,7 +9,7 @@ import AnalyticsTracker from "@/components/AnalyticsTracker";
 import { PROJECTS } from '../data/projectsData';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://suryacs.is-a.dev'),
+  metadataBase: new URL('https://suryacs-web.vercel.app'),
   applicationName: 'Suryacs Web Solutions',
   title: 'Suryacs Web Solutions | Full-Stack Python Developer | Coimbatore, India',
   description:
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    url: 'https://suryacs.is-a.dev',
+    url: 'https://suryacs-web.vercel.app',
     siteName: 'Suryacs Web Solutions',
     title: 'Suryacs Web Solutions | Full-Stack Python Developer',
     description:
@@ -93,26 +93,26 @@ export default function RootLayout({
               {
                 '@context': 'https://schema.org',
                 '@type': 'WebSite',
-                '@id': 'https://suryacs.is-a.dev/#website',
+                '@id': 'https://suryacs-web.vercel.app/#website',
                 name: 'Suryacs Web Solutions',
                 alternateName: ['suryacs', 'SuryaCS', 'Surya.CS', 'Cssurya'],
-                url: 'https://suryacs.is-a.dev/',
+                url: 'https://suryacs-web.vercel.app/',
                 publisher: {
                   '@type': 'Organization',
                   name: 'Suryacs Web Solutions',
                   logo: {
                     '@type': 'ImageObject',
-                    url: 'https://suryacs.is-a.dev/icon.svg'
+                    url: 'https://suryacs-web.vercel.app/icon.svg'
                   }
                 }
               },
               {
                 '@context': 'https://schema.org',
                 '@type': 'Person',
-                '@id': 'https://suryacs.is-a.dev/#person',
+                '@id': 'https://suryacs-web.vercel.app/#person',
                 name: 'Surya CS',
-                url: 'https://suryacs.is-a.dev',
-                image: 'https://suryacs.is-a.dev/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png',
+                url: 'https://suryacs-web.vercel.app',
+                image: 'https://suryacs-web.vercel.app/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png',
                 jobTitle: 'Full-Stack Python Developer',
                 description:
                   'B.Com.CA graduate from Sri Ramakrishna College of Arts & Science. IBM & ITC trained in Data Analytics. Django & React Specialist.',
@@ -132,19 +132,19 @@ export default function RootLayout({
                 sameAs: [
                   'https://github.com/Surya200622',
                   'https://linkedin.com/in/suryacs22/',
-                  'https://suryacs.is-a.dev',
+                  'https://suryacs-web.vercel.app',
                   'https://www.instagram.com/suryacs.is_a.dev/'
                 ],
               },
               {
                 '@context': 'https://schema.org',
                 '@type': 'LocalBusiness',
-                '@id': 'https://suryacs.is-a.dev/#localbusiness',
+                '@id': 'https://suryacs-web.vercel.app/#localbusiness',
                 name: 'Suryacs Web Solutions',
                 description: 'Full-Stack Python Developer specializing in Django, React, and modern web solutions.',
-                url: 'https://suryacs.is-a.dev',
-                image: 'https://suryacs.is-a.dev/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png',
-                logo: 'https://suryacs.is-a.dev/icon.svg',
+                url: 'https://suryacs-web.vercel.app',
+                image: 'https://suryacs-web.vercel.app/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png',
+                logo: 'https://suryacs-web.vercel.app/icon.svg',
                 telephone: '+918220443165',
                 address: {
                   '@type': 'PostalAddress',
@@ -165,8 +165,8 @@ export default function RootLayout({
                 '@type': 'CreativeWork',
                 name: project.title,
                 description: project.description,
-                image: `https://suryacs.is-a.dev${project.image}`,
-                url: project.link || 'https://suryacs.is-a.dev/projects',
+                image: `https://suryacs-web.vercel.app${project.image}`,
+                url: project.link || 'https://suryacs-web.vercel.app/projects',
                 genre: project.category,
               }))
             ]),

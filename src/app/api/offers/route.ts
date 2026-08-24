@@ -67,7 +67,7 @@ export async function POST(req: Request) {
             <div class="data-value" style="color: #f97316;">${(() => { const d = new Date(valid_until); return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; })()}</div>
           </div>
           <div style="margin: 30px 0; text-align: center;">
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev'}/${serviceQuery}#calculator" class="button">
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs-web.vercel.app'}/${serviceQuery}#calculator" class="button">
               Claim Offer Now
             </a>
           </div>
@@ -79,7 +79,7 @@ export async function POST(req: Request) {
         const emailPromises = clients.map(client => {
           if (client.email) {
             return resend.emails.send({
-              from: `Surya CS <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs.is-a.dev'}>`,
+              from: `Surya CS <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs-web.vercel.app'}>`,
               to: client.email,
               subject: `Exclusive Offer: ${title}`,
               html: htmlTemplate,

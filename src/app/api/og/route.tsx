@@ -74,7 +74,7 @@ export async function GET(request: Request) {
           </div>
           
           <div style={{ position: 'absolute', bottom: 40, color: 'rgba(255,255,255,0.5)', fontSize: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span>suryacs.is-a.dev</span>
+            <span>suryacs-web.vercel.app</span>
           </div>
         </div>
       ),

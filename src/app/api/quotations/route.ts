@@ -92,7 +92,7 @@ export async function POST(req: Request) {
           <p style="margin-top: 20px;">We have outlined the details in your client dashboard. You can review the full breakdown, make adjustments, and approve the quotation when you are ready.</p>
           
           <div style="margin: 30px 0; text-align: center;">
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev'}/dashboard/quotations" class="button">
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs-web.vercel.app'}/dashboard/quotations" class="button">
               View Full Quotation
             </a>
           </div>
@@ -105,7 +105,7 @@ export async function POST(req: Request) {
         );
 
         await resend.emails.send({
-          from: `Surya CS <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs.is-a.dev'}>`,
+          from: `Surya CS <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs-web.vercel.app'}>`,
           to: session.user.email,
           subject: `Your Project Quotation: ${projectName}`,
           html: htmlTemplate,

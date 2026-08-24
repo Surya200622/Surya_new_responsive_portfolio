@@ -86,7 +86,7 @@ export async function GET(request: Request) {
 
         try {
           await resend.emails.send({
-            from: `Surya CS <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs.is-a.dev'}>`,
+            from: `Surya CS <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs-web.vercel.app'}>`,
             to: clientEmail,
             bcc: 'suryacs.is.a.dev@gmail.com',
             subject: `Action Required: 3 Days Left for ${p.title}`,
@@ -151,7 +151,7 @@ export async function GET(request: Request) {
 
         try {
           await resend.emails.send({
-            from: `Surya CS <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs.is-a.dev'}>`,
+            from: `Surya CS <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs-web.vercel.app'}>`,
             to: clientEmail,
             subject: `Action Required: Your Quotation Expires in 3 Days`,
             html: getBrandEmailTemplate('Quotation Reminder', quoteEmailContent, 'Action Required'),

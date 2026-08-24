@@ -99,14 +99,14 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
           <p>${actionBody}</p>
           
           <div style="margin: 30px 0; text-align: center;">
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev'}/admin/quotations" class="button">
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs-web.vercel.app'}/admin/quotations" class="button">
               View Quotation Details
             </a>
           </div>
         `;
 
         await resend.emails.send({
-          from: `Portfolio System <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs.is-a.dev'}>`,
+          from: `Portfolio System <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs-web.vercel.app'}>`,
           to: 'suryacs.is.a.dev@gmail.com',
           subject: `${actionTitle} by ${session.user.email}`,
           html: getBrandEmailTemplate(actionTitle, emailContent, 'Client Action Notification'),

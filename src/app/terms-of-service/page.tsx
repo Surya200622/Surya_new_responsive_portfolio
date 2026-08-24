@@ -6,7 +6,7 @@ import '../legal.css';
 export const metadata: Metadata = {
   title: 'Terms of Service | Surya CS',
   description:
-    'Terms of Service for suryacs.is-a.dev — Read the terms and conditions governing your use of the Surya CS portfolio website.',
+    'Terms of Service for suryacs-web.vercel.app — Read the terms and conditions governing your use of the Surya CS portfolio website.',
 };
 
 export default function TermsOfServicePage() {
@@ -50,7 +50,7 @@ export default function TermsOfServicePage() {
             Terms of <span className="text-gradient">Service</span>
           </h1>
           <p className="legal-subtitle">
-            {"These terms govern your use of suryacs.is-a.dev and the services provided by Surya CS. Please read them carefully."}
+            {"These terms govern your use of suryacs-web.vercel.app and the services provided by Surya CS. Please read them carefully."}
           </p>
           <div className="legal-meta">
             <span>{"Effective Date: June 14, 2026"}</span>
@@ -69,7 +69,7 @@ export default function TermsOfServicePage() {
             <p>
               By accessing and using the portfolio website of{' '}
               <strong>Surya CS</strong> (&quot;we,&quot; &quot;us,&quot; or
-              &quot;our&quot;) located at <strong>suryacs.is-a.dev</strong>, you
+              &quot;our&quot;) located at <strong>suryacs-web.vercel.app</strong>, you
               accept and agree to be bound by these Terms of Service. If you do
               not agree with any part of these terms, please do not use our
               website.
@@ -347,10 +347,10 @@ export default function TermsOfServicePage() {
               <div className="legal-contact-item">
                 <span className="legal-contact-label">{"Website"}</span>
                 <a
-                  href="https://suryacs.is-a.dev"
+                  href="https://suryacs-web.vercel.app"
                   className="legal-contact-value legal-link"
                 >
-                  suryacs.is-a.dev
+                  suryacs-web.vercel.app
                 </a>
               </div>
             </div>

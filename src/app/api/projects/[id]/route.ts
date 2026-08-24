@@ -60,7 +60,7 @@ export async function PATCH(
       const { getBrandEmailTemplate } = await import('@/lib/email-template');
       const resend = new Resend(process.env.RESEND_API_KEY);
       
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs.is-a.dev';
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs-web.vercel.app';
       const reviewUrl = `${appUrl}/dashboard/reviews`;
 
       const emailContent = `

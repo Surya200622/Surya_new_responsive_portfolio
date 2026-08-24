@@ -34,7 +34,7 @@ export const PROJECTS = [
     image: '/images/Screenshot 2026-05-25 174918.png',
     tech: ['React.js', 'Vite', 'Framer Motion', 'CSS3'],
     year: '2025',
-    link: 'https://suryacs.is-a.dev',
+    link: 'https://suryacs-web.vercel.app',
   },
   {
     id: 'face-swap-editor',
@@ -140,7 +140,7 @@ export const SOCIAL_LINKS = [
   { name: 'LinkedIn', icon: 'Linkedin', url: 'https://linkedin.com/in/suryacs22/' },
   { name: 'Instagram', icon: 'Instagram', url: 'https://www.instagram.com/suryacs.is_a.dev/' },
   { name: 'Facebook', icon: 'Facebook', url: 'https://www.facebook.com/suryacswebsolutions' },
-  { name: 'YouTube', icon: 'Youtube', url: 'https://www.youtube.com/@suryacs.is-a.dev1' },
+  { name: 'YouTube', icon: 'Youtube', url: 'https://www.youtube.com/@suryacs-web.vercel.app1' },
 ];
 
 export const CONTACT_INFO = {
