@@ -73,16 +73,27 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account }) {
-      // Automatically sync Google profile picture if the user's DB image is null
-      if (account?.provider === 'google' && user?.image) {
+      // Automatically sync Google profile picture if the user's DB image is null and auto-assign admin role
+      if (account?.provider === 'google') {
         try {
-          const existingUser = await db.select({ image: users.image }).from(users).where(eq(users.email, user.email as string));
+          const existingUser = await db.select({ image: users.image, role: users.role }).from(users).where(eq(users.email, user.email as string));
           
-          if (existingUser.length > 0 && !existingUser[0].image) {
-            await db.update(users).set({ image: user.image }).where(eq(users.email, user.email as string));
+          if (existingUser.length > 0) {
+            const updateData: any = {};
+            if (user.image && !existingUser[0].image) {
+              updateData.image = user.image;
+            }
+            // Auto-assign admin role
+            if (user.email === 'suryacs.is.a.dev@gmail.com' && existingUser[0].role !== 'admin') {
+              updateData.role = 'admin';
+            }
+
+            if (Object.keys(updateData).length > 0) {
+              await db.update(users).set(updateData).where(eq(users.email, user.email as string));
+            }
           }
         } catch (error) {
-          console.error('Error syncing Google profile picture:', error);
+          console.error('Error in Google signIn callback:', error);
         }
       }
       return true;
