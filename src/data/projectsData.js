@@ -140,11 +140,11 @@ export const SOCIAL_LINKS = [
   { name: 'LinkedIn', icon: 'Linkedin', url: 'https://linkedin.com/in/suryacs22/' },
   { name: 'Instagram', icon: 'Instagram', url: 'https://www.instagram.com/suryacs.is_a.dev/' },
   { name: 'Facebook', icon: 'Facebook', url: 'https://www.facebook.com/suryacswebsolutions' },
-  { name: 'YouTube', icon: 'Youtube', url: 'https://www.youtube.com/@suryacs-web.vercel.app1' },
+  { name: 'YouTube', icon: 'Youtube', url: 'https://www.youtube.com/@suryacs-web-solutions' },
 ];
 
 export const CONTACT_INFO = {
-  email: 'suryacs.is.a.dev@gmail.com',
+  email: 'cssurya2006@gmail.com',
   whatsapp: '+918220443165',
   location: 'Coimbatore, Tamil Nadu, India',
 };

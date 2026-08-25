@@ -53,7 +53,7 @@ export const sendEmail = async ({
   });
 
   return await transporter.sendMail({
-    from: `"Portfolio Admin" <${emailUser}>`,
+    from: `"Suryacs web solutions" <${emailUser}>`,
     to,
     replyTo,
     subject,

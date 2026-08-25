@@ -3,6 +3,8 @@ import { db } from '@/db';
 import { siteSettings } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   try {
     const result = await db.select().from(siteSettings).where(eq(siteSettings.key, 'resume_url')).limit(1);

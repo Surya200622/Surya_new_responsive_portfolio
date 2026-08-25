@@ -104,7 +104,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         `;
 
         await sendEmail({
-          to: 'suryacs.is.a.dev@gmail.com',
+          to: 'cssurya2006@gmail.com',
           subject: `${actionTitle} by ${session.user.email}`,
           html: getBrandEmailTemplate(actionTitle, emailContent, 'Client Action Notification'),
         });

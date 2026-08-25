@@ -89,8 +89,8 @@ export default function PrivacyPolicyPage() {
               <li>
                 <strong>Email Communications:</strong> If you reach out to us
                 directly via email at{' '}
-                <a href="mailto:suryacs.is.a.dev@gmail.com" className="legal-link">
-                  suryacs.is.a.dev@gmail.com
+                <a href="mailto:cssurya2006@gmail.com" className="legal-link">
+                  cssurya2006@gmail.com
                 </a>
                 , we retain that correspondence.
               </li>
@@ -242,8 +242,8 @@ export default function PrivacyPolicyPage() {
             </ul>
             <p>
               To exercise any of these rights, please contact us at{' '}
-              <a href="mailto:suryacs.is.a.dev@gmail.com" className="legal-link">
-                suryacs.is.a.dev@gmail.com
+              <a href="mailto:cssurya2006@gmail.com" className="legal-link">
+                cssurya2006@gmail.com
               </a>
               .
             </p>
@@ -302,10 +302,10 @@ export default function PrivacyPolicyPage() {
               <div className="legal-contact-item">
                 <span className="legal-contact-label">{"Email"}</span>
                 <a
-                  href="mailto:suryacs.is.a.dev@gmail.com"
+                  href="mailto:cssurya2006@gmail.com"
                   className="legal-contact-value legal-link"
                 >
-                  suryacs.is.a.dev@gmail.com
+                  cssurya2006@gmail.com
                 </a>
               </div>
               <div className="legal-contact-item">

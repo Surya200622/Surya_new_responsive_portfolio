@@ -48,6 +48,7 @@ export default function ProtectedLayout({
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [settingsForm, setSettingsForm] = useState({ full_name: '', company_name: '', phone: '', new_password: '' });
+  const [emailSettingsForm, setEmailSettingsForm] = useState({ email_user: '', email_pass: '' });
   const [saving, setSaving] = useState(false);
   const [selectedNotifIds, setSelectedNotifIds] = useState<Set<string>>(new Set());
   const [clearingNotifs, setClearingNotifs] = useState(false);
@@ -65,11 +66,13 @@ export default function ProtectedLayout({
       }
 
       try {
+        let currentIsAdmin = false;
         const res = await fetch('/api/user/profile');
         if (res.ok) {
           const profileData = await res.json();
           setProfile(profileData);
-          setIsAdmin(profileData.role === 'admin');
+          currentIsAdmin = profileData.role === 'admin';
+          setIsAdmin(currentIsAdmin);
           setSettingsForm({
             full_name: profileData.full_name || '',
             company_name: profileData.company_name || '',
@@ -93,7 +96,8 @@ export default function ProtectedLayout({
             role: fallbackRole,
           };
           setProfile(fallbackProfile);
-          setIsAdmin(fallbackRole === 'admin');
+          currentIsAdmin = fallbackRole === 'admin';
+          setIsAdmin(currentIsAdmin);
           setSettingsForm({
             full_name: fallbackProfile.full_name,
             company_name: '',
@@ -102,6 +106,19 @@ export default function ProtectedLayout({
           });
           if (fallbackRole === 'admin' && pathname?.startsWith('/dashboard')) {
             router.push('/admin');
+          }
+        }
+        
+        // Fetch Admin Email Settings
+        if (currentIsAdmin) {
+          try {
+            const emailRes = await fetch('/api/admin/settings/email');
+            if (emailRes.ok) {
+              const emailData = await emailRes.json();
+              setEmailSettingsForm({ email_user: emailData.emailUser || '', email_pass: '' });
+            }
+          } catch (e) {
+            console.warn('Failed to fetch admin email settings', e);
           }
         }
 
@@ -279,20 +296,37 @@ export default function ProtectedLayout({
     setSaving(true);
     setSaveSuccess(false);
     
-    const res = await fetch('/api/user/profile', {
+    // Save user profile
+    const profilePromise = fetch('/api/user/profile', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(settingsForm)
     });
 
-    if (res.ok) {
+    let emailPromise = Promise.resolve(new Response(null, { status: 200 }));
+    if (isAdmin && (emailSettingsForm.email_user || emailSettingsForm.email_pass)) {
+      const payload: any = { emailUser: emailSettingsForm.email_user };
+      if (emailSettingsForm.email_pass) {
+        payload.emailPass = emailSettingsForm.email_pass;
+      }
+      emailPromise = fetch('/api/admin/settings/email', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    }
+
+    const [res, emailRes] = await Promise.all([profilePromise, emailPromise]);
+
+    if (res.ok && emailRes.ok) {
       setProfile(prev => prev ? { ...prev, ...settingsForm } : prev);
       setSettingsForm(prev => ({ ...prev, new_password: '' })); // clear password field
+      setEmailSettingsForm(prev => ({ ...prev, email_pass: '' }));
       await update();
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } else {
-      console.error('Failed to update profile');
+      console.error('Failed to update settings');
     }
     setSaving(false);
   };
@@ -678,7 +712,39 @@ export default function ProtectedLayout({
                   />
                 </div>
               </div>
-
+              {isAdmin && (
+                <div className="pt-4 border-t border-[var(--color-glass-border)] mt-4">
+                  <h3 className="text-sm font-display font-bold text-[var(--color-text-primary)] mb-4">SMTP Email Settings</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">SMTP Email User</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><Mail className="h-4 w-4 text-[var(--color-text-muted)]" /></div>
+                        <input
+                          type="email"
+                          className="auth-input pl-11"
+                          value={emailSettingsForm.email_user}
+                          onChange={e => setEmailSettingsForm({ ...emailSettingsForm, email_user: e.target.value })}
+                          placeholder="your-email@gmail.com"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-[var(--color-text-secondary)] mb-1.5 uppercase tracking-wider">SMTP App Password</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><Lock className="h-4 w-4 text-[var(--color-text-muted)]" /></div>
+                        <input
+                          type="password"
+                          className="auth-input pl-11"
+                          value={emailSettingsForm.email_pass}
+                          onChange={e => setEmailSettingsForm({ ...emailSettingsForm, email_pass: e.target.value })}
+                          placeholder="Leave blank to keep unchanged"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
             </div>
 

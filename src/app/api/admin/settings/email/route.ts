@@ -34,8 +34,8 @@ export async function POST(req: Request) {
 
     const { emailUser, emailPass } = await req.json();
 
-    if (!emailUser || !emailPass) {
-      return NextResponse.json({ error: 'Email User and Password are required' }, { status: 400 });
+    if (!emailUser) {
+      return NextResponse.json({ error: 'Email User is required' }, { status: 400 });
     }
 
     // Upsert EMAIL_USER
@@ -46,12 +46,14 @@ export async function POST(req: Request) {
       await db.insert(siteSettings).values({ id: crypto.randomUUID(), key: 'EMAIL_USER', value: emailUser, updatedAt: new Date() });
     }
 
-    // Upsert EMAIL_PASS
-    const existingPass = await db.select().from(siteSettings).where(eq(siteSettings.key, 'EMAIL_PASS')).limit(1);
-    if (existingPass.length > 0) {
-      await db.update(siteSettings).set({ value: emailPass, updatedAt: new Date() }).where(eq(siteSettings.key, 'EMAIL_PASS'));
-    } else {
-      await db.insert(siteSettings).values({ id: crypto.randomUUID(), key: 'EMAIL_PASS', value: emailPass, updatedAt: new Date() });
+    // Upsert EMAIL_PASS if provided
+    if (emailPass) {
+      const existingPass = await db.select().from(siteSettings).where(eq(siteSettings.key, 'EMAIL_PASS')).limit(1);
+      if (existingPass.length > 0) {
+        await db.update(siteSettings).set({ value: emailPass, updatedAt: new Date() }).where(eq(siteSettings.key, 'EMAIL_PASS'));
+      } else {
+        await db.insert(siteSettings).values({ id: crypto.randomUUID(), key: 'EMAIL_PASS', value: emailPass, updatedAt: new Date() });
+      }
     }
 
     return NextResponse.json({ success: true });

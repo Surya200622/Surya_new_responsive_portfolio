@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 
     try {
       await sendEmail({
-        to: 'suryacs.is.a.dev@gmail.com',
+        to: 'cssurya2006@gmail.com',
         replyTo: email,
         subject: `New Portfolio Inquiry from ${name}`,
         html: getBrandEmailTemplate('New Contact Form Submission', emailContent, `Inquiry from ${name}`),

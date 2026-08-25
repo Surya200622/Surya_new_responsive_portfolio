@@ -84,7 +84,7 @@ export const authOptions: NextAuthOptions = {
               updateData.image = user.image;
             }
             // Auto-assign admin role
-            if (user.email === 'suryacs.is.a.dev@gmail.com' && existingUser[0].role !== 'admin') {
+            if (user.email === 'cssurya2006@gmail.com' && existingUser[0].role !== 'admin') {
               updateData.role = 'admin';
             }
 

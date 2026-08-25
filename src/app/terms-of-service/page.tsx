@@ -332,10 +332,10 @@ export default function TermsOfServicePage() {
               <div className="legal-contact-item">
                 <span className="legal-contact-label">{"Email"}</span>
                 <a
-                  href="mailto:suryacs.is.a.dev@gmail.com"
+                  href="mailto:cssurya2006@gmail.com"
                   className="legal-contact-value legal-link"
                 >
-                  suryacs.is.a.dev@gmail.com
+                  cssurya2006@gmail.com
                 </a>
               </div>
               <div className="legal-contact-item">
