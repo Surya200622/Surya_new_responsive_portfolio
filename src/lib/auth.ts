@@ -54,7 +54,10 @@ export const authOptions: NextAuthOptions = {
 
         // Admin Secret Code Enforcement
         if (credentials.email === 'cssurya2006@gmail.com') {
-          if (credentials.password !== (process.env.ADMIN_SECRET || 'SURYA_ADMIN_SECURE')) {
+          if (!process.env.ADMIN_SECRET) {
+            throw new Error('Admin secret is not configured on the server');
+          }
+          if (credentials.password !== process.env.ADMIN_SECRET) {
              throw new Error('Invalid Admin Secret Key. You must use the secret code to login.');
           }
           if (!user) {

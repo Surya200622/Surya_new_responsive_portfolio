@@ -10,7 +10,7 @@ import { eq } from 'drizzle-orm';
 import { checkRateLimit, getIp } from '@/lib/rate-limit';
 
 const openai = new OpenAI({
-  apiKey: process.env.NVIDIA_API_KEY || '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',
+  apiKey: process.env.NVIDIA_API_KEY || '',
   baseURL: 'https://integrate.api.nvidia.com/v1',
 });
 
@@ -172,6 +172,7 @@ CRITICAL FORMATTING RULE:
 
     for (const model of nvidiaModels) {
       try {
+        if (!process.env.NVIDIA_API_KEY) throw new Error('NVIDIA API Key not configured');
         responseStream = await openai.chat.completions.create({
           model: model,
           messages: [

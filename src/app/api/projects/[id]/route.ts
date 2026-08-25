@@ -58,7 +58,7 @@ export async function PATCH(
 
     // Send the email if applicable
     if (clientEmail) {
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs-web.vercel.app';
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs-websolutions.vercel.app';
       const reviewUrl = `${appUrl}/dashboard/reviews`;
 
       const emailContent = `
