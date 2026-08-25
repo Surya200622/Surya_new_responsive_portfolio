@@ -4,7 +4,7 @@ import { users, projects, quotations } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { Resend } from 'resend';
+import { sendEmail } from '@/lib/email-service';
 import { getBrandEmailTemplate } from '@/lib/email-template';
 
 export async function POST(req: Request) {
@@ -68,8 +68,6 @@ export async function POST(req: Request) {
     // 3. Send Quotation via Email
     if (session.user.email) {
       try {
-        const resend = new Resend(process.env.RESEND_API_KEY);
-        
         const emailContent = `
           <h2 style="color: #f97316; margin-bottom: 10px;">Your Project Quotation</h2>
           <p>Thank you for requesting a quotation for your <strong>${projectName}</strong>.</p>
@@ -104,8 +102,7 @@ export async function POST(req: Request) {
           'Review your personalized project quotation'
         );
 
-        await resend.emails.send({
-          from: `Surya CS <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs-web.vercel.app'}>`,
+        await sendEmail({
           to: session.user.email,
           subject: `Your Project Quotation: ${projectName}`,
           html: htmlTemplate,

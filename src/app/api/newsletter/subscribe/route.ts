@@ -4,7 +4,7 @@ import { subscribers } from '@/db/schema';
 import { z } from 'zod';
 import { eq } from 'drizzle-orm';
 import crypto from 'crypto';
-import { Resend } from 'resend';
+import { sendEmail } from '@/lib/email-service';
 import { getBrandEmailTemplate } from '@/lib/email-template';
 
 const subscribeSchema = z.object({
@@ -37,8 +37,7 @@ export async function POST(req: Request) {
     });
 
     // Send Welcome Email
-    if (process.env.RESEND_API_KEY) {
-      const resend = new Resend(process.env.RESEND_API_KEY);
+    try {
       const emailContent = `
         <p>Thank you for subscribing to my newsletter!</p>
         <p>You will now receive updates on my latest projects, articles, and offers.</p>
@@ -46,12 +45,13 @@ export async function POST(req: Request) {
         <p>Best regards,<br/>Surya CS</p>
       `;
 
-      await resend.emails.send({
-        from: `Newsletter <${process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'}>`,
+      await sendEmail({
         to: email,
         subject: 'Welcome to the Newsletter!',
         html: getBrandEmailTemplate('Welcome to the Newsletter!', emailContent, 'Welcome!'),
       });
+    } catch (error) {
+      console.error('Failed to send welcome email:', error);
     }
 
     return NextResponse.json({ message: 'Subscribed successfully!' }, { status: 201 });

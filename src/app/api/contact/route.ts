@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { sendEmail } from '@/lib/email-service';
 import { getBrandEmailTemplate } from '@/lib/email-template';
 import { db } from '@/db';
 import { users, messages } from '@/db/schema';
@@ -20,8 +20,6 @@ export async function POST(request: Request) {
     if (!name || !email || !message) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
-
-    const resend = new Resend(process.env.RESEND_API_KEY);
 
     const emailContent = `
       <p>You have received a new message from your portfolio contact form.</p>
@@ -54,16 +52,15 @@ export async function POST(request: Request) {
       </div>
     `;
 
-    const { data, error } = await resend.emails.send({
-      from: `Portfolio Contact <${process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'}>`,
-      to: 'suryacs.is.a.dev@gmail.com',
-      reply_to: email,
-      subject: `New Portfolio Inquiry from ${name}`,
-      html: getBrandEmailTemplate('New Contact Form Submission', emailContent, `Inquiry from ${name}`),
-    });
-
-    if (error) {
-      console.error('Resend error:', error);
+    try {
+      await sendEmail({
+        to: 'suryacs.is.a.dev@gmail.com',
+        replyTo: email,
+        subject: `New Portfolio Inquiry from ${name}`,
+        html: getBrandEmailTemplate('New Contact Form Submission', emailContent, `Inquiry from ${name}`),
+      });
+    } catch (error: any) {
+      console.error('Email error:', error);
       return NextResponse.json({ error: error.message || 'Failed to send email' }, { status: 500 });
     }
 

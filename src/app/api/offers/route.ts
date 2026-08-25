@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { offers, users } from '@/db/schema';
 import { eq, desc, and, gt } from 'drizzle-orm';
-import { Resend } from 'resend';
+import { sendEmail } from '@/lib/email-service';
 import { getBrandEmailTemplate } from '@/lib/email-template';
 import { PROJECT_TYPES } from '@/data/calculatorData';
 
@@ -40,7 +40,6 @@ export async function POST(req: Request) {
         .where(eq(users.role, 'client'));
 
       if (clients && clients.length > 0) {
-        const resend = new Resend(process.env.RESEND_API_KEY);
 
         // Determine if there is a specific project type associated with this offer
         let serviceQuery = '';
@@ -78,8 +77,7 @@ export async function POST(req: Request) {
         // Send to all clients
         const emailPromises = clients.map(client => {
           if (client.email) {
-            return resend.emails.send({
-              from: `Surya CS <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs-web.vercel.app'}>`,
+            return sendEmail({
               to: client.email,
               subject: `Exclusive Offer: ${title}`,
               html: htmlTemplate,

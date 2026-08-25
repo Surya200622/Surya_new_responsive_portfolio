@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { sendEmail } from '@/lib/email-service';
 import { getBrandEmailTemplate } from '@/lib/email-template';
 
 export async function POST(request: Request) {
@@ -10,7 +10,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
 
     const emailContent = `
       <p>Your client account has been successfully created. Here are your registration details and secure login credentials:</p>
@@ -43,15 +42,14 @@ export async function POST(request: Request) {
       </p>
     `;
 
-    const { data, error } = await resend.emails.send({
-      from: `Portfolio Admin <${process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'}>`,
-      to: email, // Directly to the user
-      subject: `Welcome to Your Client Portal${name ? `, ${name}` : ''}`,
-      html: getBrandEmailTemplate('Welcome to Your Client Portal', emailContent, 'Your account details and login credentials'),
-    });
-
-    if (error) {
-      console.error('Resend error:', error);
+    try {
+      await sendEmail({
+        to: email, // Directly to the user
+        subject: `Welcome to Your Client Portal${name ? `, ${name}` : ''}`,
+        html: getBrandEmailTemplate('Welcome to Your Client Portal', emailContent, 'Your account details and login credentials'),
+      });
+    } catch (error: any) {
+      console.error('Email error:', error);
       return NextResponse.json({ error: error.message || 'Failed to send email' }, { status: 500 });
     }
 

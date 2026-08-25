@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { projects, users } from '@/db/schema';
 import { eq, and, isNotNull, sql } from 'drizzle-orm';
-import { Resend } from 'resend';
+import { sendEmail } from '@/lib/email-service';
 import { getBrandEmailTemplate } from '@/lib/email-template';
 
 export const dynamic = 'force-dynamic';
@@ -33,7 +33,6 @@ export async function GET(request: Request) {
         )
       );
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
     let emailsSent = 0;
 
     for (const data of activeProjects) {
@@ -85,10 +84,8 @@ export async function GET(request: Request) {
         `;
 
         try {
-          await resend.emails.send({
-            from: `Surya CS <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs-web.vercel.app'}>`,
+          await sendEmail({
             to: clientEmail,
-            bcc: 'suryacs.is.a.dev@gmail.com',
             subject: `Action Required: 3 Days Left for ${p.title}`,
             html: getBrandEmailTemplate('Project Deadline Reminder', emailContent, 'Important Project Update'),
           });
@@ -150,8 +147,7 @@ export async function GET(request: Request) {
         `;
 
         try {
-          await resend.emails.send({
-            from: `Surya CS <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs-web.vercel.app'}>`,
+          await sendEmail({
             to: clientEmail,
             subject: `Action Required: Your Quotation Expires in 3 Days`,
             html: getBrandEmailTemplate('Quotation Reminder', quoteEmailContent, 'Action Required'),

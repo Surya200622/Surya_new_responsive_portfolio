@@ -4,6 +4,8 @@ import { projects } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { sendEmail } from '@/lib/email-service';
+import { getBrandEmailTemplate } from '@/lib/email-template';
 
 export async function PATCH(
   request: Request,
@@ -55,11 +57,7 @@ export async function PATCH(
       .where(eq(projects.id, id));
 
     // Send the email if applicable
-    if (clientEmail && process.env.RESEND_API_KEY) {
-      const { Resend } = await import('resend');
-      const { getBrandEmailTemplate } = await import('@/lib/email-template');
-      const resend = new Resend(process.env.RESEND_API_KEY);
-      
+    if (clientEmail) {
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs-web.vercel.app';
       const reviewUrl = `${appUrl}/dashboard/reviews`;
 
@@ -73,12 +71,15 @@ export async function PATCH(
         <p style="margin-top: 30px;">Best regards,<br/>Surya CS</p>
       `;
 
-      await resend.emails.send({
-        from: `Surya CS <${process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'}>`,
-        to: clientEmail,
-        subject: 'Project Completed - Your feedback is appreciated!',
-        html: getBrandEmailTemplate('Project Completed', emailContent, 'Review Request'),
-      });
+      try {
+        await sendEmail({
+          to: clientEmail,
+          subject: 'Project Completed - Your feedback is appreciated!',
+          html: getBrandEmailTemplate('Project Completed', emailContent, 'Review Request'),
+        });
+      } catch (err) {
+        console.error('Failed to send review request email:', err);
+      }
     }
 
     return NextResponse.json({ success: true });

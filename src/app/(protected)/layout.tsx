@@ -306,6 +306,7 @@ export default function ProtectedLayout({
     { label: 'Calculator', href: '/admin/calculator', icon: Calculator },
     { label: 'Testimonials', href: '/admin/testimonials', icon: Star },
     { label: 'Subscribers', href: '/admin/subscribers', icon: Mail },
+    { label: 'Email Settings', href: '/admin/settings/email', icon: Settings },
   ] : [
     { label: 'Dashboard', href: '/dashboard', icon: Home },
     { label: 'Messages', href: '/dashboard/messages', icon: MessageSquare },

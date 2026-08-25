@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { users, verificationTokens } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { Resend } from 'resend';
+import { sendEmail } from '@/lib/email-service';
 import { getBrandEmailTemplate } from '@/lib/email-template';
 import { checkRateLimit, getIp } from '@/lib/rate-limit';
 
@@ -38,7 +38,6 @@ export async function POST(req: Request) {
       expires,
     });
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
     const resetLink = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/reset-password?token=${token}`;
 
     const emailContent = `
@@ -53,15 +52,14 @@ export async function POST(req: Request) {
       <p>If you did not request this, you can safely ignore this email. Your password will not be changed.</p>
     `;
 
-    const { error } = await resend.emails.send({
-      from: `Portfolio Admin <${process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'}>`,
-      to: email, 
-      subject: 'Reset Your Password - Client Portal',
-      html: getBrandEmailTemplate('Password Reset Request', emailContent, 'Reset your client portal password'),
-    });
-
-    if (error) {
-      console.error('Resend error:', error);
+    try {
+      await sendEmail({
+        to: email, 
+        subject: 'Reset Your Password - Client Portal',
+        html: getBrandEmailTemplate('Password Reset Request', emailContent, 'Reset your client portal password'),
+      });
+    } catch (error: any) {
+      console.error('Email error:', error);
       return NextResponse.json({ error: error.message || 'Failed to send email' }, { status: 500 });
     }
 

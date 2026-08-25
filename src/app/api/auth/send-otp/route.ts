@@ -5,7 +5,7 @@ import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import { registerSchema } from '@/lib/validations/auth';
 import { checkRateLimit, getIp } from '@/lib/rate-limit';
-import { Resend } from 'resend';
+import { sendEmail } from '@/lib/email-service';
 import { getBrandEmailTemplate } from '@/lib/email-template';
 
 export async function POST(req: NextRequest) {
@@ -68,9 +68,6 @@ export async function POST(req: NextRequest) {
       }
     });
 
-    // Send email via Resend
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    
     const emailContent = `
       <p>Hello ${validData.fullName},</p>
       <p>Thank you for starting your registration. Please use the following 4-digit PIN to verify your email address and complete your signup:</p>
@@ -84,15 +81,15 @@ export async function POST(req: NextRequest) {
       <p>This PIN is valid for 30 minutes. If you did not request this registration, you can safely ignore this email.</p>
     `;
 
-    const { error } = await resend.emails.send({
-      from: `Portfolio Admin <${process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'}>`,
-      to: validData.email, 
-      subject: 'Your Registration Verification PIN',
-      html: getBrandEmailTemplate('Verify Your Email', emailContent, 'Use this PIN to complete your registration'),
-    });
-
-    if (error) {
-      console.error('Resend error:', error);
+    // Send email via Nodemailer
+    try {
+      await sendEmail({
+        to: validData.email, 
+        subject: 'Your Registration Verification PIN',
+        html: getBrandEmailTemplate('Verify Your Email', emailContent, 'Use this PIN to complete your registration'),
+      });
+    } catch (error: any) {
+      console.error('Email error:', error);
       return NextResponse.json({ error: error.message || 'Failed to send verification email' }, { status: 500 });
     }
 

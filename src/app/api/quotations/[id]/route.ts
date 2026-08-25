@@ -4,7 +4,7 @@ import { quotations, projects } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { Resend } from 'resend';
+import { sendEmail } from '@/lib/email-service';
 import { getBrandEmailTemplate } from '@/lib/email-template';
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -82,8 +82,6 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     // 3. Send notification to admin
     try {
       if (session.user.email) {
-        const resend = new Resend(process.env.RESEND_API_KEY);
-        
         let actionTitle = `Quotation ${action === 'accept' ? 'Accepted' : 'Rejected'}`;
         let actionBody = `The client (<strong>${session.user.email}</strong>) has ${action === 'accept' ? 'accepted' : 'rejected'} the quotation for Project ID: ${projectId}.`;
         
@@ -105,8 +103,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
           </div>
         `;
 
-        await resend.emails.send({
-          from: `Portfolio System <noreply@${process.env.RESEND_FROM_EMAIL?.split('@')[1] || 'suryacs-web.vercel.app'}>`,
+        await sendEmail({
           to: 'suryacs.is.a.dev@gmail.com',
           subject: `${actionTitle} by ${session.user.email}`,
           html: getBrandEmailTemplate(actionTitle, emailContent, 'Client Action Notification'),
