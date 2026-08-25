@@ -14,19 +14,31 @@ const QUICK_REPLIES = [
 
 const renderMessage = (content) => {
   if (!content) return null;
-  const lines = content.split('\n');
+  // Strip horizontal rules or equal signs used for dividers
+  let cleanContent = content.replace(/={3,}/g, '').replace(/-{4,}/g, '');
+  
+  const lines = cleanContent.split('\n');
   return lines.map((line, i) => {
-    const parts = line.split(/(\*\*.*?\*\*)/g);
+    // Convert headings to bold
+    let processedLine = line.trim();
+    if (processedLine.startsWith('###')) {
+      processedLine = `**${processedLine.replace(/^###\s*/, '')}**`;
+    } else if (processedLine.startsWith('##')) {
+      processedLine = `**${processedLine.replace(/^##\s*/, '')}**`;
+    } else if (processedLine.startsWith('#')) {
+      processedLine = `**${processedLine.replace(/^#\s*/, '')}**`;
+    }
+
+    const parts = processedLine.split(/(\*\*.*?\*\*)/g);
     return (
-      <span key={i}>
+      <div key={i} style={{ minHeight: processedLine === '' ? '12px' : 'auto', marginBottom: '4px' }}>
         {parts.map((part, j) => {
           if (part.startsWith('**') && part.endsWith('**')) {
             return <strong key={j}>{part.slice(2, -2)}</strong>;
           }
           return <span key={j}>{part}</span>;
         })}
-        {i < lines.length - 1 && <br />}
-      </span>
+      </div>
     );
   });
 };
