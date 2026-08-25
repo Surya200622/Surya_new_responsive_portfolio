@@ -10,7 +10,7 @@ import { eq } from 'drizzle-orm';
 import { checkRateLimit, getIp } from '@/lib/rate-limit';
 
 const openai = new OpenAI({
-  apiKey: process.env.NVIDIA_API_KEY || '',
+  apiKey: process.env.NVIDIA_API_KEY || 'dummy_key_to_bypass_build_error',
   baseURL: 'https://integrate.api.nvidia.com/v1',
 });
 
