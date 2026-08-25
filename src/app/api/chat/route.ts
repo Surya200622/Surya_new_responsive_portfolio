@@ -160,38 +160,64 @@ CRITICAL FORMATTING RULE:
 
     const systemInstruction = isAdmin ? `${BASE_PROMPT}\n\n${ADMIN_PROMPT}${adminDataText}\n${pageContextText}\n${formattingRule}` : `${BASE_PROMPT}\n\n${CLIENT_RESTRICTION}${clientProjectsText}\n${pageContextText}\n${formattingRule}`;
     
-    // We will attempt NVIDIA first, then fallback to Groq if it fails immediately.
+    // We will attempt NVIDIA models first, then fallback to Groq if they fail.
     let responseStream: any = null;
     let isNvidia = true;
     
-    try {
-      responseStream = await openai.chat.completions.create({
-        model: "z-ai/glm-5.2",
-        messages: [
-          { role: 'system', content: systemInstruction },
-          { role: 'user', content: message }
-        ],
-        temperature: 0.7,
-        top_p: 1,
-        max_tokens: 4000,
-        stream: true
-      });
-    } catch (nvidiaError: any) {
-      console.warn('NVIDIA API failed, falling back to Groq:', nvidiaError.message);
-      isNvidia = false;
-      
+    const nvidiaModels = [
+      "meta/llama-3.1-8b-instruct",
+      "mistralai/mistral-large-2-instruct",
+      "nvidia/llama-3.1-nemotron-70b-instruct"
+    ];
+
+    for (const model of nvidiaModels) {
       try {
-        if (!process.env.GROQ_API_KEY) throw new Error('Groq API Key not configured');
-        responseStream = await groq.chat.completions.create({
+        responseStream = await openai.chat.completions.create({
+          model: model,
           messages: [
             { role: 'system', content: systemInstruction },
             { role: 'user', content: message }
           ],
-          model: 'llama-3.1-8b-instant',
+          temperature: 0.7,
+          top_p: 1,
+          max_tokens: 4000,
           stream: true
         });
-      } catch (groqError: any) {
-        console.error('Groq API Error:', groqError.message);
+        if (responseStream) break;
+      } catch (nvidiaError: any) {
+        console.warn(`NVIDIA API failed for model ${model}:`, nvidiaError.message);
+      }
+    }
+    
+    if (!responseStream) {
+      console.warn('All NVIDIA models failed, falling back to Groq');
+      isNvidia = false;
+      
+      const groqModels = [
+        "qwen/qwen3.6-27b",
+        "llama-3.3-70b-versatile",
+        "llama3-70b-8192",
+        "gemma2-9b-it"
+      ];
+      
+      for (const model of groqModels) {
+        try {
+          if (!process.env.GROQ_API_KEY) throw new Error('Groq API Key not configured');
+          responseStream = await groq.chat.completions.create({
+            messages: [
+              { role: 'system', content: systemInstruction },
+              { role: 'user', content: message }
+            ],
+            model: model,
+            stream: true
+          });
+          if (responseStream) break;
+        } catch (groqError: any) {
+          console.error(`Groq API Error for model ${model}:`, groqError.message);
+        }
+      }
+      
+      if (!responseStream) {
         return NextResponse.json({ error: 'The AI is currently experiencing high demand. Please try again in a few moments.' }, { status: 429 });
       }
     }
