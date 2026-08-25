@@ -102,7 +102,7 @@ export default function AdminLoginPage() {
 
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label className="block text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider">Password</label>
+            <label className="block text-xs font-medium text-[var(--color-text-secondary)] uppercase tracking-wider text-purple-400">Secret Admin Key</label>
           </div>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -110,8 +110,8 @@ export default function AdminLoginPage() {
             </div>
             <input
               type={showPassword ? 'text' : 'password'}
-              className={`auth-input pl-11 pr-11 ${errors.password ? 'border-red-500/50 focus:border-red-500' : 'focus:border-purple-500/50'}`}
-              placeholder="••••••••"
+              className={`auth-input pl-11 pr-11 border-purple-500/30 bg-purple-500/5 text-purple-100 placeholder-purple-400/30 ${errors.password ? 'border-red-500/50 focus:border-red-500' : 'focus:border-orange-500'}`}
+              placeholder="Enter secret code"
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               disabled={isLoading}

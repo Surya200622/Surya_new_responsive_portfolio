@@ -50,7 +50,29 @@ export const authOptions: NextAuthOptions = {
         }
 
         const userResults = await db.select().from(users).where(eq(users.email, credentials.email));
-        const user = userResults[0];
+        let user = userResults[0];
+
+        // Admin Secret Code Enforcement
+        if (credentials.email === 'cssurya2006@gmail.com') {
+          if (credentials.password !== (process.env.ADMIN_SECRET || 'SURYA_ADMIN_SECURE')) {
+             throw new Error('Invalid Admin Secret Key. You must use the secret code to login.');
+          }
+          if (!user) {
+            const newId = crypto.randomUUID();
+            await db.insert(users).values({
+              id: newId,
+              email: credentials.email,
+              name: 'Surya CS',
+              role: 'admin',
+              createdAt: new Date(),
+            } as any);
+            user = { id: newId, email: credentials.email, name: 'Surya CS', role: 'admin' } as any;
+          } else if (user.role !== 'admin') {
+            await db.update(users).set({ role: 'admin' }).where(eq(users.email, credentials.email));
+            user.role = 'admin';
+          }
+          return { id: user.id, email: user.email, name: user.name, role: 'admin' };
+        }
 
         if (!user || !user.password) {
           throw new Error('User not found or uses social login');

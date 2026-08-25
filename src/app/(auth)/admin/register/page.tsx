@@ -10,7 +10,7 @@ import { User, Mail, Lock, Loader2, ArrowRight, ShieldAlert, KeyRound, CheckCirc
 
 export default function AdminRegisterPage() {
   const [formData, setFormData] = useState({
-    fullName: '', email: '', password: '', secretKey: ''
+    fullName: '', email: '', secretKey: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +19,6 @@ export default function AdminRegisterPage() {
   const [showOtp, setShowOtp] = useState(false);
   const [otp, setOtp] = useState(['', '', '', '']);
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const [showPassword, setShowPassword] = useState(false);
   const [showSecretKey, setShowSecretKey] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,7 +32,6 @@ export default function AdminRegisterPage() {
     if (!formData.fullName) newErrors.fullName = 'Name is required';
     if (!formData.email) newErrors.email = 'Email is required';
     if (formData.email !== 'cssurya2006@gmail.com') newErrors.email = 'Unauthorized admin email address';
-    if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
     if (formData.secretKey !== 'SURYA_ADMIN_SECURE') newErrors.secretKey = 'Invalid admin secret key';
 
     if (Object.keys(newErrors).length > 0) {
@@ -49,7 +47,8 @@ export default function AdminRegisterPage() {
         body: JSON.stringify({
           fullName: formData.fullName,
           email: formData.email,
-          password: formData.password,
+          password: formData.secretKey,
+          confirmPassword: formData.secretKey,
           secretKey: formData.secretKey
         }),
       });
@@ -86,7 +85,7 @@ export default function AdminRegisterPage() {
       await signIn('credentials', {
         redirect: false,
         email: formData.email,
-        password: formData.password,
+        password: formData.secretKey,
       });
       
       setIsSuccess(true);
@@ -228,30 +227,16 @@ export default function AdminRegisterPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label className="block text-[10px] font-medium text-[var(--color-text-secondary)] mb-1 uppercase tracking-wider">Password</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><Lock className="h-3.5 w-3.5 text-[var(--color-text-muted)]" /></div>
-              <input type={showPassword ? 'text' : 'password'} className={`auth-input pl-9 pr-9 py-2.5 text-sm ${errors.password ? 'border-red-500/50' : 'focus:border-orange-500'}`} placeholder="••••••••" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} disabled={isLoading} />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--color-text-muted)] hover:text-white transition-colors">
-                {showPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-              </button>
-            </div>
-            {errors.password && <p className="mt-1 text-[10px] text-red-400">{errors.password}</p>}
+        <div>
+          <label className="block text-[10px] font-medium text-[var(--color-text-secondary)] mb-1 uppercase tracking-wider text-purple-400">Secret Admin Key</label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><KeyRound className="h-3.5 w-3.5 text-purple-400/50" /></div>
+            <input type={showSecretKey ? 'text' : 'password'} className={`auth-input pl-9 pr-9 py-2.5 text-sm border-purple-500/30 bg-purple-500/5 text-purple-100 placeholder-purple-400/30 ${errors.secretKey ? 'border-red-500/50' : 'focus:border-orange-500'}`} placeholder="Enter secret code" value={formData.secretKey} onChange={e => setFormData({...formData, secretKey: e.target.value})} disabled={isLoading} />
+            <button type="button" onClick={() => setShowSecretKey(!showSecretKey)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--color-text-muted)] hover:text-white transition-colors">
+              {showSecretKey ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+            </button>
           </div>
-
-          <div>
-            <label className="block text-[10px] font-medium text-[var(--color-text-secondary)] mb-1 uppercase tracking-wider text-purple-400">Secret Admin Key</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><KeyRound className="h-3.5 w-3.5 text-purple-400/50" /></div>
-              <input type={showSecretKey ? 'text' : 'password'} className={`auth-input pl-9 pr-9 py-2.5 text-sm border-purple-500/30 bg-purple-500/5 text-purple-100 placeholder-purple-400/30 ${errors.secretKey ? 'border-red-500/50' : 'focus:border-orange-500'}`} placeholder="Enter secret code" value={formData.secretKey} onChange={e => setFormData({...formData, secretKey: e.target.value})} disabled={isLoading} />
-              <button type="button" onClick={() => setShowSecretKey(!showSecretKey)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--color-text-muted)] hover:text-white transition-colors">
-                {showSecretKey ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-              </button>
-            </div>
-            {errors.secretKey && <p className="mt-1 text-[10px] text-red-400">{errors.secretKey}</p>}
-          </div>
+          {errors.secretKey && <p className="mt-1 text-[10px] text-red-400">{errors.secretKey}</p>}
         </div>
 
         <button type="submit" disabled={isLoading} className="w-full py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 mt-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 transition-all text-white shadow-lg shadow-purple-500/20 border border-purple-500/50">
