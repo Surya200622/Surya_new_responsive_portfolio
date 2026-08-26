@@ -34,7 +34,7 @@ export const PROJECTS = [
     image: '/images/Screenshot 2026-05-25 174918.png',
     tech: ['React.js', 'Vite', 'Framer Motion', 'CSS3'],
     year: '2025',
-    link: 'https://suryacs-websolutions.vercel.app',
+    link: 'https://suryacsweb.is-cool.dev',
   },
   {
     id: 'face-swap-editor',

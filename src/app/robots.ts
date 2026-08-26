@@ -17,6 +17,6 @@ export default function robots(): MetadataRoute.Robots {
         '/api/'
       ],
     },
-    sitemap: 'https://suryacs-websolutions.vercel.app/sitemap.xml',
+    sitemap: 'https://suryacsweb.is-cool.dev/sitemap.xml',
   }
 }

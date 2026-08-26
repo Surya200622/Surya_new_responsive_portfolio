@@ -6,7 +6,7 @@ import '../legal.css';
 export const metadata: Metadata = {
   title: 'Privacy Policy | Surya CS',
   description:
-    'Privacy Policy for suryacs-websolutions.vercel.app — Learn how Surya CS collects, uses, and protects your personal information.',
+    'Privacy Policy for suryacsweb.is-cool.dev — Learn how Surya CS collects, uses, and protects your personal information.',
 };
 
 export default function PrivacyPolicyPage() {
@@ -50,7 +50,7 @@ export default function PrivacyPolicyPage() {
             Privacy <span className="text-gradient">Policy</span>
           </h1>
           <p className="legal-subtitle">
-            {"Your privacy matters to us. This policy explains how we handle your information when you visit suryacs-websolutions.vercel.app."}
+            {"Your privacy matters to us. This policy explains how we handle your information when you visit suryacsweb.is-cool.dev."}
           </p>
           <div className="legal-meta">
             <span>{"Effective Date: June 14, 2026"}</span>
@@ -67,7 +67,7 @@ export default function PrivacyPolicyPage() {
               {"Introduction"}
             </h2>
             <p>
-              {"Welcome to the portfolio website of Surya CS (\"we,\" \"us,\" or \"our\"), accessible at suryacs-websolutions.vercel.app. We are committed to protecting your privacy and ensuring a safe online experience."}
+              {"Welcome to the portfolio website of Surya CS (\"we,\" \"us,\" or \"our\"), accessible at suryacsweb.is-cool.dev. We are committed to protecting your privacy and ensuring a safe online experience."}
             </p>
           </section>
 
@@ -317,10 +317,10 @@ export default function PrivacyPolicyPage() {
               <div className="legal-contact-item">
                 <span className="legal-contact-label">{"Website"}</span>
                 <a
-                  href="https://suryacs-websolutions.vercel.app"
+                  href="https://suryacsweb.is-cool.dev"
                   className="legal-contact-value legal-link"
                 >
-                  suryacs-websolutions.vercel.app
+                  suryacsweb.is-cool.dev
                 </a>
               </div>
             </div>

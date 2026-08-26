@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const targetStr = 'suryacs-websolutions.vercel.app';
-const replacementStr = 'suryacs-websolutions.vercel.app';
+const targetStr = 'suryacsweb.is-cool.dev';
+const replacementStr = 'suryacsweb.is-cool.dev';
 
 function walk(dir) {
   let results = [];

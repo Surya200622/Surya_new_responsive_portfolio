@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Portfolio & Projects | Suryacs Web Solutions',
     description: 'Explore the amazing web development, Python automation, and software projects built by Surya CS.',
-    url: 'https://suryacs-websolutions.vercel.app/projects',
+    url: 'https://suryacsweb.is-cool.dev/projects',
     images: [
       {
         url: '/images/Gemini_Generated_Image_7eech37eech37eec.png',

@@ -122,8 +122,8 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
   ${preheader ? `<div class="preheader">${preheader}</div>` : ''}
   <div class="container" style="background-color: #ffffff; width: 100%; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
     <div class="header" style="text-align: center; margin-bottom: 40px; background-color: #ffffff; padding: 20px; border-radius: 12px; border: 1px solid rgba(0, 0, 0, 0.05); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-      <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs-websolutions.vercel.app'}" style="text-decoration: none; display: inline-block;">
-        <img src="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs-websolutions.vercel.app'}/logo-email.svg" alt="Surya CS Logo" style="height: 52px; width: auto; display: block; margin: 0 auto;" />
+      <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacsweb.is-cool.dev'}" style="text-decoration: none; display: inline-block;">
+        <img src="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacsweb.is-cool.dev'}/logo-email.svg" alt="Surya CS Logo" style="height: 52px; width: auto; display: block; margin: 0 auto;" />
       </a>
     </div>
     
@@ -137,7 +137,7 @@ export function getBrandEmailTemplate(title: string, contentHtml: string, prehea
     
     <div class="footer">
       <p>&copy; ${new Date().getFullYear()} Surya CS. All rights reserved.</p>
-      <p><a href="https://suryacs-websolutions.vercel.app" style="color: #f97316;">suryacs-websolutions.vercel.app</a></p>
+      <p><a href="https://suryacsweb.is-cool.dev" style="color: #f97316;">suryacsweb.is-cool.dev</a></p>
     </div>
   </div>
 </body>
