@@ -146,6 +146,9 @@ export default function AdminOverviewPage() {
           <div className="flex items-center gap-4 mb-2">
             <div className="w-10 h-10 rounded-xl bg-pink-500/20 flex items-center justify-center">
               <Mail className="w-5 h-5 text-pink-400" />
+            </div>
+            <p className="text-sm text-[var(--color-text-secondary)] font-medium">Subscribers</p>
+          </div>
           <h3 className="text-3xl font-display font-bold text-[var(--color-text-primary)]">{subscriberCount}</h3>
         </div>
       </div>
