@@ -81,8 +81,8 @@ export default function TestimonialsSection() {
           <div>{"What Clients"} <span className="text-gradient">{"Say"}</span></div>
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="btn btn--outline"
-            style={{ fontSize: '0.875rem', padding: '0.5rem 1rem' }}
+            className="btn btn--primary"
+            style={{ fontSize: '0.875rem', padding: '0.5rem 1.5rem', marginTop: '0.5rem' }}
           >
             {"Leave a Review"}
           </button>

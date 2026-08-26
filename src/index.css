@@ -101,10 +101,10 @@
   --color-text-tertiary: #6b6560;
   --color-text-muted: #4a4540;
 
-  --color-accent-primary: #c9a84c;
-  --color-accent-secondary: #0ea5e9;
-  --color-accent-tertiary: #7c6fae;
-  --color-accent-warm: #d4956a;
+  --color-accent-primary: #f97316;
+  --color-accent-secondary: #fb923c;
+  --color-accent-tertiary: #ea580c;
+  --color-accent-warm: #fdba74;
 
   --color-border: rgba(255, 255, 255, 0.08);
   --color-border-subtle: rgba(255, 255, 255, 0.04);
@@ -178,73 +178,6 @@
   --scrollbar-thumb-hover: rgba(158, 126, 46, 0.5);
 }
 
-/* ---------- Light Theme Hardware-Accelerated Rainbow Elements ---------- */
-[data-theme="light"] .text-gradient,
-[data-theme="light"] .text-gradient--warm,
-[data-theme="light"] .btn--primary,
-[data-theme="light"] .btn--outline,
-[data-theme="light"] .btn--outline:hover,
-[data-theme="light"] .navbar__logo-dot,
-[data-theme="light"] .navbar__link::after,
-[data-theme="light"] .navbar__theme-btn:hover,
-[data-theme="light"] .navbar__mobile-btn:hover,
-[data-theme="light"] .navbar__mobile-close:hover,
-[data-theme="light"] .navbar__mobile-link:hover,
-[data-theme="light"] .about__subtitle,
-[data-theme="light"] .about__symbol,
-[data-theme="light"] .fact-item__number,
-[data-theme="light"] .skill-category-title,
-[data-theme="light"] .skill-progress-bar,
-[data-theme="light"] .timeline-dot,
-[data-theme="light"] .timeline-date,
-[data-theme="light"] .hero__subtitle,
-[data-theme="light"] .hero__image-glow,
-[data-theme="light"] .hero__portrait-badge,
-[data-theme="light"] .hero__scroll-indicator .mouse-wheel,
-[data-theme="light"] .project-card__title::after,
-[data-theme="light"] .project-card__link,
-[data-theme="light"] .offer-card__icon,
-[data-theme="light"] .offer-card__title,
-[data-theme="light"] .process-step__icon,
-[data-theme="light"] .process-step::after,
-[data-theme="light"] .tech-item:hover,
-[data-theme="light"] .tech-item:hover .tech-item__icon,
-[data-theme="light"] .tech-item__icon,
-[data-theme="light"] .tech-card__glow,
-[data-theme="light"] .tech-category-btn.active,
-[data-theme="light"] .testimonials__quote-mark,
-[data-theme="light"] .testimonials__card-stars,
-[data-theme="light"] .testimonial-nav-btn:hover,
-[data-theme="light"] .testimonial-card__quote,
-[data-theme="light"] .contact__info-icon,
-[data-theme="light"] .contact__info-content h4,
-[data-theme="light"] .contact-form .input-field:focus,
-[data-theme="light"] .calculator-card::before,
-[data-theme="light"] .calculator-header,
-[data-theme="light"] .calculator-icon,
-[data-theme="light"] .input-field:focus,
-[data-theme="light"] .tab-btn.active,
-[data-theme="light"] .slider::-webkit-slider-thumb,
-[data-theme="light"] .slider-value,
-[data-theme="light"] .summary-row.total,
-[data-theme="light"] .summary-card.total,
-[data-theme="light"] .footer-top,
-[data-theme="light"] .footer-logo-dot,
-[data-theme="light"] .footer-link:hover,
-[data-theme="light"] .social-link:hover,
-[data-theme="light"] .contact__submit,
-[data-theme="light"] .chatbot-widget__toggle,
-[data-theme="light"] .chatbot-widget__header,
-[data-theme="light"] .chatbot-message.bot,
-[data-theme="light"] .chatbot-input input:focus,
-[data-theme="light"] .about__timeline-progress,
-[data-theme="light"] .about__timeline-dot,
-[data-theme="light"] .about__timeline-dot--current,
-[data-theme="light"] .magic-cursor-ring,
-[data-theme="light"] .magic-cursor-dot,
-[data-theme="light"] .section-divider {
-  animation: hue-shift 8s linear infinite !important;
-}
 
 [data-theme="light"] .theme-adaptive-logo {
   filter: invert(1) hue-rotate(180deg);
