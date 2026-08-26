@@ -217,10 +217,10 @@ export default function Navbar({ theme, toggleTheme }) {
             ) : (
               <a 
                 href="/login" 
-                className="text-xs sm:text-sm font-semibold text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all shadow-md hover:shadow-lg"
-                style={{ background: 'linear-gradient(90deg, #6366f1, #a855f7)', animation: 'hue-shift 8s linear infinite' }}
+                className="text-xs sm:text-sm font-semibold text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                style={{ backgroundColor: 'var(--color-accent-primary)' }}
               >
-                {"Client Login"}
+                {"Login"}
               </a>
             )}
             
@@ -317,7 +317,7 @@ export default function Navbar({ theme, toggleTheme }) {
               className="navbar__mobile-link text-[var(--color-accent-primary)] mt-4"
               tabIndex={0}
             >
-              {"Client Login"}
+              {"Client Portal"}
             </a>
           )}
         </div>
