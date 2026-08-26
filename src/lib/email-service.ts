@@ -57,6 +57,7 @@ export const sendEmail = async ({
     to,
     replyTo,
     subject,
+    text: html.replace(/<[^>]*>?/gm, ''), // Plain text fallback to avoid spam filters
     html,
   });
 };
