@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     apple: '/icon.svg',
   },
   verification: {
-    google: ['FXp4jqzCy6bxO6ThBXz34F29BgX2w0qgt9v4tONOfec'],
+    google: ['nzjJHjv3TTj8mUzNEFx4RH3ecj-OGGnMglPAKj3IubQ'],
   },
 };
 
