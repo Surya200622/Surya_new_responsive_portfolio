@@ -200,13 +200,3 @@ export const pendingRegistrations = sqliteTable('pending_registrations', {
   otp: text('otp').notNull(),
   expiresAt: integer('expires_at', { mode: 'timestamp_ms' }).notNull(),
 });
-
-export const pageViews = sqliteTable('page_views', {
-  id: text('id').notNull().primaryKey(),
-  path: text('path').notNull(),
-  userAgent: text('user_agent'),
-  ipHash: text('ip_hash'), // Hashed for privacy
-  timestamp: integer('timestamp', { mode: 'timestamp_ms' }),
-});
-
-
