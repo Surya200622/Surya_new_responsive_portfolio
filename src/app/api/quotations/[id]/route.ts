@@ -97,7 +97,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
           <p>${actionBody}</p>
           
           <div style="margin: 30px 0; text-align: center;">
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacsweb.is-cool.dev'}/admin/quotations" class="button">
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs-websolutions.vercel.app'}/admin/quotations" class="button">
               View Quotation Details
             </a>
           </div>

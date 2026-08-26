@@ -3,12 +3,12 @@ const en = JSON.parse(fs.readFileSync('messages/en.json', 'utf8'));
 
 en.PrivacyPolicy = {
   title: 'Privacy Policy',
-  subtitle: 'Your privacy matters to us. This policy explains how we handle your information when you visit suryacsweb.is-cool.dev.',
+  subtitle: 'Your privacy matters to us. This policy explains how we handle your information when you visit suryacs-websolutions.vercel.app.',
   effective_date: 'Effective Date: June 14, 2026',
   last_updated: 'Last Updated: June 14, 2026',
   back_to_portfolio: 'Back to Portfolio',
   intro_title: 'Introduction',
-  intro_text: 'Welcome to the portfolio website of Surya CS ("we," "us," or "our"), accessible at suryacsweb.is-cool.dev. We are committed to protecting your privacy and ensuring a safe online experience.',
+  intro_text: 'Welcome to the portfolio website of Surya CS ("we," "us," or "our"), accessible at suryacs-websolutions.vercel.app. We are committed to protecting your privacy and ensuring a safe online experience.',
   info_collect_title: 'Information We Collect',
   info_provide: 'Information You Provide',
   info_auto: 'Automatically Collected Information',
@@ -32,7 +32,7 @@ en.PrivacyPolicy = {
 
 en.TermsOfService = {
   title: 'Terms of Service',
-  subtitle: 'These terms govern your use of suryacsweb.is-cool.dev and the services provided by Surya CS. Please read them carefully.',
+  subtitle: 'These terms govern your use of suryacs-websolutions.vercel.app and the services provided by Surya CS. Please read them carefully.',
   effective_date: 'Effective Date: June 14, 2026',
   last_updated: 'Last Updated: June 14, 2026',
   back_to_portfolio: 'Back to Portfolio',

@@ -82,13 +82,13 @@ export default async function ProjectDetailPage({ params }: { params: { slug: st
     '@type': 'Product',
     name: project.title,
     description: displayDesc.trim() || project.description || 'Custom Web Development Project',
-    image: project.image ? (project.image.startsWith('http') ? project.image : `https://suryacsweb.is-cool.dev${project.image}`) : 'https://suryacsweb.is-cool.dev/logo.png',
+    image: project.image ? (project.image.startsWith('http') ? project.image : `https://suryacs-websolutions.vercel.app${project.image}`) : 'https://suryacs-websolutions.vercel.app/logo.png',
     offers: {
       '@type': 'Offer',
       price: discountPrice ? discountPrice.replace(/[^0-9]/g, '') : (projectPrice ? projectPrice.replace(/[^0-9]/g, '') : '5000'),
       priceCurrency: 'INR',
       availability: project.buyable ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-      url: `https://suryacsweb.is-cool.dev/project/${project.slug}`,
+      url: `https://suryacs-websolutions.vercel.app/project/${project.slug}`,
     }
   };
 

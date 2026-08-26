@@ -26,7 +26,7 @@ export default withAuth(
 
     // Add SEO Link header
     const response = NextResponse.next();
-    response.headers.set('Link', '<https://suryacsweb.is-cool.dev/sitemap.xml>; rel="sitemap"');
+    response.headers.set('Link', '<https://suryacs-websolutions.vercel.app/sitemap.xml>; rel="sitemap"');
     return response;
   },
   {

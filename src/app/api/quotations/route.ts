@@ -90,7 +90,7 @@ export async function POST(req: Request) {
           <p style="margin-top: 20px;">We have outlined the details in your client dashboard. You can review the full breakdown, make adjustments, and approve the quotation when you are ready.</p>
           
           <div style="margin: 30px 0; text-align: center;">
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacsweb.is-cool.dev'}/dashboard/quotations" class="button">
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://suryacs-websolutions.vercel.app'}/dashboard/quotations" class="button">
               View Full Quotation
             </a>
           </div>

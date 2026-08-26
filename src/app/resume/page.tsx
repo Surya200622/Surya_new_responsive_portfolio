@@ -51,7 +51,7 @@ export default function ResumePage() {
             <div className="social-links">
               <a href="https://github.com/Surya200622" target="_blank" rel="noreferrer"><GithubIcon size={16} /> GitHub</a>
               <a href="https://linkedin.com/in/suryacs22/" target="_blank" rel="noreferrer"><LinkedinIcon size={16} /> LinkedIn</a>
-              <a href="https://suryacsweb.is-cool.dev" target="_blank" rel="noreferrer"><ExternalLink size={16} /> suryacsweb.is-cool.dev</a>
+              <a href="https://suryacs-websolutions.vercel.app" target="_blank" rel="noreferrer"><ExternalLink size={16} /> suryacs-websolutions.vercel.app</a>
             </div>
           </div>
           <div className="resume-header-image">
@@ -121,7 +121,7 @@ export default function ResumePage() {
                   <h4>Personal Portfolio</h4>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <span className="date">Next.js, Supabase</span>
-                    <a href="https://suryacsweb.is-cool.dev" target="_blank" rel="noreferrer" className="project-link"><ExternalLink size={14} /></a>
+                    <a href="https://suryacs-websolutions.vercel.app" target="_blank" rel="noreferrer" className="project-link"><ExternalLink size={14} /></a>
                   </div>
                 </div>
                 <ul className="experience-list">

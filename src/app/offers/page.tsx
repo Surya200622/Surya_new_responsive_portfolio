@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Exclusive Deals & Services | Suryacs Web Solutions',
     description: 'Special offers and freelance services by Surya CS. Web Development, Python automation, React, and Django projects tailored for you.',
-    url: 'https://suryacsweb.is-cool.dev/offers',
+    url: 'https://suryacs-websolutions.vercel.app/offers',
   }
 };
 
