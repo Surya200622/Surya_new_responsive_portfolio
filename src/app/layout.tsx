@@ -19,9 +19,6 @@ export const metadata: Metadata = {
   authors: [{ name: 'Surya CS' }],
   creator: 'Surya CS',
   publisher: 'Suryacs Web Solutions',
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
     type: 'website',
     url: 'https://suryacs-websolutions.vercel.app',
@@ -46,13 +43,9 @@ export const metadata: Metadata = {
       'Full-Stack Python Developer specializing in Django & React. Based in Coimbatore, India.',
     images: ['/images/og-image.jpg'],
   },
-  icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/icon.svg', type: 'image/svg+xml' }
-    ],
-    shortcut: '/favicon.ico',
-    apple: '/icon.svg',
+  appleWebApp: {
+    title: 'Suryacs Web Solutions',
+    statusBarStyle: 'default',
   },
   verification: {
     google: ['nzjJHjv3TTj8mUzNEFx4RH3ecj-OGGnMglPAKj3IubQ'],

@@ -14,7 +14,14 @@ export const metadata: Metadata = {
     title: 'Exclusive Deals & Services | Suryacs Web Solutions',
     description: 'Special offers and freelance services by Surya CS. Web Development, Python automation, React, and Django projects tailored for you.',
     url: 'https://suryacs-websolutions.vercel.app/offers',
-  }
+  },
+  alternates: {
+    canonical: 'https://suryacs-websolutions.vercel.app/offers',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default async function OffersPage() {

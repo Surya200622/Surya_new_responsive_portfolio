@@ -19,7 +19,14 @@ export const metadata: Metadata = {
         alt: 'Suryacs Web Solutions Portfolio',
       },
     ],
-  }
+  },
+  alternates: {
+    canonical: 'https://suryacs-websolutions.vercel.app/projects',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function ProjectsPage() {
