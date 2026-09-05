@@ -17,10 +17,24 @@ export async function GET(request: Request) {
         // ignore if not JSON
       }
 
-      // Force download for Cloudinary URLs by adding fl_attachment
       if (typeof resumeUrl === 'string' && resumeUrl.includes('cloudinary.com')) {
-        if (!resumeUrl.includes('fl_attachment')) {
-          resumeUrl = resumeUrl.replace('/upload/', '/upload/fl_attachment/');
+        // Remove fl_attachment as it's not supported for 'raw' resource types on Cloudinary
+        resumeUrl = resumeUrl.replace('fl_attachment/', '');
+        
+        try {
+          // Fetch the file and serve it with explicit PDF headers so the browser downloads it correctly
+          const response = await fetch(resumeUrl);
+          if (response.ok) {
+            const blob = await response.blob();
+            return new NextResponse(blob, {
+              headers: {
+                'Content-Type': 'application/pdf',
+                'Content-Disposition': 'attachment; filename="SuryaCS-resume.pdf"',
+              },
+            });
+          }
+        } catch (e) {
+          console.error('Failed to proxy resume from Cloudinary:', e);
         }
       }
 
