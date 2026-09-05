@@ -304,14 +304,18 @@ export default function AdminOverviewPage() {
                   const formData = new FormData();
                   formData.append('file', file);
                   formData.append('bucket', 'resume');
-                  formData.append('path', 'SuryaCS-resume');
+                  formData.append('path', 'SuryaCS-resume.pdf');
                   
                   const uploadRes = await fetch('/api/upload', {
                     method: 'POST',
                     body: formData,
                   });
                   
-                  if (!uploadRes.ok) throw new Error('Upload failed');
+                  if (!uploadRes.ok) {
+                    const errData = await uploadRes.text();
+                    throw new Error(errData || 'Upload failed');
+                  }
+                  
                   const uploadData = await uploadRes.json();
                   
                   if (uploadData.url) {
@@ -323,9 +327,9 @@ export default function AdminOverviewPage() {
                     alert('Resume updated successfully!');
                     fileInput.value = '';
                   }
-                } catch (e) {
+                } catch (e: any) {
                   console.error('Resume upload failed:', e);
-                  alert('Failed to update resume');
+                  alert(`Failed to update resume: ${e.message}`);
                 }
                 setResumeUploading(false);
               }}
