@@ -129,23 +129,23 @@ CRITICAL FORMATTING RULE FOR TELEGRAM:
     
     let rawResponse = '';
     
-    const openRouterModels = [
-      "google/gemini-2.0-flash-lite-preview-02-05:free",
-      "google/gemini-2.0-pro-exp-02-05:free",
-      "meta-llama/llama-3.3-70b-instruct:free"
+    const explabsModels = [
+      "gpt-6-astra",
+      "gpt-5.6-luna",
+      "claude-fable-5.1"
     ];
 
     let success = false;
-    for (const model of openRouterModels) {
+    for (const model of explabsModels) {
       try {
-        const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-        if (!OPENROUTER_API_KEY) throw new Error('OpenRouter API Key not configured');
-        const openrouter = new OpenAI({
-          apiKey: OPENROUTER_API_KEY,
-          baseURL: 'https://openrouter.ai/api/v1',
+        const EXPLABS_API_KEY = process.env.EXPLABS_API_KEY;
+        if (!EXPLABS_API_KEY) throw new Error('Experiential Labs API Key not configured');
+        const client = new OpenAI({
+          apiKey: EXPLABS_API_KEY,
+          baseURL: 'https://api.experientiallabs.ai/v1',
         });
         
-        const completion = await openrouter.chat.completions.create({
+        const completion = await client.chat.completions.create({
           model: model,
           messages: [
             { role: 'system', content: systemInstruction },
@@ -161,7 +161,7 @@ CRITICAL FORMATTING RULE FOR TELEGRAM:
           break;
         }
       } catch (e: any) {
-        console.warn(`OpenRouter API failed for model ${model}:`, e.message);
+        console.warn(`Experiential Cloud API failed for model ${model}:`, e.message);
       }
     }
     
