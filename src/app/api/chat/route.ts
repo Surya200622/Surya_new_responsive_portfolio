@@ -185,6 +185,7 @@ CRITICAL FORMATTING RULE:
           model: model,
           messages: messages as any,
           temperature: 0.7,
+          max_tokens: 4000,
           stream: true
         });
         if (responseStream) break;

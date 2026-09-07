@@ -151,6 +151,7 @@ CRITICAL FORMATTING RULE FOR TELEGRAM:
             { role: 'user', content: userText }
           ],
           temperature: 0.7,
+          max_tokens: 4000,
         });
         
         rawResponse = completion.choices[0]?.message?.content || '';
