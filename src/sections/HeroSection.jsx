@@ -192,7 +192,7 @@ export default function HeroSection() {
         <div className="hero__text">
           <motion.div className="hero__label" variants={itemVariants}>
             <div className="hero__label-line" aria-hidden="true" />
-            <span className="hero__typing-text">{"Full-Stack Python Developer"}</span>
+            <span className="hero__typing-text">{"Full Stack Web Developer"}</span>
           </motion.div>
 
           <motion.h1 className="hero__title" variants={itemVariants}>
@@ -202,7 +202,7 @@ export default function HeroSection() {
           </motion.h1>
 
           <motion.p className="hero__subtitle" variants={itemVariants}>
-            {"Full-Stack Python Developer crafting modern, blazing-fast web solutions with Django & React. Based in Coimbatore, India."}
+            {"I am a Full Stack Web Developer and I started freelancing as my business brand name, Suryacs Web Solutions. Based in Coimbatore, India."}
           </motion.p>
 
           <motion.div className="hero__cta-row" variants={itemVariants}>

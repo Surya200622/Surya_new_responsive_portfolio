@@ -17,7 +17,7 @@ const openai = new OpenAI({
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || '' });
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || '';
 
-const getDynamicPrompt = (dbPortfolioProjects: any[], dbOffers: any[], dbReviews: any[]) => {
+export const getDynamicPrompt = (dbPortfolioProjects: any[], dbOffers: any[], dbReviews: any[]) => {
   // Combine projects and remove duplicates
   const allProjects = [...PROJECTS];
   dbPortfolioProjects.forEach(dbProj => {
@@ -79,7 +79,7 @@ INSTRUCTIONS FOR ANSWERING ACCURATELY:
 `;
 };
 
-const CLIENT_RESTRICTION = `
+export const CLIENT_RESTRICTION = `
 CRITICAL INSTRUCTION: You are speaking to a regular user/client on Surya's portfolio. 
 You MUST act as Surya's personal assistant. If anyone asks "who is Surya" or "what services does Surya provide", you MUST ONLY talk about Surya CS, the freelance web developer described above.
 UNDER NO CIRCUMSTANCES should you mention other companies, businesses, or organizations named "Surya" (e.g., no solar companies, no rug companies, no car companies).
@@ -228,12 +228,66 @@ CRITICAL FORMATTING RULE:
     const stream = new ReadableStream({
       async start(controller) {
         try {
+          let buffer = "";
+          let inThink = false;
+          const startTag = "<think>";
+          const endTag = "</think>";
+
           for await (const chunk of responseStream) {
             // Both OpenAI and Groq format their streaming chunks identically
             const content = chunk.choices[0]?.delta?.content || '';
             if (content) {
-              controller.enqueue(encoder.encode(content));
+              buffer += content;
+              
+              while (buffer.length > 0) {
+                if (inThink) {
+                  const idx = buffer.indexOf(endTag);
+                  if (idx !== -1) {
+                    inThink = false;
+                    buffer = buffer.slice(idx + endTag.length);
+                    if (buffer.startsWith('\n')) {
+                      buffer = buffer.slice(1);
+                    }
+                  } else {
+                    // Keep at most endTag.length - 1 characters to catch a partial endTag in the next chunk
+                    if (buffer.length > endTag.length - 1) {
+                      buffer = buffer.slice(-(endTag.length - 1));
+                    }
+                    break;
+                  }
+                } else {
+                  const idx = buffer.indexOf(startTag);
+                  if (idx !== -1) {
+                    const before = buffer.slice(0, idx);
+                    if (before) controller.enqueue(encoder.encode(before));
+                    inThink = true;
+                    buffer = buffer.slice(idx + startTag.length);
+                  } else {
+                    let matchLength = 0;
+                    for (let i = startTag.length - 1; i > 0; i--) {
+                      if (buffer.endsWith(startTag.slice(0, i))) {
+                        matchLength = i;
+                        break;
+                      }
+                    }
+                    
+                    if (matchLength > 0) {
+                      const safePart = buffer.slice(0, buffer.length - matchLength);
+                      if (safePart) controller.enqueue(encoder.encode(safePart));
+                      buffer = buffer.slice(buffer.length - matchLength);
+                    } else {
+                      controller.enqueue(encoder.encode(buffer));
+                      buffer = '';
+                    }
+                    break;
+                  }
+                }
+              }
             }
+          }
+          
+          if (!inThink && buffer) {
+            controller.enqueue(encoder.encode(buffer));
           }
         } catch (e) {
           console.error('Streaming error:', e);

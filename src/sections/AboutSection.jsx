@@ -25,7 +25,7 @@ const fadeInUp = {
 export default function AboutSection() {
     
   const STORY_BLOCKS = [
-    { title: "Who I Am", text: "I'm Surya CS — an Full-Stack Python Developer based in Coimbatore, India. I'm a B.COM.CA graduate from Sri Ramakrishna College of Arts & Science with Data Analytics training from IBM & ITC. I don't just build websites — I craft digital experiences." },
+    { title: "Who I Am", text: "I'm a Full Stack Web Developer and I started freelancing as my business brand name, Suryacs Web Solutions. Based in Coimbatore, India, I'm a B.COM.CA graduate from Sri Ramakrishna College of Arts & Science with Data Analytics training from IBM & ITC. I don't just build websites — I craft digital experiences." },
     { title: "What I Do", text: "I specialize in Django and React to build modern, blazing-fast web solutions. From dental booking systems to fashion e-commerce platforms, every project I deliver combines beautiful design with powerful functionality." },
     { title: "My Goal", text: "I'm actively seeking to apply my Python full-stack development skills, contribute to innovative projects, and grow professionally. I'm passionate about creating experiences that convert visitors into customers." },
   ];
@@ -390,7 +390,7 @@ export default function AboutSection() {
             onMouseLeave={handleMouseLeave}
           >
             <img
-              src="/images/WhatsApp Image 2026-06-14 at 8.25.27 PM.jpeg"
+              src="/images/Gemini_Generated_Image_uavilguavilguavi.png"
               alt="Surya CS — Full-Stack Python Developer"
               loading="lazy"
             />
