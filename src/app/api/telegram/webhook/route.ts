@@ -38,6 +38,29 @@ const sendTelegramMessage = async (chatId: number, text: string) => {
   }
 };
 
+const sendTelegramDocument = async (chatId: number, documentUrl: string, caption: string = '') => {
+  const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+  if (!TELEGRAM_TOKEN) return;
+  
+  const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendDocument`;
+  
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: chatId,
+        document: documentUrl,
+        caption: caption,
+      }),
+    });
+  } catch (error) {
+    console.error('Error sending document to Telegram:', error);
+  }
+};
+
 const filterThinkTags = (text: string) => {
   return text.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
 };
@@ -64,6 +87,16 @@ export async function POST(req: Request) {
       await sendTelegramMessage(
         chatId, 
         "Hi! I am Surya's AI assistant. Ask me anything about his full-stack web development services, experience, or request a quote!"
+      );
+      return NextResponse.json({ success: true });
+    }
+
+    // Handle /resume command
+    if (userText === '/resume') {
+      await sendTelegramDocument(
+        chatId,
+        'https://suryacs-websolutions.vercel.app/SuryaCS-resume.pdf',
+        'Here is Surya CS\'s latest resume! 🚀'
       );
       return NextResponse.json({ success: true });
     }
