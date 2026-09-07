@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
-export const maxDuration = 60; // Prevent Vercel from killing the stream after 10s
+export const runtime = 'edge';
+
 import OpenAI from 'openai';
 import Groq from 'groq-sdk';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import { PROJECTS, SKILLS, TIMELINE_DATA, CONTACT_INFO, SOCIAL_LINKS } from '@/data/projectsData';
 import { db } from '@/db';
 import { portfolioProjects, offers, reviews, projects } from '@/db/schema';
@@ -97,19 +96,7 @@ HOWEVER, you still represent Surya CS. If they ask about "Surya" or "your servic
 
 export async function POST(req: Request) {
   try {
-    const session = await getServerSession(authOptions);
-    let isAdmin = false;
-    let userId = null;
-    
-    if (session && session.user) {
-      if (session.user.role === 'admin') {
-        isAdmin = true;
-      } else {
-        userId = session.user.id;
-      }
-    }
-
-    const { message, currentPath, currentUrl } = await req.json();
+    const { message, currentPath, currentUrl, isAdmin, userId } = await req.json();
 
     if (!message) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
@@ -168,22 +155,21 @@ CRITICAL FORMATTING RULE:
 
     let responseStream: any = null;
 
-    const explabsModels = [
-      "gpt-6-astra",
-      "gpt-5.6-luna",
-      "claude-fable-5.1"
+    const openRouterModels = [
+      "minimax/minimax-m3:free",
+      "google/gemma-4-31b-it:free",
+      "nvidia/nemotron-3-ultra-550b-a55b:free"
     ];
 
-    for (const model of explabsModels) {
+    for (const model of openRouterModels) {
       try {
-        const EXPLABS_API_KEY = process.env.EXPLABS_API_KEY;
-        if (!EXPLABS_API_KEY) throw new Error('Experiential Labs API Key not configured');
-        const client = new OpenAI({
-          apiKey: EXPLABS_API_KEY,
-          baseURL: 'https://api.experientiallabs.ai/v1',
+        if (!OPENROUTER_API_KEY) throw new Error('OpenRouter API Key not configured');
+        const openrouter = new OpenAI({
+          apiKey: OPENROUTER_API_KEY,
+          baseURL: 'https://openrouter.ai/api/v1',
         });
         
-        responseStream = await client.chat.completions.create({
+        responseStream = await openrouter.chat.completions.create({
           model: model,
           messages: messages as any,
           temperature: 0.7,
@@ -192,7 +178,7 @@ CRITICAL FORMATTING RULE:
         });
         if (responseStream) break;
       } catch (e: any) {
-        console.warn(`Experiential Cloud API failed for model ${model}:`, e.message);
+        console.warn(`OpenRouter API failed for model ${model}:`, e.message);
       }
     }
     
