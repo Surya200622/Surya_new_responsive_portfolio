@@ -134,7 +134,7 @@ export default function RootLayout({
                   'https://github.com/Surya200622',
                   'https://linkedin.com/in/suryacs22/',
                   'https://suryacs-websolutions.vercel.app',
-                  'https://www.instagram.com/suryacs.is_a.dev/'
+                  'https://www.instagram.com/suryacs_web_solutions/'
                 ],
               },
               {
