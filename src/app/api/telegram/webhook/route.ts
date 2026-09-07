@@ -128,26 +128,29 @@ CRITICAL FORMATTING RULE FOR TELEGRAM:
     
     let rawResponse = '';
     
-    // Attempt NVIDIA
-    const nvidiaModels = [
-      "meta/llama-3.1-8b-instruct",
-      "mistralai/mistral-large-2-instruct",
-      "nvidia/llama-3.1-nemotron-70b-instruct"
+    const openRouterModels = [
+      "meta-llama/llama-3.3-70b-instruct:free",
+      "google/gemini-2.0-pro-exp-02-05:free",
+      "google/gemini-2.0-flash-lite-preview-02-05:free"
     ];
 
     let success = false;
-    for (const model of nvidiaModels) {
+    for (const model of openRouterModels) {
       try {
-        if (!process.env.NVIDIA_API_KEY) throw new Error('NVIDIA API Key not configured');
-        const completion = await openai.chat.completions.create({
+        const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+        if (!OPENROUTER_API_KEY) throw new Error('OpenRouter API Key not configured');
+        const openrouter = new OpenAI({
+          apiKey: OPENROUTER_API_KEY,
+          baseURL: 'https://openrouter.ai/api/v1',
+        });
+        
+        const completion = await openrouter.chat.completions.create({
           model: model,
           messages: [
             { role: 'system', content: systemInstruction },
             { role: 'user', content: userText }
           ],
           temperature: 0.7,
-          top_p: 1,
-          max_tokens: 1500,
         });
         
         rawResponse = completion.choices[0]?.message?.content || '';
@@ -156,10 +159,44 @@ CRITICAL FORMATTING RULE FOR TELEGRAM:
           break;
         }
       } catch (e: any) {
-        console.warn(`NVIDIA API failed for model ${model}:`, e.message);
+        console.warn(`OpenRouter API failed for model ${model}:`, e.message);
       }
     }
     
+    // Attempt NVIDIA (Fallback)
+    if (!success) {
+      const nvidiaModels = [
+        "meta/llama-3.1-8b-instruct",
+        "mistralai/mistral-large-2-instruct",
+        "nvidia/llama-3.1-nemotron-70b-instruct"
+      ];
+  
+      for (const model of nvidiaModels) {
+        try {
+          if (!process.env.NVIDIA_API_KEY) throw new Error('NVIDIA API Key not configured');
+          const completion = await openai.chat.completions.create({
+            model: model,
+            messages: [
+              { role: 'system', content: systemInstruction },
+              { role: 'user', content: userText }
+            ],
+            temperature: 0.7,
+            top_p: 1,
+            max_tokens: 1500,
+          });
+          
+          rawResponse = completion.choices[0]?.message?.content || '';
+          if (rawResponse) {
+            success = true;
+            break;
+          }
+        } catch (e: any) {
+          console.warn(`NVIDIA API failed for model ${model}:`, e.message);
+        }
+      }
+    }
+    
+    // Attempt Groq (Last Resort)
     if (!success) {
       const groqModels = [
         "qwen/qwen3.6-27b",

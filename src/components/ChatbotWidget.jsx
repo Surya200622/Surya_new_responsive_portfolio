@@ -7,9 +7,11 @@ import './ChatbotWidget.css';
 
 const INITIAL_MESSAGE = { role: 'assistant', content: 'Hi! I am Surya\'s AI assistant. Ask me anything about his full-stack web development services, experience, or request a quote!' };
 const QUICK_REPLIES = [
-  "What services do you offer?",
-  "How much for a custom website?",
-  "Tell me about your tech stack"
+  "/about",
+  "/services",
+  "/skills",
+  "/portfolio",
+  "/resume"
 ];
 
 const renderMessage = (content) => {
@@ -29,12 +31,17 @@ const renderMessage = (content) => {
       processedLine = `**${processedLine.replace(/^#\s*/, '')}**`;
     }
 
-    const parts = processedLine.split(/(\*\*.*?\*\*)/g);
+    // Split by bold and links
+    const parts = processedLine.split(/(\*\*.*?\*\*|\[.*?\]\(.*?\))/g);
     return (
       <div key={i} style={{ minHeight: processedLine === '' ? '12px' : 'auto', marginBottom: '4px' }}>
         {parts.map((part, j) => {
           if (part.startsWith('**') && part.endsWith('**')) {
             return <strong key={j}>{part.slice(2, -2)}</strong>;
+          }
+          const linkMatch = part.match(/^\[(.*?)\]\((.*?)\)$/);
+          if (linkMatch) {
+            return <a key={j} href={linkMatch[2]} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>{linkMatch[1]}</a>;
           }
           return <span key={j}>{part}</span>;
         })}
@@ -80,6 +87,15 @@ export default function ChatbotWidget() {
 
   const sendToBot = async (userMsg) => {
     setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+    
+    // Intercept /resume command natively
+    if (userMsg.toLowerCase() === '/resume') {
+      setTimeout(() => {
+        setMessages(prev => [...prev, { role: 'assistant', content: 'Here is my latest resume: [Download Surya_CS_Resume.pdf](/api/resume/download) 📄🚀' }]);
+      }, 500); // Slight delay for realism
+      return;
+    }
+
     setIsLoading(true);
 
     try {

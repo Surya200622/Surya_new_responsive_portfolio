@@ -160,40 +160,67 @@ CRITICAL FORMATTING RULE:
 
     const systemInstruction = isAdmin ? `${BASE_PROMPT}\n\n${ADMIN_PROMPT}${adminDataText}\n${pageContextText}\n${formattingRule}` : `${BASE_PROMPT}\n\n${CLIENT_RESTRICTION}${clientProjectsText}\n${pageContextText}\n${formattingRule}`;
     
-    // We will attempt NVIDIA models first, then fallback to Groq if they fail.
-    let responseStream: any = null;
-    let isNvidia = true;
-    
-    const nvidiaModels = [
-      "meta/llama-3.1-8b-instruct",
-      "mistralai/mistral-large-2-instruct",
-      "nvidia/llama-3.1-nemotron-70b-instruct"
+    const messages = [
+      { role: 'system', content: systemInstruction },
+      { role: 'user', content: message }
     ];
 
-    for (const model of nvidiaModels) {
+    let responseStream: any = null;
+
+    const openRouterModels = [
+      "meta-llama/llama-3.3-70b-instruct:free",
+      "google/gemini-2.0-pro-exp-02-05:free",
+      "google/gemini-2.0-flash-lite-preview-02-05:free"
+    ];
+
+    for (const model of openRouterModels) {
       try {
-        if (!process.env.NVIDIA_API_KEY) throw new Error('NVIDIA API Key not configured');
-        responseStream = await openai.chat.completions.create({
+        if (!OPENROUTER_API_KEY) throw new Error('OpenRouter API Key not configured');
+        const openrouter = new OpenAI({
+          apiKey: OPENROUTER_API_KEY,
+          baseURL: 'https://openrouter.ai/api/v1',
+        });
+        
+        responseStream = await openrouter.chat.completions.create({
           model: model,
-          messages: [
-            { role: 'system', content: systemInstruction },
-            { role: 'user', content: message }
-          ],
+          messages: messages as any,
           temperature: 0.7,
-          top_p: 1,
-          max_tokens: 4000,
           stream: true
         });
         if (responseStream) break;
-      } catch (nvidiaError: any) {
-        console.warn(`NVIDIA API failed for model ${model}:`, nvidiaError.message);
+      } catch (e: any) {
+        console.warn(`OpenRouter API failed for model ${model}:`, e.message);
+      }
+    }
+    
+    if (!responseStream) {
+      console.warn('All OpenRouter models failed, falling back to NVIDIA');
+      const nvidiaModels = [
+        "meta/llama-3.1-8b-instruct",
+        "mistralai/mistral-large-2-instruct",
+        "nvidia/llama-3.1-nemotron-70b-instruct"
+      ];
+  
+      for (const model of nvidiaModels) {
+        try {
+          if (!process.env.NVIDIA_API_KEY) throw new Error('NVIDIA API Key not configured');
+          responseStream = await openai.chat.completions.create({
+            model: model,
+            messages: messages as any,
+            temperature: 0.7,
+            top_p: 1,
+            max_tokens: 4000,
+            stream: true
+          });
+          if (responseStream) break;
+        } catch (e: any) {
+          console.warn(`NVIDIA API failed for model ${model}:`, e.message);
+        }
       }
     }
     
     if (!responseStream) {
       console.warn('All NVIDIA models failed, falling back to Groq');
-      isNvidia = false;
-      
       const groqModels = [
         "qwen/qwen3.6-27b",
         "llama-3.3-70b-versatile",
@@ -205,10 +232,7 @@ CRITICAL FORMATTING RULE:
         try {
           if (!process.env.GROQ_API_KEY) throw new Error('Groq API Key not configured');
           responseStream = await groq.chat.completions.create({
-            messages: [
-              { role: 'system', content: systemInstruction },
-              { role: 'user', content: message }
-            ],
+            messages: messages as any,
             model: model,
             stream: true
           });
