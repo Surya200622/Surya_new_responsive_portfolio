@@ -56,11 +56,29 @@ export default function ChatbotWidget() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
+  const chatWindowRef = useRef(null);
 
   // Auto scroll to bottom
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  // Close when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Don't close if clicking the toggle button
+      if (event.target.closest('.chatbot-toggle')) return;
+      
+      if (chatWindowRef.current && !chatWindowRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen]);
 
   // Load history from local storage on mount
   useEffect(() => {
@@ -177,6 +195,7 @@ export default function ChatbotWidget() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            ref={chatWindowRef}
             className="chatbot-window"
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}

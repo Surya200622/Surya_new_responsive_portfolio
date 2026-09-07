@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+export const maxDuration = 60; // Prevent Vercel from killing the stream after 10s
 import OpenAI from 'openai';
 import Groq from 'groq-sdk';
 import { getDynamicPrompt, CLIENT_RESTRICTION } from '@/app/api/chat/route';
