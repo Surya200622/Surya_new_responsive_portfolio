@@ -96,7 +96,7 @@ HOWEVER, you still represent Surya CS. If they ask about "Surya" or "your servic
 
 export async function POST(req: Request) {
   try {
-    const { message, currentPath, currentUrl, isAdmin, userId } = await req.json();
+    const { message, messages: chatHistory, currentPath, currentUrl, isAdmin, userId } = await req.json();
 
     if (!message) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
@@ -148,45 +148,78 @@ CRITICAL FORMATTING RULE:
 
     const systemInstruction = isAdmin ? `${BASE_PROMPT}\n\n${ADMIN_PROMPT}${adminDataText}\n${pageContextText}\n${formattingRule}` : `${BASE_PROMPT}\n\n${CLIENT_RESTRICTION}${clientProjectsText}\n${pageContextText}\n${formattingRule}`;
     
-    const messages = [
-      { role: 'system', content: systemInstruction },
-      { role: 'user', content: message }
+    const apiMessages = [
+      { role: 'system', content: systemInstruction }
     ];
+
+    if (chatHistory && Array.isArray(chatHistory)) {
+      chatHistory.forEach((msg: any) => {
+        if (msg.role === 'user' || msg.role === 'assistant') {
+          apiMessages.push({ role: msg.role, content: msg.content });
+        }
+      });
+    } else {
+      apiMessages.push({ role: 'user', content: message });
+    }
 
     let responseStream: any = null;
 
-    const openRouterModels = [
-      "minimax/minimax-m3:free",
-      "google/gemma-4-31b-it:free",
-      "nvidia/nemotron-3-ultra-550b-a55b:free"
+    // 1. Try Groq First (Fastest)
+    const groqModels = [
+      "llama-3.3-70b-versatile",
+      "llama3-8b-8192",
+      "gemma2-9b-it"
     ];
-
-    for (const model of openRouterModels) {
+    
+    for (const model of groqModels) {
       try {
-        if (!OPENROUTER_API_KEY) throw new Error('OpenRouter API Key not configured');
-        const openrouter = new OpenAI({
-          apiKey: OPENROUTER_API_KEY,
-          baseURL: 'https://openrouter.ai/api/v1',
-        });
-        
-        responseStream = await openrouter.chat.completions.create({
+        if (!process.env.GROQ_API_KEY) throw new Error('Groq API Key not configured');
+        responseStream = await groq.chat.completions.create({
+          messages: apiMessages as any,
           model: model,
-          messages: messages as any,
-          temperature: 0.7,
-          max_tokens: 4000,
           stream: true
         });
         if (responseStream) break;
-      } catch (e: any) {
-        console.warn(`OpenRouter API failed for model ${model}:`, e.message);
+      } catch (groqError: any) {
+        console.warn(`Groq API Error for model ${model}:`, groqError.message);
       }
     }
-    
+
+    // 2. Fallback to OpenRouter
     if (!responseStream) {
-      console.warn('All OpenRouter models failed, falling back to NVIDIA');
+      console.warn('Groq failed, falling back to OpenRouter');
+      const openRouterModels = [
+        "google/gemma-2-9b-it:free",
+        "meta-llama/llama-3.1-8b-instruct:free"
+      ];
+
+      for (const model of openRouterModels) {
+        try {
+          if (!OPENROUTER_API_KEY) throw new Error('OpenRouter API Key not configured');
+          const openrouter = new OpenAI({
+            apiKey: OPENROUTER_API_KEY,
+            baseURL: 'https://openrouter.ai/api/v1',
+          });
+          
+          responseStream = await openrouter.chat.completions.create({
+            model: model,
+            messages: apiMessages as any,
+            temperature: 0.7,
+            max_tokens: 4000,
+            stream: true
+          });
+          if (responseStream) break;
+        } catch (e: any) {
+          console.warn(`OpenRouter API failed for model ${model}:`, e.message);
+        }
+      }
+    }
+
+    // 3. Final Fallback to NVIDIA
+    if (!responseStream) {
+      console.warn('OpenRouter failed, falling back to NVIDIA');
       const nvidiaModels = [
         "meta/llama-3.1-8b-instruct",
-        "mistralai/mistral-large-2-instruct",
         "nvidia/llama-3.1-nemotron-70b-instruct"
       ];
   
@@ -195,7 +228,7 @@ CRITICAL FORMATTING RULE:
           if (!process.env.NVIDIA_API_KEY) throw new Error('NVIDIA API Key not configured');
           responseStream = await openai.chat.completions.create({
             model: model,
-            messages: messages as any,
+            messages: apiMessages as any,
             temperature: 0.7,
             top_p: 1,
             max_tokens: 4000,
@@ -207,33 +240,9 @@ CRITICAL FORMATTING RULE:
         }
       }
     }
-    
+
     if (!responseStream) {
-      console.warn('All NVIDIA models failed, falling back to Groq');
-      const groqModels = [
-        "qwen/qwen3.6-27b",
-        "llama-3.3-70b-versatile",
-        "llama3-70b-8192",
-        "gemma2-9b-it"
-      ];
-      
-      for (const model of groqModels) {
-        try {
-          if (!process.env.GROQ_API_KEY) throw new Error('Groq API Key not configured');
-          responseStream = await groq.chat.completions.create({
-            messages: messages as any,
-            model: model,
-            stream: true
-          });
-          if (responseStream) break;
-        } catch (groqError: any) {
-          console.error(`Groq API Error for model ${model}:`, groqError.message);
-        }
-      }
-      
-      if (!responseStream) {
-        return NextResponse.json({ error: 'The AI is currently experiencing high demand. Please try again in a few moments.' }, { status: 429 });
-      }
+      return NextResponse.json({ error: 'The AI is currently experiencing high demand. Please try again in a few moments.' }, { status: 429 });
     }
 
     const encoder = new TextEncoder();
@@ -248,7 +257,7 @@ CRITICAL FORMATTING RULE:
 
           for await (const chunk of responseStream) {
             // Both OpenAI and Groq format their streaming chunks identically
-            const content = chunk.choices[0]?.delta?.content || '';
+            const content = chunk.choices?.[0]?.delta?.content || '';
             if (content) {
               buffer += content;
               

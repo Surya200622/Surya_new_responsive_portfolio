@@ -85,7 +85,12 @@ export default function ChatbotWidget() {
     const saved = localStorage.getItem('surya-chatbot-history');
     if (saved) {
       try {
-        setMessages(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setMessages(parsed);
+        } else {
+          setMessages([INITIAL_MESSAGE]);
+        }
       } catch (e) {
         setMessages([INITIAL_MESSAGE]);
       }
@@ -104,7 +109,8 @@ export default function ChatbotWidget() {
   };
 
   const sendToBot = async (userMsg) => {
-    setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+    const currentHistory = [...messages, { role: 'user', content: userMsg }];
+    setMessages(currentHistory);
     
     // Intercept /resume command natively
     if (userMsg.toLowerCase() === '/resume') {
@@ -122,6 +128,7 @@ export default function ChatbotWidget() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           message: userMsg,
+          messages: currentHistory.slice(-10), // Send last 10 messages for context
           currentPath: window.location.pathname,
           currentUrl: window.location.href
         }),
@@ -153,7 +160,10 @@ export default function ChatbotWidget() {
         
         setMessages(prev => {
           const newMessages = [...prev];
-          newMessages[newMessages.length - 1].content = assistantMessage;
+          newMessages[newMessages.length - 1] = { 
+            ...newMessages[newMessages.length - 1], 
+            content: assistantMessage 
+          };
           return newMessages;
         });
       }
