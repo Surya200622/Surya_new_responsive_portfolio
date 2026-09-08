@@ -342,6 +342,7 @@ export default function ProtectedLayout({
     { label: 'Subscribers', href: '/admin/subscribers', icon: Mail },
     { label: 'Telegram Bot', href: '/admin/telegram', icon: Bot },
     { label: 'Email Settings', href: '/admin/settings/email', icon: Settings },
+    { label: 'AI Settings', href: '/admin/settings/ai', icon: Settings },
   ] : [
     { label: 'Dashboard', href: '/dashboard', icon: Home },
     { label: 'Messages', href: '/dashboard/messages', icon: MessageSquare },
