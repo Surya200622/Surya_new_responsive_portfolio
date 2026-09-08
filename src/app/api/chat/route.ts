@@ -5,7 +5,7 @@ import OpenAI from 'openai';
 import Groq from 'groq-sdk';
 import { PROJECTS, SKILLS, TIMELINE_DATA, CONTACT_INFO, SOCIAL_LINKS } from '@/data/projectsData';
 import { db } from '@/db';
-import { portfolioProjects, offers, reviews, projects } from '@/db/schema';
+import { portfolioProjects, offers, reviews, projects, siteSettings } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { checkRateLimit, getIp } from '@/lib/rate-limit';
 
@@ -164,13 +164,28 @@ CRITICAL FORMATTING RULE:
 
     let responseStream: any = null;
 
-    // 1. Try Groq First (Fastest)
-    const groqModels = [
-      "llama-3.3-70b-versatile",
-      "llama3-8b-8192",
-      "gemma2-9b-it"
-    ];
+    // Fetch AI Models from DB
+    const groqSetting = await db.select().from(siteSettings).where(eq(siteSettings.key, 'AI_GROQ_MODELS')).limit(1);
+    const openRouterSetting = await db.select().from(siteSettings).where(eq(siteSettings.key, 'AI_OPENROUTER_MODELS')).limit(1);
     
+    let groqModels = [
+      "groq/compound",
+      "qwen/qwen3.8-27b",
+      "openai/gpt-oss-120b"
+    ];
+    if (groqSetting.length > 0 && groqSetting[0].value) {
+      groqModels = groqSetting[0].value.split(',').map(m => m.trim()).filter(Boolean);
+    }
+
+    let openRouterModels = [
+      "nvidia/nemotron-3.5-lightning:free",
+      "liquid/lfm-2.5-2.6b:free"
+    ];
+    if (openRouterSetting.length > 0 && openRouterSetting[0].value) {
+      openRouterModels = openRouterSetting[0].value.split(',').map(m => m.trim()).filter(Boolean);
+    }
+
+    // 1. Try Groq First (Fastest)
     for (const model of groqModels) {
       try {
         if (!process.env.GROQ_API_KEY) throw new Error('Groq API Key not configured');
@@ -188,10 +203,6 @@ CRITICAL FORMATTING RULE:
     // 2. Fallback to OpenRouter
     if (!responseStream) {
       console.warn('Groq failed, falling back to OpenRouter');
-      const openRouterModels = [
-        "google/gemma-2-9b-it:free",
-        "meta-llama/llama-3.1-8b-instruct:free"
-      ];
 
       for (const model of openRouterModels) {
         try {
