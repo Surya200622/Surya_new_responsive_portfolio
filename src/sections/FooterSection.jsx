@@ -47,7 +47,7 @@ export default function FooterSection() {
               <img src="/logo.svg" alt="Surya CS Logo" className="theme-adaptive-logo" style={{ height: '56px', width: 'auto' }} />
             </div>
             <p className="footer__brand-desc">
-              {"Full-Stack Python Developer crafting modern web solutions with Django & React from Coimbatore, India."}
+              {"Full-Stack Web Developer crafting modern web solutions with Django & React from Coimbatore, India."}
             </p>
           </div>
 

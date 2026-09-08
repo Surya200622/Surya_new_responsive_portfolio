@@ -78,7 +78,7 @@ export default function App() {
   // Update document title based on visible section
   useEffect(() => {
     const titles = {
-      hero: 'Surya CS | Full-Stack Python Developer',
+      hero: 'Surya CS | Full-Stack Web Developer',
       projects: 'Portfolio | Surya CS',
       offers: 'Special Offers | Surya CS',
       calculator: 'Project Cost Calculator | Surya CS',

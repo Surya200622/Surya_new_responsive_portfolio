@@ -17,7 +17,7 @@ const LinkedinIcon = ({ size = 24, className = "" }) => (
 );
 
 export const metadata = {
-  title: 'Resume | Surya CS - Full-Stack Python Developer',
+  title: 'Resume | Surya CS - Full-Stack Web Developer',
   description: 'Interactive resume for Surya CS. View skills, experience, and education.',
 };
 
@@ -40,7 +40,7 @@ export default function ResumePage() {
         <header className="resume-header">
           <div className="header-content">
             <h1 className="resume-name">Surya CS</h1>
-            <h2 className="resume-title">Full-Stack Python Developer</h2>
+            <h2 className="resume-title">Full-Stack Web Developer</h2>
             
             <div className="contact-info">
               <a href="mailto:cssurya2006@gmail.com"><Mail size={16} /> cssurya2006@gmail.com</a>

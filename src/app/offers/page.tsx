@@ -9,7 +9,7 @@ import { eq, desc, and, gt } from 'drizzle-orm';
 export const metadata: Metadata = {
   title: 'Exclusive Deals & Services | Suryacs Web Solutions',
   description: 'Special offers and freelance services by Surya CS. Web Development, Python automation, React, and Django projects tailored for you.',
-  keywords: 'Freelance web development offers, Python developer services, React development deals, Django developer for hire, Suryacs Web Solutions services',
+  keywords: 'Freelance web development offers, Web Developer services, React development deals, Django developer for hire, Suryacs Web Solutions services',
   openGraph: {
     title: 'Exclusive Deals & Services | Suryacs Web Solutions',
     description: 'Special offers and freelance services by Surya CS. Web Development, Python automation, React, and Django projects tailored for you.',

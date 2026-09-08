@@ -4,8 +4,8 @@ import { Suspense } from 'react';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'About Surya CS | Full-Stack Python Developer',
-  description: 'Learn more about Surya CS, a B.Com.CA graduate and Full-Stack Python Developer specialized in Django and React. View skills, experience, and background.',
+  title: 'About Surya CS | Full-Stack Web Developer',
+  description: 'Learn more about Surya CS, a B.Com.CA graduate and Full-Stack Web Developer specialized in Django and React. View skills, experience, and background.',
   alternates: {
     canonical: 'https://suryacs-websolutions.vercel.app/about',
   },

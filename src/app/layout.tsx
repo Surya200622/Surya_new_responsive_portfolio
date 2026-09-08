@@ -11,11 +11,11 @@ import { PROJECTS } from '../data/projectsData';
 export const metadata: Metadata = {
   metadataBase: new URL('https://suryacs-websolutions.vercel.app'),
   applicationName: 'Suryacs Web Solutions',
-  title: 'Suryacs Web Solutions | Full-Stack Python Developer | Coimbatore, India',
+  title: 'Suryacs Web Solutions | Full-Stack Web Developer | Coimbatore, India',
   description:
-    'Portfolio of Surya CS, a Full-Stack Python Developer specializing in Django, React, and modern web solutions. View projects, resume, and contact for freelance work.',
+    'Portfolio of Surya CS, a Full-Stack Web Developer specializing in Django, React, and modern web solutions. View projects, resume, and contact for freelance work.',
   keywords:
-    'Surya CS, Cssurya, Full Stack Developer, Python Developer, Django, React, Web Development, Coimbatore, Freelance Developer, Suryacs web solutions',
+    'Surya CS, Cssurya, Full Stack Developer, Web Developer, Django, React, Web Development, Coimbatore, Freelance Developer, Suryacs web solutions',
   authors: [{ name: 'Surya CS' }],
   creator: 'Surya CS',
   publisher: 'Suryacs Web Solutions',
@@ -23,24 +23,24 @@ export const metadata: Metadata = {
     type: 'website',
     url: 'https://suryacs-websolutions.vercel.app',
     siteName: 'Suryacs Web Solutions',
-    title: 'Suryacs Web Solutions | Full-Stack Python Developer',
+    title: 'Suryacs Web Solutions | Full-Stack Web Developer',
     description:
-      'Portfolio of Surya CS, a Full-Stack Python Developer specializing in Django, React, and modern web solutions.',
+      'Portfolio of Surya CS, a Full-Stack Web Developer specializing in Django, React, and modern web solutions.',
     locale: 'en_IN',
     images: [
       {
         url: '/images/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Surya CS - Full-Stack Python Developer',
+        alt: 'Surya CS - Full-Stack Web Developer',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Suryacs Web Solutions | Full-Stack Python Developer',
+    title: 'Suryacs Web Solutions | Full-Stack Web Developer',
     description:
-      'Full-Stack Python Developer specializing in Django & React. Based in Coimbatore, India.',
+      'Full-Stack Web Developer specializing in Django & React. Based in Coimbatore, India.',
     images: ['/images/og-image.jpg'],
   },
   appleWebApp: {
@@ -114,7 +114,7 @@ export default function RootLayout({
                 name: 'Surya CS',
                 url: 'https://suryacs-websolutions.vercel.app',
                 image: 'https://suryacs-websolutions.vercel.app/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png',
-                jobTitle: 'Full-Stack Python Developer',
+                jobTitle: 'Full-Stack Web Developer',
                 description:
                   'B.Com.CA graduate from Sri Ramakrishna College of Arts & Science. IBM & ITC trained in Data Analytics. Django & React Specialist.',
                 email: 'cssurya2006@gmail.com',
@@ -142,7 +142,7 @@ export default function RootLayout({
                 '@type': 'LocalBusiness',
                 '@id': 'https://suryacs-websolutions.vercel.app/#localbusiness',
                 name: 'Suryacs Web Solutions',
-                description: 'Full-Stack Python Developer specializing in Django, React, and modern web solutions.',
+                description: 'Full-Stack Web Developer specializing in Django, React, and modern web solutions.',
                 url: 'https://suryacs-websolutions.vercel.app',
                 image: 'https://suryacs-websolutions.vercel.app/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png',
                 logo: 'https://suryacs-websolutions.vercel.app/icon.svg',

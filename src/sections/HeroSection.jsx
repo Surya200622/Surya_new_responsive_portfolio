@@ -153,7 +153,7 @@ export default function HeroSection() {
           >
             <img
               src="/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png"
-              alt="Surya CS — Full-Stack Python Developer"
+              alt="Surya CS — Full-Stack Web Developer"
               className="hero__portrait-img"
               loading="eager"
             />

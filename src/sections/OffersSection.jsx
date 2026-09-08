@@ -182,7 +182,7 @@ export default function OffersSection({ initialOffers = null }) {
           transition={{ duration: 0.6 }}
         >
           <h2 className="offers-title">{"Special"} <span className="text-gradient">{"Offers"}</span></h2>
-          <p className="offers-subtitle">{"Exclusive weekly deals for freelance web development and Python projects."}</p>
+          <p className="offers-subtitle">{"Exclusive weekly deals for freelance web development projects."}</p>
         </motion.div>
 
         <div className="offers-grid">

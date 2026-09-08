@@ -125,7 +125,7 @@ export async function POST(req: Request) {
 You're viewing the Services section of Surya CS's official portfolio website (suryacs-websolutions.vercel.app).
 ---
 🛠️ Services Offered by Surya CS
-Surya is a Full-Stack Python Developer & IT Consultant based in Coimbatore, India. He specializes in building scalable, secure, and modern web applications from end-to-end — covering everything from UI/UX implementation to solid backend architectures.
+Surya is a Full-Stack Web Developer & IT Consultant based in Coimbatore, India. He specializes in building scalable, secure, and modern web applications from end-to-end — covering everything from UI/UX implementation to solid backend architectures.
 Here's a breakdown of the professional services available:
 1. Full-Stack Web Development
 Complete frontend + backend development tailored to your business needs. Whether you need a custom dashboard, a client portal, or a complete SaaS platform, Surya delivers it all.
@@ -254,7 +254,7 @@ You're currently on the About section of Surya CS Web Solutions — Surya's pers
 Let me tell you a bit about who Surya is and what this page represents:
 ---
 🌟 Who is Surya CS?
-Surya CS is a premium Full-Stack Python Developer and IT Consultant based in Coimbatore, Tamil Nadu, India. He specializes in building modern, scalable, and secure web applications from end to end — handling everything from UI/UX design to backend architecture and deployment.
+Surya CS is a premium Full-Stack Web Developer and IT Consultant based in Coimbatore, Tamil Nadu, India. He specializes in building modern, scalable, and secure web applications from end to end — handling everything from UI/UX design to backend architecture and deployment.
 ---
 🎓 Background & Journey
 - 2023 – Began studies in B.COM.CA (Computer Applications) at Sri Ramakrishna College of Arts & Science, Coimbatore, where he discovered his passion for web development.
@@ -302,7 +302,7 @@ Is there anything specific about Surya's background, skills, or services you'd l
       await sendTelegramMessage(
         chatId,
         customText || `Surya CS – Skills Overview
-Hey there! 👋 Here's a detailed breakdown of the technologies and skills Surya CS brings to the table as a Full-Stack Python Developer & IT Consultant based in Coimbatore.
+Hey there! 👋 Here's a detailed breakdown of the technologies and skills Surya CS brings to the table as a Full-Stack Web Developer & IT Consultant based in Coimbatore.
 ---
 💻 Programming Languages
 - Python – Core language for backend development, automation, and AI integrations

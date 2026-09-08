@@ -110,7 +110,7 @@ export const TIMELINE_DATA = [
     year: '2025',
     title: 'Indra Institute of Education — Full-Stack Python',
     description:
-      'Full-Stack Python training at Indra Institute of Education, 100 Feet Road. Intensive program from July 09, 2025 to December 15, 2025, deepening expertise in Python full-stack development.',
+      'Full-Stack Python training at Indra Institute of Education, 100 Feet Road. Intensive program from July 09, 2025 to December 15, 2025, deepening expertise in full-stack web development.',
     type: 'education',
   },
   {
@@ -122,9 +122,9 @@ export const TIMELINE_DATA = [
   },
   {
     year: '2026',
-    title: 'Full-Stack Python Developer — Open to Opportunities',
+    title: 'Full-Stack Web Developer — Open to Opportunities',
     description:
-      'Actively seeking to apply my Python full-stack development skills, contribute to innovative projects, and grow professionally in a dynamic IT company.',
+      'Actively seeking to apply my full-stack web development skills, contribute to innovative projects, and grow professionally in a dynamic IT company.',
     type: 'current',
   },
 ];

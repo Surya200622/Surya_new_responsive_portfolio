@@ -83,7 +83,7 @@ export default function TermsOfServicePage() {
             </h2>
             <p>
               This website serves as a personal portfolio and professional
-              showcase for Surya CS, a Full-Stack Python Developer based in
+              showcase for Surya CS, a Full-Stack Web Developer based in
               Coimbatore, India. The website provides:
             </p>
             <ul className="legal-list">
