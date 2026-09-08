@@ -214,7 +214,7 @@ export default function ChatbotWidget() {
           >
             <div className="chatbot-header">
               <div className="chatbot-title">
-                <Bot size={20} className="text-accent" />
+                <img src="/icon.svg" alt="Surya Logo" style={{ width: 20, height: 20 }} />
                 <span>Surya's AI Assistant</span>
               </div>
               <div className="chatbot-actions">
@@ -231,7 +231,7 @@ export default function ChatbotWidget() {
               {messages.map((msg, idx) => (
                 <div key={idx} className={`chat-bubble-wrapper ${msg.role === 'user' ? 'chat-right' : 'chat-left'}`}>
                   <div className="chat-avatar">
-                    {msg.role === 'user' ? <User size={14} /> : <Bot size={14} />}
+                    {msg.role === 'user' ? <User size={14} /> : <img src="/icon.svg" alt="Bot" style={{ width: 14, height: 14 }} />}
                   </div>
                   <div className={`chat-bubble ${msg.role === 'user' ? 'bubble-user' : 'bubble-assistant'}`}>
                     {renderMessage(msg.content)}
@@ -255,7 +255,7 @@ export default function ChatbotWidget() {
 
               {isLoading && (
                 <div className="chat-bubble-wrapper chat-left">
-                  <div className="chat-avatar"><Bot size={14} /></div>
+                  <div className="chat-avatar"><img src="/icon.svg" alt="Bot" style={{ width: 14, height: 14 }} /></div>
                   <div className="chat-bubble bubble-assistant typing-indicator">
                     <span></span><span></span><span></span>
                   </div>
