@@ -183,7 +183,7 @@ export default function ClientFilesPage() {
       {error && error !== 'storage_not_configured' && (
         <div className="bg-red-500/10 border border-red-500/30 text-red-500 rounded-xl px-4 py-3 text-sm flex items-center justify-between">
           <span>Upload failed: {error}</span>
-          <button onClick={() => } className="hover:text-red-300">
+          <button onClick={() => {}} className="hover:text-red-300">
             <X className="w-4 h-4" />
           </button>
         </div>

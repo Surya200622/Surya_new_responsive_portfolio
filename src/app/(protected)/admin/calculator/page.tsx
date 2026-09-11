@@ -107,7 +107,7 @@ export default function CalculatorSettingsPage() {
       if (!res.ok) throw new Error('Failed to save settings');
       
       toast.success('Calculator configuration saved successfully! Changes are now live.');
-      setTimeout(() => , 3000);
+
     } catch (err: any) {
       toast.error(err.message || 'An error occurred while saving.');
     } finally {
