@@ -1,5 +1,6 @@
 'use client';
 import { useRef, useState, useEffect } from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -124,6 +125,13 @@ export default function HeroSection() {
     <section ref={sectionRef} className="hero" id="hero">
       {/* Background */}
       <div className="hero__bg" ref={bgRef}>
+        {/* The blurred image was here, now empty or holding other bg elements if needed */}
+      </div>
+      <div className="hero__bg-overlay" />
+      <div className="hero__bg-vignette" />
+
+      {/* Floating Icons */}
+      <div className="hero__floating-icons">
         {FLOATING_ICONS.map((item, index) => (
           <div
             key={index}
@@ -139,8 +147,6 @@ export default function HeroSection() {
           </div>
         ))}
       </div>
-      <div className="hero__bg-overlay" />
-      <div className="hero__bg-vignette" />
       
       <div className="hero__ad-banner">
         <JarvisAdBanner />
@@ -168,11 +174,14 @@ export default function HeroSection() {
               transition: 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)',
             }}
           >
-            <img
+            <Image
               src="/images/Gemini_Generated_Image_it4uq5it4uq5it4u.png"
               alt="Surya CS — Full-Stack Web Developer"
               className="hero__portrait-img"
-              loading="eager"
+              fill
+              priority
+              sizes="(max-width: 640px) 260px, (max-width: 1024px) 320px, 320px"
+              style={{ objectFit: 'cover', objectPosition: 'center top' }}
             />
             <div className="hero__portrait-sweep" aria-hidden="true" />
           </div>

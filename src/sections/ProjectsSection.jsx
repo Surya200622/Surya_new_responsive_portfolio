@@ -1,5 +1,6 @@
 'use client';
-import { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -237,7 +238,7 @@ export default function ProjectsSection({ isStandalone = false }) {
                     ) : !project.hideLink ? (
                       <div className="projects__card-inner" style={{ color: 'inherit' }}>
                         <a href={`/project/${project.slug}`} className="projects__card-image" style={{ display: 'block', textDecoration: 'none' }} onClick={(e) => e.stopPropagation()}>
-                          <img src={project.image} alt={project.title} loading="lazy" />
+                          <Image src={project.image} alt={project.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" style={{ objectFit: 'cover', objectPosition: 'top' }} />
                           <span className="projects__card-year">{project.year}</span>
                           <span className="projects__card-category">{project.category}</span>
                         </a>
@@ -294,7 +295,7 @@ export default function ProjectsSection({ isStandalone = false }) {
                     ) : (
                       <div className="projects__card-inner" style={{ color: 'inherit' }}>
                         <a href={`/project/${project.slug}`} className="projects__card-image" style={{ display: 'block', textDecoration: 'none' }} onClick={(e) => e.stopPropagation()}>
-                          <img src={project.image} alt={project.title} loading="lazy" />
+                          <Image src={project.image} alt={project.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" style={{ objectFit: 'cover', objectPosition: 'top' }} />
                           <span className="projects__card-year">{project.year}</span>
                           <span className="projects__card-category">{project.category}</span>
                         </a>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tag, Calendar, ArrowRight, X, Eye, Link, Check } from 'lucide-react';
@@ -69,8 +70,8 @@ function OfferModal({ offer, isOpen, onClose, serviceQuery }) {
             {/* Scrollable Content */}
             <div className="offer-modal-body">
               {offer.imageUrl && (
-                <div className="offer-modal-image">
-                  <img src={offer.imageUrl} alt={offer.title} />
+                <div className="offer-modal-image" style={{ position: 'relative' }}>
+                  <Image src={offer.imageUrl} alt={offer.title} fill style={{ objectFit: 'cover' }} />
                 </div>
               )}
 
@@ -201,8 +202,8 @@ export default function OffersSection({ initialOffers = null }) {
                 <div className="offer-card-glow" />
                 
                 {offer.imageUrl && (
-                  <div className="offer-image-container">
-                    <img src={offer.imageUrl} alt={offer.title} className="offer-image" />
+                  <div className="offer-image-container" style={{ position: 'relative' }}>
+                    <Image src={offer.imageUrl} alt={offer.title} fill sizes="(max-width: 640px) 100vw, 320px" className="offer-image" style={{ objectFit: 'cover' }} />
                   </div>
                 )}
                 

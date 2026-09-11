@@ -1,6 +1,7 @@
 'use client';
-import { useRef, useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef, useEffect } from 'react';
+import Image from 'next/image';
+import { motion, useAnimation, useInView } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -389,10 +390,12 @@ export default function AboutSection() {
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
           >
-            <img
+            <Image
               src="/images/Gemini_Generated_Image_uavilguavilguavi.png"
               alt="Surya CS — Full-Stack Web Developer"
-              loading="lazy"
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              style={{ objectFit: 'cover' }}
             />
             {/* 3D Tilt Shine Effect */}
             <div className="about__tilt-shine" aria-hidden="true" />
@@ -483,11 +486,11 @@ export default function AboutSection() {
                   const LucideIcon = skill.iconType === 'lucide' ? ICON_MAP[skill.icon] : null;
                   return (
                     <div key={`g1-${skill.name}`} className="about__skill-card">
-                      <div className="about__skill-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', flexShrink: 0 }}>
+                      <div className="about__skill-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', flexShrink: 0, position: 'relative' }}>
                         {skill.iconType === 'lucide' && LucideIcon ? (
                           <LucideIcon size={18} color="var(--color-accent-primary)" />
                         ) : (
-                          <img src={skill.icon} alt={skill.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} loading="lazy" />
+                          <Image src={skill.icon} alt={skill.name} fill sizes="24px" style={{ objectFit: 'contain' }} />
                         )}
                       </div>
                       <div className="about__skill-name">{skill.name}</div>
@@ -501,11 +504,11 @@ export default function AboutSection() {
                   const LucideIcon = skill.iconType === 'lucide' ? ICON_MAP[skill.icon] : null;
                   return (
                     <div key={`g2-${skill.name}`} className="about__skill-card">
-                      <div className="about__skill-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', flexShrink: 0 }}>
+                      <div className="about__skill-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', flexShrink: 0, position: 'relative' }}>
                         {skill.iconType === 'lucide' && LucideIcon ? (
                           <LucideIcon size={18} color="var(--color-accent-primary)" />
                         ) : (
-                          <img src={skill.icon} alt={skill.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} loading="lazy" />
+                          <Image src={skill.icon} alt={skill.name} fill sizes="24px" style={{ objectFit: 'contain' }} />
                         )}
                       </div>
                       <div className="about__skill-name">{skill.name}</div>

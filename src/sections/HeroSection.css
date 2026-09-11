@@ -16,17 +16,25 @@
   z-index: 0;
 }
 
+.hero__floating-icons {
+  position: absolute;
+  inset: 0;
+  z-index: 2; /* above vignette */
+  overflow: hidden;
+  pointer-events: none;
+}
+
 .hero__floating-icon {
   position: absolute;
   color: var(--color-accent-primary, #f97316);
-  opacity: 0.15;
+  opacity: 0.3;
   animation: float-icon-bg 8s ease-in-out infinite;
   z-index: 1;
   pointer-events: none;
 }
 
 [data-theme="light"] .hero__floating-icon {
-  opacity: 0.3;
+  opacity: 0.5;
 }
 
 @keyframes float-icon-bg {

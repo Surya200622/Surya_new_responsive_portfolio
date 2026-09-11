@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
 import '../index.css';
 import './globals.css';
-import ChatbotWidget from "@/components/ChatbotWidget";
+import dynamic from 'next/dynamic';
+import { Outfit, Inter } from 'next/font/google';
+
+const ChatbotWidget = dynamic(() => import('@/components/ChatbotWidget'), { ssr: false });
 import MagicCursor from "@/components/MagicCursor";
 import Providers from "@/components/Providers";
 import CookieBanner from "@/components/CookieBanner";
@@ -60,6 +63,18 @@ export const metadata: Metadata = {
   },
 };
 
+const outfit = Outfit({
+  subsets: ['latin'],
+  variable: '--font-outfit',
+  display: 'swap',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
 
 export default function RootLayout({
   children,
@@ -67,7 +82,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" data-theme="light" suppressHydrationWarning>
+    <html lang="en" data-theme="light" suppressHydrationWarning className={`${outfit.variable} ${inter.variable}`}>
       <head>
         {/* Theme initialization — runs before paint to prevent flash */}
         <script
@@ -76,13 +91,7 @@ export default function RootLayout({
           }}
         />
 
-        {/* Fonts */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
+        {/* Fonts are now handled by next/font/google */}
 
         <meta name="theme-color" content="#0a0a0f" />
 
