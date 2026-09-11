@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 import { useState } from 'react';
 import { Plus, Trash2, ChevronDown, ChevronRight, GripVertical } from 'lucide-react';
@@ -204,7 +206,7 @@ export function ObjectEditor({ title, description, value = {}, schema, onChange,
   const handleKeyChange = (oldKey: string, newKey: string) => {
     if (oldKey === newKey || newKey.trim() === '') return;
     if (value[newKey]) {
-      alert('This key already exists!');
+      toast('This key already exists!');
       return;
     }
     

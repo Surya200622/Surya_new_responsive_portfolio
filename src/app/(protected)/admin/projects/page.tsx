@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Loader2, Save, X, ExternalLink, Image as ImageIcon } from 'lucide-react';
@@ -96,7 +98,7 @@ export default function AdminProjectsPage() {
       if (!e.target.files || e.target.files.length === 0) return;
       
       setImageUploading(true);
-      setError('');
+      
       const file = e.target.files[0];
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
@@ -119,14 +121,14 @@ export default function AdminProjectsPage() {
       setFormData(prev => ({ ...prev, image: uploadResult.url }));
     } catch (err: any) {
       console.error('Error uploading image:', err);
-      setError('Error uploading image: ' + err.message);
+      toast.error('Error uploading image: ' + err.message);
     } finally {
       setImageUploading(false);
     }
   };
 
   const handleOpenModal = (project?: Project) => {
-    setError('');
+    
     if (project) {
       setEditingId(project.id);
       setFormData({
@@ -159,7 +161,7 @@ export default function AdminProjectsPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setError('');
+    
 
     try {
       const validData = projectSchema.parse(formData);
@@ -199,9 +201,9 @@ export default function AdminProjectsPage() {
       fetchProjects();
     } catch (err) {
       if (err instanceof z.ZodError) {
-        setError(err.errors[0].message);
+        toast.error(err.errors[0].message);
       } else if (err instanceof Error) {
-        setError(err.message);
+        toast.error(err.message);
       }
     } finally {
       setSaving(false);
@@ -218,7 +220,7 @@ export default function AdminProjectsPage() {
       setProjects(prev => prev.filter(p => p.id !== id));
     } catch (err) {
       console.error('Error deleting project:', err);
-      alert('Error deleting project');
+      toast.error('Error deleting project');
     }
   };
 
@@ -261,7 +263,7 @@ export default function AdminProjectsPage() {
       setIsOrderDirty(false);
     } catch (err) {
       console.error(err);
-      alert('Failed to save order.');
+      toast.error('Failed to save order.');
     } finally {
       setSavingOrder(false);
     }

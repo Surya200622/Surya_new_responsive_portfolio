@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -21,7 +23,7 @@ export default function ForgotPasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    
     setServerError('');
 
     try {
@@ -44,7 +46,7 @@ export default function ForgotPasswordPage() {
       setIsSuccess(true);
     } catch (err) {
       if (err instanceof z.ZodError) {
-        setError(err.errors[0].message);
+        toast.error(err.errors[0].message);
       } else if (err instanceof Error) {
         setServerError(err.message);
       }

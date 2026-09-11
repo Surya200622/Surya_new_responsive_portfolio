@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -294,7 +296,7 @@ export default function AdminOverviewPage() {
               onClick={async () => {
                 const fileInput = document.getElementById('resume-upload') as HTMLInputElement;
                 if (!fileInput.files || fileInput.files.length === 0) {
-                  alert('Please select a PDF file first');
+                  toast('Please select a PDF file first');
                   return;
                 }
                 const file = fileInput.files[0];
@@ -324,12 +326,12 @@ export default function AdminOverviewPage() {
                       headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({ key: 'resume_url', value: uploadData.url }),
                     });
-                    alert('Resume updated successfully!');
+                    toast.success('Resume updated successfully!');
                     fileInput.value = '';
                   }
                 } catch (e: any) {
                   console.error('Resume upload failed:', e);
-                  alert(`Failed to update resume: ${e.message}`);
+                  toast.error(`Failed to update resume: ${e.message}`);
                 }
                 setResumeUploading(false);
               }}

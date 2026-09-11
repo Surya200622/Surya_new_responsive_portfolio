@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 import { useState, useEffect, useRef } from 'react';
 import { FileText, UploadCloud, Download, Trash2, Loader2, File, Image, FileArchive, X } from 'lucide-react';
@@ -33,7 +35,7 @@ export default function ClientFilesPage() {
     try {
       const res = await fetch('/api/client-files');
       if (!res.ok) {
-        if (res.status === 404) setError('storage_not_configured');
+        if (res.status === 404) toast.error('storage_not_configured')
         else throw new Error('Failed to load files');
       } else {
         const fileList = await res.json();
@@ -47,7 +49,7 @@ export default function ClientFilesPage() {
       }
     } catch (e) {
       console.warn('Files load error:', e);
-      setError('Failed to load files');
+      toast.error('Failed to load files');
     } finally {
       setLoading(false);
     }
@@ -57,7 +59,7 @@ export default function ClientFilesPage() {
     if (!selectedFiles || selectedFiles.length === 0) return;
     
     setUploading(true);
-    setError(null);
+    
 
     try {
       for (const file of Array.from(selectedFiles)) {
@@ -76,7 +78,7 @@ export default function ClientFilesPage() {
       }
       await loadFiles();
     } catch (e: any) {
-      setError(e.message || 'Upload failed');
+      toast.error(e.message || 'Upload failed');
     }
     
     setUploading(false);
@@ -99,7 +101,7 @@ export default function ClientFilesPage() {
       setFiles(prev => prev.filter(f => f.name !== fileName));
     } catch (err) {
       console.error('Delete error:', err);
-      alert('Error deleting file');
+      toast.error('Error deleting file');
     }
   }
 
@@ -115,7 +117,7 @@ export default function ClientFilesPage() {
       window.open(url, '_blank');
     } catch (err) {
       console.error('Download error:', err);
-      alert('Error downloading file');
+      toast.error('Error downloading file');
     }
   }
 
@@ -181,7 +183,7 @@ export default function ClientFilesPage() {
       {error && error !== 'storage_not_configured' && (
         <div className="bg-red-500/10 border border-red-500/30 text-red-500 rounded-xl px-4 py-3 text-sm flex items-center justify-between">
           <span>Upload failed: {error}</span>
-          <button onClick={() => setError(null)} className="hover:text-red-300">
+          <button onClick={() => } className="hover:text-red-300">
             <X className="w-4 h-4" />
           </button>
         </div>

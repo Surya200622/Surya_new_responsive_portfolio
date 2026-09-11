@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 import { useState } from 'react';
 import { Loader2, Briefcase } from 'lucide-react';
@@ -50,7 +52,7 @@ export default function ClientProjectsTable({ initialProjects }: { initialProjec
       router.refresh(); // Refresh server components if any
     } catch (error: any) {
       console.error('Error updating status:', error);
-      alert('Failed to update status: ' + error.message);
+      toast.error('Failed to update status: ' + error.message);
     } finally {
       setUpdatingId(null);
     }

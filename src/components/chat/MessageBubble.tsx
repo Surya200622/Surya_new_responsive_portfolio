@@ -1,3 +1,4 @@
+import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, CheckCheck, FileText, FileArchive, File as FileIcon, Image as ImageIcon, Copy, Trash2 } from 'lucide-react';
 import type { Message } from '@/hooks/useRealtimeMessages';
@@ -85,7 +86,7 @@ export default function MessageBubble({ message, isOwn, isAdmin }: MessageBubble
       // We will let the polling mechanism catch the deleted message (it will vanish).
     } catch (err) {
       console.error(err);
-      alert('Failed to delete message.');
+      toast.error('Failed to delete message.');
     } finally {
       setIsDeleting(false);
     }

@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
@@ -33,7 +35,7 @@ export default function EmailSettingsPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
-    setMessage({ text: '', type: '' });
+    
 
     try {
       const res = await fetch('/api/admin/settings/email', {
@@ -45,14 +47,14 @@ export default function EmailSettingsPage() {
       });
 
       if (res.ok) {
-        setMessage({ text: 'Email settings saved successfully!', type: 'success' });
+        toast.success('Email settings saved successfully!')
         setEmailPass(''); // Clear the password field for security
       } else {
         const data = await res.json();
-        setMessage({ text: data.error || 'Failed to save settings', type: 'error' });
+        toast.error(data.error || 'Failed to save settings')
       }
     } catch (error) {
-      setMessage({ text: 'An error occurred while saving', type: 'error' });
+      toast.error('An error occurred while saving')
     } finally {
       setIsSaving(false);
     }

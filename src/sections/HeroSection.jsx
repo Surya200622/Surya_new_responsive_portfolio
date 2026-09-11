@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { ArrowRight, Briefcase, Heart, Award } from 'lucide-react';
+import { ArrowRight, Briefcase, Heart, Award, Code, Terminal, Database, Cpu, Globe, Layers, Monitor } from 'lucide-react';
 import MorphingBrackets from '../components/MorphingBrackets';
 import JarvisAdBanner from '../components/JarvisAdBanner';
 import './HeroSection.css';
@@ -45,6 +45,16 @@ export default function HeroSection() {
     { value: '3+', label: "Projects", icon: Briefcase },
     { value: 'IBM & ITC', label: "Trained", icon: Award },
     { value: '10+', label: "Technologies", icon: Heart },
+  ];
+
+  const FLOATING_ICONS = [
+    { Icon: Code, top: '15%', left: '10%', size: 36, delay: 0 },
+    { Icon: Terminal, top: '25%', left: '85%', size: 44, delay: 1.2 },
+    { Icon: Database, top: '70%', left: '15%', size: 38, delay: 2.5 },
+    { Icon: Cpu, top: '65%', left: '80%', size: 48, delay: 0.8 },
+    { Icon: Globe, top: '10%', left: '50%', size: 40, delay: 3.1 },
+    { Icon: Layers, top: '85%', left: '45%', size: 32, delay: 1.8 },
+    { Icon: Monitor, top: '45%', left: '5%', size: 36, delay: 2.2 },
   ];
 
   // Parallax on scroll
@@ -114,13 +124,20 @@ export default function HeroSection() {
     <section ref={sectionRef} className="hero" id="hero">
       {/* Background */}
       <div className="hero__bg" ref={bgRef}>
-        <img
-          src="/images/Gemini_Generated_Image_z7lt8hz7lt8hz7lt.png"
-          alt=""
-          className="hero__bg-img"
-          loading="eager"
-          aria-hidden="true"
-        />
+        {FLOATING_ICONS.map((item, index) => (
+          <div
+            key={index}
+            className="hero__floating-icon"
+            style={{
+              top: item.top,
+              left: item.left,
+              animationDelay: `${item.delay}s`,
+            }}
+            aria-hidden="true"
+          >
+            <item.Icon size={item.size} />
+          </div>
+        ))}
       </div>
       <div className="hero__bg-overlay" />
       <div className="hero__bg-vignette" />

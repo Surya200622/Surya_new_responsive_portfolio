@@ -27,7 +27,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 30px;
+  gap: 24px;
   position: relative;
   z-index: 10;
 }
@@ -35,15 +35,15 @@
 .offer-card {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
-  border-radius: 20px;
-  padding: 30px;
+  border-radius: 16px;
+  padding: 24px;
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   transition: transform 0.3s ease, border-color 0.3s ease;
   width: 100%;
-  max-width: 400px;
+  max-width: 320px;
 }
 
 .offer-card:hover {
@@ -68,8 +68,8 @@
 }
 
 .offer-image-container {
-  margin: -30px -30px 20px -30px; /* pull to edges */
-  height: 180px;
+  margin: -24px -24px 20px -24px; /* pull to edges */
+  height: 150px;
   overflow: hidden;
   background-color: var(--color-bg-primary);
 }
@@ -104,26 +104,26 @@
 
 .offer-title {
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--color-text-primary);
   margin-top: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
 .offer-desc {
   color: var(--color-text-secondary);
-  font-size: 0.95rem;
-  line-height: 1.6;
+  font-size: 0.9rem;
+  line-height: 1.5;
   flex-grow: 1;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .offer-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 20px;
+  padding-top: 16px;
   border-top: 1px solid var(--color-border);
   gap: 12px;
   flex-wrap: wrap;
@@ -141,6 +141,7 @@
 .offer-view-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   color: var(--color-accent-primary);
   font-weight: 600;

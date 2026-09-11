@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 
 
@@ -286,7 +288,7 @@ export default function ProtectedLayout({
       await update();
     } catch (error) {
       console.error('Error uploading avatar:', error);
-      alert('Error uploading avatar');
+      toast.error('Error uploading avatar');
     } finally {
       setAvatarUploading(false);
     }

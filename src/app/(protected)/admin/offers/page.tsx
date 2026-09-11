@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 import { useState, useEffect } from 'react';
 import { Tag, Send, Upload, Loader2, X, Edit2, Trash2 } from 'lucide-react';
@@ -80,8 +82,8 @@ export default function AdminOffersPage() {
     });
     setImagePreview(offer.imageUrl);
     setImageFile(null);
-    setSuccess('');
-    setError('');
+    
+    
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -95,8 +97,8 @@ export default function AdminOffersPage() {
       send_email: true
     });
     removeImage();
-    setSuccess('');
-    setError('');
+    
+    
   };
 
   const handleDelete = async (id: string) => {
@@ -110,22 +112,22 @@ export default function AdminOffersPage() {
       
       if (!res.ok) throw new Error(data.error || 'Failed to delete offer');
       
-      setSuccess('Offer deleted successfully.');
+      toast.success('Offer deleted successfully.');
       fetchOffers();
       
       if (editingOfferId === id) {
         cancelEdit();
       }
     } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred');
+      toast.error(err.message || 'An unexpected error occurred');
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setSuccess('');
+    
+    
 
     try {
       let image_url = imagePreview; // keep existing if editing
@@ -169,7 +171,7 @@ export default function AdminOffersPage() {
         throw new Error(data.error || 'Failed to save offer');
       }
 
-      setSuccess(editingOfferId ? 'Offer successfully updated!' : 'Offer successfully created and broadcasted!');
+      toast.success(editingOfferId ? 'Offer successfully updated!' : 'Offer successfully created and broadcasted!');
       
       if (!editingOfferId) {
         setFormData({
@@ -185,7 +187,7 @@ export default function AdminOffersPage() {
       fetchOffers();
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'An unexpected error occurred');
+      toast.error(err.message || 'An unexpected error occurred');
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 import { useState } from 'react';
 import { Loader2, FileText } from 'lucide-react';
@@ -36,7 +38,7 @@ export default function ClientQuotationsTable({ initialQuotations }: { initialQu
       router.refresh();
     } catch (error: any) {
       console.error('Error updating status:', error);
-      alert('Failed to update status: ' + error.message);
+      toast.error('Failed to update status: ' + error.message);
     } finally {
       setUpdatingId(null);
     }

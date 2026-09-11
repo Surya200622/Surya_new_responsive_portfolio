@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 import { Globe, ExternalLink, Link2, Heart, Shield, FileText } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaInstagram, FaFacebook, FaYoutube } from 'react-icons/fa';
 import { SOCIAL_LINKS } from '../data/projectsData';
@@ -121,12 +123,12 @@ export default function FooterSection() {
                     if (res.ok) {
                       form.innerHTML = `<p style="color: #22c55e; font-size: 0.875rem;">${"Successfully subscribed!"}</p>`;
                     } else {
-                      alert(data.message || 'Error subscribing');
+                      toast.error(data.message || 'Error subscribing');
                       btn.textContent = "Subscribe";
                       btn.disabled = false;
                     }
                   } catch (err) {
-                    alert('Error subscribing');
+                    toast.error('Error subscribing');
                     btn.textContent = "Subscribe";
                     btn.disabled = false;
                   }

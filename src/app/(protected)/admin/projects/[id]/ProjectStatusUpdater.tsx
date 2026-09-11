@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -49,7 +51,7 @@ export default function ProjectStatusUpdater({ projectId, currentStatus }: Proje
       setIsOpen(false);
     } catch (error: any) {
       console.error('Error updating project status:', error);
-      alert('Failed to update project status: ' + (error.message || 'Unknown error'));
+      toast.error('Failed to update project status: ' + (error.message || 'Unknown error'));
     } finally {
       setIsUpdating(false);
     }

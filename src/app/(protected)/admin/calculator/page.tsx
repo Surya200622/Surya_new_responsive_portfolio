@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 import { useState, useEffect } from 'react';
 import { Save, Loader2, RefreshCcw, AlertTriangle, Package, FileCode2, Server, Settings2, ShieldCheck, Check } from 'lucide-react';
@@ -84,15 +86,15 @@ export default function CalculatorSettingsPage() {
       }
     } catch (err) {
       console.error('Failed to fetch config:', err);
-      setError('Failed to load current configuration.');
+      toast.error('Failed to load current configuration.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleSave = async () => {
-    setError('');
-    setSuccess('');
+    
+    
     setSaving(true);
     
     try {
@@ -104,10 +106,10 @@ export default function CalculatorSettingsPage() {
 
       if (!res.ok) throw new Error('Failed to save settings');
       
-      setSuccess('Calculator configuration saved successfully! Changes are now live.');
-      setTimeout(() => setSuccess(''), 3000);
+      toast.success('Calculator configuration saved successfully! Changes are now live.');
+      setTimeout(() => , 3000);
     } catch (err: any) {
-      setError(err.message || 'An error occurred while saving.');
+      toast.error(err.message || 'An error occurred while saving.');
     } finally {
       setSaving(false);
     }
@@ -116,8 +118,8 @@ export default function CalculatorSettingsPage() {
   const handleReset = () => {
     if (confirm('Are you sure you want to reset to the default configuration? Any unsaved changes will be lost.')) {
       setConfig(DEFAULT_CONFIG);
-      setError('');
-      setSuccess('');
+      
+      
     }
   };
 

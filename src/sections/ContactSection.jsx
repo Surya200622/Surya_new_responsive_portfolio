@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, MessageSquare, MapPin, Send, CheckCircle, Globe, ExternalLink, Link2 } from 'lucide-react';
@@ -17,7 +19,7 @@ export default function ContactSection() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError('');
+    
 
     try {
       const response = await fetch('/api/contact', {
@@ -35,10 +37,10 @@ export default function ContactSection() {
         setFormData({ name: '', email: '', phone: '', project: '', message: '' });
         setTimeout(() => setSubmitted(false), 5000);
       } else {
-        setError(data.error || 'Failed to send message. Please try again.');
+        toast.error(data.error || 'Failed to send message. Please try again.');
       }
     } catch (err) {
-      setError('An error occurred. Please try again later.');
+      toast.error('An error occurred. Please try again later.');
     } finally {
       setIsSubmitting(false);
     }

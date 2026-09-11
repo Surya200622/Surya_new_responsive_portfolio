@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
@@ -34,7 +36,7 @@ export default function AISettingsPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
-    setMessage({ text: '', type: '' });
+    
 
     try {
       const res = await fetch('/api/admin/settings/ai', {
@@ -46,13 +48,13 @@ export default function AISettingsPage() {
       });
 
       if (res.ok) {
-        setMessage({ text: 'AI model settings saved successfully!', type: 'success' });
+        toast.success('AI model settings saved successfully!')
       } else {
         const data = await res.json();
-        setMessage({ text: data.error || 'Failed to save settings', type: 'error' });
+        toast.error(data.error || 'Failed to save settings')
       }
     } catch (error) {
-      setMessage({ text: 'An error occurred while saving', type: 'error' });
+      toast.error('An error occurred while saving')
     } finally {
       setIsSaving(false);
     }

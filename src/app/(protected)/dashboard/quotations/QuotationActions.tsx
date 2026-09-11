@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -54,7 +56,7 @@ export default function QuotationActions({ quoteId, projectId, adminId, clientNa
       router.refresh();
     } catch (error: any) {
       console.error(`Error during quotation ${action}:`, error);
-      alert(error.message || `Failed to ${action} quotation. Please try again.`);
+      toast.error(error.message || `Failed to ${action} quotation. Please try again.`);
     } finally {
       setIsProcessing(null);
     }

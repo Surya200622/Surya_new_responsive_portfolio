@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 import { useState, useEffect, use } from 'react';
 import { Upload, File, Image as ImageIcon, X, Loader2, Folder } from 'lucide-react';
@@ -52,7 +54,7 @@ export default function ProjectFilesPage({ params }: { params: Promise<{ id: str
       e.target.value = '';
     } catch (error: any) {
       console.error('Error uploading file:', error);
-      alert(`Failed to upload file: ${error.message}`);
+      toast.error(`Failed to upload file: ${error.message}`);
     } finally {
       setIsUploading(false);
     }
@@ -73,7 +75,7 @@ export default function ProjectFilesPage({ params }: { params: Promise<{ id: str
       }
     } catch (error) {
       console.error('Error deleting file:', error);
-      alert('Failed to delete file');
+      toast.error('Failed to delete file');
     }
   };
 

@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -15,7 +17,7 @@ export default function PendingQuotationHandler() {
 
     try {
       setIsProcessing(true);
-      setError(null);
+      
       
       // Remove immediately to prevent React StrictMode double-firing
       localStorage.removeItem('pendingQuote');
@@ -36,11 +38,11 @@ export default function PendingQuotationHandler() {
         const errorData = await response.json();
         console.error('Failed to create quotation:', errorData);
         const errorMsg = errorData.error || 'Unknown error occurred while generating quotation.';
-        setError(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (err: any) {
       console.error('Error processing pending quote:', err);
-      setError(err.message || 'Network error while processing quotation.');
+      toast.error(err.message || 'Network error while processing quotation.');
     } finally {
       setIsProcessing(false);
     }
@@ -72,7 +74,7 @@ export default function PendingQuotationHandler() {
           </div>
           <button
             onClick={() => {
-              setError(null);
+              
               router.refresh();
             }}
             className="btn btn--glass px-4 py-2 flex items-center gap-2 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"

@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 import { useState } from 'react';
 import { Trash2, Loader2 } from 'lucide-react';
@@ -26,11 +28,11 @@ export default function DeleteFileButton({ id, type }: DeleteFileButtonProps) {
         router.refresh();
       } else {
         const error = await res.json();
-        alert(`Failed to delete file: ${error.error}`);
+        toast.error(`Failed to delete file: ${error.error}`);
       }
     } catch (err) {
       console.error(err);
-      alert('An unexpected error occurred.');
+      toast.error('An unexpected error occurred.');
     } finally {
       setIsDeleting(false);
     }

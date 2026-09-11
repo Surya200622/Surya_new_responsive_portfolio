@@ -1,4 +1,6 @@
 'use client';
+import { toast } from 'react-hot-toast';
+
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -66,7 +68,7 @@ export default function ReviewsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setMessage(null);
+    
 
     try {
       if (!form.content.trim() || !form.role.trim()) {
@@ -91,7 +93,7 @@ export default function ReviewsPage() {
           const data = await res.json();
           throw new Error(data.error || 'Failed to update review');
         }
-        setMessage({ type: 'success', text: 'Review updated successfully! It is now live on the portfolio.' });
+        toast.success('Review updated successfully! It is now live on the portfolio.')
       } else {
         // Insert
         const res = await fetch('/api/reviews', {
@@ -105,11 +107,11 @@ export default function ReviewsPage() {
         }
         const data = await res.json();
         if (data.review) setReviewId(data.review.id);
-        setMessage({ type: 'success', text: 'Review published successfully! It is now live on the portfolio.' });
+        toast.success('Review published successfully! It is now live on the portfolio.')
       }
     } catch (err: any) {
       console.error('Save review error:', err);
-      setMessage({ type: 'error', text: err.message || 'Failed to save review.' });
+      toast.error(err.message || 'Failed to save review.')
     } finally {
       setSaving(false);
     }
@@ -217,9 +219,9 @@ export default function ReviewsPage() {
                     
                     setReviewId(null);
                     setForm({ role: '', content: '', rating: 5 });
-                    setMessage({ type: 'success', text: 'Review deleted successfully! It is instantly removed from the portfolio.' });
+                    toast.success('Review deleted successfully! It is instantly removed from the portfolio.')
                   } catch (err: any) {
-                    setMessage({ type: 'error', text: err.message || 'Failed to delete review.' });
+                    toast.error(err.message || 'Failed to delete review.')
                   } finally {
                     setSaving(false);
                   }
